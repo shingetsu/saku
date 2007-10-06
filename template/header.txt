@@ -1,0 +1,50 @@
+#* Saku Gateway Header.
+ * Copyright (c) 2005-2007 shinGETsu Project.
+ * $Id$
+ *#
+Content-Type: text/html; charset=UTF-8
+#if $cookie
+$cookie
+#end if
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  lang="$message['lang']" xml:lang="$message['lang']">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="content-script-type" content="text/javascript" />
+  <title>$title</title>
+#if $deny_robot
+  <meta name="robots" content="NOINDEX" />
+#end if
+#if $mobile
+  <link rel="alternate" media="handheld" href="$mobile" />
+#end if
+  <link rev="made" href="http://shingetsu.info/" />
+  <link rel="contents" href="/" />
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="$rss" />
+  <script type="text/javascript">
+    var uiLang = "$message['lang']";
+    var initFunc = [];
+    function doInitFunc() {
+      for (var i=0; i!=initFunc.length; i++) {
+        initFunc[i]();
+      }
+    }
+  </script>
+#for $e in $js
+  <script type="text/javascript" src="$root_path$e"></script>
+#end for
+#for $e in $css
+  <link rel="stylesheet" type="text/css" href="$root_path$e" />
+#end for
+</head>
+<body onload="doInitFunc()">
+$menubar
+#if $isadmin
+  <h1><a href="$admin_cgi/search/$str_title" title="$message['search']">$escape_space($title)</a></h1>
+#else
+  <h1>$escape_space($title)</h1>
+#end if

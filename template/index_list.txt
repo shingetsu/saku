@@ -1,0 +1,45 @@
+#* Saku Gateway Index List.
+ * Copyright (c) 2005-2007 shinGETsu Project.
+ * $Id$
+ *#
+#if $target
+  <form method="get" action="$gateway_cgi/$target" id="filterform"><p>
+  <input type="submit" value="$message['filter']" id="filtersubmit" />
+  <input name="filter" size="40" value="$filter" /> ($message['regexp'])
+  </p></form>
+  <form method="get" action="$gateway_cgi/$target" id="tagform"><p>
+  <input type="submit" value="$message['tag']" id="tagsubmit" />
+  <input name="tag" size="40" value="$tag" /> ($message['string'])
+  </p></form>
+#end if
+
+#if $isadmin
+  <form method="post" action="$admin_cgi">
+  <p><input type="hidden" name="cmd" value="fdel" /></p>
+#end if
+
+<p class="tags">
+#for $t in $taglist
+  <a href="$gateway_cgi/$target?tag=$str_encode($t)" class="tag">$t</a>
+#end for
+</p>
+
+#for $type in $types
+  <ul id="${type}_index">
+  #for $cache in $cachelist
+    #if $cache.type == $type
+      $make_list_item($cache, target=$target)
+    #end if
+  #end for
+  </ul>
+#end for
+
+#if $isadmin:
+  <p><input type="submit" value="$message['del_file']" /></p>
+  </form>
+#end if
+
+#if $target:
+  #set $cols = 'file,stamp,date,path,uri,type,title,records,size,tag,sugtag'
+  <p><a href="$gateway_cgi/csv/$target/$cols">CSV</a></p>
+#end if

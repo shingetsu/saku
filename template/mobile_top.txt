@@ -1,0 +1,10 @@
+#* Saku Gateway Mobile Toppage.
+ * Copyright (c) 2007 shinGETsu Project.
+ * $Id$
+ *#
+<ul id="top_index">
+#for $cache in $cachelist
+  $make_list_item($cache, remove=False, target=$target)
+#end for
+<li><a href="$mobile_cgi?cmd=changes">$message['all']</a></li>
+</ul>

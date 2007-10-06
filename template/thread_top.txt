@@ -1,0 +1,17 @@
+#* Saku Gateway Thrad Top.
+ * Copyright (c) 2005-2007 shinGETsu Project.
+ * $Id$
+ *#
+#if $isadmin
+  <form method="post" action="$admin_cgi">
+  <p id="pagenavi">
+  <input type="hidden" name="cmd" value="rdel" />
+  <input type="hidden" name="file" value="$cache.datfile" />
+#else
+  <p id="pagenavi">
+#end if
+#if $lastrec is not None
+  $res_anchor($lastrec.id[:8], $thread_cgi, $path)$message['last_article']</a>
+#elif len($cache)
+  <a href="#bottom">$message['bottom_of_page']</a>
+#end if

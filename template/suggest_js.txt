@@ -1,0 +1,58 @@
+#* Saku Gateway suggest.js.
+ * Copyright (c) 2007 shinGETsu Project.
+ * $Id$
+ *#
+(function () {
+    var titles = [
+    #if $titles
+      #for $i in $titles[:-1]
+        "$escape_simple($i)",
+      #end for
+        "$escape_simple($titles[-1])"
+    #end if
+    ];
+
+    var node = 'http://$server/thread.cgi/';
+    var link;
+
+    function similarity(data, title) {
+        var point = 0;
+        for (var n=1; n<=title.length; n++) {
+            for (var i=0; i<=title.length-n; i++) {
+	        var key = title.substr(i, n);
+	        if (data.indexOf(key) >= 0) {
+	            point += n;
+	        }
+            }
+        }
+        return point;
+    }
+
+    function selectTitle() {
+        var data = document.getElementsByTagName('body')[0].innerHTML;
+        data = data.replace(/<!--.*?-->/g, '');
+        data = data.replace(/<!\[CDATA\[.*?\]\]>/g, '');
+        data = data.replace(/<.*?>/g, '');
+        var title = titles[0];
+        var point = similarity(data, title);
+        for (var i=1; i<titles.length; i++) {
+            var tmp =  similarity(data, titles[i]);
+            if (point < tmp) {
+                title = titles[i];
+                point = tmp;
+            }
+        }
+        return title;
+    }
+
+    function main() {
+        link = document.getElementById('shingetsu_link');
+        if (link) {
+            var title = selectTitle();
+            link.innerHTML = title;
+            link.href = node + encodeURIComponent(title);
+        }
+    }
+
+    main();
+})();

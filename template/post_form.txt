@@ -1,0 +1,45 @@
+#* Saku Gateway Post Form.
+ * Copyright (c) 2005-2007 shinGETsu Project.
+ * $Id$
+ *#
+#if $isadmin
+  #if $cache
+    <p><input type="submit" value="$message['del_record']" /></p>
+  #end if
+  </form>
+#end if
+
+<form id="postarticle" name="postarticle" method="post" action="$thread_cgi"
+  enctype="multipart/form-data"><p>
+<input type="hidden" name="cmd" value="post" />
+<input type="hidden" name="file" value="$cache.datfile" />
+<input type="submit" value="$message['post']" />
+<a href="$gateway_cgi/motd">$message['agreement']</a>
+
+#if $isadmin or $isfriend
+  <input type="checkbox" id="dopost" name="dopost" value="dopost" checked="checked" />
+  <span title="message['desc_send']"><label for="dopost">$message['send']</label></span>
+#else
+  <input type="hidden" name="dopost" value="dopost" />
+#end if
+
+
+<input type="checkbox" id="error" name="error" value="error" checked="checked" />
+<span title="message['desc_error']"><label for="error">$message['error']</label></span><br />
+$message['name']:<input name="name" size="15" value="" />
+$message['mail']:<input name="mail" size="15" value="" />
+
+#if $isadmin
+$message['signature']:<input type="password" name="passwd" size="15" value="" />
+#end if
+
+<br />
+$message['attach']:<input type="file" name="attach" size="19" value="" />
+$message['suffix']:<select name="suffix" size="1" tabindex="7">
+<option>AUTO</option>
+#for $suffix in $suffixes
+  <option>$suffix</option>
+#end for
+</select>($message['limit']: $limit$message['kb'])<br />
+<textarea rows="5" cols="70" name="body"></textarea>
+</p></form>

@@ -1,0 +1,5 @@
+#* Saku Gateway Common Paragraph.
+ * Copyright (c) 2007 shinGETsu Project.
+ * $Id$
+ *#
+<p>$contents</p>

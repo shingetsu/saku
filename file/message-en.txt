@@ -1,0 +1,107 @@
+#
+# Message file for English
+# Copyright (c) 2005-2007 shinGETsu Project.
+# $Id$
+#
+
+lang<>en
+
+# menu bar
+top<>TOP
+new<>NEW
+index<>INDEX
+changes<>CHANGES
+recent<>RECENT
+search<>SEARCH
+rss<>RSS
+
+# description
+desc_index<>Index of ached BBS (sorted by character code).
+desc_changes<>Index of ached BBS (sorted by character timestamp).
+desc_recent<>Recently updated BBS.
+desc_search<>Search from cached BBS.
+desc_error<>To save anonymity. Turn off for consecutive post.
+desc_comment<>Reason to remove (if you send to other nodes).
+desc_send<>Turn off first post for new BBS when you want to save your anonymity.
+
+# top page
+logo<>%E6%96%B0%E6%9C%88
+description<>P2P anonymous BBS
+site<>Official Site
+status<>Status
+agreement<>Agreement
+title<>Title
+recent_changes<>Recent Changes
+archive<>Archive
+all<>All
+mobile<>Mobile
+
+# index
+filter<>Filter
+regexp<>RegExp
+tag<>Tag
+string<>String
+tag_desc<>Input tags splitting by space. Do not use &lt;, &gt;, and &amp;.
+
+# post
+send<>Send to other nodes
+name<>Name
+mail<>E-mail
+signature<>Signature
+attach<>Attach
+suffix<>Suffix
+error<>Error in timestamp
+comment<>Comment
+post<>POST
+mail_post<>Post with mail
+
+# admin
+del_file<>DELETE BBS
+del_record<>DELETE ARTICLE
+remove<>remove
+
+# thread
+anonymous<>anonymous
+last_article<>Go to the last article.
+top_of_page<>Top of this page.
+bottom_of_page<>Bottom of this page.
+last_page<>&lt;&lt;last
+new_page<>&lt;&lt;new
+old_page<>old&gt;&gt;
+edit_tag<>Edit tags
+res<>Res
+
+# delete
+del_record_q<>Do you delete following article(s)?
+del_file_q<>Do you delete following BBS(es)?
+yes<>YES
+
+# error
+no_record<>no such article
+no_file<>no such BBS
+null_article<>Null Article
+null_title<>Null Title
+bad_title<>Bad Title. You can't use "/[]&lt;&gt;" for a title.
+null_type<>Null Type
+big_file<>Too big file
+403<>Forbidden
+403_body<>You don't have permission to access this URI. Install <a href="http://shingetsu.info/">shinGETsu</a>.
+404<>Not Found
+404_body<>The requested URI was not found on this server. Try later or install <a href="http://shingetsu.info/">shinGETsu</a>.
+no_data<>Bad arguments or No data.
+spam<>Your post looks like a spam.
+regexp_error<>Regular expressions error.
+
+# status
+linked_nodes<>Linked Nodes
+known_nodes<>Known Nodes
+files<>BBSes
+records<>Articles
+cache_size<>Cache Size
+self_node<>Self node
+
+# misc
+google<>GOOGLE
+limit<>limit
+mb<>MB
+kb<>KB

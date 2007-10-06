@@ -1,0 +1,20 @@
+#* Saku Gateway Edit Tag Form.
+ * Copyright (c) 2007 shinGETsu Project.
+ * $Id$
+ *#
+<form id="savetag" method="post" action="$admin_cgi/savetag"><p>
+<input type="hidden" name="file" value="$datfile" />
+<input type="submit" value="$message['edit_tag']" />
+<input name="tag" value="$escape_simple($tags)" size="40" />
+</p></form>
+<p>$message['tag_desc']</p>
+<p class="tags">
+#for $tag in $usertags
+  <span class="tag">$escape_simple(str($tag))</span>
+#end for
+</p>
+<p class="sugtags">
+#for $tag in $sugtags
+  <span class="tag">$escape_simple(str($tag))</span>
+#end for
+</p>

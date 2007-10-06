@@ -1,0 +1,30 @@
+#* Saku Gateway New Element Form.
+ * Copyright (c) 2005-2007 shinGETsu Project.
+ * $Id$
+ *#
+<form method="post" action="$cginame">
+<table class="newelement">
+<tr><td>
+<input type="hidden" name="cmd" value="new" />
+<input type="hidden" name="file" value="$datfile" />
+<input type="submit" value="$message['new']" />
+</td><td>
+
+##for $type in $types:
+##  <input type="radio" value="$type" name="type" />$message[type]
+##end for
+<input type="hidden" value="thread" name="type" />
+</td></tr>
+
+##if parent:
+##  <input type="checkbox" name="dopost" value="dopost" checked="checked" />
+##  message["send"]
+##end for
+
+<tr><td>$message['title']:</td>
+<td><input name="link" size="40" maxlength="$config.title_limit" value="" />
+</td></tr>
+<tr><td>$message['tag']:</td>
+<td><input name="tag" size="40" value="" title="$message['tag_desc']" />
+</td></tr>
+</table></form>

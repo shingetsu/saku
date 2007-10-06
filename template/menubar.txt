@@ -1,0 +1,21 @@
+#* Saku Gateway Menubar.
+ * Copyright (c) 2005-2007 shinGETsu Project.
+ * $Id$
+ *#
+#if $id
+  <p class="menu" id="$id">
+#else
+  <p class="menu">
+#end if
+
+<a href="$gateway_cgi">$message['top']</a> |
+#for $i in ('changes',)
+  $gateway_link($gateway_cgi, $i) |
+#end for
+#if $isfriend or $isadmin
+  #for $i in ('recent', 'new')
+    $gateway_link($gateway_cgi, $i) |
+  #end for
+#end if
+<a href="$rss">$message['rss']</a>
+</p>

@@ -1,0 +1,5 @@
+#* Saku Gateway Mobile Jump Page.
+ * Copyright (c) 2005-2007 shinGETsu Project.
+ * $Id$
+ *#
+<p>Click and jump to <a href="$escape_simple($next)">$escape_simple($next)</a></p>

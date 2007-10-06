@@ -1,0 +1,21 @@
+#* Saku Gateway Mobile Thread Record.
+ * Copyright (c) 2007 shinGETsu Project.
+ * $Id$
+ *#
+<div style="margin:0;border-bottom:1px solid #ccc;"><p>$sid
+#if $rec.get('name', '')
+  <span style="color:green;font-weight:bold;">$rec['name']</span>
+#else
+  <span style="color:green;font-weight:bold;">$message['anonymous']</span>
+#end if
+#if $rec.get('mail', '')
+  [$rec['mail']]
+#end if
+$localtime($rec['stamp'])
+#if 'attach' in $rec
+  <a href="$thread_cgi/$cache.datfile/$rec['id']/$rec['stamp'].$suffix">$rec['stamp'].$suffix</a>
+  (${int($attach_size/1024)}$message['kb'])
+#end if
+<a href="$mobile_cgi?thread=$str_path&amp;id=$sid">$message['res']</a><br />
+$body
+</p></div>

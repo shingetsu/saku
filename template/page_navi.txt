@@ -1,0 +1,38 @@
+#* Saku Gateway Thread Page Navigation.
+ * Copyright (c) 2007 shinGETsu Project.
+ * $Id$
+ *#
+#if len($cache)
+  |
+#end if
+#if ($page > 0) or $id
+  <a href="$thread_cgi/$str_path">$message['last_page']</a>
+#end if
+#if $page > 1
+  <a href="$thread_cgi/$str_path/p$($page-1)">$message['new_page']</a>
+#end if
+#if $first > 1
+  #for $p in range($first):
+    #if (not $id) and ($p == $page)
+      $p
+    #elif (not $id) and (p == 0)
+      <a href="$thread_cgi/$str_path">$p</a>
+    #else
+      <a href="$thread_cgi/$str_path/p$p">$p</a>
+    #end if
+  #end for
+#end if
+#if (not $id) and (($page+1) * $config.thread_page_size < len($cache))
+  <a href="$thread_cgi/$str_path/p${$page+1}">$message['old_page']</a>
+#end if
+#if $first > 1
+  |
+#end if
+#if $config.archive_uri
+  <a href="$archive_uri">$message['archive']</a>
+#end if
+#if $page
+  | <a href="$mobile_cgi?thread=$str_path&amp;page=$page">$message['mobile']</a>
+#else
+  | <a href="$mobile_cgi?thread=$str_path">$message['mobile']</a>
+#end if

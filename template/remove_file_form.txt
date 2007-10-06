@@ -1,0 +1,18 @@
+#* Saku Gateway Remove File Form.
+ * Copyright (c) 2005-2007 shinGETsu Project.
+ * $Id$
+ *#
+#set $status = '(%s/%d/%.1f%s)' % \
+     ($title, len($cache), $cache.size/1024/1024.0, $message['mb'])
+
+#if $isadmin
+  <form method="post" action="$admin_cgi">
+  <p id="status">
+  <input type="submit" value="$message['del_file']" />
+  <input type="hidden" name="cmd" value="fdel" />
+  <input type="hidden" name="file" value="$cache.datfile" />
+  $status
+  </p></form>
+#else
+  <p id="status">$status</p>
+#end if

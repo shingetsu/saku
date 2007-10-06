@@ -1,0 +1,105 @@
+Saku - a clone of P2P anonymous BBS shinGETsu
+=============================================
+
+Author(s):
+  (main)            Satoshi Fukutomi <fuktommy@shingetsu.info>
+Contributer(s):
+  (run_cgi)         Python Software Foundation.
+  (SimpleGzipFile)  Python Software Foundation.
+  (popup.js)        Zero corp.
+  (Cheetah)         The Cheetah Development Team:
+                    Tavis Rudd, Mike Orr, Ian Bicking, Chuck Esterbrook.
+
+WebSite:
+  http://shingetsu.info/
+  http://sourceforge.net/projects/shingetsu/
+
+
+Saku stands for ``Shingetsu Another Keen Utility''.
+Both the word ``saku'' and ``shingetsu'' mean the new moon in Japanese.
+
+* Agreement
+  Agree following terms and join shinGETsu network.
+(1) Descrive your license in your articles.
+    Or they are open, public and/or free:
+    anyone can use, modify and/or distribute them.
+(2) Do not use the network for illegality.
+(3) Do not use the network at the cost of othor peolpe.
+
+* Description
+(1) Saku is a P2P anonymous BBS works on Python.
+(2) We confirm that Saku works on CPython 2.4.4 on GNU/Linux and
+    CPython 2.5 on Windows XP.
+    Saku may not work on MacOS(ver.9 or before).
+(3) The features of shinGETsu are...
+      - 2ch.net style interface
+      - Wiki style hyperlink
+      - IRC style cache
+      - Uploader
+
+* Package common version Saku requires
+    Python (ver.2.4 or later)
+    Cheetah (ver.2.0rc7 or later) if you install Saku
+
+* Package Windows version requires
+    Windows (We confirm that Saku works on Windows XP)
+
+* Usage Windows version
+(1) If your router can not accept UPnP, open port 8000/tcp.
+(2) Edit file/saku.ini.
+(3) Double click tksaku.exe(window version) or saku.exe(console version).
+(4) Stop saku.exe with ^C.
+
+* Usage common version without install
+(1) If your router can not accept UPnP, open port 8000/tcp.
+(2) Edit file/saku.ini.
+(3) Start with
+    % ./saku.py
+    or
+    % ./tksaku.pyw
+    Browse http://localhost:8000/.
+(4) Stop with ^C.
+
+* Usage common version with install
+(1) Install Cheetah (http://www.cheetahtemplate.org/).
+(2) Open port 8000/tcp.
+(3) Compile and install.
+    # make install
+    You can use PREFIX option for make, and use setup.py directly.
+    If your system do not read modules in /usr/bin/local, do
+    # ln -s /usr/local/lib/python2.4/site-packages/shingetsu \
+            /usr/lib/python2.4/site-packages
+(4) Configration files are installed into /usr/local/share/doc/saku/sample.
+    You shoud install them:
+    # cp saku.init /usr/local/etc/init.d/saku
+    # cp sample.ini /usr/local/etc/saku/saku.ini
+    and so on.
+    The paths of config files are set in saku.ini,
+    they are in /usr/local/etc/saku by defaults.
+    saku.ini are loaded from
+    /usr/local/etc/saku/saku.ini
+    /etc/saku/saku.ini
+    ~/.saku/saku.ini
+    and the later settings have a priority.
+(5) Setup user and directories refering config files.
+(6) Start with
+    # /usr/local/etc/init.d/saku start
+    Browse http://localhost:8000/.
+(7) Stop with
+    # /usr/local/etc/init.d/saku stop
+(8) Run /usr/local/bin/saku or /usr/local/bin/tksaku for user application.
+
+* Acknowledge
+(1) The design is made referring to Vojta. (http://www.h6.dion.ne.jp/~vojta/)
+(2) I learned how to handle file name from YukiWiki written by Hiroshi Yuki.
+    (http://www.hyuki.com/yukiwiki/)
+(3) Module apollo.py is was made referring to apollo.c
+    written by replaceable anonymous.
+(4) Popup JavaScript was made referring to ``Kindan-no Tubo'' by Zero corp.
+    (http://tubo.80.kg/)
+(5) XLST was made reffring to Landscape.
+    (http://sonic64.com/2005-03-16.html)
+(6) UPnP module was made reffring to Beta-Endorphin.
+    (http://www.aa.alpha-net.ne.jp/bosuke/trash/upnp.htm)
+
+$Id$

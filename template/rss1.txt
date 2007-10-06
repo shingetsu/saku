@@ -1,0 +1,45 @@
+#* Saku Gateway RSS.
+ * Copyright (c) 2005-2007 shinGETsu Project.
+ * $Id$
+ *#
+<?xml version="1.0" encoding="$rss.encode"?>
+#if $rss.xsl
+  <?xml-stylesheet href="$rss.xsl" type="text/xsl"?>
+#end if
+<rdf:RDF
+  xmlns="http://purl.org/rss/1.0/"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xml:lang="$rss.lang">
+<channel rdf:about="$rss.uri">
+<title>$rss.title</title>
+<link>$rss.link</link>
+<description>$rss.description</description>
+<items><rdf:Seq>
+#for $f in $rss
+  <rdf:li rdf:resource="$f"/>
+#end for
+</rdf:Seq></items>
+</channel>
+
+#for $f in $feed:
+  <item rdf:about="$f.link">
+  <title>$f.title</title>
+  <link>$f.link</link>
+  <dc:date>$w3cdate($f.date)</dc:date>
+  #if $f.creator
+    <dc:creator>$f.creator</dc:creator>
+  #end if
+  #for $sub in $f.subject
+    <dc:subject>$escape($sub)</dc:subject>
+  #end for
+  #if $f.description
+    <description>$f.description</description>
+  #end if
+  #if $f.content
+    <content:encoded><![CDATA[$f.content.replace(']]>', '&#93;&#93;>')]]></content:encoded>
+  #end if
+  </item>
+#end for
+</rdf:RDF>

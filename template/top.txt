@@ -1,0 +1,39 @@
+#* Saku Gateway Toppage.
+ * Copyright (c) 2005-2007 shinGETsu Project.
+ * $Id$
+ *#
+<ul class="topmenu">
+#for $i in ('changes', 'index')
+  <li>$gateway_link($gateway_cgi, $i)</li>
+#end for
+#if $isfriend or $isadmin
+  #for $i in ('recent', 'new')
+    <li>$gateway_link($gateway_cgi, $i)</li>
+  #end for
+#end if
+#if $archive_uri:
+  <li><a href="$archive_uri">$message['archive']</a></li>
+#end if
+#if $isadmin
+  #for $i in ('search', 'status')
+    <li>$gateway_link($admin_cgi, $i)</li>
+  #end for
+#end if
+<li><a href="$mobile_cgi">$message['mobile']</a></li>
+<li><a href="http://shingetsu.info/">$message['site']</a>
+<li><a href="$gateway_cgi/motd">$message['agreement']</a></li>
+<li><a href="$gateway_cgi/rss">$message['rss']</a></li>
+</ul>
+
+<h2>$message['recent_changes']</h2>
+<ul id="top_index">
+#for $cache in $cachelist
+  $make_list_item($cache, remove=False, target=$target)
+#end for
+</ul>
+
+<p class="tags">
+#for $t in $taglist
+  <a href="$gateway_cgi/$target?tag=$str_encode($t)" class="tag">$t</a>
+#end for
+</p>

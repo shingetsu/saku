@@ -1,0 +1,8 @@
+#
+# Initial Node List for Saku.
+# Copyright (c) 2006 shinGETsu Project.
+#
+# $Id$
+#
+node.shingetsu.info:8000/server.cgi
+pushare.zenno.info:8000/server.cgi

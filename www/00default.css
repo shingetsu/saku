@@ -1,0 +1,96 @@
+/* Saku Default CSS
+ * Copyright (c) 2005-2007 shinGETsu Project.
+ * $Id$
+ */
+body {
+    background-color: #efefef;
+}
+ul {
+    list-style: none;
+}
+h1, h1 a {
+    color: red;
+}
+em {
+    font-size: x-large;
+}
+dd {
+    margin-bottom: 1em;
+}
+address {
+    text-align: center;
+}
+.name {
+    color: green;
+    font-weight: bold;
+}
+.sign {
+    color: red;
+}
+.menu {
+    text-align: right;
+}
+table {
+    border-collapse: collapse;
+}
+td {
+    border: 1px solid #ccc; 
+    padding: 5px 5px 5px 1em;
+    text-align: right;
+}
+#popup {
+    background-color: #aff;
+}
+#preview {
+    border: 1px solid #000;
+    padding: 5px;
+    margin: 5px;
+    white-space: pre;
+}
+#preview p, #preview pre {
+    margin: 0;
+    padding: 0;
+}
+ul.topmenu li { 
+    display: inline;
+    margin-left: 1ex;
+}
+li .tag {
+    font-size: smaller;
+}
+.tag {
+    text-decoration: none;
+}
+.tags .tag {
+    color: red;
+}
+.sugtags .tag {
+    color: green;
+}
+p.tags, p.sugtags {
+    color: #333;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+form#filterform, form#filterform p {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+form#tagform, form#tagform p {
+    margin-top: 0;
+    padding-top: 0;
+}
+input#filtersubmit {
+    width: 8em;
+}
+input#tagsubmit {
+    width: 8em;
+}
+table.newelement {
+    margin-top: 1em;
+    border: 1px solid #ccc;
+}
+table.newelement td {
+    border: none;
+    padding: 0;
+}

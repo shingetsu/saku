@@ -1,0 +1,21 @@
+#* Saku Gateway Delete File Form.
+ * Copyright (c) 2005-2007 shinGETsu Project.
+ * $Id$
+ *#
+<form method="post" action="$admin_cgi"><p>
+$message['del_file_q']
+<input type="hidden" name="cmd" value="xfdel" />
+<input type="hidden" name="sid" value="$sid" />
+<input type="submit" value="$message['remove']" />
+</p>
+#for $cache in $files
+  #if $cache.exists()
+    <h2><input type="checkbox" checked="checked" name="file" value="$cache.datfile" />$gettitle($cache)</h2>
+    #for $rec in $getcontents($cache)
+      <p>$rec</p>
+    #end for
+  #else
+    <p>$cache.datfile: $message['no_file']</p>
+  #end if
+#end for
+</form>

@@ -1,0 +1,109 @@
+#
+# Message file for Japanese
+# Copyright (c) 2005-2007 shinGETsu Project.
+# $Id$
+#
+
+lang<>ja
+
+# menu bar
+top<>トップ
+new<>新規作成
+index<>一覧
+changes<>最終更新
+recent<>新着情報
+search<>検索
+rss<>RSS
+
+# top page
+logo<>新月
+description<>P2P匿名掲示板
+site<>公式サイト
+status<>状態
+agreement<>ネットワーク利用条件
+title<>タイトル
+recent_changes<>最近の更新
+archive<>保管庫
+all<>全部
+mobile<>モバイル
+
+# description
+desc_index<>ディスクに保存され、自動的に更新される掲示板の一覧(文字コード順)
+desc_changes<>ディスクに保存され、自動的に更新される掲示板の一覧(更新時刻順)
+desc_recent<>最近書き込みのあった掲示板の一覧
+desc_search<>ディスクに保存されている掲示板から検索
+desc_error<>匿名性の保持のための機能。連続投稿するときは無効にしてください
+desc_comment<>他のノードにも通知するときには削除の理由を書いてください
+desc_send<>掲示板の最初の書き込みで、なおかつ匿名性を保ちたいときだけ無効にしてください
+
+# index
+filter<>フィルタ
+regexp<>正規表現
+tag<>タグ
+string<>文字列
+tag_desc<>スペースで区切ってタグを入力してください。&lt;&gt;&amp;は使えません。
+
+# post
+send<>他のノードにも通知する
+name<>名前
+mail<>E-mail
+signature<>署名
+attach<>添付ファイル
+suffix<>拡張子
+error<>書き込み時刻に誤差
+comment<>コメント
+post<>投稿
+mail_post<>メールで投稿(添付OK)
+
+# admin
+del_file<>掲示板の削除
+del_record<>書き込みの削除
+remove<>削除
+
+# thread
+anonymous<>名無しさん
+last_article<>最新の書き込み
+top_of_page<>ページの先頭
+bottom_of_page<>ページの下
+res<>返信
+spread<>拡大
+reduce<>縮小
+last_page<>&lt;&lt;最新
+new_page<>&lt;&lt;新
+old_page<>古&gt;&gt;
+edit_tag<>タグを編集する
+
+# delete
+yes<>はい
+del_record_q<>本当にこの(これらの)書き込みを削除しますか？
+del_file_q<>本当にこの(これらの)掲示板を削除しますか？
+
+# error
+no_record<>そのような書き込みはありません。
+no_file<>そのような掲示板はありません。
+null_article<>書き込みの内容が空です。
+null_title<>タイトルが空です。
+bad_title<>タイトルに「/[]&lt;&gt;」のどれかが含まれています。これらはタイトルには使えません。
+null_type<>種類が空です。
+big_file<>ファイルが大きすぎます。
+403<>立入禁止。
+403_body<>ファイルを表示する権限がありません。<a href="http://shingetsu.info/">新月</a>をインストールしてください。
+404<>ファイルがみつかりません。
+404_body<>時間をおいて試してみてください。または<a href="http://shingetsu.info/">新月</a>をインストールしてください。
+no_data<>引数が正しくないか、データがありません。
+spam<>スパムとみなされました。
+regexp_error<>正規表現のエラーです。
+
+# status
+linked_nodes<>隣接ノード
+known_nodes<>探索ノード
+files<>掲示板の数
+records<>書き込みの数
+cache_size<>キャッシュサイズ
+self_node<>自分自身のノード
+
+# misc
+limit<>最大
+mb<>MB
+kb<>KB
+google<>Google

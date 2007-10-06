@@ -1,0 +1,13 @@
+#
+# List of nodes that are allowed to add link_nodes or search_nodes.
+# Copyright (c) 2006 shinGETsu Project.
+#
+# Write one regexp per one line.
+# The regexp is tested for a node string.
+#
+# Example:
+#    ^192.168
+#    ^example\.com:8000/server\.cgi$
+#
+# $Id$
+#

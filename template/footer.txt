@@ -1,0 +1,8 @@
+#* Saku Gateway Footer.
+ * Copyright (c) 2005-2007 shinGETsu Project.
+ * $Id$
+ *#
+<address>Powered by 
+<a href="http://shingetsu.info/">shinGETsu</a>.</address>
+</body>
+</html>

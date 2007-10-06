@@ -1,0 +1,5 @@
+#* Saku Gateway Menu Link.
+ * Copyright (c) 2005-2007 shinGETsu Project.
+ * $Id$
+ *#
+<a href="$cginame/$command" title="$description">$message[$command]</a>

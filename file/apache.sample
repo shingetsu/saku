@@ -1,0 +1,77 @@
+<VirtualHost *>
+    ServerAdmin webmaster@shingetsu.info
+    DocumentRoot /srv/www/bbs.shingetsu.info
+    ServerName bbs.shingetsu.info
+    ServerAlias bbs.shingetsu.info, fuktommy.ddo.jp
+    ErrorLog /var/log/httpd/bbs.shingetsu.info.error.log
+    CustomLog /var/log/httpd/bbs.shingetsu.info.access.log combined
+    RewriteMap escape int:escape
+
+    <Directory "/srv/www/bbs.shingetsu.info">
+        Options -Indexes -ExecCGI
+        AddType text/xml;charset=UTF-8 .rdf
+        RewriteEngine on
+        RewriteRule gateway.cgi/rss rss.rdf
+        RewriteRule server.cgi - [F]
+        RewriteRule ^([0-9][^/]*).js$ /STATIC/$1.js
+        RewriteRule ^([0-9][^/]*).css$ /STATIC/$1.css
+        RewriteRule ^favicon.ico$ /STATIC/favicon.ico
+        RewriteRule rss1.xsl /STATIC/rss1.xsl
+        RewriteCond %{REQUEST_METHOD} GET
+            RewriteCond %{QUERY_STRING} ^$
+            RewriteCond %{HTTP_USER_AGENT} DoCoMo/2.0
+            RewriteRule ^mobile.cgi /mobile.xhtml
+        RewriteCond %{REQUEST_METHOD} GET
+            RewriteCond %{QUERY_STRING} ^$
+            RewriteCond %{HTTP_USER_AGENT} !DoCoMo
+            RewriteRule ^mobile.cgi /mobile.html
+        RewriteCond %{QUERY_STRING} cmd=post
+            RewriteRule . /cgi-bin/dummy.php
+        RewriteCond %{REQUEST_METHOD} POST
+            RewriteCond %{HTTP_REFERER} $^
+            RewriteRule . /cgi-bin/dummy.php
+        RewriteCond %{REQUEST_METHOD} POST
+            RewriteCond %{HTTP_REFERER} %25
+            RewriteRule . /cgi-bin/dummy.php
+        RewriteCond %{REQUEST_METHOD} POST
+            RewriteRule ^thread.cgi/. /cgi-bin/dummy.php
+        RewriteRule ^gw$ /cgi-bin/gw.cgi
+        RewriteRule ^thread.cgi/(thread_[0-9A-F]*)/([0-9a-f]*)/([0-9]*).(.*) \
+                    /CACHE/$1/attach/$3_$2.$4
+        <Files "mobile.cgi">
+            <Limit POST>
+                Include /etc/httpd/mobile.acl
+            </Limit>
+        </Files>
+        <IfModule mod_proxy.c>
+            #RewriteRule ^$ http://59.106.27.44:8000/gateway.cgi [P]
+            RewriteRule ^(gateway|thread|mobile).cgi(.*) \
+                http://59.106.27.44:8000/$1.cgi${escape:$2} [P,NE]
+        </IfModule>
+        RewriteRule ^archive/(.*) http://archive.shingetsu.info/$1 [L]
+    </Directory>
+
+    Alias /cgi-bin/ /srv/www/bbs.shingetsu.info/cgi-bin/
+    <Directory "/srv/www/bbs.shingetsu.info/cgi-bin">
+        Options +ExecCGI
+    </Directory>
+
+    Alias /STATIC/ /usr/local/share/saku/www/
+    <Directory "/usr/local/share/saku/www">
+        Options -Indexes -ExecCGI
+    </Directory>
+
+    Alias /CACHE/ /srv/saku/cache/
+    <Directory "/srv/saku/cache">
+        Options -Indexes -ExecCGI
+    </Directory>
+</VirtualHost>
+
+<VirtualHost *>
+    ServerAdmin webmaster@shingetsu.info
+    DocumentRoot /srv/www/bbs.shingetsu.info
+    ServerName node.shingetsu.info
+    <Directory />
+         RedirectMatch ^/$ http://shingetsu.info/
+    </Directory>
+</VirtualHost>
