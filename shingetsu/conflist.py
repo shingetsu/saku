@@ -56,6 +56,9 @@ class ConfList:
     def update(self):
         buf = []
         try:
+            if not os.path.exists(self.path):
+                self.data = []
+                return
             mtime = os.path.getmtime(self.path)
             if mtime <= self.mtime:
                 return
