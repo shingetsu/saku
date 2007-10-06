@@ -28,7 +28,7 @@ Both the word ``saku'' and ``shingetsu'' mean the new moon in Japanese.
 
 * Description
 (1) Saku is a P2P anonymous BBS works on Python.
-(2) We confirm that Saku works on CPython 2.4.4 on GNU/Linux and
+(2) We confirm that Saku works on CPython 2.5 on GNU/Linux and
     CPython 2.5 on Windows XP.
     Saku may not work on MacOS(ver.9 or before).
 (3) The features of shinGETsu are...
@@ -67,8 +67,8 @@ Both the word ``saku'' and ``shingetsu'' mean the new moon in Japanese.
     # make install
     You can use PREFIX option for make, and use setup.py directly.
     If your system do not read modules in /usr/bin/local, do
-    # ln -s /usr/local/lib/python2.4/site-packages/shingetsu \
-            /usr/lib/python2.4/site-packages
+    # ln -s /usr/local/lib/python2.5/site-packages/shingetsu \
+            /usr/lib/python2.5/site-packages
 (4) Configration files are installed into /usr/local/share/doc/saku/sample.
     You shoud install them:
     # cp saku.init /usr/local/etc/init.d/saku

@@ -24,7 +24,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 (1) HTTPのGETメソッドのみを用いて記事を配信する
     peer to peer 電子掲示板システムです。
 (2) 朔は Python 上で動きます。
-    動作確認は主に GNU/Linux 上の CPython 2.4.4 および
+    動作確認は主に GNU/Linux 上の CPython 2.5 および
     Windows XP 上の CPython 2.5 で行っています。
     MacOS(9以前)では動かないと思います。
 (3) 次のような特徴を備えた掲示板が利用できます。
@@ -34,7 +34,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
       - アップローダ
 
 ●共通版に必要なプログラム
-    Python (ver.2.4以降)
+    Python (ver.2.5以降)
     Cheetah (ver.2.0rc7 以降) 朔をインストールする場合
 
 ●Windows版に必要なプログラム
@@ -72,8 +72,8 @@ Sakuは Shingetsu Another Keen Utility の略です。
     setup.pyを直接利用することもできます。
     環境によっては /usr/bin/local 以下のPythonモジュールは読み込みません。
     その場合は
-    # ln -s /usr/local/lib/python2.4/site-packages/shingetsu \
-            /usr/lib/python2.4/site-packages
+    # ln -s /usr/local/lib/python2.5/site-packages/shingetsu \
+            /usr/lib/python2.5/site-packages
     のようにしてリンクを張ってください。
 (4) 設定ファイルは /usr/local/share/doc/saku/sample にインストールされます。
     これを必要に応じて、

@@ -38,10 +38,6 @@ import shingetsu.daemon as daemon
 __version__ = "$Revision$"
 
 def main():
-    # XXX
-    import gc
-    gc.set_debug(gc.DEBUG_UNCOLLECTABLE)
-
     try:
         daemon.setup()
         if ('-v' in sys.argv[1:]) or hasattr(sys, 'winver'):
