@@ -20,7 +20,7 @@ logo<>新月
 description<>P2P匿名掲示板
 site<>公式サイト
 status<>状態
-agreement<>ネットワーク利用条件
+agreement<>ネットワーク利用規約
 title<>タイトル
 recent_changes<>最近の更新
 archive<>保管庫
