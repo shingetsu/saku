@@ -26,9 +26,10 @@
             RewriteCond %{HTTP_USER_AGENT} !DoCoMo
             RewriteRule ^mobile.cgi /mobile.html
         RewriteCond %{QUERY_STRING} cmd=post
-            RewriteRule . /cgi-bin/dummy.php
+            RewriteRule . /cgi-bin/dummy.php?
         RewriteCond %{REQUEST_METHOD} POST
             RewriteCond %{HTTP_REFERER} $^
+            RewriteCond %{REQUEST_URI} !^/mobile.cgi$
             RewriteRule . /cgi-bin/dummy.php
         RewriteCond %{REQUEST_METHOD} POST
             RewriteCond %{HTTP_REFERER} %25
