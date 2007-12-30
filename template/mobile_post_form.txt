@@ -8,7 +8,7 @@
 <a href="$mobile_cgi?cmd=motd">$message['agreement']</a><br />
 
 #if $config.mobile_mail_domain
-  <a href="mailto:$tmpaddr@$config.mobile_mail_domain?subject=$cache.datfile$id_smtp">
+  <a href="mailto:$tmpaddr@$config.mobile_mail_domain?body=$cache.datfile%0D%0A$mail_message_smtp%0D%0A$id_smtp%0D%0A">
   $message['mail_post']</a><br />
 #end if
 ($message['limit']: ${$config.record_limit*3/4}$message['kb'])<br />

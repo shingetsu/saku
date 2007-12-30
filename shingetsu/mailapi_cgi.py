@@ -71,7 +71,6 @@ class CGI(gateway.CGI):
         body = ''
         attach = ''
         suffix = 'txt'
-        datfile = msg.get('subject', '')
         addr = msg.get('to', '')
         tmpaddr = TmpAddress()
         if not tmpaddr.check(addr):
@@ -95,6 +94,7 @@ class CGI(gateway.CGI):
                 attach = attach.replace('\n', '')
             elif (not filename) and (not body):
                 body = part.get_payload(decode=True).decode(charset, 'replace')
+        datfile, dummy, body = re.split(r'[\r\n]+', body, 2)
         if re.search(r'thread_[0-9A-F]+', datfile) and \
            (body or attach):
             self.do_post_from_mail(datfile,

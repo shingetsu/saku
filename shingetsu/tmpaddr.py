@@ -81,7 +81,7 @@ class TmpAddress:
             r = ''
             for i in range(4):
                 r += str(random())
-            addr = md5.new(r).hexdigest()
+            addr = md5.new(r).hexdigest()[:config.tmpaddr_length]
             tmp.append((addr, now))
             changed = True
         if changed:

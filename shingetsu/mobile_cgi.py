@@ -324,15 +324,23 @@ class CGI(gateway.CGI):
         tmpaddr = TmpAddress().getaddress()
         if id:
             id_http = '&gt;&gt;%s\n' % self.escape(id)
-            id_smtp = '&amp;body=%s%%0D%%0A' % self.str_encode('>>' + id)
+            id_smtp = self.str_encode('>>' + id)
         else:
             id_http = ''
             id_smtp = ''
+        ua = self.environ.get('HTTP_USER_AGENT', '')
+        mail_message_smtp = self.message['mail_message']
+        if 'SoftBank' not in ua:
+            mail_message_smtp = \
+                unicode(mail_message_smtp, 'utf-8', 'replace'). \
+                encode('shift-jis', 'replace')
+        mail_message_smtp = self.str_encode(mail_message_smtp)
         var = {
             'cache': cache,
             'id': id,
             'id_http': id_http,
             'id_smtp': id_smtp,
+            'mail_message_smtp': mail_message_smtp,
             'tmpaddr': tmpaddr,
         }
         self.stdout.write(self.template('mobile_post_form', var))

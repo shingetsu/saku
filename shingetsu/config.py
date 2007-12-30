@@ -152,6 +152,7 @@ nodes = 5                   # Nodes keeping in node list
 share_nodes = 5             # Nodes having the file
 search_depth = 30           # Search node size
 tmpaddr_size = 10
+tmpaddr_length = 16
 
 broadcast = "../tool/broadcast.py"  # Broadcast script path
 

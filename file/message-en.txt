@@ -54,6 +54,7 @@ error<>Error in timestamp
 comment<>Comment
 post<>POST
 mail_post<>Post with mail
+mail_message<>Write message from next line
 
 # admin
 del_file<>DELETE BBS

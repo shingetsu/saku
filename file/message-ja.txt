@@ -54,6 +54,7 @@ error<>書き込み時刻に誤差
 comment<>コメント
 post<>投稿
 mail_post<>メールで投稿(添付OK)
+mail_message<>↓この下に記事を書いてください↓
 
 # admin
 del_file<>掲示板の削除
