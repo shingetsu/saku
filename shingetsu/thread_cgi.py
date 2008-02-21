@@ -1,7 +1,7 @@
 '''Saku Thread CGI methods.
 '''
 #
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2008 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -291,6 +291,7 @@ class CGI(gateway.CGI):
                 "Content-Type: " + type + "\n" +
                 "Last-Modified: " + self.rfc822_time(stamp) + "\n" +
                 "Content-Length: " + str(rec.attach_size()) + "\n" +
+                "Content-Disposition: attachment\n" +
                 "\n")
             try:
                 f = file(attach_file, "rb")
