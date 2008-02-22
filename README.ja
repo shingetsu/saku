@@ -42,7 +42,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
 ●Windows版の場合
 (1) UPnPを利用できるルータを使っていない場合には
-    ポート 8000/tcp が開けてください。
+    ポート 8000/tcp を開けてください。
 (2) file/saku.ini ファイルでポート番号などを設定できます。
     詳しくは file/sample.ini をご覧ください。
 (3) tksaku.exe(ウィンドウ版) か saku.exe(コンソール版)
@@ -51,7 +51,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
 ●共通版をインストールせずに使う場合
 (1) UPnPを利用できるルータを使っていない場合には
-    ポート 8000/tcp が開けてください。
+    ポート 8000/tcp を開けてください。
 (2) file/saku.ini ファイルでポート番号などを設定できます。
     詳しくは file/sample.ini をご覧ください。
 (3) 次のコマンドで起動します。
