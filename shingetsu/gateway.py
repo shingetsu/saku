@@ -1,7 +1,7 @@
 """Saku Gateway base module.
 """
 #
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2008 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -90,8 +90,7 @@ def search_message(accept_language):
             found = re.search(r"(\S+)\s*;\s*q=(\S+)", i)
             if found:
                 try:
-                    lang = found.group(1)
-                    q[lang] = float(found.group(2))
+                    q[found.group(1)] = float(found.group(2))
                 except ValueError:
                     pass
             else:
@@ -101,9 +100,11 @@ def search_message(accept_language):
         lang.sort(lambda a,b: cmp(q[b], q[a]))
     lang.append(config.language)
     for i in lang:
-        file = config.file_dir + "/" + "message-" + i + ".txt"
-        if os.path.isfile(file):
-            return Message(file)
+        short_lang = i.split('-')[0]
+        for j in (i, short_lang):
+            file = config.file_dir + "/" + "message-" + j + ".txt"
+            if re.search(r'^[-A-Za-z0-9]+$', j) and os.path.isfile(file):
+                return Message(file)
     return None
 
 # End of search_message
