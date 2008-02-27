@@ -1,5 +1,5 @@
 #* Saku Gateway Thread Record.
- * Copyright (c) 2005-2007 shinGETsu Project.
+ * Copyright (c) 2005-2008 shinGETsu Project.
  * $Id$
  *#
 <dt id="r$sid">
@@ -16,7 +16,7 @@
   [$rec['mail']]
 #end if
 #if $rec.get('pubkey', '')
-  <span class="sign" title="[$rec.get('target','')]]">$rec['pubkey']</span>
+  <span class="sign" title="[$rec.get('target','')]">$rec['pubkey']</span>
 #end if
 <span class="stamp" id="s$rec['stamp']">$localtime($rec['stamp'])</span>
 #if 'attach' in $rec
