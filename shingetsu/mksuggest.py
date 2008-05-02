@@ -11,7 +11,7 @@
      src="http://example.com/suggest.js" charset="utf-8"></script>
 '''
 #
-# Copyright (c) 2006,2007 shinGETsu Project.
+# Copyright (c) 2006-2008 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -39,6 +39,7 @@
 #
 
 import os
+import re
 import sys
 import cgi
 import socket
@@ -58,7 +59,10 @@ def get_titles():
                        port)
     titles = []
     for line in f:
-        titles.append(line.strip())
+        line = line.strip()
+        line = re.sub(r'^"|"$', '', line)
+        line = line.replace('""', '"')
+        titles.append(line)
     return titles
 
 def print_jsfile(titles, fp):
