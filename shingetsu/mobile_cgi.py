@@ -1,7 +1,7 @@
 '''Saku Mobile Gateway.
 '''
 #
-# Copyright (c) 2007 shinGETsu Project.
+# Copyright (c) 2007,2008 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -230,7 +230,7 @@ class CGI(gateway.CGI):
         for k in inrange:
             rec = cache[k]
             if ((not id) or (rec.id[:8] == id)) and rec.load_body():
-                self.print_record(cache, rec, path, str_path)
+                self.print_record(cache, rec, path, str_path, id)
                 printed = True
             rec.free()
         self.stdout.write("</div>\n")
@@ -290,7 +290,7 @@ class CGI(gateway.CGI):
 
         return "[[" + link + "]]"
 
-    def print_record(self, cache, rec, path, str_path):
+    def print_record(self, cache, rec, path, str_path, id=''):
         if 'attach' in rec:
             attach_file = rec.attach_path()
             attach_size = rec.attach_size(attach_file)
@@ -317,6 +317,7 @@ class CGI(gateway.CGI):
             'suffix': suffix,
             'body': body,
             'res_anchor': self.res_anchor,
+            'res_mode': id != '',
         }
         self.stdout.write(self.template('mobile_record', var))
 
