@@ -30,10 +30,10 @@
         RewriteCond %{REQUEST_METHOD} POST
             RewriteCond %{HTTP_REFERER} $^
             RewriteCond %{REQUEST_URI} !^/mobile.cgi$
-            RewriteRule . /cgi-bin/dummy.php
+            RewriteRule thread.cgi /cgi-bin/dummy.php
         RewriteCond %{REQUEST_METHOD} POST
-            RewriteCond %{HTTP_REFERER} %25
-            RewriteRule . /cgi-bin/dummy.php
+            RewriteCond %{HTTP_REFERER} %25|thread.cgi$
+            RewriteRule thread.cgi /cgi-bin/dummy.php
         RewriteCond %{REQUEST_METHOD} POST
             RewriteRule ^thread.cgi/. /cgi-bin/dummy.php
         RewriteRule ^gw$ /cgi-bin/gw.cgi
@@ -41,7 +41,7 @@
                     /CACHE/$1/attach/$3_$2.$4
         <Files "mobile.cgi">
             <Limit POST>
-                Include /etc/httpd/mobile.acl
+                Include /etc/httpd/acl.d/mobile
             </Limit>
         </Files>
         <IfModule mod_proxy.c>
