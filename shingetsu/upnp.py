@@ -122,7 +122,7 @@ class SOAPAgent(Agent):
         query.extend(('</m:%s>' % command,
                       '</SOAP-ENV:Body>',
                       '</SOAP-ENV:Envelope>'))
-        return "\n".join(query)
+        return "\n".join(query) + "\r\n"
 
 
 class Router(dict):
