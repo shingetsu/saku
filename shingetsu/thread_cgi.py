@@ -32,8 +32,8 @@ import cgi
 import mimetypes
 import re
 import time
-import md5
 from Cookie import SimpleCookie
+from compatible import md5
 
 import config
 import gateway

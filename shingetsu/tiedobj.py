@@ -31,11 +31,7 @@
 import re
 import sys
 import os.path
-
-try:
-    from threading import RLock
-except ImportError:
-    from dummy_threading import RLock
+from compatible import RLock
 
 import config
 

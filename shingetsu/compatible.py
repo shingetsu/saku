@@ -1,7 +1,10 @@
-'''Tiny HTTP server running in another thread.
+''' Import compatible modules.
 '''
 #
-# Copyright (c) 2005-2008 shinGETsu Project.
+# This module contributed by a shinGETsu user.
+# http://archive.shingetsu.info/b1129f37d45b15269a0db850ac053d46/16186b33.html
+#
+# Copyright (c) 2008 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,33 +31,44 @@
 # $Id$
 #
 
+
+__all__ = ['threading', 'RLock', 'Thread', 'listdir', 'md5', 'Set', 'StringIO']
+
 import os
-import threading
-import BaseHTTPServer
-import SimpleHTTPServer
-
-import config
-import LightCGIHTTPServer
-
-__version__ = "$Revision$"
+import sys
 
 
-class Httpd(threading.Thread):
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+    
 
-    """Tiny HTTP server running in another thread."""
+try:
+    import threading
+except ImportError:
+    import dummy_threading as threading
 
-    httpserv = None
+RLock = threading.RLock
+Thread = threading.Thread
 
-    def __init__(self):
-        threading.Thread.__init__(self)
-        HandlerClass = LightCGIHTTPServer.HTTPRequestHandler
+if hasattr(sys, "winver"):
+    from os import listdir
+else:
+    from dircache import listdir
 
-        ServerClass = LightCGIHTTPServer.HTTPServer
-        server_address = ("", config.port)
-        HandlerClass.server_version = config.version
-        HandlerClass.root_index = config.root_index
-        self.httpserv = ServerClass(server_address, HandlerClass)
 
-    def run(self):
-        os.chdir(config.docroot)
-        self.httpserv.serve_forever()
+try:
+    Set = set
+except NameError:
+    from sets import Set
+
+
+try:
+    import hashlib
+    class _md5(object):
+        new = __call__ = hashlib.md5
+    md5 = _md5()
+except ImportError:
+    import md5
+

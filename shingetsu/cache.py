@@ -29,24 +29,13 @@
 #
 
 import base64
-import md5
 import os
 import random
 import re
 import shutil
 import sys
 from time import time
-from sets import Set
-
-try:
-    from threading import RLock
-except ImportError:
-    from dummy_threading import RLock
-
-if hasattr(sys, "winver"):
-    from os import listdir
-else:
-    from dircache import listdir
+from compatible import md5, Set, listdir, RLock
 
 import apollo
 import config

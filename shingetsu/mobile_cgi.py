@@ -30,8 +30,8 @@
 
 import re
 import cgi
-import md5
 from time import time
+from compatible import md5
 
 import config
 import gateway

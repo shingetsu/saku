@@ -35,11 +35,7 @@ import urllib
 import BaseHTTPServer
 import CGIHTTPServer
 import SocketServer
-
-try:
-    from threading import RLock
-except ImportError:
-    from dummy_threading import RLock
+from compatible import RLock
 
 import config
 import admin_cgi, client_cgi, server_cgi, mailapi_cgi

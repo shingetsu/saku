@@ -29,7 +29,7 @@
 #
 
 import base64
-import md5
+from compatible import md5
 
 __version__ = "$Revision$"
 

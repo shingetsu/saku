@@ -1,7 +1,7 @@
 '''UPnP module.
 '''
 #
-# Copyright (c) 2005 shinGETsu Project.
+# Copyright (c) 2005-2008 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -33,19 +33,20 @@ import sys
 import socket
 from urllib import FancyURLopener
 from urlparse import urlparse, urljoin
-from StringIO import StringIO
 from xml.sax import parse, SAXParseException
 from xml.sax.handler import ContentHandler
+
+from compatible import StringIO
 
 __version__ = "$Revision$"
 __all__ = ["findrouter"]
 
 
-class XML(StringIO):
-    def __init__(self, fp):
-        length = int(fp.info().getheader("Content-Length", -1))
-        StringIO.__init__(self, fp.read(length))
-        fp.close()
+def XML(fp):
+    length = int(fp.info().getheader("Content-Length", -1))
+    sio = StringIO(fp.read(length))
+    fp.close()
+    return sio
 
 
 class Agent(FancyURLopener):

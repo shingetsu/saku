@@ -37,12 +37,8 @@ import sys
 import time
 import urllib
 import zlib
-from StringIO import StringIO
-
-try:
-    import threading as _threading
-except ImportError:
-    import dummy_threading as _threading
+from compatible import StringIO
+from compatible import threading as _threading
 
 import config
 from tiedobj import *

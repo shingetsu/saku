@@ -31,8 +31,8 @@
 import os
 import cgi
 import re
-import md5
 from random import random
+from compatible import md5
 
 import config
 import gateway

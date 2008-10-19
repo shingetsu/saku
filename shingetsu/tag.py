@@ -32,7 +32,7 @@ import re
 import sys
 import os.path
 from time import time
-from sets import Set
+from compatible import Set
 
 import config
 from tiedobj import *

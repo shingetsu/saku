@@ -32,11 +32,7 @@ import re
 import sys
 from time import time
 from random import choice
-
-try:
-    from threading import RLock, Thread
-except ImportError:
-    from dummy_threading import RLock, Thread
+from compatible import RLock, Thread
 
 import config
 from cache import *

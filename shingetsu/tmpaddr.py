@@ -30,14 +30,9 @@
 
 import re
 import sys
-import md5
 from random import random
 from time import time
-
-try:
-    from threading import RLock
-except ImportError:
-    from dummy_threading import RLock
+from compatible import md5, RLock
 
 import shingetsu.config as config
 
