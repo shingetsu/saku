@@ -50,10 +50,10 @@ __all__ = ['Node', 'RawNodeList', 'NodeList', 'SearchList', 'LookupTable',
 
 urllib.URLopener.version = config.version
 
-class SakuAgent(urllib.FancyURLopener):
+class SakuAgent(urllib.URLopener):
     def __init__(self):
         self.version = config.version
-        urllib.FancyURLopener.__init__(self, proxies={})
+        urllib.URLopener.__init__(self, proxies={})
         self.addheader("Accept-Encoding", "gzip")
 
 agent = SakuAgent()

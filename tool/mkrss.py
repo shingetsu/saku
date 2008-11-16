@@ -50,9 +50,9 @@ destination = 'http://' + shingetsu.config.proxy_destination
 docroot = shingetsu.config.apache_docroot
 sep = shingetsu.config.query_separator
 
-class AppURLopener(urllib.FancyURLopener):
+class AppURLopener(urllib.URLopener):
     def __init__(self, *args):
-        urllib.FancyURLopener.__init__(self, *args)
+        urllib.URLopener.__init__(self, *args)
         self.addheader("Accept-Language", "ja;q=1.0, en;q=0.5")
 urllib._urlopener = AppURLopener()
 

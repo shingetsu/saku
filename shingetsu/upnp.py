@@ -31,7 +31,7 @@
 import re
 import sys
 import socket
-from urllib import FancyURLopener
+from urllib import URLopener
 from urlparse import urlparse, urljoin
 from xml.sax import parse, SAXParseException
 from xml.sax.handler import ContentHandler
@@ -49,14 +49,14 @@ def XML(fp):
     return sio
 
 
-class Agent(FancyURLopener):
+class Agent(URLopener):
     def __init__(self, timeout=0):
-        FancyURLopener.__init__(self, proxies={})
+        URLopener.__init__(self, proxies={})
         if timeout:
             socket.setdefaulttimeout(timeout)
 
     def open(self, *args):
-        f = FancyURLopener.open(self, *args)
+        f = URLopener.open(self, *args)
         return XML(f)
 
 
@@ -111,16 +111,18 @@ class SOAPAgent(Agent):
 
     def mksoap(self, contype, command, elements):
         """Make SOAP XML using elements dictionary."""
-        query = ['''<?xml version="1.0"?>
-<SOAP-ENV:Envelope
-    xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
-    SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-<SOAP-ENV:Body>
-<m:%s xmlns:m="urn:schemas-upnp-org:service:%s:1">''' %(command, contype)]
-
+        query = [
+            '<?xml version="1.0"?>\n'
+            + '<SOAP-ENV:Envelope'
+            + ' xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"'
+            + ' SOAP-ENV:encodingStyle'
+            + '="http://schemas.xmlsoap.org/soap/encoding/">\n'
+            + '<SOAP-ENV:Body>'
+            + ' <m:%s xmlns:m="urn:schemas-upnp-org:service:%s:1">'
+                %(command, contype)]
         for k in elements:
-            query.append("  <%s>%s</%s>\n" % (k, elements[k], k))
-        query.extend(('</m:%s>' % command,
+            query.append("  <%s>%s</%s>" % (k, elements[k], k))
+        query.extend((' </m:%s>' % command,
                       '</SOAP-ENV:Body>',
                       '</SOAP-ENV:Envelope>'))
         return "\n".join(query) + "\r\n"
