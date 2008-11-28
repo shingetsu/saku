@@ -2,20 +2,20 @@
 #
 # start/stop SAKU server.
 #
-# Copyright (C) 2005 shinGETsu Project.
+# Copyright (C) 2005,2008 shinGETsu Project.
 # $Id$
 #
 
 USER=shingetsu
-PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin
+COMMAND=/usr/local/bin/saku
 PIDFILE=/var/local/run/saku/pid.txt
 
-test -x /usr/local/bin/saku || exit 0
+test -x $COMMAND || exit 0
 
 case "$1" in
     start)
 	echo -n "Starting p2p bbs: saku"
-	sudo -u $USER saku < /dev/null > /dev/null 2>&1 &
+	sudo -u $USER $COMMAND < /dev/null > /dev/null 2>&1 &
 	echo "."
 	;;
     stop)
