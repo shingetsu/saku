@@ -65,6 +65,7 @@
     Alias /CACHE/ /srv/saku/cache/
     <Directory "/srv/saku/cache">
         Options -Indexes -ExecCGI
+        RemoveHandler .php
         Header add Content-Disposition "attachment"
     </Directory>
 </VirtualHost>
