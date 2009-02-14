@@ -9,6 +9,7 @@
 
     <Directory "/srv/www/bbs.shingetsu.info">
         Options -Indexes -ExecCGI
+        RemoveHandler .php
         AddType text/xml;charset=UTF-8 .rdf
         RewriteEngine on
         RewriteRule gateway.cgi/rss rss.rdf
@@ -55,11 +56,13 @@
     Alias /cgi-bin/ /srv/www/bbs.shingetsu.info/cgi-bin/
     <Directory "/srv/www/bbs.shingetsu.info/cgi-bin">
         Options +ExecCGI
+        AddHandler php5-script .php
     </Directory>
 
     Alias /STATIC/ /usr/local/share/saku/www/
     <Directory "/usr/local/share/saku/www">
         Options -Indexes -ExecCGI
+        RemoveHandler .php
     </Directory>
 
     Alias /CACHE/ /srv/saku/cache/
