@@ -104,7 +104,11 @@ class Logger(daemon.Logger):
             self.textarea.delete("1.0", "2.0")
         now = int(time.time())
         if not isinstance(msg, unicode):
-            msg = unicode(msg, self.encoding, 'replace')
+            try:
+                msg = unicode(msg, self.encoding, 'replace')
+            except LookupError:
+                self.encoding = 'utf-8'
+                msg = unicode(msg, self.encoding, 'replace')
         self.linesize += len(re.findall('\n', msg))
         self.textarea.config(state=NORMAL)
         self.textarea.insert(END, msg)
