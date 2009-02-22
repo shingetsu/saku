@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
 # tksaku.pyw - shinGETsu clone with Tk interface.
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2009 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
 # $Id$
 #
 
+import locale
 import re
 import os
 import sys
@@ -87,13 +88,14 @@ class Logger(daemon.Logger):
 
     """Save logs to /LOGDIR/%Y-%m-%d and output Tk textarea."""
 
-    def __init__(self, logdir, textarea, statusbar):
+    def __init__(self, logdir, textarea, statusbar, encoding = 'utf-8'):
         daemon.Logger.__init__(self, logdir)
         self.textarea = textarea
         self.statusbar = statusbar
         self.linesize = 0
         self.lastwarn = 0
         self.haswarn = False
+        self.encoding = encoding
 
     def write(self, msg):
         daemon.Logger.write(self, msg)
@@ -102,7 +104,7 @@ class Logger(daemon.Logger):
             self.textarea.delete("1.0", "2.0")
         now = int(time.time())
         if not isinstance(msg, unicode):
-            msg = unicode(msg, 'utf-8', 'replace')
+            msg = unicode(msg, self.encoding, 'replace')
         self.linesize += len(re.findall('\n', msg))
         self.textarea.config(state=NORMAL)
         self.textarea.insert(END, msg)
@@ -141,7 +143,8 @@ class DaemonStarter(Thread):
 
 def set_logger(textarea, statusbar):
     logfile = os.path.join(os.getcwd(), config.log_dir)
-    logger = Logger(logfile, textarea, statusbar)
+    logger = Logger(logfile, textarea, statusbar,
+                    locale.getpreferredencoding())
     sys.stderr = logger
     sys.stdout = logger
 
