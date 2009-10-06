@@ -24,7 +24,9 @@
 <tr><td>$message['title']:</td>
 <td><input name="link" size="40" maxlength="$config.title_limit" value="" />
 </td></tr>
+#if $isadmin
 <tr><td>$message['tag']:</td>
 <td><input name="tag" size="40" value="" title="$message['tag_desc']" />
 </td></tr>
+#end if
 </table></form>
