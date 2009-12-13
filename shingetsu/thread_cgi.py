@@ -32,6 +32,7 @@ import cgi
 import mimetypes
 import re
 import time
+import imghdr
 from Cookie import SimpleCookie
 from compatible import md5
 
@@ -290,9 +291,10 @@ class CGI(gateway.CGI):
             self.stdout.write(
                 "Content-Type: " + type + "\n" +
                 "Last-Modified: " + self.rfc822_time(stamp) + "\n" +
-                "Content-Length: " + str(rec.attach_size()) + "\n" +
-                "Content-Disposition: attachment\n" +
-                "\n")
+                "Content-Length: " + str(rec.attach_size()) + "\n")
+            if not imghdr.what(attach_file):
+                self.stdout.write("Content-Disposition: attachment\n")
+            self.stdout.write("\n")
             try:
                 f = file(attach_file, "rb")
                 buf = f.read(1024)

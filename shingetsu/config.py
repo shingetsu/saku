@@ -103,6 +103,7 @@ re_admin = re.compile(admin)
 re_friend = re.compile(friend)
 re_visitor = re.compile(visitor)
 template_suffix = '.txt'
+moonlight = _get_value(_extconf, 'Gateway', 'moonlight', False, 'boolean')
 
 tklog = _get_value(_extconf, 'Interface', 'tklog', 100, 'int')
 
