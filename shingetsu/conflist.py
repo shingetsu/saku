@@ -107,7 +107,7 @@ class RegExpList(ConfList):
     def compile(self, pat, encoding=None):
         try:
             if encoding:
-                path = unicode(pat, encoding)
+                pat = unicode(pat, encoding)
             return re.compile(pat)
         except (re.error, UnicodeDecodeError), e:
             sys.stderr.write('RegExp Error: %s: %s\n' % (pat, e))
