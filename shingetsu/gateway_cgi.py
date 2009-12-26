@@ -338,10 +338,7 @@ class CGI(gateway.CGI):
         except IndexError, KeyError:
             pass
         self.stdout.write("\n")
-        if config.rss == "1":
-            self.stdout.write(make_rss1(rss))
-        else:
-            self.stdout.write(make_rss2(rss))
+        self.stdout.write(make_rss1(rss))
 
     def print_motd(self):
         self.stdout.write("Content-Type: text/plain; charset=UTF-8\n\n")
