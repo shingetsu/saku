@@ -272,7 +272,7 @@ class CGI(gateway.CGI):
     def print_attach(self, datfile, id, stamp, suffix):
         """Print attachment."""
         cache = Cache(datfile)
-        (type, null) = mimetypes.guess_type("." + suffix)
+        (type, null) = mimetypes.guess_type("test." + suffix)
         if type is None:
             type = "text/plain"
         if cache.has_record():
