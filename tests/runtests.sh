@@ -32,7 +32,10 @@
 code=0
 for t in tests/test_*.py; do
     python $t
-    code=$?
+    tmpcode=$?
+    if [ "$tmpcode" != 0 ]; then
+        code=$tmpcode
+    fi
 done
 
 if [ "$code" != 0 ]; then
