@@ -1,6 +1,6 @@
 #
 # Makefile
-# Copyright (C) 2005,2006 shinGETsu Project.
+# Copyright (C) 2005-2010 shinGETsu Project.
 #
 # $Id$
 #
@@ -15,6 +15,9 @@ install:
 
 exe:
 	python setup-win.py py2exe
+
+check:
+	sh tests/runtests.sh
 
 clean:
 	rm -f saku tksaku

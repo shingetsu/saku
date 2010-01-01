@@ -1,7 +1,7 @@
 '''Saku Thread CGI methods.
 '''
 #
-# Copyright (c) 2005-2008 shinGETsu Project.
+# Copyright (c) 2005-2010 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -32,10 +32,10 @@ import cgi
 import mimetypes
 import re
 import time
-import imghdr
 from Cookie import SimpleCookie
 from compatible import md5
 
+import attachutil
 import config
 import gateway
 from cache import *
@@ -292,7 +292,7 @@ class CGI(gateway.CGI):
                 "Content-Type: " + type + "\n" +
                 "Last-Modified: " + self.rfc822_time(stamp) + "\n" +
                 "Content-Length: " + str(rec.attach_size()) + "\n")
-            if not imghdr.what(attach_file):
+            if not attachutil.is_valid_image(type, attach_file):
                 self.stdout.write("Content-Disposition: attachment\n")
             self.stdout.write("\n")
             try:
