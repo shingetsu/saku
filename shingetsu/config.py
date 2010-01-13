@@ -61,7 +61,7 @@ types = ("thread",)
 
 port = _get_value(_extconf, 'Network', 'port', 8000, 'int')
 use_upnp = _get_value(_extconf, 'Network', 'upnp', False, 'boolean')
-max_connection = _get_value(_extconf, 'Network', 'max_connection', 5, 'int')
+max_connection = _get_value(_extconf, 'Network', 'max_connection', 20, 'int')
 
 docroot = _get_value(_extconf, 'Path', 'docroot', './www', 'path')
 log_dir = _get_value(_extconf, 'Path', 'log_dir', './log', 'path')
