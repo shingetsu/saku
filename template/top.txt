@@ -28,7 +28,9 @@
 <h2>$message['recent_changes']</h2>
 <ul id="top_index">
 #for $cache in $cachelist
-  $make_list_item($cache, remove=False, target=$target)
+  #if $cache.type in $types
+    $make_list_item($cache, remove=False, target=$target)
+  #end if
 #end for
 </ul>
 
