@@ -38,7 +38,7 @@
         RewriteCond %{REQUEST_METHOD} POST
             RewriteRule ^thread.cgi/. /cgi-bin/dummy.php
         RewriteRule ^gw$ /cgi-bin/gw.cgi
-        RewriteRule ^thread.cgi/(thread_[0-9A-F]*)/([0-9a-f]*)/([0-9]*).(.*) \
+        RewriteRule ^thread.cgi/(thread_[0-9A-F]*)/(s?[0-9a-f]*)/([0-9]*).(.*) \
                     /CACHE/$1/attach/$3_$2.$4
         <Files "mobile.cgi">
             <Limit POST>

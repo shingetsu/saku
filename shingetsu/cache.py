@@ -29,6 +29,7 @@
 #
 
 import base64
+import imghdr
 import os
 import random
 import re
@@ -44,7 +45,10 @@ from node import *
 from tag import *
 from tiedobj import *
 
-import PIL.Image
+try:
+    import PIL.Image
+except ImportError:
+    PIL = None
 
 __version__ = '$Revision$'
 __all__ = ['Record', 'Cache', 'CacheList', 'UpdateList', 'RecentList']
@@ -292,21 +296,28 @@ class Record(dict):
             return False
 
     def make_thumbnail(self, suffix=None, thumbnail_size=config.thumbnail_size):
-        if thumbnail_size is not None:
-            if suffix is None:
-                suffix = self.get('suffix', 'jpg')
-            attach_path = self.attach_path(suffix=suffix)
-            thumbnail_path = self.attach_path(suffix=suffix, thumbnail_size=thumbnail_size)
-            if not os.path.isfile(thumbnail_path):
-                size = thumbnail_size.split("x")
-                if len(size) == 2:
-                    size = (int(size[0]), int(size[1]))
-                    try:
-                        im = PIL.Image.open(attach_path)
-                        im.thumbnail(size, PIL.Image.ANTIALIAS)
-                        im.save(thumbnail_path)
-                    except IOError, err:
-                        pass
+        if thumbnail_size is None:
+            return
+        if not PIL:
+            return
+        if suffix is None:
+            suffix = self.get('suffix', 'jpg')
+        attach_path = self.attach_path(suffix=suffix)
+        thumbnail_path = self.attach_path(suffix=suffix, thumbnail_size=thumbnail_size)
+        if os.path.isfile(thumbnail_path):
+            return
+        if not imghdr.what(thumbnail_path):
+            return
+        size = thumbnail_size.split("x")
+        if len(size) != 2:
+            return
+        size = (int(size[0]), int(size[1]))
+        try:
+            im = PIL.Image.open(attach_path)
+            im.thumbnail(size, PIL.Image.ANTIALIAS)
+            im.save(thumbnail_path)
+        except IOError, err:
+            sys.stderr.write('PIL error: %s for %s\n' % (err, attach_path))
         return
 
     def sync(self, force=False):
@@ -321,12 +332,15 @@ class Record(dict):
         if 'attach' in self:
             attach = base64.decodestring(self['attach'])
             attach_path = self.attach_path(self.get('suffix', 'txt'))
+            thumbnail_path = self.attach_path(self.get('suffix', 'jpg'),
+                                thumbnail_size=config.thumbnail_size)
             if force or (not fsdiff(self.body_path, body)):
                 self._write_file(self.body_path, body)
             if force or (not fsdiff(attach_path, attach)):
                 self._write_file(attach_path, attach)
+            if force or (not os.path.isfile(thumbnail_path)):
                 self.make_thumbnail()
-        elif 'sign' in self:
+        if 'sign' in self:
             if force or (not fsdiff(self.body_path, body)):
                 self._write_file(self.body_path, body)
 
@@ -691,6 +705,8 @@ class Cache(dict):
                 i = f.find(".")
                 if i >= 0:
                     idstr = f[:i]
+                if idstr.startswith('s'):
+                    idstr = idstr[1:]
                 rec = Record(datfile=self.datfile, idstr=idstr)
                 if not rec.exists():
                     try:
