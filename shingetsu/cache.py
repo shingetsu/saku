@@ -44,6 +44,8 @@ from node import *
 from tag import *
 from tiedobj import *
 
+import PIL.Image
+
 __version__ = '$Revision$'
 __all__ = ['Record', 'Cache', 'CacheList', 'UpdateList', 'RecentList']
 
@@ -238,7 +240,18 @@ class Record(dict):
         else:
             return False
 
-    def attach_path(self, suffix=None):
+    def allthumbnail_path(self):
+        if self.path == "":
+            sys.stderr.write("Null file name\n")
+            return None
+        dir = "/".join((config.cache_dir, self.datfile, "attach"))
+        thumbnail = []
+        for i in listdir(dir):
+            if i.startswith("s" + self.idstr):
+                thumbnail.append("/".join((dir, i)))
+        return thumbnail
+
+    def attach_path(self, suffix=None, thumbnail_size=None):
         if self.path == "":
             sys.stderr.write("Null file name\n")
             return None
@@ -247,15 +260,18 @@ class Record(dict):
             suffix = re.sub(r"[^-_.A-Za-z0-9]", "", suffix)
             if suffix == "":
                 suffix = "txt"
-            return dir + "/" + self.idstr + "." + suffix
+            if thumbnail_size is not None:
+                return dir + "/" + "s" + self.idstr + "." + thumbnail_size + "." + suffix
+            else:
+                return dir + "/" + self.idstr + "." + suffix
         for i in listdir(dir):
             if i.startswith(self.idstr):
                 return dir + "/" + i
         return None
 
-    def attach_size(self, path=None):
+    def attach_size(self, path=None, thumbnail_size=None):
         if path is None:
-            path = self.attach_path()
+            path = self.attach_path(suffix=None, thumbnail_size=thumbnail_size)
         if path is None:
             return 0
         else:
@@ -275,6 +291,24 @@ class Record(dict):
             sys.stderr.write(path + ": IOError\n")
             return False
 
+    def make_thumbnail(self, suffix=None, thumbnail_size=config.thumbnail_size):
+        if thumbnail_size is not None:
+            if suffix is None:
+                suffix = self.get('suffix', 'jpg')
+            attach_path = self.attach_path(suffix=suffix)
+            thumbnail_path = self.attach_path(suffix=suffix, thumbnail_size=thumbnail_size)
+            if not os.path.isfile(thumbnail_path):
+                size = thumbnail_size.split("x")
+                if len(size) == 2:
+                    size = (int(size[0]), int(size[1]))
+                    try:
+                        im = PIL.Image.open(attach_path)
+                        im.thumbnail(size, PIL.Image.ANTIALIAS)
+                        im.save(thumbnail_path)
+                    except IOError, err:
+                        pass
+        return
+
     def sync(self, force=False):
         """Save files."""
         if self.removed():
@@ -291,6 +325,7 @@ class Record(dict):
                 self._write_file(self.body_path, body)
             if force or (not fsdiff(attach_path, attach)):
                 self._write_file(attach_path, attach)
+                self.make_thumbnail()
         elif 'sign' in self:
             if force or (not fsdiff(self.body_path, body)):
                 self._write_file(self.body_path, body)
@@ -355,6 +390,9 @@ class Record(dict):
         """
         try:
             shutil.move(self.path, self.rm_path)
+            for path in self.allthumbnail_path():
+                if path and os.path.isfile(path):
+                    os.remove(path)
             for path in (self.body_path, self.attach_path()):
                 if path and os.path.isfile(path):
                     os.remove(path)

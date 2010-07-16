@@ -41,6 +41,8 @@ import gateway
 from cache import *
 from tag import UserTagList
 
+import os.path
+
 __version__ = "$Revision$"
 
 
@@ -79,11 +81,19 @@ class CGI(gateway.CGI):
                 self.print_thread(path)
             return
 
+        #found = re.search(r"^(thread_[0-9A-F]+)/([0-9a-f]{32})/(\d+)\.(\d+)x(\d+)\.(.*)",
+        found = re.search(r"^(thread_[0-9A-F]+)/([0-9a-f]{32})/s(\d+)\.(\d+x\d+)\.(.*)",
+                          path)
+        if found:
+            (datfile, stamp, id, thumbnail_size, suffix) = found.groups()
+            self.print_attach(datfile, stamp, id, suffix, thumbnail_size)
+            return
+
         found = re.search(r"^(thread_[0-9A-F]+)/([0-9a-f]{32})/(\d+)\.(.*)",
                           path)
         if found:
             (datfile, stamp, id, suffix) = found.groups()
-            self.print_attach(datfile, stamp, id, suffix)
+            self.print_attach(datfile, stamp, id, suffix, None)
             return
 
         form = cgi.FieldStorage(environ=self.environ, fp=self.stdin)
@@ -230,12 +240,18 @@ class CGI(gateway.CGI):
         self.footer()
 
     def print_record(self, cache, rec, path, str_path):
+        thumbnail_size = None
         if 'attach' in rec:
             attach_file = rec.attach_path()
             attach_size = rec.attach_size(attach_file)
             suffix = rec.get('suffix', '')
             if not re.search('^[0-9A-Za-z]+$', suffix):
                 suffix = 'txt'
+            (type, null) = mimetypes.guess_type("test." + suffix)
+            if type is None:
+                type = "text/plain"
+            if attachutil.is_valid_image(type, attach_file):
+                thumbnail_size = config.thumbnail_size
         else:
             attach_file = None
             attach_size = None
@@ -256,6 +272,7 @@ class CGI(gateway.CGI):
             'suffix': suffix,
             'body': body,
             'res_anchor': self.res_anchor,
+            'thumbnail': thumbnail_size,
         }
         self.stdout.write(self.template('record', var))
 
@@ -269,7 +286,7 @@ class CGI(gateway.CGI):
         }
         self.stdout.write(self.template('post_form', var))
 
-    def print_attach(self, datfile, id, stamp, suffix):
+    def print_attach(self, datfile, id, stamp, suffix, thumbnail_size=None):
         """Print attachment."""
         cache = Cache(datfile)
         (type, null) = mimetypes.guess_type("test." + suffix)
@@ -286,12 +303,16 @@ class CGI(gateway.CGI):
         if not rec.exists():
             self.print404(cache)
             return
-        attach_file = rec.attach_path()
+        attach_file = rec.attach_path(suffix=suffix, thumbnail_size=thumbnail_size)
+        if config.thumbnail_size is not None and not os.path.isfile(attach_file):
+            if config.force_thumbnail or thumbnail_size == config.thumbnail_size:
+                rec.make_thumbnail(suffix=suffix, thumbnail_size=thumbnail_size)
         if attach_file is not None:
+            size = rec.attach_size(thumbnail_size=thumbnail_size)
             self.stdout.write(
                 "Content-Type: " + type + "\n" +
                 "Last-Modified: " + self.rfc822_time(stamp) + "\n" +
-                "Content-Length: " + str(rec.attach_size()) + "\n")
+                "Content-Length: " + str(size) + "\n")
             if not attachutil.is_valid_image(type, attach_file):
                 self.stdout.write("Content-Disposition: attachment\n")
             self.stdout.write("\n")

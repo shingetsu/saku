@@ -132,6 +132,12 @@ thread_page_size = _get_value(_extconf,
 mobile_page_size = _get_value(_extconf,
                               'Application Thread',
                               'mobile_page_size', 10, 'int')
+thumbnail_size = _get_value(_extconf, 
+                            'Application Thread',
+                            'thumbnail_size', None, '')
+force_thumbnail = _get_value(_extconf,
+                             'Application Thread',
+                             'force_thumbnail', False, 'boolen')
 
 client_cycle = 5*60         # Seconds; Access client.cgi
 ping_cycle = 5*60           # Seconds; Check nodes

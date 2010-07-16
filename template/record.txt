@@ -2,9 +2,6 @@
  * Copyright (c) 2005-2008 shinGETsu Project.
  * $Id$
  *#
-#set images = ['jpg', 'gif', 'png']
-#set height = '210'
-#set width = '160'
 <dt id="r$sid">
 #if $isadmin
   <input type="checkbox" name="record" value="${rec['stamp']}_$rec['id']" />
@@ -32,8 +29,8 @@
   <br />[[$message['remove']:
   $res_anchor($rec['remove_id'][:8], $thread_cgi, $path)$rec['remove_id'][:8]</a>]]
 #end if
-#if ('attach' in $rec) and ($suffix in $images):
+#if $thumbnail is not None:
   <br /><a href="$thread_cgi/$cache.datfile/$rec['id']/$rec['stamp'].$suffix">
-    <img src="$thread_cgi/$cache.datfile/$rec['id']/$rec['stamp'].$suffix" height="$height" alt="" /></a>
+    <img src="$thread_cgi/$cache.datfile/$rec['id']/s$rec['stamp'].$thumbnail.$suffix" alt="" /></a>
 #end if
 </dd>
