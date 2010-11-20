@@ -45,4 +45,8 @@ def is_valid_image(mimetype, path):
     if not path_suffix:
         return False
     (path_type, null) = mimetypes.guess_type('test.' + path_suffix)
-    return mimetype == path_type
+    if mimetype == path_type:
+        return True
+    if (path_type == 'image/jpeg') and (mimetype == 'image/pjpeg'):
+        return True
+    return False
