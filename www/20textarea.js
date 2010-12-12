@@ -1,10 +1,10 @@
 /* -*- coding: utf-8 -*-
   * Text Area Conttoller.
- * Copyright (C) 2006,2007 shinGETsu Project.
+ * Copyright (C) 2006-2010 shinGETsu Project.
  * $Id$
  */
 
-initFunc[initFunc.length] = function () {
+shingetsu.addInitializer(function () {
     var form = document.getElementById('postarticle');
     if (! form) {
         return;
@@ -13,7 +13,7 @@ initFunc[initFunc.length] = function () {
     var msg_reduce = 'Reduce';
     var msg_preview = 'Preview';
     var msg_edit = 'Edit';
-    if (uiLang == 'ja') {
+    if (shingetsu.uiLang == 'ja') {
         msg_spread = '拡大';
         msg_reduce = '縮小';
         msg_preview = 'プレビュー';
@@ -61,10 +61,10 @@ initFunc[initFunc.length] = function () {
         message = message.replace(/</g, '&lt;');
         message = message.replace(/>/g, '&gt;');
         message = message.replace(/&gt;&gt;([0-9a-f]{8})/g,
-                    '<a href="#r$1"' +
-                    ' onmouseover="popupAnchor(' + e +', \'$1\');"' +
-                    ' onmouseout="hidePopup();"' +
-                    '>&gt;&gt;$1</a>');
+            '<a href="#r$1"' +
+            ' onmouseover="shingetsu.plugins.popupAnchor(' + e +', \'$1\');"' +
+            ' onmouseout="shingetsu.plugins.hidePopup();"' +
+            '>&gt;&gt;$1</a>');
         message = message.replace(
             /(https?:..[^\x00-\x20"'()<>\[\]\x7F-\xFF]*)/g,
             '<a href="$1">$1</a>');
@@ -147,4 +147,4 @@ initFunc[initFunc.length] = function () {
     p.insertBefore(span, br);
     a = document.getElementById('textsize');
     addEvent(a, spreadMsg);
-};
+});

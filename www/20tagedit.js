@@ -1,9 +1,9 @@
 /* Tag Edit Tool.
- * Copyright (C) 2007 shinGETsu Project.
+ * Copyright (C) 2007,2010 shinGETsu Project.
  * $Id$
  */
 
-initFunc[initFunc.length] = function () {
+shingetsu.addInitializer(function () {
     if (location.pathname.search('/admin.cgi/edittag') != 0) {
         return;
     }
@@ -76,4 +76,4 @@ initFunc[initFunc.length] = function () {
             }
         }
     }
-};
+});

@@ -1,9 +1,9 @@
 /* Popup Res Anchor.
- * Copyright (C) 2005,2006 shinGETsu Project.
+ * Copyright (C) 2005-2010 shinGETsu Project.
  * $Id$
  */
 
-function popupAnchor(e, aid) {
+shingetsu.plugins.popupAnchor = function (e, aid) {
     var dt = document.getElementById("r" + aid);
     var dd = document.getElementById("b" + aid);
     if (! (dt && dd)) {
@@ -17,17 +17,20 @@ function popupAnchor(e, aid) {
     re = new RegExp("(<br[^<>]*>\\s*)*$", "i");
     dd = dd.replace(re, "");
 
-    var coordinate = new Coordinate(e);
+    var coordinate = new shingetsu.plugins.Coordinate(e);
     var dl = document.createElement('dl');
     dl.innerHTML = '<dt>'+dt+'</dt><dd>'+dd+'</dd>';
-    showPopup(coordinate, [dl]);
+    shingetsu.plugins.showPopup(coordinate, [dl]);
 }
 
-initFunc[initFunc.length] = function () {
+shingetsu.addInitializer(function () {
     function jump(aid) {
         location.hash = '#r' + aid;
         return false;
     }
+
+    var popupAnchor = shingetsu.plugins.popupAnchor;
+    var hidePopup = shingetsu.plugins.hidePopup;
 
     var anc = document.getElementsByTagName('a');
     for (var i=0; i<anc.length; i++) {
@@ -58,4 +61,4 @@ initFunc[initFunc.length] = function () {
             }
         }
     }
-};
+});

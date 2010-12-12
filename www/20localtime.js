@@ -1,9 +1,9 @@
 /* Localtime of User Agent.
- * Copyright (C) 2006 shinGETsu Project.
+ * Copyright (C) 2006,2010 shinGETsu Project.
  * $Id$
  */
 
-initFunc[initFunc.length] = function () {
+shingetsu.addInitializer(function () {
     function format(n) {
         if (n < 10) {
             return '0' + n;
@@ -32,4 +32,4 @@ initFunc[initFunc.length] = function () {
             span[i].innerHTML = myLocaltime(date);
         }
     }
-};
+});

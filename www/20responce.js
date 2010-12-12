@@ -1,10 +1,10 @@
 /* -*- coding: utf-8 -*-
  * Response Post.
- * Copyright (C) 2006 shinGETsu Project.
+ * Copyright (C) 2006,2010 shinGETsu Project.
  * $Id$
  */
 
-initFunc[initFunc.length] = function () {
+shingetsu.addInitializer(function () {
     function res(id) {
         var form = document.getElementById('postarticle');
         if (form) {
@@ -21,11 +21,11 @@ initFunc[initFunc.length] = function () {
             }
             var span = document.createElement('span');
             var e = document.all? 'null': 'event';
-            span.innerHTML = ' <a href="#r' + id + '"' +
-                             ' onmouseover="popupAnchor(' + e +', \''
-                             + id + '\');"' +
-                             ' onmouseout="hidePopup()">&gt;&gt;'
-                             + id + '</a>';
+            span.innerHTML = ' <a href="#r' + id + '"'
+                           + ' onmouseover="shingetsu.plugins.popupAnchor('
+                           + e +', \'' + id + '\');"'
+                           + ' onmouseout="shingetsu.plugins.hidePopup()">'
+                           + '&gt;&gt;' + id + '</a>';
             ref.appendChild(span);
             form.body.focus();
         }
@@ -36,7 +36,7 @@ initFunc[initFunc.length] = function () {
         return;
     }
     var msg_res = 'Res.';
-    if (uiLang == 'ja') {
+    if (shingetsu.uiLang == 'ja') {
         msg_res = '返信';
     }
     var dts = document.getElementsByTagName('dt');
@@ -64,4 +64,4 @@ initFunc[initFunc.length] = function () {
     var ref = document.createElement('span');
     ref.id = 'resreferrer';
     p.insertBefore(ref, form.body);
-};
+});

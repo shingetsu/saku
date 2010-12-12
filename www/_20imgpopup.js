@@ -1,9 +1,11 @@
 /* Popup Image Preview.
- * Copyright (C) 2005,2006 shinGETsu Project.
+ * Copyright (C) 2005-2010 shinGETsu Project.
  * $Id$
  */
 
-initFunc[initFunc.length] = function () {
+shingetsu.addInitializer(function () {
+    var hidePopup = new shingetsu.plugins.hidePopup;
+
     function showPopupImage(coordinate, image, count) {
         if (count > 100) {
             return;
@@ -12,7 +14,7 @@ initFunc[initFunc.length] = function () {
             image.height = 100;
             var p = document.createElement('p');
             p.appendChild(image);
-            showPopup(coordinate, [p]);
+            shingetsu.plugins.showPopup(coordinate, [p]);
         } else {
             setTimeout(function(){
                         showPopupImage(coordinate, image, count+1);
@@ -21,7 +23,7 @@ initFunc[initFunc.length] = function () {
     }
 
     function popupImage(e, imguri) {
-        var coordinate = new Coordinate(e);
+        var coordinate = new shingetsu.plugins.Coordinate(e);
         image = new Image();
         image.src = imguri;
         showPopupImage(coordinate, image, 0);
@@ -48,4 +50,4 @@ initFunc[initFunc.length] = function () {
             }
         }
     }
-};
+});

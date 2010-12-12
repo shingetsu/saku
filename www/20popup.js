@@ -1,10 +1,10 @@
 /* Popup.
- * Copyright (C) 2005-2007 shinGETsu Project.
+ * Copyright (C) 2005-2010 shinGETsu Project.
  * This is made referring to Kindan-no Tubo.
  * $Id$
  */
 
-function Coordinate(e) {
+shingetsu.plugins.Coordinate = function (e) {
     if (e) {
         this.x = e.pageX;
         this.y = e.pageY;
@@ -14,7 +14,7 @@ function Coordinate(e) {
     }
 }
 
-function hidePopup() {
+shingetsu.plugins.hidePopup = function () {
     var pop = document.getElementById("popup");
     if (pop) {
         pop.innerHTML = "";
@@ -29,7 +29,7 @@ function hidePopup() {
     }
 }
 
-function showPopup(coordinate, objects) {
+shingetsu.plugins.showPopup = function (coordinate, objects) {
     var pop = document.getElementById("popup");
     if (! pop) {
         return null;
@@ -79,7 +79,7 @@ function showPopup(coordinate, objects) {
     return pop;
 }
 
-initFunc[initFunc.length] = function () {
+shingetsu.addInitializer(function () {
     var div = document.createElement('div');
     div.id = 'popup';
     var body = document.getElementsByTagName('body')[0];
@@ -91,4 +91,4 @@ initFunc[initFunc.length] = function () {
         pop.style.top = "0px";
         pop.visibility = "hidden";
     }
-};
+});

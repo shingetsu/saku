@@ -25,15 +25,9 @@ $cookie
   <link rev="made" href="http://shingetsu.info/" />
   <link rel="contents" href="/" />
   <link rel="alternate" type="application/rss+xml" title="RSS" href="$rss" />
-  <script type="text/javascript">
-    var uiLang = "$message['lang']";
-    var initFunc = [];
-    function doInitFunc() {
-      for (var i=0; i!=initFunc.length; i++) {
-        initFunc[i]();
-      }
-    }
-  </script>
+  <script type="text/javascript">//<![CDATA[
+    var shingetsu = {uiLang: "$message['lang']"};
+  //]]></script>
 #for $e in $js
   <script type="text/javascript" src="$root_path$e"></script>
 #end for
@@ -41,7 +35,7 @@ $cookie
   <link rel="stylesheet" type="text/css" href="$root_path$e" />
 #end for
 </head>
-<body onload="doInitFunc()">
+<body>
 $menubar
 #if $isadmin
   <h1><a href="$admin_cgi/search/$str_title" title="$message['search']">$escape_space($title)</a></h1>
