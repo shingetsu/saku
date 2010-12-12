@@ -34,8 +34,8 @@ shingetsu._initialize = function () {
     if(document.addEventListener) {
         document.addEventListener('DOMContentLoaded',
                                   shingetsu._initialize, false);
-    } else if (document.attachEvent) {
-        document.attachEvent('onload', shingetsu._initialize);
+    } else if (window.attachEvent) {
+        window.attachEvent('onload', shingetsu._initialize);
 	} else {
 		window.onload = shingetsu._initialize;
 	}
