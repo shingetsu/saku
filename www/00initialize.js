@@ -36,7 +36,7 @@ shingetsu._initialize = function () {
                                   shingetsu._initialize, false);
     } else if (window.attachEvent) {
         window.attachEvent('onload', shingetsu._initialize);
-	} else {
-		window.onload = shingetsu._initialize;
-	}
+    } else {
+        window.onload = shingetsu._initialize;
+    }
 })();
