@@ -41,6 +41,8 @@ _imghdr = imghdr
 def is_valid_image(mimetype, path):
     """Type of path is same as mimetype or not.
     """
+    if not path:
+        return False
     path_suffix = _imghdr.what(path)
     if not path_suffix:
         return False

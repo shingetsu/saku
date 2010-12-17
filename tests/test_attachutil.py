@@ -73,6 +73,11 @@ class AttachUtilTest(unittest.TestCase):
         self.assertFalse(attachutil.is_valid_image('image/png', 'foo'))
         self.assertEquals('foo', attachutil._imghdr.path)
 
+    def test_is_valid_image_none(self):
+        attachutil._imghdr = ImghdrMock('jpeg')
+        self.assertFalse(attachutil.is_valid_image('image/png', None))
+        self.assertEquals(None, attachutil._imghdr.path)
+
 
 def _test():
     suite = unittest.TestSuite()
