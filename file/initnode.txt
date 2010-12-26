@@ -7,4 +7,3 @@
 node.shingetsu.info:8000/server.cgi
 pushare.zenno.info:8000/server.cgi
 rep4649.ddo.jp:80/server.cgi
-sg.sabaitiba.com:80/server.cgi
