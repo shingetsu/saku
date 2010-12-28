@@ -18,14 +18,14 @@
 
 #if $isadmin or $isfriend
   <input type="checkbox" id="dopost" name="dopost" value="dopost" checked="checked" />
-  <span title="message['desc_send']"><label for="dopost">$message['send']</label></span>
+  <span title="$message['desc_send']"><label for="dopost">$message['send']</label></span>
 #else
   <input type="hidden" name="dopost" value="dopost" />
 #end if
 
 
 <input type="checkbox" id="error" name="error" value="error" checked="checked" />
-<span title="message['desc_error']"><label for="error">$message['error']</label></span><br />
+<span title="$message['desc_error']"><label for="error">$message['error']</label></span><br />
 $message['name']:<input name="name" size="15" value="" />
 $message['mail']:<input name="mail" size="15" value="" />
 
