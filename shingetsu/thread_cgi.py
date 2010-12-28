@@ -167,7 +167,6 @@ class CGI(gateway.CGI):
         else:
             self.print404(id=id)
             return
-        ids = cache.keys()
         if config.use_cookie and len(cache) and (not id) and (not page):
             access = None
             try:
@@ -196,6 +195,7 @@ class CGI(gateway.CGI):
             user_tag_list.sync()
         self.print_tags(cache)
         lastrec = None
+        ids = cache.keys()
         if len(cache) and (not page) and (not id):
             lastrec = cache[ids[-1]]
         var = {
