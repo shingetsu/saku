@@ -1,7 +1,7 @@
 """Saku Node and NodeList.
 """
 #
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2010 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -381,7 +381,7 @@ class NodeList(RawNodeList):
             if inode.ping():
                 self.join(inode)
                 break
-	myself = self.myself()
+        myself = self.myself()
         if myself and (myself in self):
             self.remove(myself)
         if len(self) == 0:
@@ -394,6 +394,8 @@ class NodeList(RawNodeList):
             done[str(i)] = 1
 
         while True:
+            if not len(self):
+                break
             n = random.choice(self)
             new = n.get_node()
             if (new is not None) and (str(new) not in done):
