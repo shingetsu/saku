@@ -3,40 +3,51 @@
  * $Id$
  */
 
-shingetsu._initializer = [];
-shingetsu.plugins = {};
+var shingetsu = (function () {
+    var _initializer = [];
 
+    var shingetsu = {
+        debugMode: false,
+        plugins: {},
+        uiLang: 'en'
+    };
 
-shingetsu.log = function (arg) {
-    if (console) {
-        console.log(arg);
-    }
-}
-
-
-shingetsu.addInitializer = function (func) {
-    shingetsu._initializer[shingetsu._initializer.length] = func;
-};
-
-
-shingetsu._initialize = function () {
-    for (var i=0; i < shingetsu._initializer.length; i++) {
-        try {
-            shingetsu._initializer[i]();
-        } catch (e) {
-            shingetsu.log(e);
+    shingetsu.log = function (arg) {
+        if (! shingetsu.debugMode) {
+            return;
+        } else if (typeof console == 'object') {
+            console.log(arg);
+        } else {
+            alert(arg);
         }
-    }
-};
+    };
 
+    shingetsu.addInitializer = function (func) {
+        _initializer[_initializer.length] = func;
+    };
 
-(function() {
-    if(document.addEventListener) {
+    var _initialize = function () {
+        for (var i=0; i < _initializer.length; i++) {
+            if (shingetsu.debugMode) {
+               _initializer[i]();
+            } else {
+                try {
+                   _initializer[i]();
+                } catch (e) {
+                    shingetsu.log(e);
+                }
+            }
+        }
+    };
+
+    if (document.addEventListener) {
         document.addEventListener('DOMContentLoaded',
-                                  shingetsu._initialize, false);
+                                  _initialize, false);
     } else if (window.attachEvent) {
-        window.attachEvent('onload', shingetsu._initialize);
+        window.attachEvent('onload', _initialize);
     } else {
-        window.onload = shingetsu._initialize;
+        window.onload = _initialize;
     }
+
+    return shingetsu;
 })();

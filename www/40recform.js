@@ -5,13 +5,13 @@
 
 shingetsu.addInitializer(function()
 {
-    //alert(document.cookie);
+    shingetsu.log('cookie:' + document.cookie);
     if (document.cookie.search(/sg=1/) >= 0)
     {
         var form = parse();
-        //alert('load');
-        //alert(typeof form['dopost']);
-        //alert(typeof form['error']);
+        shingetsu.log('load');
+        shingetsu.log(typeof form['dopost']);
+        shingetsu.log(typeof form['error']);
         if(form['dopost'] == 'true')
         {
             document.forms["postarticle"].elements["dopost"].checked = true;
@@ -45,7 +45,7 @@ shingetsu.addInitializer(function()
             tmp[0] = tmp[0].replace(new RegExp(' ', 'g'), '');    // remove space in key.
             retd[tmp[0]] = decodeURI(tmp[1]);
         }
-        //alert(retd);
+        shingetsu.log(retd);
         return retd;
     }
 
@@ -56,9 +56,9 @@ shingetsu.addInitializer(function()
         var sign = document.forms["postarticle"].elements["passwd"].value;
         var dopost = document.forms["postarticle"].elements["dopost"].checked + '';
         var error = document.forms["postarticle"].elements["error"].checked + '';
-        //alert('save');
-        //alert(dopost);
-        //alert(error);
+        shingetsu.log('save');
+        shingetsu.log(dopost);
+        shingetsu.log(error);
         name = encodeURI(name);
         mail = encodeURI(mail);
         sign = encodeURI(sign);
@@ -86,7 +86,10 @@ shingetsu.addInitializer(function()
         document.cookie = error + exp;
     }
     var postarticle = document.getElementById("postarticle");
-    if (postarticle.addEventListener)
+    if (! postarticle)
+    {
+    }
+    else if (postarticle.addEventListener)
     {
         postarticle.addEventListener("submit", save, false);
     }
@@ -94,4 +97,4 @@ shingetsu.addInitializer(function()
     {
         postarticle.addEventListener("onsubmit", save);
     }
-})
+});

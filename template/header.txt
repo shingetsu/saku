@@ -25,15 +25,15 @@ $cookie
   <link rev="made" href="http://shingetsu.info/" />
   <link rel="contents" href="/" />
   <link rel="alternate" type="application/rss+xml" title="RSS" href="$rss" />
-  <script type="text/javascript">//<![CDATA[
-    var shingetsu = {uiLang: "$message['lang']"};
-  //]]></script>
 #for $e in $js
   <script type="text/javascript" src="$root_path$e"></script>
 #end for
 #for $e in $css
   <link rel="stylesheet" type="text/css" href="$root_path$e" />
 #end for
+  <script type="text/javascript">//<![CDATA[
+    shingetsu.uiLang = "$message['lang']";
+  //]]></script>
 </head>
 <body>
 $menubar
