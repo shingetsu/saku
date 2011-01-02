@@ -1,7 +1,7 @@
 '''Saku Mobile Gateway.
 '''
 #
-# Copyright (c) 2007,2008 shinGETsu Project.
+# Copyright (c) 2007-2011 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -271,21 +271,29 @@ class CGI(gateway.CGI):
 
         m = re.search(r"^/(thread)/([^/]+)$", link)
         if m is not None:
-            uri = prefix + self.appli[m.group(1)] + self.sep + \
-                  self.str_encode(m.group(2))
+            uri = '%s?thread=%s' % \
+                  (self.mobile_cgi, self.str_encode(m.group(2)))
             return '<a href="' + uri + '">[[' + link + ']]</a>'
 
         m = re.search(r"^([^/]+)/([0-9a-f]{8})$", link)
         if m is not None:
-            uri = prefix + appli + self.sep + \
-                  self.str_encode(m.group(1)) + \
-                  '/' + m.group(2)
+            if appli == self.thread_cgi:
+                uri = '%s?thread=%s&amp;id=%s' % \
+                      (self.mobile_cgi, self.str_encode(m.group(1)), m.group(2))
+            else:
+                uri = prefix + appli + self.sep + \
+                      self.str_encode(m.group(1)) + \
+                      '/' + m.group(2)
             return '<a href="' + uri + '">[[' + link + ']]</a>'
 
         m = re.search(r"^([^/]+)$", link)
         if m is not None:
-            uri = prefix + appli + self.sep + \
-                  self.str_encode(m.group(1))
+            if appli == self.thread_cgi:
+                uri = '%s?thread=%s' % \
+                      (self.mobile_cgi, self.str_encode(m.group(1)))
+            else:
+                uri = prefix + appli + self.sep + \
+                      self.str_encode(m.group(1))
             return '<a href="' + uri + '">[[' + link + ']]</a>'
 
         return "[[" + link + "]]"
