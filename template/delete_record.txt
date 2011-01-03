@@ -12,7 +12,7 @@
   <input type="checkbox" name="dopost" value="dopost" />$message['send']<br />
   $message['name']:<input name="name" size="15" value="" />
   $message['signature']:<input type="password" name="passwd" size="15" value="" />
-  $message['comment']:<input name="body" size="15" value="" title="$message['desc_comment']" />
+  $message['comment']:<input name="body" size="40" value="" title="$message['desc_comment']" />
 #end if
 </p>
 #for $rec in $records
