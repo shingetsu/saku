@@ -465,13 +465,23 @@ class CGI(basecgi.CGI):
             stamp = int(time.time())
 
         body = {}
-        for key in ("base_stamp", "base_id", "name", "mail", "body"):
-            value = form.getfirst(key, "")
-            if value != "":
-                body[key] = self.escape(value)
+        value = form.getfirst("body", "")
+        if value != "":
+            body["body"] = self.escape(value)
+
         if str_attach != "":
             body["attach"] = str_attach
             body["suffix"] = re.sub(r"[\r\n]", "", suffix)
+
+        if not body:
+            self.header(self.message["null_article"], deny_robot=True)
+            self.footer()
+            return None
+
+        for key in ("base_stamp", "base_id", "name", "mail"):
+            value = form.getfirst(key, "")
+            if value != "":
+                body[key] = self.escape(value)
 
         if not body:
             self.header(self.message["null_article"], deny_robot=True)
