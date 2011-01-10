@@ -308,7 +308,7 @@ class CGI(gateway.CGI):
             if config.force_thumbnail or thumbnail_size == config.thumbnail_size:
                 rec.make_thumbnail(suffix=suffix, thumbnail_size=thumbnail_size)
         if attach_file is not None:
-            size = rec.attach_size(thumbnail_size=thumbnail_size)
+            size = rec.attach_size(suffix=suffix, thumbnail_size=thumbnail_size)
             self.stdout.write(
                 "Content-Type: " + type + "\n" +
                 "Last-Modified: " + self.rfc822_time(stamp) + "\n" +

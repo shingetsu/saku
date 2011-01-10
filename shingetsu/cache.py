@@ -49,6 +49,7 @@ try:
     import PIL.Image
 except ImportError:
     PIL = None
+    sys.stderr.write('system does not have PIL.\n');
 
 __version__ = '$Revision$'
 __all__ = ['Record', 'Cache', 'CacheList', 'UpdateList', 'RecentList']
@@ -273,9 +274,9 @@ class Record(dict):
                 return dir + "/" + i
         return None
 
-    def attach_size(self, path=None, thumbnail_size=None):
+    def attach_size(self, path=None, suffix=None, thumbnail_size=None):
         if path is None:
-            path = self.attach_path(suffix=None, thumbnail_size=thumbnail_size)
+            path = self.attach_path(suffix=suffix, thumbnail_size=thumbnail_size)
         if path is None:
             return 0
         else:
@@ -306,7 +307,7 @@ class Record(dict):
         thumbnail_path = self.attach_path(suffix=suffix, thumbnail_size=thumbnail_size)
         if os.path.isfile(thumbnail_path):
             return
-        if not imghdr.what(thumbnail_path):
+        if not imghdr.what(attach_path):
             return
         size = thumbnail_size.split("x")
         if len(size) != 2:
