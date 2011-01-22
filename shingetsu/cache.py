@@ -75,7 +75,7 @@ def fsdiff(f, s):
     else:
         return s == buf
 # End of sfdiff
-        
+
 
 class Record(dict):
 
@@ -673,11 +673,18 @@ class Cache(dict):
         """Add new data cache."""
         self.standby_directories()
         rec.sync()
+        age = True
         if really:
             self[rec.idstr] = rec
             self.size += len(str(rec)) + 1
             self.count += 1
-            if self.valid_stamp < rec.stamp:
+        # sage
+        if self.valid_stamp < rec.stamp:
+            if config.sage:
+                if rec.get("mail", "")
+                    if re.search("[Sa][Aa][Gg][Ee]", rec["mail"]):
+                        age = False
+            if age:
                 self.valid_stamp = rec.stamp
         if self.stamp < rec.stamp:
             self.stamp = rec.stamp
@@ -823,7 +830,14 @@ class CacheList(list):
                         if cache.stamp < rec.stamp:
                             cache.stamp = rec.stamp
                         if cache.valid_stamp < rec.stamp:
-                            cache.valid_stamp = rec.stamp
+                            # sage
+                            age = True
+                            if config.sage:
+                                if rec.get("mail", ""):
+                                    if re.search("[Sa][Aa][Ge][Ee]", rec["mail"]):
+                                        age = False
+                            if age:
+                                cache.valid_stamp = rec.stamp
                         cache.size += len(str(rec))
                         cache.count += 1
                         rec.sync()

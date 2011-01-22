@@ -132,12 +132,13 @@ thread_page_size = _get_value(_extconf,
 mobile_page_size = _get_value(_extconf,
                               'Application Thread',
                               'mobile_page_size', 10, 'int')
-thumbnail_size = _get_value(_extconf, 
+thumbnail_size = _get_value(_extconf,
                             'Application Thread',
                             'thumbnail_size', None, '')
 force_thumbnail = _get_value(_extconf,
                              'Application Thread',
-                             'force_thumbnail', False, 'boolen')
+                             'force_thumbnail', False, 'boolean')
+sage = _get_value(_extconf, 'Application Thread', 'sage', False, 'boolean')
 
 client_cycle = 5*60         # Seconds; Access client.cgi
 ping_cycle = 5*60           # Seconds; Check nodes
@@ -168,7 +169,7 @@ google = "http://www.google.co.jp/search"
 language = "en"                             # Language code (see RFC3066)
 
 # regexp
-robot = r"Google|bot|Yahoo|archiver|Wget|Crawler"
+robot = r"Google|bot|Yahoo|archiver|Wget|Crawler|Yeti|Baidu"
 
 dnsname = ""                            # Server name for shinGETsu protocol
 query_separator = "/"                   # Must be "/"
