@@ -19,7 +19,8 @@
   [$rec['mail']]
 #end if
 #if $rec.get('pubkey', '')
-  <span class="sign" title="[$rec.get('target','')]">$rec['pubkey']</span>
+  <!--<span class="sign" title="[$rec.get('target','')]">$rec['pubkey']</span>-->
+  <span class="sign" title="$message['signature']">$rec['pubkey']</span>
 #end if
 <span class="stamp" id="s$rec['stamp']">$localtime($rec['stamp'])</span>
 #if 'attach' in $rec
