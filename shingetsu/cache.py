@@ -680,10 +680,8 @@ class Cache(dict):
             self.count += 1
         # sage
         if self.valid_stamp < rec.stamp:
-            if config.sage:
-                if rec.get("mail", ""):
-                    if re.search("[Sa][Aa][Gg][Ee]", rec["mail"]):
-                        age = False
+            if config.sage and ('sage' in rec.get("mail", "").lower()):
+                age = False
             if age:
                 self.valid_stamp = rec.stamp
         if self.stamp < rec.stamp:
