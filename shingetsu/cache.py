@@ -317,7 +317,7 @@ class Record(dict):
             im = PIL.Image.open(attach_path)
             im.thumbnail(size, PIL.Image.ANTIALIAS)
             im.save(thumbnail_path)
-        except IOError, err:
+        except (IOError, KeyError), err:
             sys.stderr.write('PIL error: %s for %s\n' % (err, attach_path))
         return
 
