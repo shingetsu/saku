@@ -1,7 +1,7 @@
 """Cache of Saku BBS.
 """
 #
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2010 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -418,6 +418,18 @@ class Record(dict):
             self.free()
             return False
 
+    def has_valid_stamp(self):
+        """The record has valid stamp or not.
+
+        In 2ch.net BBS, 'sage' command prohibit updating timestamp of the
+        thread.
+
+        When a 'sage' is in mail field and config.sage is true,
+        the timestamp of the file is not updated.
+        """
+        return ((not config.sage) or
+                (not ('sage' in self.get('mail', '').lower())))
+
 # End of Record
 
 
@@ -673,20 +685,12 @@ class Cache(dict):
         """Add new data cache."""
         self.standby_directories()
         rec.sync()
-        age = True
         if really:
             self[rec.idstr] = rec
             self.size += len(str(rec)) + 1
             self.count += 1
-        # sage
         if self.valid_stamp < rec.stamp:
-            if config.sage:
-                if rec.get("mail", ""):
-                    if re.search("[sS][aA][gG][eE]", rec["mail"]):
-                        age = False
-            if config.sage and ('sage' in rec.get("mail", "").lower()):
-                age = False
-            if age:
+            if rec.has_valid_stamp():
                 self.valid_stamp = rec.stamp
         if self.stamp < rec.stamp:
             self.stamp = rec.stamp
@@ -832,13 +836,7 @@ class CacheList(list):
                         if cache.stamp < rec.stamp:
                             cache.stamp = rec.stamp
                         if cache.valid_stamp < rec.stamp:
-                            # sage
-                            age = True
-                            if config.sage:
-                                if rec.get("mail", ""):
-                                    if re.search("[sS][aA][gG][eE]", rec["mail"]):
-                                        age = False
-                            if age:
+                            if rec.has_valid_stamp():
                                 cache.valid_stamp = rec.stamp
                         cache.size += len(str(rec))
                         cache.count += 1
