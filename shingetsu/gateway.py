@@ -374,11 +374,11 @@ class CGI(basecgi.CGI):
         '''Print CGI header (404 not found).'''
         self.header(self.message['404'], deny_robot=True)
         self.print_paragraph(self.message['404_body'])
-        #if hasattr(self, 'archive_uri'):
-        #    if id:
-        #        self.print_jump('%s%s.html' % (self.archive_uri, id))
-        #    else:
-        #        self.print_jump(self.archive_uri)
+        if hasattr(self, 'archive_uri'):
+            if id:
+                self.print_jump('%s%s.html' % (self.archive_uri, id))
+            else:
+                self.print_jump(self.archive_uri)
         if cache is not None:
             self.remove_file_form(cache)
         self.footer()
