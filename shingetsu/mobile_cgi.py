@@ -234,8 +234,8 @@ class CGI(gateway.CGI):
                 printed = True
             rec.free()
         self.stdout.write("</div>\n")
-        if id and (not printed) and config.archive_uri:
-            self.print_jump('%s%s.html' % (self.archive_uri, id))
+        #if id and (not printed) and config.archive_uri:
+        #    self.print_jump('%s%s.html' % (self.archive_uri, id))
         escaped_path = cgi.escape(path)
         escaped_path = re.sub(r'  ', '&nbsp;&nbsp;', escaped_path)
         var = {
