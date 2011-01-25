@@ -1,6 +1,6 @@
 #
 # Message file for English
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2011 shinGETsu Project.
 # $Id$
 #
 
@@ -60,6 +60,7 @@ mail_message<>Write message from next line
 del_file<>DELETE BBS
 del_record<>DELETE ARTICLE
 remove<>remove
+search_new_file<>Search when make new BBS
 
 # thread
 anonymous<>anonymous

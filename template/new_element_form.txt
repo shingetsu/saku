@@ -1,5 +1,5 @@
 #* Saku Gateway New Element Form.
- * Copyright (c) 2005-2007 shinGETsu Project.
+ * Copyright (c) 2005-2011 shinGETsu Project.
  * $Id$
  *#
 <form method="post" action="$cginame">
@@ -27,6 +27,9 @@
 #if $isadmin
 <tr><td>$message['tag']:</td>
 <td><input name="tag" size="40" value="" title="$message['tag_desc']" />
+</td></tr>
+<tr><td></td>
+<td><input type="checkbox" id="search" name="search_new_file" value="yes" checked="checked" /><label for="search">$message['search_new_file']</label>
 </td></tr>
 #end if
 </table></form>

@@ -1,7 +1,7 @@
 """Gateway CGI methods.
 """
 #
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2011 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -261,10 +261,12 @@ class CGI(gateway.CGI):
             self.footer()
         elif self.form.getfirst("type", "") in config.types:
             tag = self.str_encode(self.form.getfirst('tag', ''))
+            search = self.str_encode(self.form.getfirst('search_new_file', ''))
             self.print302(self.appli[self.form.getfirst("type", "")] +
                           self.sep +
                           self.str_encode(self.form.getfirst("link", "")) +
-                          '?tag=' + tag)
+                          '?tag=' + tag +
+                          '&search_new_file=' + search)
         else:
             self.print404()
 

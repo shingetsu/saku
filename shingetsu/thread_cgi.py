@@ -1,7 +1,7 @@
 '''Saku Thread CGI methods.
 '''
 #
-# Copyright (c) 2005-2010 shinGETsu Project.
+# Copyright (c) 2005-2011 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -157,10 +157,13 @@ class CGI(gateway.CGI):
     def print_thread(self, path, id='', page=0):
         str_path = self.str_encode(path)
         file_path = self.file_encode('thread', path)
+        form = cgi.FieldStorage(environ=self.environ, fp=self.stdin)
         self.archive_uri = '%s%s/' % (config.archive_uri,
                                       md5.new(file_path).hexdigest())
         cache = Cache(file_path)
         if cache.has_record():
+            pass
+        elif not form.getfirst('search_new_file', ''):
             pass
         elif self.check_get_cache():
             self.get_cache(cache)
