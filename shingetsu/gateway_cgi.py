@@ -266,6 +266,7 @@ class CGI(gateway.CGI):
                           self.sep +
                           self.str_encode(self.form.getfirst("link", "")) +
                           '?tag=' + tag +
+                          '&make_new_file=yes' +
                           '&search_new_file=' + search)
         else:
             self.print404()

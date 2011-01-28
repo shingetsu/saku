@@ -163,7 +163,8 @@ class CGI(gateway.CGI):
         cache = Cache(file_path)
         if cache.has_record():
             pass
-        elif not form.getfirst('search_new_file', ''):
+        elif (form.getfirst('make_new_file', '') and
+              not form.getfirst('search_new_file', '')):
             pass
         elif self.check_get_cache():
             self.get_cache(cache)

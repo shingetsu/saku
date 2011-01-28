@@ -1,7 +1,7 @@
 """Saku Gateway base module.
 """
 #
-# Copyright (c) 2005-2008 shinGETsu Project.
+# Copyright (c) 2005-2011 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -170,6 +170,7 @@ class CGI(basecgi.CGI):
             'escape': self.escape,
             'escape_simple': lambda s: cgi.escape(s, True),
             'escape_space': self.escape_space,
+            'escape_js': self.escape_js,
             'make_list_item': self.make_list_item,
             'gateway_link': self.gateway_link,
         }
@@ -537,6 +538,9 @@ class CGI(basecgi.CGI):
         text = re.sub(r' $', '&nbsp;', text)
         text = text.replace('<br>', '<br />\n');
         return text
+
+    def escape_js(self, text):
+        return text.replace('"', r'\"');
 
     def make_list_item(self, cache, remove=True, target='changes'):
         x = self.file_decode(cache.datfile)
