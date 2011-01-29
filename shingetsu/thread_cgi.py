@@ -163,11 +163,13 @@ class CGI(gateway.CGI):
         cache = Cache(file_path)
         if cache.has_record():
             pass
-        elif (form.getfirst('make_new_file', '') and
-              not form.getfirst('search_new_file', '')):
-            cache.standby_directories()
         elif self.check_get_cache():
-            self.get_cache(cache)
+            if (form.getfirst('make_new_file', '') and
+                not form.getfirst('search_new_file', '')):
+                cache.standby_directories()
+                self.unlock()
+            else:
+                self.get_cache(cache)
         else:
             self.print404(id=id)
             return
