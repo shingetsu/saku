@@ -8,3 +8,4 @@ node.shingetsu.info:8000/server.cgi
 pushare.zenno.info:8000/server.cgi
 rep4649.ddo.jp:8000/server.cgi
 skaphy.dyndns.info:8039/saku/server.cgi
+http://sg.sabaitiba.com:49494/server.cgi
