@@ -540,7 +540,7 @@ class CGI(basecgi.CGI):
         return text
 
     def escape_js(self, text):
-        return text.replace('"', r'\"');
+        return text.replace('"', r'\"').replace(']]>', '');
 
     def make_list_item(self, cache, remove=True, target='changes'):
         x = self.file_decode(cache.datfile)
