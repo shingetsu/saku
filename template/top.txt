@@ -25,6 +25,10 @@
 <li><a href="$gateway_cgi/rss">$message['rss']</a></li>
 </ul>
 
+#if (not $cachelist) and ($isfriend or $isadmin)
+  <p><em>$gateway_link($gateway_cgi, 'recent')</em></p>
+#end if
+
 <h2>$message['recent_changes']</h2>
 <ul id="top_index">
 #for $cache in $cachelist
@@ -34,6 +38,9 @@
 #end for
 </ul>
 
+#if $taglist
+  <h2>$message['tag']</h2>
+#end if
 <p class="tags">
 #for $t in $taglist
   <a href="$gateway_cgi/$target?tag=$str_encode($t)" class="tag">$t</a>
