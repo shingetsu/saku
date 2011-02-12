@@ -1,5 +1,5 @@
 #* Saku Gateway Header.
- * Copyright (c) 2005-2007 shinGETsu Project.
+ * Copyright (c) 2005-2011 shinGETsu Project.
  * $Id$
  *#
 Content-Type: text/html; charset=UTF-8
@@ -37,8 +37,9 @@ $cookie
 </head>
 <body>
 $menubar
-#if $isadmin
-  <h1><a href="$admin_cgi/search/$str_title" title="$message['search']">$escape_space($title)</a></h1>
+
+#if hasattr($cgi, 'appli_type') and ($cgi.appli_type == 'thread')
+  <h1><a href="$thread_cgi/$str_title">$escape_space($title)</a></h1>
 #else
-  <h1>$escape_space($title)</h1>
+  <h1><a href="">$escape_space($title)</a></h1>
 #end if

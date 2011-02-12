@@ -10,6 +10,7 @@ ul {
 }
 h1, h1 a {
     color: #00e;
+    text-decoration: none;
 }
 em {
     font-size: x-large;
@@ -35,6 +36,13 @@ address {
 }
 .menu {
     text-align: right;
+    background-color: #33a;
+    color: #fff;
+    padding: 3px;
+}
+.menu a {
+    color: #fff;
+    text-decoration: none;
 }
 table {
     border-collapse: collapse;

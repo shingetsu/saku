@@ -164,8 +164,7 @@ class CGI(gateway.CGI):
         if cache.has_record():
             pass
         elif self.check_get_cache():
-            if (form.getfirst('make_new_file', '') and
-                not form.getfirst('search_new_file', '')):
+            if not form.getfirst('search_new_file', ''):
                 cache.standby_directories()
                 self.unlock()
             else:
@@ -206,6 +205,7 @@ class CGI(gateway.CGI):
             lastrec = cache[ids[-1]]
         var = {
             'path': path,
+            'str_path': str_path,
             'cache': cache,
             'lastrec': lastrec,
             'res_anchor': self.res_anchor,

@@ -542,7 +542,8 @@ class CGI(basecgi.CGI):
     def escape_js(self, text):
         return text.replace('"', r'\"').replace(']]>', '');
 
-    def make_list_item(self, cache, remove=True, target='changes'):
+    def make_list_item(self, cache,
+                       remove=True, target='changes', search=False):
         x = self.file_decode(cache.datfile)
         y = self.str_encode(x)
         u = unicode(x, 'utf-8', 'replace')
@@ -561,6 +562,10 @@ class CGI(basecgi.CGI):
             tags, tagclassname = cache.tags, 'tags'
         else:
             tags, tagclassname = cache.sugtags, 'sugtags'
+        if search:
+            str_opts = '?search_new_file=yes'
+        else:
+            str_opts = ''
         var = {
             'cache': cache,
             'title': x,
@@ -569,16 +574,19 @@ class CGI(basecgi.CGI):
             'tagclassname': tagclassname,
             'target': target,
             'remove': remove,
+            'str_opts': str_opts,
         }
         return self.template('list_item', var)
 
-    def print_index_list(self, cachelist, target='', footer=True):
+    def print_index_list(self, cachelist,
+                         target='', footer=True, search_new_file=False):
         var = {
             'target': target,
             'filter': self.str_filter,
             'tag': self.str_tag,
             'taglist': UserTagList(),
             'cachelist': cachelist,
+            'search_new_file': search_new_file,
         }
         self.stdout.write(self.template('index_list', var))
         if footer:

@@ -1,6 +1,6 @@
 #
 # Message file for Japanese
-# Copyright (c) 2005-2010 shinGETsu Project.
+# Copyright (c) 2005-2011 shinGETsu Project.
 # $Id$
 #
 
@@ -74,6 +74,7 @@ last_page<>&lt;&lt;最新
 new_page<>&lt;&lt;新
 old_page<>古&gt;&gt;
 edit_tag<>タグを編集する
+sync_from_network<>ネットワークからデータを同期する
 
 # delete
 yes<>はい

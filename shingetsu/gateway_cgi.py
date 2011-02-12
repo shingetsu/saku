@@ -182,7 +182,7 @@ class CGI(gateway.CGI):
         self.header(title)
         self.print_paragraph(self.message['desc_recent'])
         cachelist = self.make_recent_cachelist()
-        self.print_index_list(cachelist, "recent")
+        self.print_index_list(cachelist, "recent", search_new_file=True)
 
     def print_csv(self, path):
         """CSV output as API."""
@@ -266,7 +266,6 @@ class CGI(gateway.CGI):
                           self.sep +
                           self.str_encode(self.form.getfirst("link", "")) +
                           '?tag=' + tag +
-                          '&make_new_file=yes' +
                           '&search_new_file=' + search)
         else:
             self.print404()
