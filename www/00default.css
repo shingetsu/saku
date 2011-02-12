@@ -27,6 +27,10 @@ dd {
 address {
     text-align: center;
 }
+a:hover {
+    color: #000;
+    background-color: #aaf;
+}
 .name {
     color: #000;
     font-weight: bold;
