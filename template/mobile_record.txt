@@ -1,12 +1,13 @@
 #* Saku Gateway Mobile Thread Record.
- * Copyright (c) 2007,2008 shinGETsu Project.
+ * Copyright (c) 2007-2011 shinGETsu Project.
  * $Id$
  *#
-<div style="margin:0;border-bottom:1px solid #ccc;"><p>$sid
+<div style="margin:0;margin-bottom:1em;">
+<div style="background-color:#ccf">$sid
 #if $rec.get('name', '')
-  <span style="color:green;font-weight:bold;">$rec['name']</span>
+  <span style="color:#000;font-weight:bold;">$rec['name']</span>
 #else
-  <span style="color:green;font-weight:bold;">$message['anonymous']</span>
+  <span style="color:#000;font-weight:bold;">$message['anonymous']</span>
 #end if
 #if $rec.get('mail', '')
   [$rec['mail']]
@@ -19,6 +20,6 @@ $localtime($rec['stamp'])
 #if not $res_mode
   <a href="$mobile_cgi?thread=$str_path&amp;id=$sid">$message['res']</a>
 #end if
-<br />
+</div>
 $body
-</p></div>
+</div>

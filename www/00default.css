@@ -1,18 +1,24 @@
 /* Saku Default CSS
- * Copyright (c) 2005-2007 shinGETsu Project.
+ * Copyright (c) 2005-2011 shinGETsu Project.
  * $Id$
  */
 body {
-    background-color: #efefef;
+    background-color: #fff;
 }
 ul {
     list-style: none;
 }
 h1, h1 a {
-    color: red;
+    color: #00e;
 }
 em {
     font-size: x-large;
+}
+strong {
+    font-size: x-large;
+}
+dt {
+    background-color: #ccf;
 }
 dd {
     margin-bottom: 1em;
@@ -21,7 +27,7 @@ address {
     text-align: center;
 }
 .name {
-    color: green;
+    color: #000;
     font-weight: bold;
 }
 .sign {

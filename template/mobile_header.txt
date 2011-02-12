@@ -28,5 +28,5 @@ Content-Type: text/html; charset=Shift_JIS
 <link rel="contents" href="/" />
 <link rel="alternate" type="application/rss+xml" title="RSS" href="$rss" />
 </head>
-<body style="background-color:#efefef;">
-<h1><span style="color:#F00;">$escape_space($title)</span></h1>
+<body style="background-color:#fff;">
+<h1><span style="color:#00e;">$escape_space($title)</span></h1>
