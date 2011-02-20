@@ -49,7 +49,7 @@ try:
     import PIL.Image
 except ImportError:
     PIL = None
-    sys.stderr.write('system does not have PIL.\n');
+    sys.stdout.write('system does not have PIL.\n');
 
 __version__ = '$Revision$'
 __all__ = ['Record', 'Cache', 'CacheList', 'UpdateList', 'RecentList']
