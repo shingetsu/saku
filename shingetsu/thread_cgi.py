@@ -201,7 +201,7 @@ class CGI(gateway.CGI):
         self.print_tags(cache)
         lastrec = None
         ids = cache.keys()
-        if len(cache) and (not page) and (not id):
+        if len(cache) and (not page) and (not id) and (not ids):
             lastrec = cache[ids[-1]]
         var = {
             'path': path,
