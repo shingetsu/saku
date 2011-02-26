@@ -214,7 +214,7 @@ class Node:
         except (IOError, AttributeError, socket.error, socket.timeout), err:
             sys.stderr.write('%s: %s\n' % (message, err))
             return StringIO('')
-        
+
         if res.info().getheader("Content-Encoding", "") == "gzip":
             return SocketIO(SimpleGzipFile(fileobj=res), message)
         else:
@@ -343,7 +343,7 @@ class NodeList(RawNodeList):
                     return Node(host=buf[1].strip(), port=port, path=path)
             except StopIteration:
                 sys.stderr.write('/ping %s: error\n' % n)
-	return None
+    return None
 
     def pingall(self):
         """Ping all nodes."""
@@ -417,7 +417,7 @@ class NodeList(RawNodeList):
 
     def rejoin(self, searchlist):
         """Copy node from searchlist to nodelist."""
-	myself = self.myself()
+    myself = self.myself()
         do_join = False
         for n in searchlist:
             if n in self:

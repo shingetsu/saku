@@ -689,9 +689,10 @@ class Cache(dict):
             self[rec.idstr] = rec
             self.size += len(str(rec)) + 1
             self.count += 1
-        if self.valid_stamp < rec.stamp:
-            if rec.has_valid_stamp():
-                self.valid_stamp = rec.stamp
+        if really:
+            if self.valid_stamp < rec.stamp:
+                if rec.has_valid_stamp():
+                    self.valid_stamp = rec.stamp
         if self.stamp < rec.stamp:
             self.stamp = rec.stamp
 
