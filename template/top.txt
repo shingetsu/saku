@@ -20,7 +20,7 @@
   #end for
 #end if
 <li><a href="$mobile_cgi">$message['mobile']</a></li>
-<li><a href="http://shingetsu.info/">$message['site']</a>
+<li><a href="http://shingetsu.info/">$message['site']</a></li>
 <li><a href="$gateway_cgi/motd">$message['agreement']</a></li>
 <li><a href="$gateway_cgi/rss">$message['rss']</a></li>
 </ul>
