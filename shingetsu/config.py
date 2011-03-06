@@ -190,6 +190,7 @@ lookup = run_dir + "/lookup.txt"
 taglist = run_dir + "/tag.txt"
 sugtag = run_dir + "/sugtag.txt"
 tmpaddr_file = run_dir + '/tmpaddr.txt'
+read_status = run_dir + '/readstatus.txt'
 
 server = root_path + "server.cgi"
 client = root_path + "client.cgi"
