@@ -817,6 +817,7 @@ class CacheList(list):
     def load(self):
         sugtagtable = SuggestedTagTable()
         recentlist = RecentList()
+        del self[:]
         for i in listdir(config.cache_dir):
             if config.cache_hash_method == 'asis':
                 c = Cache(i, sugtagtable, recentlist)
