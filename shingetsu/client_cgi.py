@@ -168,6 +168,9 @@ class CGI(basecgi.CGI):
         self.stderr.write("shingetsu.node.NodeList.join() finished\n")
 
         cachelist = CacheList()
+        cachelist.rehash()
+        self.stderr.write("shingetsu.cache.CacheList.rehash() finished\n")
+
         cachelist.clean_records()
         self.stderr.write("shingetsu.cache.CacheList.clean_records()" +
                           " finished\n")

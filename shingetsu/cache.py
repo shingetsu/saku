@@ -1,7 +1,7 @@
 """Cache of Saku BBS.
 """
 #
-# Copyright (c) 2005-2010 shinGETsu Project.
+# Copyright (c) 2005-2011 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -812,6 +812,9 @@ class CacheList(list):
 
     def __init__(self):
         list.__init__(self)
+        self.load()
+
+    def load(self):
         sugtagtable = SuggestedTagTable()
         recentlist = RecentList()
         for i in listdir(config.cache_dir):
@@ -829,6 +832,34 @@ class CacheList(list):
             except IOError:
                 c = Cache(i, sugtagtable, recentlist)
                 self.append(c)
+
+    def rehash(self):
+        """Rename file path hash if it is old.
+        """
+        to_reload = False
+        for i in listdir(config.cache_dir):
+            try:
+                dat_stat_file = os.path.join(config.cache_dir, i, 'dat.stat')
+                if os.path.isfile(dat_stat_file):
+                    f = open(dat_stat_file)
+                    dat_stat = f.readlines()[0].strip()
+                    f.close()
+                else:
+                    dat_stat = i
+                    f = open(dat_stat_file, 'wb')
+                    f.write(i + '\n')
+                    f.close()
+                hash = title.file_hash(dat_stat)
+                if i == hash:
+                    continue
+                sys.stderr.write('rehash %s to %s\n' % (i, hash))
+                shutil.move(os.path.join(config.cache_dir, i),
+                            os.path.join(config.cache_dir, hash))
+                to_reload = True
+            except (IOError, OSError, IndexError), err:
+                sys.stderr.write('rehash error %s for %s\n' % (err, i))
+        if to_reload:
+            self.load()
 
     def getall(self, timelimit=0):
         """Search nodes and update my cache."""
