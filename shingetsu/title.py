@@ -1,7 +1,7 @@
 '''Title Utilities.
 '''
 #
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2011 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,10 +28,11 @@
 # $Id: gateway.py 1296 2006-11-20 14:14:02Z fuktommy $
 #
 
+import hashlib
 import urllib
 import sys
-#import os
-#import config
+
+import config
 from compatible import md5
 
 __all__ = ['str_encode', 'str_decode', 'file_encode', 'file_decode']
@@ -41,39 +42,53 @@ __version__ = '$Revision$'
 def str_encode(query):
     '''Encode for URI.
 
-    ~ -> %7E
+    >>> str_encode('~')
+    '%7E'
     '''
     return urllib.quote(str(query))
 
 def str_decode(query):
     '''Decode URI.
 
-    %7E -> ~
+    >>> str_decode('%7E')
+    '~'
     '''
     return urllib.unquote(query)
 
 def file_encode(type, query):
     '''Encode for filename.
 
-    ~ -> 7E
+    >>> file_encode('foo', '~')
+    'foo_7E'
     '''
     buf = [type, '_']
     for i in query:
         buf.append('%02X' % ord(i))
     return ''.join(buf)
 
+def file_decode_type(query, type=None):
+    """Decode file type.
+
+    >>> file_decode_type('thread_41')
+    'thread'
+    """
+    q = query.split('_')
+    if len(q) < 2:
+        return type
+    return q[0]
+
 def file_decode(query, type=None):
     '''Decode filename.
 
-    7E -> ~
+    >>> file_decode('foo_7E')
+    '~'
     '''
     q = query.split('_')
-    if q < 2:
+    if len(q) < 2:
         return None
-    else:
-        if type is not None:
-            type = q[0]
-        query = q[1]
+    if type is not None:
+        type = q[0]
+    query = q[1]
     buf = []
     for i in range(0, len(query), 2):
         try:
@@ -81,26 +96,37 @@ def file_decode(query, type=None):
         except (ValueError, IndexError):
             sys.stderr.write(query + ': ValueError/IndexError\n')
             return None
-    if type is not None:
-        return (''.join(buf), type)
     return ''.join(buf)
 
 def file_hash(query):
-    '''input saku filename (ex: thread_41),
-    return saku filename style hash.
-    '''
-    (title, type) = file_decode(query, 'type')
-    hash = type + '_' + md5.new(title).hexdigest()
-    #for i in range(config.uncollision_try):
-    #    try_hash = hash + str(i)
-    #    cache = config.cache_dir + "/" + try_hash
-    #    if not os.path.exists(cache):
-    #        return try_hash
-    #    if os.path.isfile(cache + "/" + "dat.stat"):
-    #        f = open(cache + "/" + "dat.stat")
-    #        dat_stat = f.readlines()[0].strip()
-    #        f.close()
-    #        if dat_stat == query:
-    #            return try_hash
-    #        f.close()
-    return hash
+    """Make hash from filename.
+
+    >>> import config
+    >>> config.cache_hash_method = 'asis'
+    >>> file_hash('thread_41')
+    'thread_41'
+    >>> config.cache_hash_method = 'md5'
+    >>> file_hash('thread_41')
+    'thread_7fc56270e7a70fa81a5935b72eacbe29'
+    """
+    methods = ('md5', 'sha1', 'sha224', 'sha256', 'sha384', 'sha512')
+    if config.cache_hash_method not in methods:
+        # asis
+        return query
+    title = file_decode(query)
+    type = file_decode_type(query)
+    if title is None:
+        sys.stderr.write('Invalid filename: %s\n' % query)
+        return query
+    hash = getattr(hashlib, config.cache_hash_method)()
+    hash.update(title)
+    return type + '_' + hash.hexdigest()
+
+
+def _test(*args, **kwargs):
+    import doctest
+    doctest.testmod()
+
+
+if __name__ == '__main__':
+    _test()

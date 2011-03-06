@@ -139,20 +139,21 @@ class Record(dict):
         return self.idstr != y.idstr
 
     def setpath(self):
-        if (self.idstr != "") and (self.datfile != ""):
-            self.dathash = title.file_hash(self.datfile)
-            self.path = os.path.join(config.cache_dir,
-                                     self.dathash,
-                                     'record',
-                                     self.idstr)
-            self.body_path = os.path.join(config.cache_dir,
-                                          self.dathash,
-                                          'body',
-                                          self.idstr)
-            self.rm_path = os.path.join(config.cache_dir,
-                                        self.dathash,
-                                        'removed',
-                                        self.idstr)
+        if (self.idstr == "") or (self.datfile == ""):
+            return
+        self.dathash = title.file_hash(self.datfile)
+        self.path = os.path.join(config.cache_dir,
+                                 self.dathash,
+                                 'record',
+                                 self.idstr)
+        self.body_path = os.path.join(config.cache_dir,
+                                      self.dathash,
+                                      'body',
+                                      self.idstr)
+        self.rm_path = os.path.join(config.cache_dir,
+                                    self.dathash,
+                                    'removed',
+                                    self.idstr)
 
     def parse(self, recstr):
         """Parse cache record."""
@@ -814,6 +815,10 @@ class CacheList(list):
         sugtagtable = SuggestedTagTable()
         recentlist = RecentList()
         for i in listdir(config.cache_dir):
+            if config.cache_hash_method == 'asis':
+                c = Cache(i, sugtagtable, recentlist)
+                self.append(c)
+                continue
             try:
                 f = open(config.cache_dir + "/" + i + "/dat.stat")
                 dat_stat = f.readlines()[0].strip()
@@ -822,7 +827,8 @@ class CacheList(list):
                 self.append(c)
                 f.close()
             except IOError:
-                pass
+                c = Cache(i, sugtagtable, recentlist)
+                self.append(c)
 
     def getall(self, timelimit=0):
         """Search nodes and update my cache."""

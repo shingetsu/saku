@@ -2,7 +2,7 @@
 #
 # Run All Automatic Tests.
 #
-# Copyright (c) 2009 shinGETsu Project.
+# Copyright (c) 2009,2011 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,12 +31,10 @@
 
 code=0
 for t in tests/test_*.py; do
-    python $t
-    tmpcode=$?
-    if [ "$tmpcode" != 0 ]; then
-        code=$tmpcode
-    fi
+    python $t || code=1
 done
+
+python shingetsu/title.py -v || code=1
 
 if [ "$code" != 0 ]; then
     echo FAILED

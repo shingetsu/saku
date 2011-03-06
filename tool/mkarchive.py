@@ -3,7 +3,7 @@
 '''Make archive, 1 HTML for 1 record
 '''
 #
-# Copyright (c) 2006,2007 shinGETsu Project.
+# Copyright (c) 2006-2011 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,11 +30,11 @@
 import re
 import os
 import sys
-import md5
 import time
 from shutil import copy
 
 import shingetsu.config
+from shingetsu.compatible import md5
 from shingetsu.cache import *
 from shingetsu.title import *
 

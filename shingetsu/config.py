@@ -1,7 +1,7 @@
 """Saku Configuration.
 """
 #
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2011 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -206,6 +206,9 @@ application = {"thread": thread_cgi}
 use_cookie = True
 save_cookie = 7*24*60*60                # Seconds
 title_limit = 30                        # Charactors
+
+# asis, md5, sha1, sha224, sha256, sha384, or sha512
+cache_hash_method = 'asis'
 
 version = "shinGETsu/0.7 (Saku/Unstable)"
 
