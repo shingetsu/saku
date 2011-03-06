@@ -78,7 +78,7 @@ shingetsu.addInitializer(function () {
             /\[\[([^/<>\[\]]+)\/([0-9a-f]{8})\]\]/g,
             function ($0, $1, $2) {
                 return '<a href="/thread.cgi/' + encodeURIComponent($1) +
-                       '#r' + $2 +
+                       '/' + $2 +
                        '">[[' + $1 + '/' + $2 + ']]</a>';
             });
         return message;
