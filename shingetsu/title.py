@@ -29,6 +29,10 @@
 #
 
 import urllib
+import sys
+#import os
+#import config
+from compatible import md5
 
 __all__ = ['str_encode', 'str_decode', 'file_encode', 'file_decode']
 __version__ = '$Revision$'
@@ -58,7 +62,7 @@ def file_encode(type, query):
         buf.append('%02X' % ord(i))
     return ''.join(buf)
 
-def file_decode(query):
+def file_decode(query, type=None):
     '''Decode filename.
 
     7E -> ~
@@ -67,12 +71,36 @@ def file_decode(query):
     if q < 2:
         return None
     else:
+        if type is not None:
+            type = q[0]
         query = q[1]
     buf = []
     for i in range(0, len(query), 2):
         try:
             buf.append('%c' % int(query[i:i+2], 16))
         except (ValueError, IndexError):
-            self.stderr.write(query + ': ValueError/IndexError\n')
+            sys.stderr.write(query + ': ValueError/IndexError\n')
             return None
+    if type is not None:
+        return (''.join(buf), type)
     return ''.join(buf)
+
+def file_hash(query):
+    '''input saku filename (ex: thread_41),
+    return saku filename style hash.
+    '''
+    (title, type) = file_decode(query, 'type')
+    hash = type + '_' + md5.new(title).hexdigest()
+    #for i in range(config.uncollision_try):
+    #    try_hash = hash + str(i)
+    #    cache = config.cache_dir + "/" + try_hash
+    #    if not os.path.exists(cache):
+    #        return try_hash
+    #    if os.path.isfile(cache + "/" + "dat.stat"):
+    #        f = open(cache + "/" + "dat.stat")
+    #        dat_stat = f.readlines()[0].strip()
+    #        f.close()
+    #        if dat_stat == query:
+    #            return try_hash
+    #        f.close()
+    return hash

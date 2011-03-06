@@ -41,6 +41,7 @@ from compatible import md5, Set, listdir, RLock
 import apollo
 import config
 import spam
+import title
 from node import *
 from tag import *
 from tiedobj import *
@@ -139,16 +140,17 @@ class Record(dict):
 
     def setpath(self):
         if (self.idstr != "") and (self.datfile != ""):
+            self.dathash = title.file_hash(self.datfile)
             self.path = os.path.join(config.cache_dir,
-                                     self.datfile,
+                                     self.dathash,
                                      'record',
                                      self.idstr)
             self.body_path = os.path.join(config.cache_dir,
-                                          self.datfile,
+                                          self.dathash,
                                           'body',
                                           self.idstr)
             self.rm_path = os.path.join(config.cache_dir,
-                                        self.datfile,
+                                        self.dathash,
                                         'removed',
                                         self.idstr)
 
@@ -249,7 +251,7 @@ class Record(dict):
         if self.path == "":
             sys.stderr.write("Null file name\n")
             return None
-        dir = "/".join((config.cache_dir, self.datfile, "attach"))
+        dir = "/".join((config.cache_dir, self.dathash, "attach"))
         thumbnail = []
         for i in listdir(dir):
             if i.startswith("s" + self.idstr):
@@ -260,7 +262,7 @@ class Record(dict):
         if self.path == "":
             sys.stderr.write("Null file name\n")
             return None
-        dir = "/".join((config.cache_dir, self.datfile, "attach"))
+        dir = "/".join((config.cache_dir, self.dathash, "attach"))
         if suffix is not None:
             suffix = re.sub(r"[^-_.A-Za-z0-9]", "", suffix)
             if suffix == "":
@@ -476,7 +478,8 @@ class Cache(dict):
     def __init__(self, datfile, sugtagtable=None, recentlist=None):
         dict.__init__(self)
         self.datfile = datfile
-        self.datpath += "/" + datfile
+        self.dathash = title.file_hash(datfile)
+        self.datpath += "/" + self.dathash
         self.removed = {}
 
         self.stamp = self._load_status('stamp')
@@ -588,6 +591,8 @@ class Cache(dict):
         self._save_status('validstamp', self.valid_stamp)
         self._save_status('size', self.size)
         self._save_status('count', self.count)
+        if not os.path.exists(self.datpath + '/dat.stat'):
+            self._save_status('dat', self.datfile)
 
     def standby_directories(self):
         for d in ('', '/attach', '/body', '/record', '/removed'):
@@ -699,7 +704,7 @@ class Cache(dict):
     def check_body(self):
         '''Remove body cache that is a field of removed record.'''
         try:
-            dir = os.path.join(config.cache_dir, self.datfile, 'body')
+            dir = os.path.join(config.cache_dir, self.dathash, 'body')
             for idstr in listdir(dir):
                 rec = Record(datfile=self.datfile, idstr=idstr)
                 if not rec.exists():
@@ -714,7 +719,7 @@ class Cache(dict):
     def check_attach(self):
         """Remove attach cache that is a field of removed record."""
         try:
-            dir = os.path.join(config.cache_dir, self.datfile, 'attach')
+            dir = os.path.join(config.cache_dir, self.dathash, 'attach')
             for f in listdir(dir):
                 idstr = f
                 i = f.find(".")
@@ -809,8 +814,15 @@ class CacheList(list):
         sugtagtable = SuggestedTagTable()
         recentlist = RecentList()
         for i in listdir(config.cache_dir):
-            c = Cache(i, sugtagtable, recentlist)
-            self.append(c)
+            try:
+                f = open(config.cache_dir + "/" + i + "/dat.stat")
+                dat_stat = f.readlines()[0].strip()
+                f.close()
+                c = Cache(dat_stat, sugtagtable, recentlist)
+                self.append(c)
+                f.close()
+            except IOError:
+                pass
 
     def getall(self, timelimit=0):
         """Search nodes and update my cache."""
