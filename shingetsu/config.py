@@ -49,6 +49,21 @@ def _get_value(parser, section, key, default, vtype=''):
     except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
         return default
 
+def _get_version():
+    """Get Saku version for useragent and servername.
+    """
+    version = 'Unstable'
+    version_file = os.path.join(docroot, file_dir, 'version.txt')
+    if (not re.search(r'^\d', version)) and os.path.isfile(version_file):
+        try:
+            f = open(version_file)
+            version += '/svn/' + f.read().strip()
+            f.close()
+        except (IOError, OSError):
+            pass
+    return 'shinGETsu/0.7 (Saku/%s)' % version
+
+
 # External config files.
 _extconf = ConfigParser.SafeConfigParser()
 _extconf.read(['file/saku.ini',
@@ -211,7 +226,7 @@ title_limit = 30                        # Charactors
 # asis, md5, sha1, sha224, sha256, sha384, or sha512
 cache_hash_method = 'asis'
 
-version = "shinGETsu/0.7 (Saku/Unstable)"
+version = _get_version()
 
 init_node = ['node.shingetsu.info:8000/server.cgi',
              'pushare.zenno.info:8000/server.cgi']
