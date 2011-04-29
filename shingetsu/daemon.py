@@ -37,6 +37,12 @@ import httpd
 import crond
 from upnp import findrouter
 
+try:
+    import miniupnpc
+except ImportError:
+    miniupnpc = None
+    sys.stdout.write('system does not have MiniUPnPc.\n');
+
 __version__ = "$Revision$"
 
 router = None
@@ -106,13 +112,44 @@ def start_daemon():
             sys.stderr.write('IOError/OSError: %s\n' % err)
 
     global router
+    global mupnpc
     if config.use_upnp:
-        sys.stderr.write("finding router\n")
-        router = findrouter(config.upnp_timeout)
-        if router:
-            sys.stderr.write("found router: %s\n" % router)
+        if not miniupnpc:
+            sys.stderr.write("finding router\n")
+            router = findrouter(config.upnp_timeout)
+            if router:
+                sys.stderr.write("found router: %s\n" % router)
+            else:
+                sys.stderr.write("Error: faild to find router\n")
         else:
-            sys.stderr.write("Error: faild to find router\n")
+            mupnpc = miniupnpc.UPnP()
+            mupnpc.discoverdelay = config.upnp_timeout
+            sys.stderr.write("finding router with MiniUPnPc\n")
+            try:
+                rcout = mupnpc.discover()
+            except Exception, e:
+                mupnpc = None
+            if rcout >= 1:
+                try:
+                    raddr = mupnpc.selectigd()
+                except Exception, e:
+                    raddr = None
+                    mupnpc = None
+                if raddr:
+                    sys.stderr.write("sending router openport %d: %s\n" % (config.port, raddr))
+                    try:
+                        opr = mupnpc.addportmapping(config.port, 'TCP', mupnpc.lanaddr, config.port, 'shinGETsu saku', '')
+                    except Exception, e:
+                        opr = None
+                        mupnpc = None
+                    if opr:
+                        sys.stderr.write("openport succeed: %s\n" % raddr)
+                    else:
+                        sys.stderr.write("Error: openport failed\n")
+                else:
+                    sys.stderr.write("Error: faild to find router\n")
+            else:
+                sys.stderr.write("Error: faild to find router\n")
 
     crondaemon = crond.Crond(router)
     crondaemon.setDaemon(True)
@@ -125,11 +162,17 @@ def start_daemon():
     return httpdaemon
 
 def stop_daemon():
-    if router:
-        sys.stderr.write("sending router closeport %d: %s\n" %
-                         (config.port, router))
-        flag = router.closeport(config.port, "TCP")
-        if flag:
-            sys.stderr.write("closeport succeed: %s\n" % router)
-        else:
-            sys.stderr.write("Error: closeport failed: %s\n" % router)
+    if not miniupnpc:
+        if router:
+            sys.stderr.write("sending router closeport %d: %s\n" %
+                             (config.port, router))
+            flag = router.closeport(config.port, "TCP")
+            if flag:
+                sys.stderr.write("closeport succeed: %s\n" % router)
+            else:
+                sys.stderr.write("Error: closeport failed: %s\n" % router)
+    else:
+        if mupnpc:
+            sys.stderr.write("sending router closeport %d\n" % config.port)
+            mupnpc.deleteportmapping(config.port, 'TCP')
+            sys.stderr.write("closeport succeed: %s\n" % mupnpc.selectigd())
