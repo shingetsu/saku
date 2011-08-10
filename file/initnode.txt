@@ -6,7 +6,7 @@
 #
 node.shingetsu.info:8000/server.cgi
 pushare.zenno.info:8000/server.cgi
-rep4649.ddo.jp:80/server.cgi
+rep4649.ddo.jp:8000/server.cgi
 skaphy.dyndns.info:8039/saku/server.cgi
 sg.r00tz0n3.com:49494/server.cgi
 
