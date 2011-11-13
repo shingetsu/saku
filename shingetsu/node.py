@@ -284,7 +284,7 @@ class RawNodeList(list):
 
     def __init__(self, filepath, caching=False):
         """Load list form file."""
-        self.tiedlist = tiedlist(filepath, Node, True)
+        self.tiedlist = tiedlist(filepath, Node, caching)
         list.__init__(self, self.tiedlist.data)
         random.shuffle(self)
 

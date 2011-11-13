@@ -21,7 +21,7 @@ exe:
 	python setup-win.py py2exe
 
 version:
-	svn info | awk '/^Revision: / {print $$2}' > file/version.txt
+	env LANG=C svn info | awk '/^Revision: / {print $$2}' > file/version.txt
 
 check:
 	sh tests/runtests.sh

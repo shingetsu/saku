@@ -42,6 +42,16 @@ lock = RLock()
 
 _cache = {}
 
+
+def reset():
+    try:
+        lock.acquire(True)
+        global _cache
+        _cache = {}
+    finally:
+        lock.release()
+
+
 class ListFile:
     '''File includes list.
 
@@ -74,7 +84,8 @@ class ListFile:
                         self.data.append(line.strip())
         except (IOError, OSError), err:
             sys.stderr.write('%s: %s\n' % (self.path, err))
-        if caching and (self.path not in _cache):
+        if caching and (self.path not in _cache) \
+                   and os.path.isfile(self.path):
             _cache[self.path] = self
 
     def __iter__(self):
