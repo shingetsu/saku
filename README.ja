@@ -3,6 +3,7 @@
 
 Author(s):
   (main)            Satoshi Fukutomi <fuktommy@shingetsu.info>
+                    sbwhitecap
 Contributer(s):
   (run_cgi)         Python Software Foundation.
   (SimpleGzipFile)  Python Software Foundation.
@@ -16,8 +17,7 @@ Contributer(s):
   (moonlight)       A shinGETsu user.
 
 WebSite:
-  http://shingetsu.info/
-  http://sourceforge.net/projects/shingetsu/
+  http://www.shingetsu.info/
 
 
 Sakuは Shingetsu Another Keen Utility の略です。

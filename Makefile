@@ -1,13 +1,11 @@
 #
 # Makefile
-# Copyright (C) 2005-2011 shinGETsu Project.
-#
-# $Id$
+# Copyright (C) 2005-2012 shinGETsu Project.
 #
 
 PREFIX = /usr/local
 PACKAGE_DIR = ..
-PACKAGE = saku-svn$(shell cat file/version.txt)
+PACKAGE = saku-git$(shell cat file/version.txt)
 
 .PHONY: all install exe version check clean distclean package
 
@@ -21,7 +19,7 @@ exe:
 	python setup-win.py py2exe
 
 version:
-	env LANG=C svn info | awk '/^Revision: / {print $$2}' > file/version.txt
+	env LANG=C git log -n 1| ./tool/git2ver.sh > file/version.txt
 
 check:
 	sh tests/runtests.sh
@@ -39,5 +37,6 @@ distclean: clean
 package: distclean version
 	-rm -Rf $(PACKAGE_DIR)/$(PACKAGE).tar.gz $(PACKAGE_DIR)/$(PACKAGE)
 	rsync -Ca . $(PACKAGE_DIR)/$(PACKAGE)
+	-rm -Rf $(PACKAGE_DIR)/$(PACKAGE)/.git*
 	tar -zcf $(PACKAGE_DIR)/$(PACKAGE).tar.gz -C $(PACKAGE_DIR) $(PACKAGE)
 	-rm -Rf $(PACKAGE_DIR)/$(PACKAGE)

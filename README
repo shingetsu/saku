@@ -3,6 +3,7 @@ Saku - a clone of P2P anonymous BBS shinGETsu
 
 Author(s):
   (main)            Satoshi Fukutomi <fuktommy@shingetsu.info>
+                    sbwhitecap
 Contributer(s):
   (run_cgi)         Python Software Foundation.
   (SimpleGzipFile)  Python Software Foundation.
@@ -16,8 +17,7 @@ Contributer(s):
   (moonlight)       A shinGETsu user.
 
 WebSite:
-  http://shingetsu.info/
-  http://sourceforge.net/projects/shingetsu/
+  http://www.shingetsu.info/
 
 
 Saku stands for ``Shingetsu Another Keen Utility''.
@@ -106,5 +106,3 @@ Both the word ``saku'' and ``shingetsu'' mean the new moon in Japanese.
     (http://sonic64.com/2005-03-16.html)
 (6) UPnP module was made reffring to Beta-Endorphin.
     (http://www.aa.alpha-net.ne.jp/bosuke/trash/upnp.htm)
-
-$Id$

@@ -1,7 +1,7 @@
 """Saku Configuration.
 """
 #
-# Copyright (c) 2005-2011 shinGETsu Project.
+# Copyright (c) 2005-2012 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,15 +25,12 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import re
 import sys
 import os.path
 import ConfigParser
 
-__version__ = "$Revision$"
 
 def _get_value(parser, section, key, default, vtype=''):
     """Get config value or default value."""
@@ -57,7 +54,7 @@ def _get_version():
     if (not re.search(r'^\d', version)) and os.path.isfile(version_file):
         try:
             f = open(version_file)
-            version += '/svn/' + f.read().strip()
+            version += '/git/' + f.read().strip()
             f.close()
         except (IOError, OSError):
             pass
