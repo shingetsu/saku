@@ -19,7 +19,7 @@ exe:
 	python setup-win.py py2exe
 
 version:
-	env LANG=C git log -n 1| ./tool/git2ver.sh > file/version.txt
+	./tool/git2ver.sh > file/version.txt
 
 check:
 	sh tests/runtests.sh
