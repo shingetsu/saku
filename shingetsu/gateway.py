@@ -1,7 +1,7 @@
 """Saku Gateway base module.
 """
 #
-# Copyright (c) 2005-2011 shinGETsu Project.
+# Copyright (c) 2005-2012 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,8 +24,6 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
-#
-# $Id$
 #
 
 import cgi
@@ -545,6 +543,8 @@ class CGI(basecgi.CGI):
     def make_list_item(self, cache,
                        remove=True, target='changes', search=False):
         x = self.file_decode(cache.datfile)
+        if not x:
+            return ''
         y = self.str_encode(x)
         u = unicode(x, 'utf-8', 'replace')
         if self.filter and (not self.filter.search(u)):
