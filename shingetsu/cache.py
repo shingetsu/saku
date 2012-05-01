@@ -1,7 +1,7 @@
 """Cache of Saku BBS.
 """
 #
-# Copyright (c) 2005-2011 shinGETsu Project.
+# Copyright (c) 2005-2012 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,8 +24,6 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
-#
-# $Id$
 #
 
 import base64
@@ -52,7 +50,6 @@ except ImportError:
     PIL = None
     sys.stdout.write('system does not have PIL.\n');
 
-__version__ = '$Revision$'
 __all__ = ['Record', 'Cache', 'CacheList', 'UpdateList', 'RecentList']
 
 lock = RLock()
@@ -106,7 +103,7 @@ class Record(dict):
             try:
                 self.stamp = int(buf[0])
                 self.id = buf[1]
-            except ValueError:
+            except (ValueError, IndexError):
                 sys.stderr.write('%s: bad format\n' % idstr)
                 pass
         self.setpath()
