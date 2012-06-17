@@ -20,13 +20,13 @@
   #end for
 #end if
 <li><a href="$mobile_cgi">$message['mobile']</a></li>
-<li><a href="http://shingetsu.info/">$message['site']</a></li>
+<li><a href="http://www.shingetsu.info/">$message['site']</a></li>
 <li><a href="$gateway_cgi/motd">$message['agreement']</a></li>
 <li><a href="$gateway_cgi/rss">$message['rss']</a></li>
 </ul>
 
 #if (not $cachelist) and ($isfriend or $isadmin)
-  <p><em>$gateway_link($gateway_cgi, 'recent')</em></p>
+  <p><em style="font-size:x-large">$gateway_link($gateway_cgi, 'recent')</em></p>
 #end if
 
 <h2>$message['recent_changes']</h2>
@@ -41,7 +41,7 @@
 #if $taglist
   <h2>$message['tag']</h2>
 #end if
-<p class="tags">
+<p class="tags" style="margin-bottom: 2em;">
 #for $t in $taglist
   <a href="$gateway_cgi/$target?tag=$str_encode($t)" class="tag">$t</a>
 #end for

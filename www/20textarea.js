@@ -1,14 +1,9 @@
 /* -*- coding: utf-8 -*-
-  * Text Area Conttoller.
- * Copyright (C) 2006-2010 shinGETsu Project.
- * $Id$
+ * Text Area Conttoller.
+ * Copyright (C) 2006-2012 shinGETsu Project.
  */
 
-shingetsu.addInitializer(function () {
-    var form = document.getElementById('postarticle');
-    if (! form) {
-        return;
-    }
+shingetsu.initialize(function () {
     var msg_spread = 'Spread';
     var msg_reduce = 'Reduce';
     var msg_preview = 'Preview';
@@ -20,40 +15,47 @@ shingetsu.addInitializer(function () {
         msg_edit = '編集再開';
     }
 
-    function addEvent(obj, func) {
-        if (obj.addEventListener) {
-            obj.addEventListener('click', func, false);
-        } else if (a.attachEvent) {
-            obj.attachEvent('onclick', func);
+    var textArea = $('#body');
+    var textAreaContainer = textArea.parent();
+    var buttonContainer = $('<div>');
+    textArea.before(buttonContainer);
+    buttonContainer.addClass('post-advanced');
+
+    function TextAreaController(textArea, button) {
+        this._textArea = textArea;
+        this._button = button;
+        this._isBigSize = false;
+    }
+
+    TextAreaController.prototype.toggle = function (event) {
+        event.preventDefault();
+        if (this._isBigSize) {
+            this._reduce();
+        } else {
+            this._spread();
         }
-    }
+    };
 
-    function removeEvent(obj, func) {
-        if (obj.removeEventListener) {
-            obj.removeEventListener('click', func, false);
-        } else if (a.detachEvent) {
-            obj.detachEvent('onclick', func);
-        }
-    }
+    TextAreaController.prototype._spread = function () {
+        this._textArea.attr('rows', 30).css('width', '90%');
+        this._button.text(msg_reduce);
+        this._isBigSize = true;
+    };
 
-    function spreadMsg() {
-        form.body.rows = 30;
-        form.body.style.width = '90%';
-        var a = document.getElementById('textsize');
-        a.innerHTML = '[' + msg_reduce + ']';
-        removeEvent(a, spreadMsg);
-        addEvent(a, reduceMsg);
-    }
+    TextAreaController.prototype._reduce = function () {
+        this._textArea.attr('rows', 7).css('width', '');
+        this._button.text(msg_spread);
+        this._isBigSize = false;
+    };
 
-    function reduceMsg() {
-        form.body.style.width = '';
-        form.body.rows = 5;
-        form.body.cols = 70;
-        var a = document.getElementById('textsize');
-        a.innerHTML = '[' + msg_spread + ']';
-        removeEvent(a, reduceMsg);
-        addEvent(a, spreadMsg);
-    }
+    var sizeButton = $('<button>');
+    buttonContainer.append(sizeButton);
+    sizeButton.text(msg_spread).addClass('btn');
+    
+
+    var textAreaController = new TextAreaController(textArea, sizeButton);
+    sizeButton.click(function (e) { textAreaController.toggle(e) } );
+
 
     function html_format(message) {
         var e = document.all? 'null': 'event';
@@ -84,67 +86,51 @@ shingetsu.addInitializer(function () {
         return message;
     }
 
-    function showPreview() {
-        var a = document.getElementById('previewctrl');
-        var area = document.getElementById('preview');
-        var message = form.body.value;
-        var textsize = document.getElementById('textsize');
-        var ref = document.getElementById('resreferrer');
-        message = html_format(message);
-        form.body.style.display = 'none';
-        textsize.style.display = 'none';
-        if (ref) {
-            ref.style.display = 'none';
-        }
-        if (document.all) {
-            area.innerHTML = '<pre>' + message + '</pre>'
+
+    function PreviewController(textArea, previewArea, button, textAreaFriends) {
+        this._textArea = textArea;
+        this._previewArea = previewArea;
+        this._textAreaFriends = textAreaFriends;
+        this._button = button;
+        this._isPreview = false;
+    }
+
+    PreviewController.prototype.toggle = function (event) {
+        event.preventDefault();
+        if (this._isPreview) {
+            this._hide();
         } else {
-            area.innerHTML = '<p>' + message + '</p>'
+            this._show();
         }
-        area.style.display = 'block';
-        a.innerHTML = '[' + msg_edit + ']';
-        removeEvent(a, showPreview);
-        addEvent(a, hidePreview);
-    }
+    };
 
-    function hidePreview() {
-        var a = document.getElementById('previewctrl');
-        var area = document.getElementById('preview');
-        var textsize = document.getElementById('textsize');
-        var ref = document.getElementById('resreferrer');
-        area.style.display = 'none';
-        form.body.style.display = 'inline';
-        textsize.style.display = 'inline';
-        if (ref) {
-            ref.style.display = 'inline';
-        }
-        a.innerHTML = '[' + msg_preview + ']';
-        removeEvent(a, hidePreview);
-        addEvent(a, showPreview);
-    }
+    PreviewController.prototype._show = function () {
+        $.each(this._textAreaFriends, function (i, v) { v.hide() });
+        this._textArea.hide();
+        var message = html_format(this._textArea.val());
+        this._previewArea.html(message).show();
+        console.log(this._previewArea);
+        this._button.text(msg_edit);
+        this._isPreview = true;
+    };
 
-    var p = form.getElementsByTagName('p')[0];
-    var br = p.getElementsByTagName('br')[2];
+    PreviewController.prototype._hide = function () {
+        $.each(this._textAreaFriends, function (i, v) { v.show() });
+        this._textArea.show();
+        this._previewArea.hide();
+        this._button.text(msg_preview);
+        this._isPreview = false;
+    };
 
-    // Preview
-    var span = document.createElement('span');
-    span.innerHTML = ' <a href="" id="previewctrl" name="previewctrl"' +
-                     ' onclick="return false;" onkeypress="return false;">[' +
-                     msg_preview  + ']</a>'
-    p.insertBefore(span, br);
-    var preview = document.createElement('div');
-    preview.id = 'preview';
-    preview.style.display = 'none';
-    form.appendChild(preview);
-    var a = document.getElementById('previewctrl');
-    addEvent(a, showPreview);
+    var previewButton = $('<button>');
+    buttonContainer.append(previewButton);
+    previewButton.text(msg_preview).addClass('btn');
 
-    // Text area size
-    span = document.createElement('span');
-    span.innerHTML = ' <a href="" id="textsize" name="textsize"' +
-                     ' onclick="return false;" onkeypress="return false;">[' +
-                     msg_spread  + ']</a>'
-    p.insertBefore(span, br);
-    a = document.getElementById('textsize');
-    addEvent(a, spreadMsg);
+    var previewArea = $('<pre>').hide();
+    previewArea.id = 'preview';
+    buttonContainer.after(previewArea);
+    var textAreaFriends = [$('#resreferrer'), sizeButton];
+
+    var previewController = new PreviewController(textArea, previewArea, previewButton, textAreaFriends);
+    previewButton.click(function (e) { previewController.toggle(e) } );
 });

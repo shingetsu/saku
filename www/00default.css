@@ -1,22 +1,12 @@
 /* Saku Default CSS
- * Copyright (c) 2005-2011 shinGETsu Project.
- * $Id$
+ * Copyright (c) 2005-2012 shinGETsu Project.
  */
 body {
     background-color: #fff;
 }
-ul {
-    list-style: none;
-}
 h1, h1 a {
     color: #00e;
     text-decoration: none;
-}
-em {
-    font-size: x-large;
-}
-strong {
-    font-size: x-large;
 }
 dt {
     background-color: #ccf;
@@ -24,8 +14,9 @@ dt {
 dd {
     margin-bottom: 1em;
 }
-address {
+div.address {
     text-align: center;
+    font-style: italic;
 }
 a:hover {
     color: #000;
@@ -38,20 +29,7 @@ a:hover {
 .sign {
     color: red;
 }
-.menu {
-    text-align: right;
-    background-color: #33a;
-    color: #fff;
-    padding: 3px;
-}
-.menu a {
-    color: #fff;
-    text-decoration: none;
-}
-table {
-    border-collapse: collapse;
-}
-td {
+table.solid td {
     border: 1px solid #ccc; 
     padding: 5px 5px 5px 1em;
     text-align: right;
@@ -64,10 +42,6 @@ td {
     padding: 5px;
     margin: 5px;
     white-space: pre;
-}
-#preview p, #preview pre {
-    margin: 0;
-    padding: 0;
 }
 ul.topmenu li { 
     display: inline;
@@ -90,25 +64,11 @@ p.tags, p.sugtags {
     margin-bottom: 0;
     margin-top: 0;
 }
-form#filterform, form#filterform p {
+form#filterform {
     margin-bottom: 0;
     padding-bottom: 0;
 }
-form#tagform, form#tagform p {
+form#tagform {
     margin-top: 0;
     padding-top: 0;
-}
-input#filtersubmit {
-    width: 8em;
-}
-input#tagsubmit {
-    width: 8em;
-}
-table.newelement {
-    margin-top: 1em;
-    border: 1px solid #ccc;
-}
-table.newelement td {
-    border: none;
-    padding: 0;
 }

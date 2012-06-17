@@ -1,11 +1,12 @@
-#* Saku Gateway Thrad Top.
- * Copyright (c) 2005-2011 shinGETsu Project.
- * $Id$
- *#
+##
+## Saku Gateway Thrad Top.
+## Copyright (c) 2005-2012 shinGETsu Project.
+##
+
 #if ($isfriend or $isadmin) and (not len($cache))
   <form method="get" action="$thread_cgi/$str_path"><p>
     <input type="hidden" name="search_new_file" value="yes" />
-    <input type="submit" value="$message['sync_from_network']" />
+    <input type="submit" value="$message['sync_from_network']" class="btn" />
   </p></form>
 #end if
 #if $isadmin

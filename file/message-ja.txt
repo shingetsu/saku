@@ -35,6 +35,7 @@ desc_search<>ディスクに保存されている掲示板から検索
 desc_error<>匿名性の保持のための機能。連続投稿するときは無効にしてください
 desc_comment<>他のノードにも通知するときには削除の理由を書いてください
 desc_send<>掲示板の最初の書き込みで、なおかつ匿名性を保ちたいときだけ無効にしてください
+show<>表示
 
 # index
 filter<>フィルタ
@@ -55,12 +56,15 @@ comment<>コメント
 post<>投稿
 mail_post<>メールで投稿(添付OK)
 mail_message<>↓この下に記事を書いてください↓
+post_body<>本文
 
 # admin
 del_file<>掲示板の削除
 del_record<>書き込みの削除
 remove<>削除
+cancel<>キャンセル
 search_new_file<>新しい掲示板を作るときに検索する
+create<>新規作成
 
 # thread
 anonymous<>名無しさん

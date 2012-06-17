@@ -3,7 +3,7 @@
  * $Id$
  */
 
-shingetsu.addInitializer(function () {
+shingetsu.initialize(function () {
     function format(n) {
         if (n < 10) {
             return '0' + n;

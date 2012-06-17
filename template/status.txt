@@ -2,7 +2,7 @@
  * Copyright (c) 2005-2007 shinGETsu Project.
  * $Id$
  *#
-<table summary="$message['status']">
+<table summary="$message['status']" class="solid">
 #for $p in $status
   <tr><td>$message[$p[0]]</td><td>$p[1]</td></tr>
 #end for

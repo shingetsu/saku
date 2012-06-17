@@ -1,6 +1,5 @@
 #* Saku Gateway Thread Record.
- * Copyright (c) 2005-2011 shinGETsu Project.
- * $Id$
+ * Copyright (c) 2005-2012 shinGETsu Project.
  *#
 #set images = ['jpg', 'gif', 'png']
 #set height = '210'
@@ -9,7 +8,7 @@
 #if $isadmin
   <input type="checkbox" name="record" value="${rec['stamp']}_$rec['id']" />
 #end if
-<a href="$thread_cgi/$str_path/$sid" class="id" id="i$sid" name="i$sid" title="Permalink">$sid</a>
+<a href="$thread_cgi/$str_path/$sid" class="id" id="i$sid" name="i$sid">$sid</a>
 #if $rec.get('name', '')
   <span class="name">$rec['name']</span>
 #else
@@ -24,7 +23,7 @@
 <span class="stamp" id="s$rec['stamp']">$localtime($rec['stamp'])</span>
 #if 'attach' in $rec
   <a href="$thread_cgi/$cache.datfile/$rec['id']/$rec['stamp'].$suffix">$rec['stamp'].$suffix</a>
-  (${int($attach_size/1024)}$message['kb'])
+  (${int($attach_size//1024)}$message['kb'])
 #end if
 </dt>
 <dd id="b$sid">$body

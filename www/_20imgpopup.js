@@ -3,9 +3,7 @@
  * $Id$
  */
 
-shingetsu.addInitializer(function () {
-    var hidePopup = new shingetsu.plugins.hidePopup;
-
+shingetsu.initialize(function () {
     function showPopupImage(coordinate, image, count) {
         if (count > 100) {
             return;
@@ -29,25 +27,13 @@ shingetsu.addInitializer(function () {
         showPopupImage(coordinate, image, 0);
     }
 
-    var anc = document.getElementsByTagName('a');
-    for (var i=0; i<anc.length; i++) {
-        if (anc[i].pathname.search(/[.](jpg|jpeg|gif|png|bmp)$/i) > 0) {
-            if (anc[i].addEventListener) {
-                anc[i].addEventListener(
-                    'mouseover',
-                    (function (_uri) {
-                        return function (e) {popupImage(e, _uri);}
-                    })(anc[i].href),
-                    false);
-                anc[i].addEventListener('mouseout', hidePopup, false);
-            } else if (anc[i].attachEvent) {
-                anc[i].attachEvent(
-                    'onmouseover',
-                    (function (_uri) {
-                        return function () {popupImage(null, _uri);}
-                    })(anc[i].href));
-                anc[i].attachEvent('onmouseout', hidePopup);
-            }
+    shingetsu.debugMode = true;
+    $('a').each (function (i, anchor) {
+        if (anchor.pathname.search(/[.](jpg|jpeg|gif|png|bmp)$/i) <= 0) {
+            return;
         }
-    }
+        var url = anchor.href;
+        $(anchor).mouseover(function (e) { popupImage(e, url) })
+                 .mouseout(function (e) { shingetsu.plugins.hidePopup() });
+    });
 });

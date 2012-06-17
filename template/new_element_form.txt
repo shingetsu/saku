@@ -1,35 +1,36 @@
-#* Saku Gateway New Element Form.
- * Copyright (c) 2005-2011 shinGETsu Project.
- * $Id$
- *#
-<form method="post" action="$cginame">
-<table class="newelement">
-<tr><td>
-<input type="hidden" name="cmd" value="new" />
-<input type="hidden" name="file" value="$datfile" />
-<input type="submit" value="$message['new']" />
-</td><td>
+##
+## Saku Gateway New Element Form.
+## Copyright (c) 2005-2012 shinGETsu Project.
+##
+<div class="row">
+<form method="post" action="$cginame" class="well form-horizontal span6">
+  <input type="hidden" name="cmd" value="new" />
+  <input type="hidden" name="file" value="$datfile" />
+  <input type="hidden" value="thread" name="type" />
 
-##for $type in $types:
-##  <input type="radio" value="$type" name="type" />$message[type]
-##end for
-<input type="hidden" value="thread" name="type" />
-</td></tr>
+  <div class="control-group">
+    <label class="control-label" for="link">$message['title']</label>
+    <div class="controls"><input name="link" maxlength="$config.title_limit" value="" id="link" /></div>
+  </div>
 
-##if parent:
-##  <input type="checkbox" name="dopost" value="dopost" checked="checked" />
-##  message["send"]
-##end for
+  #if $isadmin
+  <div class="control-group">
+    <label class="control-label" for="tag">$message['tag']</label>
+    <div class="controls">
+      <input name="tag" value="" id="tag" />
+      <div class="help-block">$message['tag_desc']</div>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="search">$message['search_new_file']</label>
+    <div class="controls">
+      <input type="checkbox" id="search" name="search_new_file" value="yes" checked="checked" />
+    </div>
+  </div>
+  #end if
 
-<tr><td>$message['title']:</td>
-<td><input name="link" size="40" maxlength="$config.title_limit" value="" />
-</td></tr>
-#if $isadmin
-<tr><td>$message['tag']:</td>
-<td><input name="tag" size="40" value="" title="$message['tag_desc']" />
-</td></tr>
-<tr><td></td>
-<td><input type="checkbox" id="search" name="search_new_file" value="yes" checked="checked" /><label for="search">$message['search_new_file']</label>
-</td></tr>
-#end if
-</table></form>
+  <div class="form-actions">
+    <input type="submit" value="$message['create']" class="btn btn-primary" />
+  </div>
+</form>
+</div>

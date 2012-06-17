@@ -1,12 +1,12 @@
-#* Saku Gateway Thread Tags.
- * Copyright (c) 2007 shinGETsu Project.
- * $Id$
- *#
+##
+## Saku Gateway Thread Tags.
+## Copyright (c) 2007,2012 shinGETsu Project.
+##
 <p class="$classname">
 #for $tag in $tags
   <a href="$gateway_cgi/$target?tag=$str_encode($tag)" class="tag">$tag</a>
 #end for
 #if ($classname == 'tags') and $isadmin
-  <a href="$admin_cgi/edittag?file=$cache.datfile">$message['edit_tag']</a>
+  <a href="$admin_cgi/edittag?file=$cache.datfile" class="btn">$message['edit_tag']</a>
 #end if
 </p>

@@ -1,45 +1,84 @@
-#* Saku Gateway Post Form.
- * Copyright (c) 2005-2007 shinGETsu Project.
- * $Id$
- *#
+##
+## Saku Gateway Post Form.
+## Copyright (c) 2005-2012 shinGETsu Project.
+##
+
 #if $isadmin
   #if $cache
-    <p><input type="submit" value="$message['del_record']" /></p>
+    <p><input type="submit" value="$message['del_record']" class="btn" /></p>
   #end if
   </form>
 #end if
 
 <form id="postarticle" name="postarticle" method="post" action="$thread_cgi"
-  enctype="multipart/form-data"><p>
-<input type="hidden" name="cmd" value="post" />
-<input type="hidden" name="file" value="$cache.datfile" />
-<input type="submit" value="$message['post']" />
-<a href="$gateway_cgi/motd">$message['agreement']</a>
+  enctype="multipart/form-data" class="well form-horizontal"><div>
 
-#if $isadmin or $isfriend
-  <input type="checkbox" id="dopost" name="dopost" value="dopost" checked="checked" />
-  <span title="$message['desc_send']"><label for="dopost">$message['send']</label></span>
-#else
-  <input type="hidden" name="dopost" value="dopost" />
-#end if
+  <input type="hidden" name="cmd" value="post" />
+  <input type="hidden" name="file" value="$cache.datfile" />
 
+  <div class="control-group post-advanced">
+    <label class="control-label" for="name">$message['name']</label>
+    <div class="controls"><input name="name" value="" id="name" /></div>
+  </div>
 
-<input type="checkbox" id="error" name="error" value="error" checked="checked" />
-<span title="$message['desc_error']"><label for="error">$message['error']</label></span><br />
-$message['name']:<input name="name" size="15" value="" />
-$message['mail']:<input name="mail" size="15" value="" />
+  <div class="control-group post-advanced">
+    <label class="control-label" for="mail">$message['mail']</label>
+    <div class="controls"><input name="mail" value="" id="mail" /></div>
+  </div>
 
-#if $isadmin
-$message['signature']:<input type="password" name="passwd" size="15" value="" />
-#end if
+  #if $isadmin
+    <div class="control-group post-advanced">
+      <label class="control-label" for="passwd">$message['signature']</label>
+      <div class="controls"><input type="password" name="passwd" value="" id="passwd" /></div>
+    </div>
+  #end if
 
-<br />
-$message['attach']:<input type="file" name="attach" size="19" value="" />
-$message['suffix']:<select name="suffix" size="1" tabindex="7">
-<option>AUTO</option>
-#for $suffix in $suffixes
-  <option>$suffix</option>
-#end for
-</select>($message['limit']: $limit$message['kb'])<br />
-<textarea rows="5" cols="70" name="body"></textarea>
-</p></form>
+  <div class="control-group">
+    <label class="control-label" for="body">$message['post_body']</label>
+    <div class="controls">
+      <textarea rows="5" name="body" id="body" class="input-xxlarge"></textarea>
+      <div class="help-block"><a href="$gateway_cgi/motd" target="_blank">$message['agreement']</a></div>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label" for="attach">$message['attach']</label>
+    <div class="controls">
+      <input type="file" name="attach" size="19" value="" id="attach" class="input-file" />
+      <div class="help-inline">$message['limit']: $limit$message['kb']</div>
+    </div>
+  </div>
+
+  <div class="control-group post-advanced">
+    <label class="control-label" for="suffix">$message['suffix']</label>
+    <div class="controls">
+      <select name="suffix" size="1" id="suffix">
+        <option>AUTO</option>
+        #for $suffix in $suffixes
+          <option>$suffix</option>
+        #end for
+      </select>
+    </div>
+  </div>
+
+  <div class="control-group post-advanced">
+    <label class="control-label" for="dopost">$message['send']</label>
+    <div class="controls"><label>
+      <input type="checkbox" id="dopost" name="dopost" value="dopost" checked="checked" />
+      <div class="help-inline">$message['desc_send']</div>
+    </label></div>
+  </div>
+
+  <div class="control-group post-advanced">
+    <label class="control-label" for="error">$message['error']</label>
+    <div class="controls"><label>
+      <input type="checkbox" id="error" name="error" value="error" checked="checked" />
+      <div class="help-inline">$message['desc_error']</div>
+    </label></div>
+  </div>
+
+  <div class="form-actions">
+    <input type="submit" value="$message['post']" class="btn btn-primary" />
+  </div>
+
+</div></form>

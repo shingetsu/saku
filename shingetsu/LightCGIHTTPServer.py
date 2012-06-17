@@ -1,7 +1,7 @@
 """Tiny HTTP server supporting threading CGI.
 """
 #
-# Copyright (c) 2005,2006 shinGETsu Project.
+# Copyright (c) 2005-2012 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,13 +25,11 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import os
 import re
 import sys
-import urllib
+import urllib2
 import BaseHTTPServer
 import CGIHTTPServer
 import SocketServer
@@ -48,8 +46,6 @@ cgimodule = {"admin.cgi": admin_cgi,
              "gateway.cgi": gateway_cgi,
              "thread.cgi": thread_cgi,
              "mobile.cgi": mobile_cgi}
-
-__version__ = "$Revision$"
 
 
 class ConnectionCounter:
@@ -126,10 +122,11 @@ class HTTPRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         self.log_message("%s", "<>".join(buf))
 
     def log_message(self, format, *args):
-        sys.stderr.write("%s<>%s<>%s\n" %
+        proxy_client = self.headers.get('X-Forwarded-For', 'direct')
+        sys.stderr.write('%s<>%s<>%s\n' %
                          (self.address_string(),
-                          self.log_date_time_string(),
-                          format%args))
+                          proxy_client,
+                          format % args))
 
     def run_cgi(self):
         """Execute a CGI script in this process.
@@ -162,7 +159,7 @@ class HTTPRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         env['SERVER_PROTOCOL'] = self.protocol_version
         env['SERVER_PORT'] = str(self.server.server_port)
         env['REQUEST_METHOD'] = self.command
-        uqrest = urllib.unquote(rest)
+        uqrest = urllib2.unquote(rest)
         env['PATH_INFO'] = uqrest
         env['PATH_TRANSLATED'] = self.translate_path(uqrest)
         env['SCRIPT_NAME'] = scriptname
@@ -212,12 +209,14 @@ class HTTPRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
             self.headers.get("Accept-Encoding", "")
         env["HTTP_HOST"] = self.headers.get('host', '')
         env["HTTP_REFERER"] = self.headers.get("Referer", "")
+        if 'X-Forwarded-For' in self.headers:
+            env['HTTP_X_FORWARDED_FOR'] = self.headers['X-Forwarded-For']
 
         # import CGI module
         try:
             cgiclass = cgimodule[script].CGI
         except KeyError:
-            self.send_error(404, "No such CGI script (%s)" % `scriptname`)
+            self.send_error(404, "No such CGI script (%s)" % repr(scriptname))
             return
         self.send_response(200, "Script output follows")
 

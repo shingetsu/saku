@@ -1,7 +1,7 @@
 '''Saku Thread CGI methods.
 '''
 #
-# Copyright (c) 2005-2011 shinGETsu Project.
+# Copyright (c) 2005-2012 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,8 +25,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import cgi
 import mimetypes
@@ -43,7 +41,6 @@ from tag import UserTagList
 
 import os.path
 
-__version__ = "$Revision$"
 
 
 class CGI(gateway.CGI):
@@ -161,6 +158,9 @@ class CGI(gateway.CGI):
         self.archive_uri = '%s%s/' % (config.archive_uri,
                                       md5.new(file_path).hexdigest())
         cache = Cache(file_path)
+        if id and form.getfirst('ajax'):
+            self.print_thread_ajax(path, id, form)
+            return
         if cache.has_record():
             pass
         elif self.check_get_cache():
@@ -242,8 +242,22 @@ class CGI(gateway.CGI):
         self.print_post_form(cache)
         self.print_tags(cache)
         self.remove_file_form(cache, escaped_path)
-        self.stdout.write(self.menubar('bottom', rss))
-        self.footer()
+        self.footer(menubar=self.menubar('bottom', rss))
+
+    def print_thread_ajax(self, path, id, form):
+        self.stdout.write('Content-Type: text/html; charset=UTF-8\n\n')
+        str_path = self.str_encode(path)
+        file_path = self.file_encode('thread', path)
+        cache = Cache(file_path)
+        if not cache.has_record():
+            return
+        self.stdout.write('<dl>\n')
+        for k in cache.keys():
+            rec = cache[k]
+            if ((not id) or (rec.id[:8] == id)) and rec.load_body():
+                self.print_record(cache, rec, path, str_path)
+            rec.free()
+        self.stdout.write('</dl>\n')
 
     def print_record(self, cache, rec, path, str_path):
         thumbnail_size = None

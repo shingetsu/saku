@@ -3,7 +3,7 @@
  * $Id$
  */
 
-shingetsu.addInitializer(function () {
+shingetsu.initialize(function () {
     if (location.pathname.search('/admin.cgi/edittag') != 0) {
         return;
     }

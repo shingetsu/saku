@@ -1,7 +1,7 @@
 '''daemon.py - SAKU daemon module.
 '''
 #
-# Copyright (c) 2005,2006 shinGETsu Project.
+# Copyright (c) 2005-2012 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,10 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import os
 import sys
-import time
+from datetime import datetime
 
 import config
 import httpd
@@ -43,32 +41,38 @@ except ImportError:
     miniupnpc = None
     sys.stdout.write('system does not have MiniUPnPc.\n');
 
-__version__ = "$Revision$"
 
 router = None
 
 class Logger:
 
-    """Save logs to /LOGDIR/%Y-%m-%d."""
+    """Save logs to /LOGDIR/%Y-%m-%d.
+    """
 
     def __init__(self, logdir, additional=None):
         self.logdir = logdir
-        self.logfile = ""
+        self.logfile = ''
         self.output = None
         self.output2 = additional
+        self.lastline = '\n'
 
     def write(self, msg):
-        newlog = self.logdir + "/" + \
-                 time.strftime("%Y-%m-%d", time.localtime())
+        now = datetime.now()
+        newlog = os.path.join(self.logdir, now.strftime('%Y-%m-%d'))
+        if self.lastline.endswith('\n'):
+            msg = '%s<>%s' % (now.strftime('%Y-%m-%d %H:%M:%S'), msg)
+        self.lastline = msg
+
         if self.logfile == newlog:
             pass
-        elif self.logfile == "":
+        elif self.logfile == '':
             self.logfile = newlog
-            self.output = file(self.logfile, "a")
+            self.output = file(self.logfile, 'a')
         else:
             self.output.close()
             self.logfile = newlog
-            self.output = file(self.logfile, "a")
+            self.output = file(self.logfile, 'a')
+
         self.output.write(msg)
         self.output.flush()
         if self.output2:

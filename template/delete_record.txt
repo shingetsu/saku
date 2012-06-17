@@ -1,24 +1,44 @@
-#* Saku Gateway Delete Record Page.
- * Copyright (c) 2005-2007 shinGETsu Project.
- * $Id$
- *#
-<p>$message['del_record_q']</p>
-<form method="post" action="$admin_cgi"><p>
-<input type="hidden" name="cmd" value="xrdel" />
-<input type="hidden" name="file" value="$datfile" />
-<input type="hidden" name="sid" value="$sid" />
-<input type="submit" value="$message['remove']" />
-#if len($records) == 1
-  <input type="checkbox" name="dopost" value="dopost" />$message['send']<br />
-  $message['name']:<input name="name" size="15" value="" />
-  $message['signature']:<input type="password" name="passwd" size="15" value="" />
-  $message['comment']:<input name="body" size="40" value="" title="$message['desc_comment']" />
-#end if
-</p>
+##
+## Saku Gateway Delete Record Page.
+## Copyright (c) 2005-2012 shinGETsu Project.
+##
+<form method="post" action="$admin_cgi" class="form-horizontal"><div class="well">
+  <input type="hidden" name="cmd" value="xrdel" />
+  <input type="hidden" name="file" value="$datfile" />
+  <input type="hidden" name="sid" value="$sid" />
+  #if len($records) == 1
+    <div class="control-group">
+      <label class="control-label" for="dopost">$message['send']</label>
+      <div class="controls">
+        <input type="checkbox" name="dopost" value="dopost" id="dopost" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="name">$message['name']</label>
+      <div class="controls"><input name="name" value="" id="name" /></div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="passwd">$message['signature']</label>
+      <div class="controls"><input type="password" name="passwd" alue="" id="passwd" /></div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="body">$message['comment']</label>
+      <div class="controls">
+        <input name="body" size="40" value="" id="body" />
+        <div class="help-block">$message['desc_comment']</div>
+      </div>
+    </div>
+  #end if
+  <div class="form-actions">
+    <input type="submit" value="$message['remove']" class="btn btn-danger" />
+    <a href="javascript:history.back();" class="btn">$message['cancel']</a>
+  </div>
+  </div>
+
 #for $rec in $records
   #if $rec.exists()
-    <p><input type="checkbox" checked="checked" name="record" value="$rec.idstr" />
-    $getbody($rec)</p>
+    <p><label><input type="checkbox" checked="checked" name="record" value="$rec.idstr" />
+    $getbody($rec)</label></p>
   #else
     <p>$message['no_record']</p>
   #end if

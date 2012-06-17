@@ -1,15 +1,17 @@
-#* Saku Gateway Index List.
- * Copyright (c) 2005-2011 shinGETsu Project.
- * $Id$
- *#
+##
+## Saku Gateway Index List.
+## Copyright (c) 2005-2012 shinGETsu Project.
+##
 #if $target
-  <form method="get" action="$gateway_cgi/$target" id="filterform"><p>
-  <input type="submit" value="$message['filter']" id="filtersubmit" />
-  <input name="filter" size="40" value="$filter" /> ($message['regexp'])
-  </p></form>
-  <form method="get" action="$gateway_cgi/$target" id="tagform"><p>
-  <input type="submit" value="$message['tag']" id="tagsubmit" />
-  <input name="tag" size="40" value="$tag" /> ($message['string'])
+  <form method="get" action="$gateway_cgi/$target" id="filterform" class="form-search"><div>
+    <label>$message['filter'] ($message['regexp'])<br />
+    <input name="filter" value="$filter" class="search-query" /></label>
+    <button class="btn"><i class="icon-search"></i> $message['show']</button>
+  </div></form>
+  <form method="get" action="$gateway_cgi/$target" id="tagform" class="form-search"><div>
+    <label>$message['tag'] ($message['string'])<br />
+    <input name="tag" value="$tag" class="search-query" /></label>
+    <button class="btn"><i class="icon-tag"></i> $message['show']</button>
   </p></form>
 #end if
 
@@ -35,11 +37,11 @@
 #end for
 
 #if $isadmin:
-  <p><input type="submit" value="$message['del_file']" /></p>
+  <p><input type="submit" value="$message['del_file']" class="btn" /></p>
   </form>
 #end if
 
 #if $target:
   #set $cols = 'file,stamp,date,path,uri,type,title,records,size,tag,sugtag'
-  <p><a href="$gateway_cgi/csv/$target/$cols">CSV</a></p>
+  <p><a href="$gateway_cgi/csv/$target/$cols" class="btn">CSV</a></p>
 #end if

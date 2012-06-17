@@ -25,3 +25,6 @@ SUCH DAMAGE.
 
 See also
  * Cheetah/LICENSE
+ * www/bootstrap/css/bootstrap.min.css
+ * www/html5js/html5.js
+ * www/jquery/jquery.min.js

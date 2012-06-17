@@ -1,9 +1,9 @@
-/* Jump New Posts.
- * Copyright (C) 2006,2010 shinGETsu Project.
- * $Id$
+/*
+ * Jump New Posts.
+ * Copyright (C) 2006-2012 shinGETsu Project.
  */
 
-shingetsu.addInitializer(function () {
+shingetsu.initialize(function () {
     var lastpage = location.pathname.search(/^\/?thread.cgi\/[^\/]+$/) == 0;
 
     function removeCookie() {

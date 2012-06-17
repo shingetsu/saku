@@ -47,8 +47,6 @@ from tag import *
 from template import Template
 from updatequeue import UpdateQueue
 
-__version__ = "$Revision$"
-
 
 class Message(dict):
 
@@ -139,6 +137,7 @@ class CGI(basecgi.CGI):
             al = ""
         self.message = search_message(al)
         addr = self.environ.get("REMOTE_ADDR", "")
+        self.remoteaddr = addr
         self.isadmin = config.re_admin.search(addr)
         self.isfriend = config.re_friend.search(addr)
         self.isvisitor = config.re_visitor.search(addr)
@@ -258,8 +257,8 @@ class CGI(basecgi.CGI):
         }
         self.stdout.write(self.template('header', var))
 
-    def footer(self):
-        self.stdout.write(self.template('footer'))
+    def footer(self, menubar=None):
+       self.stdout.write(self.template('footer', {'menubar': menubar}))
 
     def localtime(self, stamp=0):
         """Return YYYY-mm-dd HH:MM."""
@@ -491,6 +490,11 @@ class CGI(basecgi.CGI):
         rec = Record(datfile=cache.datfile)
         passwd = form.getfirst("passwd", "")
         id = rec.build(stamp, body, passwd=passwd)
+
+        proxy_client = self.environ.get('HTTP_X_FORWARDED_FOR', 'direct')
+        self.stderr.write('post %s/%d_%s from %s/%s\n' %
+                          (cache.datfile, stamp, id,
+                           self.remoteaddr, proxy_client))
 
         if len(rec.recstr) > config.record_limit*1024:
             self.header(self.message['big_file'], deny_robot=True)

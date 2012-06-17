@@ -42,6 +42,7 @@ regexp<>RegExp
 tag<>Tag
 string<>String
 tag_desc<>Input tags splitting by space. Do not use &lt;, &gt;, and &amp;.
+show<>show
 
 # post
 send<>Send to other nodes
@@ -55,12 +56,15 @@ comment<>Comment
 post<>POST
 mail_post<>Post with mail
 mail_message<>Write message from next line
+post_body<>Post text
 
 # admin
 del_file<>DELETE BBS
 del_record<>DELETE ARTICLE
 remove<>remove
+cancel<>cancel
 search_new_file<>Search when make new BBS
+create<>create
 
 # thread
 anonymous<>anonymous

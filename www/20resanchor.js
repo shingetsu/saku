@@ -1,64 +1,71 @@
 /* Popup Res Anchor.
- * Copyright (C) 2005-2010 shinGETsu Project.
- * $Id$
+ * Copyright (C) 2005-2012 shinGETsu Project.
  */
 
-shingetsu.plugins.popupAnchor = function (e, aid) {
-    var dt = document.getElementById("r" + aid);
-    var dd = document.getElementById("b" + aid);
-    if (! (dt && dd)) {
-        return
-    }
-    dt = dt.innerHTML;
-    var re = new RegExp("</?(input|a)[^<>]*>", "ig");
-    dt = dt.replace(re, "");
+shingetsu.initialize(function () {
+    var ajaxCache = {};
 
-    dd = dd.innerHTML;
-    re = new RegExp("(<br[^<>]*>\\s*)*$", "i");
-    dd = dd.replace(re, "");
-
-    var coordinate = new shingetsu.plugins.Coordinate(e);
-    var dl = document.createElement('dl');
-    dl.innerHTML = '<dt>'+dt+'</dt><dd>'+dd+'</dd>';
-    shingetsu.plugins.showPopup(coordinate, [dl]);
-}
-
-shingetsu.addInitializer(function () {
-    function jump(aid) {
-        location.hash = '#r' + aid;
-        return false;
-    }
-
-    var popupAnchor = shingetsu.plugins.popupAnchor;
-    var hidePopup = shingetsu.plugins.hidePopup;
-
-    var anc = document.getElementsByTagName('a');
-    for (var i=0; i<anc.length; i++) {
-        if ((anc[i].className == 'innerlink') &&
-            (anc[i].href.search(/([0-9a-f]{8})/) > 0)) {
-            var id = RegExp.$1;
-            if (anc[i].addEventListener) {
-                anc[i].addEventListener(
-                    'mouseover',
-                    (function (_id) {
-                        return function (event) {popupAnchor(event, _id);}
-                    })(id),
-                    false);
-                anc[i].addEventListener('mouseout', hidePopup, false);
-            } else if (anc[i].attachEvent) {
-                anc[i].attachEvent(
-                    'onmouseover',
-                    (function (_id) {
-                        return function () {popupAnchor(null, _id);}
-                    })(id));
-                anc[i].attachEvent('onmouseout', hidePopup);
+    shingetsu.plugins.popupAnchor = function (e, aid) {
+        function doPopup(coordinate, html) {
+            html = html.replace(new RegExp('</?(input|a)[^<>]*>', 'ig'), '')
+                       .replace(new RegExp('(<br[^<>]*>\\s*)*$', 'i'), '');
+            if (html.search(/<dt/) < 0) {
+                html = '<div>Error or Not Found</div>';
             }
-            if (document.getElementById('r' + id)) {
-                anc[i].onclick =
-                    (function (_id) {
-                        return function () {jump(_id); return false; }
-                    })(id);
-            }
+            shingetsu.plugins.showPopup(coordinate, html);
         }
+
+        function popupInner(coordinate, dt, dd) {
+            var html = '<dl><dt>' + dt.html() + '</dt><dd>' + dd.html() + '</dd></dl>';
+            doPopup(coordinate, html);
+        }
+
+        function popupAjax(coordinate, aid) {
+            if (ajaxCache[aid]) {
+                doPopup(coordinate, ajaxCache[aid]);
+                return;
+            }
+            shingetsu.plugins.showPopup(coordinate, '<div>Loading...</div>');
+            $.ajax({
+                url: e.currentTarget.href + '?ajax=true',
+                dataType: 'html',
+                success: function (html) { 
+                    ajaxCache[aid] = html;
+                    doPopup(coordinate, html);
+                }
+            });
+        }
+
+        var coordinate = new shingetsu.plugins.Coordinate(e);
+        var dt = $('#r' + aid);
+        var dd = $('#b' + aid);
+        if (dt.length && dd.length) {
+            popupInner(coordinate, dt, dd);
+        } else {
+            popupAjax(coordinate, aid);
+        }
+    };
+
+    function tryJump(event, id) {
+        shingetsu.plugins.hidePopup();
+        if (! document.getElementById('r' + id)) {
+            return;
+        }
+        event.preventDefault();
+        $('body').animate({scrollTop: $('#r' + id).offset().top}, 'fast'); 
+        location.hash = '#r' + id;
     }
+
+    $('a').each(function (i, anchor) {
+        if (anchor.className != 'innerlink') {
+            return;
+        }
+        if (anchor.href.search(/([0-9a-f]{8})/) <= 0) {
+            return;
+        }
+        var id = RegExp.$1;
+        $(anchor).mouseover(function (e) { shingetsu.plugins.popupAnchor(e, id) })
+                 .mouseout(function (e) { shingetsu.plugins.hidePopup() })
+                 .click(function (e) { tryJump(e, id) });
+    });
 });
