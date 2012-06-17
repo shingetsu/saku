@@ -5,20 +5,20 @@ Authors
 -------
 * (main) Satoshi Fukutomi <fuktommy@shingetsu.info>
 * sbwhitecap
+* (apollo) replaceable anonymous.
+* (compatible) A shinGETsu user.
+* (thumbnail patch) A shinGETsu user.
+* (imghdr patch) A shinGETsu user.
+* (moonlight) A shinGETsu user.
 
 Contributers
 ------------
 * (run_cgi) Python Software Foundation.
 * (SimpleGzipFile) Python Software Foundation.
-* (apollo) replaceable anonymous.
-* (compatible) A shinGETsu user.
-* (popup.js) Zero corp.
 * (Cheetah) The Cheetah Development Team:
   Tavis Rudd, Mike Orr, Ian Bicking, Chuck Esterbrook.
-* (thumbnail patch) A shinGETsu user.
-* (imghdr patch) A shinGETsu user.
 * (jQuery) The jQuery Foundation.
-* (Bootstrap) Twitter.
+* (Twitter Bootstrap) Twitter.
 * (HTML5 Shiv) @afarkas @jdalton @jon_neal @rem
 
 WebSite
@@ -35,7 +35,8 @@ Sakuは Shingetsu Another Keen Utility の略です。
 * HTTPのGETメソッドのみを用いて記事を配信する
   peer to peer 電子掲示板システムです。
 * 朔は Python 上で動きます。
-  動作確認は主に GNU/Linux 上の CPython 2.6 で行っています。
+  動作確認は主に GNU/Linux 上の CPython 2.6 と
+    Windows 7 上の CPython 2.7 で行っています。
     MacOS(9以前)では動かないと思います。
 * 次のような特徴を備えた掲示板が利用できます。
     * 2ちゃんねる型掲示板のインタフェース
@@ -48,6 +49,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 * Python (ver.2.5以降)
 * Cheetah (ver.2.0rc7 以降) 朔をインストールする場合
 * PIL (Python Imaging Library) もし必要なら
+* MiniUPnPc もし必要なら
 
 朔をインストールせずに使う場合
 ------------------------------
