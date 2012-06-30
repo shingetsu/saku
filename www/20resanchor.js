@@ -51,6 +51,9 @@ shingetsu.initialize(function () {
         if (! document.getElementById('r' + id)) {
             return;
         }
+        if (event.originalEvent.button === 1) {
+            return;
+        }
         event.preventDefault();
         $('body').animate({scrollTop: $('#r' + id).offset().top}, 'fast'); 
         location.hash = '#r' + id;
