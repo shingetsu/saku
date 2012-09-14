@@ -72,3 +72,7 @@ form#tagform {
     margin-top: 0;
     padding-top: 0;
 }
+dd {
+    font-size: 16px;
+    font-family: "MS PGothic", Mona, IPAMonaPGothic, sans-serif;
+}

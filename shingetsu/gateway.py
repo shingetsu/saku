@@ -48,6 +48,9 @@ from template import Template
 from updatequeue import UpdateQueue
 
 
+dummyquery = str(int(time.time()));
+
+
 class Message(dict):
 
     """Multi-language message for gateway."""
@@ -170,6 +173,7 @@ class CGI(basecgi.CGI):
             'escape_js': self.escape_js,
             'make_list_item': self.make_list_item,
             'gateway_link': self.gateway_link,
+            'dummyquery': dummyquery,
         }
         self.obj_template.set_defaults(var)
 

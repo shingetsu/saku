@@ -23,18 +23,18 @@ $cookie
   <link rel="contents" href="/" />
   <link rel="index" href="/gateway.cgi/index" />
   <!--[if lt IE 9]>
-      <script type="text/javascript" src="${root_path}html5/html5.js"></script>
+      <script type="text/javascript" src="${root_path}html5/html5.js?$dummyquery"></script>
   <![endif]-->
-  <script type="text/javascript" src="${root_path}jquery/jquery.min.js"></script>
-  <script type="text/javascript" src="${root_path}bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="${root_path}jquery/jquery.min.js?$dummyquery"></script>
+  <script type="text/javascript" src="${root_path}bootstrap/js/bootstrap.min.js?$dummyquery"></script>
   <link rel="alternate" type="application/rss+xml" title="RSS" href="$rss" />
-  <link rel="stylesheet" type="text/css" href="${root_path}bootstrap/css/bootstrap.min.css" />
-  <link rel="stylesheet" type="text/css" href="${root_path}bootstrap/css/bootstrap-responsive.min.css" />
+  <link rel="stylesheet" type="text/css" href="${root_path}bootstrap/css/bootstrap.min.css?$dummyquery" />
+  <link rel="stylesheet" type="text/css" href="${root_path}bootstrap/css/bootstrap-responsive.min.css?$dummyquery" />
 #for $e in $js
-  <script type="text/javascript" src="$root_path$e"></script>
+  <script type="text/javascript" src="$root_path$e?$dummyquery"></script>
 #end for
 #for $e in $css
-  <link rel="stylesheet" type="text/css" href="$root_path$e" />
+  <link rel="stylesheet" type="text/css" href="$root_path$e?$dummyquery" />
 #end for
   <script type="text/javascript">//<![CDATA[
     shingetsu.uiLang = "$message['lang']";
