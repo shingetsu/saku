@@ -4,26 +4,28 @@
 // licenced by public domain.
 
 shingetsu.initialize(function() {
-    if (document.cookie.search(/sg=1/) < 0) {
-        return;
+    if (document.cookie.search(/sg=1/) >= 0) {
+        load();
     }
 
-    var saved = parse(document.cookie);
-    $('#dopost').attr('checked', (saved.dopost == 'true'));
-    $('#error').attr('checked', (saved.error == 'true'));
-    $('#name').val(saved.name);
-    $('#mail').val(saved.mail);
-    $('#passwd').val(saved.sign);
+    function load() {
+        var saved = parse(document.cookie);
+        $('#dopost').attr('checked', (saved.dopost == 'true'));
+        $('#error').attr('checked', (saved.error == 'true'));
+        $('#name').val(saved.name);
+        $('#mail').val(saved.mail);
+        $('#passwd').val(saved.sign);
 
-    $('#postarticle').find('.post-advanced').each(function (i, element) {
-        element = $(element);
-        if (element.find(':text[value!=""], :password[value!=""]').length > 0) {
-            element.removeClass('post-advanced');
-        }
-        if (element.find(':checkbox:not(:checked)').length > 0) {
-            element.removeClass('post-advanced');
-        }
-    });
+        $('#postarticle').find('.post-advanced').each(function (i, element) {
+            element = $(element);
+            if (element.find(':text[value!=""], :password[value!=""]').length > 0) {
+                element.removeClass('post-advanced');
+            }
+            if (element.find(':checkbox:not(:checked)').length > 0) {
+                element.removeClass('post-advanced');
+            }
+        });
+    }
 
     function parse(cookie) {
         var ret = {};
