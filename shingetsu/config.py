@@ -171,6 +171,7 @@ retry_join = 2              # Times; Join network
 nodes = 5                   # Nodes keeping in node list
 share_nodes = 5             # Nodes having the file
 search_depth = 30           # Search node size
+accept_spam_count = 10
 tmpaddr_size = 10
 tmpaddr_length = 16
 

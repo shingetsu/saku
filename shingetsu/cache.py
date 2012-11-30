@@ -604,6 +604,7 @@ class Cache(dict):
         '''Check a data and add it cache.'''
         flag_got = False
         flag_spam = False
+        spam_count = 0
         count = 0
         for i in res:
             count += 1
@@ -623,6 +624,7 @@ class Cache(dict):
                     self.add_data(r, False)
                     r.remove()
                     flag_spam = True
+                    spam_count += 1
                 else:
                     self.add_data(r)
             else:
@@ -635,6 +637,9 @@ class Cache(dict):
                 sys.stderr.write("Warning: %s%s: broken record.\n" %
                                  (self.datfile, str_stamp))
             r.free()
+            if spam_count > config.accept_spam_count:
+                sys.stderr.write("Warning: %s: too many spams. skip fetching it.\n" % self.datfile)
+                break
         return count, flag_got, flag_spam
 
     def get_data(self, stamp=0, id="", node=None):
@@ -677,7 +682,7 @@ class Cache(dict):
             head = node.talk('/head/%s/%d-' % (self.datfile, begin))
             res = RecordGetter(self.datfile, node, head)
 
-        count = self.check_data(res, begin=begin, end=now)
+        count, flag_got, flag_spam = self.check_data(res, begin=begin, end=now)
         if count:
             self.sync_status()
             if oldcount == 0:
