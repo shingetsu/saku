@@ -22,20 +22,18 @@ var shingetsu = (function () {
     shingetsu.initialize = function (func) {
         _initializer[_initializer.length] = func;
     };
+    shingetsu.addInitializer = shingetsu.initialize;
 
     var _initialize = function () {
         for (var i=0; i < _initializer.length; i++) {
             if (shingetsu.debugMode) {
                _initializer[i]();
-            } else {
-                try {
-                   _initializer[i]();
-                } catch (e) {
-                    shingetsu.log(e);
-                    if (shingetsu.debugMode) {
-                        throw e;
-                    }
-                }
+               continue;
+            }
+            try {
+               _initializer[i]();
+            } catch (e) {
+                shingetsu.log(e);
             }
         }
     };
