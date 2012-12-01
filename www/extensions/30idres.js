@@ -2,10 +2,10 @@
 //license: http://www.kmonos.net/nysl/ or public domain. (dual license).
 
 
-shingetsu.addInitializer(function () {
+shingetsu.initialize(function () {
     function id_res() {
-        var dts = $('records').getElementsByTagName('dt');
-        var dds = $('records').getElementsByTagName('dd');
+        var dts = $('#records dt');
+        var dds = $('#records dd');
         var ids = pushdId();
         var resplus = pushdPlusRes();
         var idres = new Array();
@@ -14,8 +14,8 @@ shingetsu.addInitializer(function () {
             idres[ids[i]] = eval(i+1+resplus);
         }
         for (var i=0; i<dts.length; i++) {
-            var at = dts[i].getElementsByTagName('a')[0];
-            var nt = dts[i].getElementsByTagName('span')[0];
+            var at = dts.get(i).getElementsByTagName('a')[0];
+            var nt = dts.get(i).getElementsByTagName('span')[0];
             if (at) {
                 if (resplus < 0) {
                     //at.innerHTML = "";
@@ -66,7 +66,7 @@ shingetsu.addInitializer(function () {
     function res_id() {
         var ids = pushdId();
         var resplus = pushdPlusRes();
-        var form = $('postarticle');
+        var form = $('#postarticle').get(0);
         var form_split = form.body.value.split(">>");
         var form_name = form.name.value;
         for (var i=1; i<form_split.length; i++) {
@@ -118,18 +118,17 @@ shingetsu.addInitializer(function () {
     }
 
     function pushdId() {
-        var dts = $('records').getElementsByTagName('dt');
+        var dts = $('#records dt');
         var ids = new Array();
         var re = new RegExp("^r", "i");
         for (var i=0; i<dts.length; i++) {
-            ids[i] = dts[i].id.replace(re, "");
+            ids[i] = dts.get(i).id.replace(re, "");
         }
         return ids;
     }
 
     function pushdMaxPage() {
-        var nav = $('pagenavi');
-        var as = nav.getElementsByTagName('a');
+        var as = $('#pagenavi a').get();
         if (as.length < 5) { //as[0].innerHTML = 'Go to the last article', as[1].innerHTML = '&lt;&lt;last', as[2].innerHTML = 'Archive'
             return 0;
         } else if (as[as.length -3].innerHTML.match(/&gt;&gt;/)) {
@@ -156,13 +155,13 @@ shingetsu.addInitializer(function () {
     }
 
     function pushdMaxRec() {
-        var rec_n_size = $('status').innerHTML;
+        var rec_n_size = $('#status').text();
         rec_n_size.match(/\(.*\/([0-9]+)\//);
         return parseInt(RegExp.$1);
     }
 
     function debug() {
-        var rec_n_size = $('status').innerHTML;
+        var rec_n_size = $('#status').text();
         alert(rec_n_size);
         rec_n_size.match(/\(.*\/([0-9]+)\//);
         alert(RegExp.$1);
@@ -171,27 +170,25 @@ shingetsu.addInitializer(function () {
     function addReplaceLink() {
         var msg_res_id = '[Res to ID]';
         if (shingetsu.uiLang == 'ja') { msg_res_id = '[レス番号からIDに変換]'; }
-        var form = $('postarticle');
-        var p = form.getElementsByTagName('p')[0];
+        var p = $('#postarticle div').get(0);
         var span = document.createElement('span');
         span.innerHTML = '<a href="javascript:;" id="res_id" name="res_id">' + msg_res_id + '</a>';
-        addEvent(span, 'click', res_id);
+        $(span).find('a').click(res_id);
         p.appendChild(span);
     }
 
     function addDebugLink() {
         var msg_debug = '[DEBUG]';
         if (shingetsu.uiLang == 'ja') { msg_debug = '[デバッグ]'; }
-        var form = $('postarticle');
-        var p = form.getElementsByTagName('p')[0];
+        var p = $('#postarticle div').get(0);
         var span = document.createElement('span');
         span.innerHTML = '<a href="javascript:;" id="debug" name="debug">' + msg_debug + '</a>';
-        addEvent(span, 'click', debug);
+        $(span).find('a').click(debug);
         p.appendChild(span);
     }
 
     function addonSubmit() {
-        addEvent($('postarticle'), 'submit', res_id);
+        $('#postarticle').submit(res_id);
     }
 
     if (location.pathname.match(/\/thread\.cgi\/.*/)){

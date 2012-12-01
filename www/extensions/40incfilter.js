@@ -1,26 +1,4 @@
-shingetsu.addInitializer(function () {
-
-    /* utility */
-    Function.prototype.bind = function(base) {
-       var self = this;
-       return function() {
-          self.apply(base, arguments);
-       }
-    }
-
-    var addEvent = (window.addEventListener) ?
-       (function(elm, type, event) {
-          elm.addEventListener(type, event, false);
-       }) : (window.attachEvent) ?
-       (function(elm, type, event) {
-          elm.attachEvent('on'+type, event);
-       }) :
-       (function(elm, type, event) {
-          elm['on'+type] = event;
-       }) ;
-
-    /* --------------------------------------------- */
-
+shingetsu.initialize(function () {
     var IncrementalFilter = function() {
        this.initialize.apply(this, arguments);
     }
@@ -32,8 +10,9 @@ shingetsu.addInitializer(function () {
           this.lists = lists;
           this.input = input;
           this._func = func;
-          addEvent(input, 'focus', this.start.bind(this));
-          addEvent(input, 'blur',  this.stop.bind(this));
+          var self = this;
+          input.focus(function () { self.start(); });
+          input.blur(function () { self.stop(); });
        },
 
        start: function() {
@@ -46,7 +25,7 @@ shingetsu.addInitializer(function () {
        },
 
        update: function(e) {
-          var val = this.input.value;
+          var val = this.input.val();
           try { ''.match(val); } catch(e) { return; }
 
           for(var span, i = 0; span = this.lists[i];i++) {
@@ -56,10 +35,12 @@ shingetsu.addInitializer(function () {
     }
 
    if(location.pathname.match(/\/gateway\.cgi\/.*/)){
+      var listitems = $('#thread_index li').get();
+
       // フィルタ
-      var tpt = document.forms[0].filter;
+      var tpt = $('#filterform input[name=filter]');
       if(tpt) {
-         new IncrementalFilter(tpt, document.getElementsByTagName('li'), function(val, span) {
+         new IncrementalFilter(tpt, listitems, function(val, span) {
             var name = (span.getElementsByTagName('a'))[0].innerHTML;
             span.style.display = (name.match(val, 'i')) ? '' : 'none';
          });
@@ -67,9 +48,9 @@ shingetsu.addInitializer(function () {
       }
 
       // タグ
-      var tag = document.forms[1].tag;
+      var tag = $('#tagform input[name=tag]');
       if(tag) {
-         new IncrementalFilter(tag, document.getElementsByTagName('li'), function(val, span) {
+         new IncrementalFilter(tag, listitems, function(val, span) {
             var result;
             if(val.length > 0) {
                var a = span.getElementsByTagName('a');

@@ -3,22 +3,22 @@
 
 shingetsu.addInitializer(function () {
     var menu = document.getElementById ('top');
-    if (menu && menu.className == 'menu') {
+    if (menu && menu.className == 'navbar') {
         var menu_a = menu.getElementsByTagName ('a');
         var menu_link = menu_links();
         var link = makelink (menu_a, menu_link);
         addmenulinks(menu, link);
     }
     var menu = document.getElementById ('bottom');
-    if (menu && menu.className == 'menu') {
+    if (menu && menu.className == 'navbar') {
         var menu_a = menu.getElementsByTagName ('a');
         var menu_link = menu_links();
         var link = makelink (menu_a, menu_link);
         addmenulinks(menu, link);
     }
-    var topmenu = document.getElementsByTagName ('ul')[0];
-    if (topmenu && topmenu.className == 'topmenu') {
-        var topmenu_a = topmenu.getElementsByTagName ('a');
+    var topmenu = $('ul.topmenu');
+    if (topmenu) {
+        var topmenu_a = topmenu.find('a').get();
         var topmenu_link = topmenu_links();
         var toplink = makelink (topmenu_a, topmenu_link);
         addtopmenulinks(topmenu, toplink);
@@ -93,20 +93,21 @@ shingetsu.addInitializer(function () {
     }
 
     function addmenulinks (menu, link) {
-        menu.innerHTML = '';
+        var container = $(menu).find('ul.nav');
+        container.empty();
         for (i=0; i<link.length; i++) {
-            if (i == link.length -1) {
-                menu.innerHTML += link[i];
-            } else {
-                menu.innerHTML += link[i] + ' |';
-            }
+            var li = $('<li>');
+            li.html(link[i]);
+            container.append(li);
         }
     }
 
     function addtopmenulinks(topmenu, link) {
-        topmenu.innerHTML = '';
+        topmenu.empty();
         for (i=0; i<link.length; i++) {
-            topmenu.innerHTML += '  <li>' + link[i] + '</li>';
+            var li = $('<li>');
+            li.html(link[i]);
+            topmenu.append(li);
         }
     }
 });
