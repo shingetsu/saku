@@ -23,7 +23,7 @@ $cookie
   <link rel="contents" href="/" />
   <link rel="index" href="/gateway.cgi/index" />
   <!--[if lt IE 9]>
-      <script type="text/javascript" src="${root_path}html5/html5.js?$dummyquery"></script>
+      <script type="text/javascript" src="${root_path}html5js/html5.js?$dummyquery"></script>
   <![endif]-->
   <script type="text/javascript" src="${root_path}jquery/jquery.min.js?$dummyquery"></script>
   <script type="text/javascript" src="${root_path}bootstrap/js/bootstrap.min.js?$dummyquery"></script>
