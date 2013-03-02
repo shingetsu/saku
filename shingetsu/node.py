@@ -1,7 +1,7 @@
 """Saku Node and NodeList.
 """
 #
-# Copyright (c) 2005-2010 shinGETsu Project.
+# Copyright (c) 2005-2013 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -157,7 +157,7 @@ class SocketIO:
         try:
             for line in self.fp:
                 yield line
-        except (IOError, AttributeError, socket.error, socket.timeout), err:
+        except Exception, err:
             sys.stderr.write('%s: %s\n' % (self.msg, err))
             raise StopIteration
 
@@ -211,7 +211,7 @@ class Node:
         try:
             sys.stderr.write('talk: %s\n' % message)
             res = agent.open(message)
-        except (IOError, AttributeError, socket.error, socket.timeout), err:
+        except Exception, err:
             sys.stderr.write('%s: %s\n' % (message, err))
             return StringIO('')
 

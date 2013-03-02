@@ -122,7 +122,10 @@ class HTTPRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         self.log_message("%s", "<>".join(buf))
 
     def log_message(self, format, *args):
-        proxy_client = self.headers.get('X-Forwarded-For', 'direct')
+        if hasattr(self, 'headers'):
+            proxy_client = self.headers.get('X-Forwarded-For', 'direct')
+        else:
+            proxy_client = '?'
         sys.stderr.write('%s<>%s<>%s\n' %
                          (self.address_string(),
                           proxy_client,
