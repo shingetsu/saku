@@ -49,6 +49,7 @@ def setup_data_files():
 
     globcopy("README*", doc_dir)
     globcopy("file/changelog*", doc_dir)
+    globcopy("doc/*", doc_dir)
 
     globcopy("file/*.ini", sample_dir)
     globcopy("file/*.sample", sample_dir)

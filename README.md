@@ -10,6 +10,7 @@ Authors
 * (thumbnail patch) A shinGETsu user.
 * (imghdr patch) A shinGETsu user.
 * (moonlight) A shinGETsu user.
+* (js extensions) shinGETsu users.
 
 Contributers
 ------------
@@ -21,6 +22,7 @@ Contributers
 * (jQuery) The jQuery Foundation.
 * (Twitter Bootstrap) Twitter.
 * (HTML5 Shiv) @afarkas @jdalton @jon_neal @rem
+* (Spoiler Alert) Joshua Hull, Jared Volpe, Dwayne Charrington
 
 WebSite
 -------
