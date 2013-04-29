@@ -40,7 +40,8 @@ var shingetsu = (function () {
         script.setAttribute('src', realPath);
         if ($.browser.msie) {
             script.onreadystatechange = function() {
-                if (script.readyState == 'complete') {
+                if (script.readyState == 'complete'
+                    || script.readyState == 'loaded') {
                     onload();
                 }
             };
