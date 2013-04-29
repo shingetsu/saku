@@ -1,10 +1,10 @@
 #* Saku Gateway List Item.
- * Copyright (c) 2005-2011 shinGETsu Project.
- * $Id$
+ * Copyright (c) 2005-2013 shinGETsu Project.
  *#
 <li>
 #if $isadmin and $remove
-  <label><input type="checkbox" name="file" value="$cache.datfile" />
+  <label style="display:inline-block">
+  <input type="checkbox" name="file" value="$cache.datfile" style="display:inline-block" />
 #end if
 #if $target == 'recent'
   <span class="stamp" id="s$cache.recent_stamp">$localtime($cache.recent_stamp)</span>
