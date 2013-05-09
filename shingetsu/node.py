@@ -119,7 +119,7 @@ class SimpleGzipFile(gzip.GzipFile):
     '''
     def _read(self, size=1024):
         if self.fileobj is None:
-            raise EOFError, "Reached EOF"
+            return self.__reached_eof()
 
         if self._new_member:
             self._init_read()
@@ -130,18 +130,23 @@ class SimpleGzipFile(gzip.GzipFile):
         buf = self.fileobj.read(size)
         if buf == "":
             uncompress = self.decompress.flush()
-            self._read_eof()
             self._add_read_data( uncompress )
-            raise EOFError, 'Reached EOF'
+            return self.__reached_eof()
 
         uncompress = self.decompress.decompress(buf)
         self._add_read_data( uncompress )
 
         if self.decompress.unused_data != "":
-            raise EOFError, "Reached EOF"
+            return self.__reached_eof()
+        return True
 
-    def _read_eof(self):
-        raise EOFError, "Reached EOF"
+    def __reached_eof(self):
+        if hasattr(gzip, 'read32'):
+            # for python 2.7.3-
+            raise EOFError, 'Reached EOF'
+        else:
+            # for python 2.7.4+
+            return False
 
 # End of SimpleGzipFile
 
