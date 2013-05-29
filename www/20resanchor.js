@@ -60,7 +60,7 @@ shingetsu.initialize(function () {
     }
 
     $('a').each(function (i, anchor) {
-        if (anchor.className != 'innerlink') {
+        if (anchor.className != 'innerlink' && anchor.className != 'reclink') {
             return;
         }
         if (anchor.href.search(/([0-9a-f]{8})/) <= 0) {
