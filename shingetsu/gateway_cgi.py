@@ -1,7 +1,7 @@
 """Gateway CGI methods.
 """
 #
-# Copyright (c) 2005-2011 shinGETsu Project.
+# Copyright (c) 2005-2013 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -324,13 +324,14 @@ class CGI(gateway.CGI):
                         permapath = "%s/%s" % (path[1:], r.id[:8])
                     else:
                         permapath = path[1:]
-                    rss.append(permapath,
-                               date = r.stamp,
-                               title = title,
-                               creator = r.get('name', ''),
-                               subject = [str(i) for i in cache.tags],
-                               description = desc,
-                               content = content)
+                    rss.append(
+                        permapath,
+                        date = r.stamp,
+                        title = title,
+                        creator = self.rss_text_format(r.get('name', '')),
+                        subject = [str(i) for i in cache.tags],
+                        description = desc,
+                        content = content)
                     r.free()
 
         self.stdout.write("Content-Type: text/xml; charset=UTF-8\n")
