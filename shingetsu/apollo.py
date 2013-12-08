@@ -1,7 +1,7 @@
 '''Signature Module.
 '''
 #
-# Copyright (c) 2005 shinGETsu Project.
+# Copyright (c) 2005,2013 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,8 +24,6 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
-#
-# $Id$
 #
 
 import base64
@@ -217,6 +215,8 @@ def rsa_base_generate(p_seed, q_seed):
         test = pow(test, key_d, key_n)
         if test == 0x7743:
             break
+        p += 2
+        q += 2
 
     if count != rsa_create_giveup:
         return (key_n, key_d)
