@@ -218,7 +218,7 @@ def rsa_base_generate(p_seed, q_seed):
         p += 2
         q += 2
 
-    if count != rsa_create_giveup:
+    if count != rsa_create_giveup - 1:
         return (key_n, key_d)
     else:
         return (0, 0)
