@@ -1,6 +1,6 @@
 ##
 ## Saku Gateway Header.
-## Copyright (c) 2005-2012 shinGETsu Project.
+## Copyright (c) 2005-2013 shinGETsu Project.
 ##
 Content-Type: text/html; charset=UTF-8
 #if $cookie
@@ -16,6 +16,7 @@ $cookie
 #if $deny_robot
   <meta name="robots" content="NOINDEX" />
 #end if
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 #if $mobile
   <link rel="alternate" media="handheld" href="$mobile" />
 #end if
@@ -29,7 +30,6 @@ $cookie
   <script type="text/javascript" src="${root_path}bootstrap/js/bootstrap.min.js?$dummyquery"></script>
   <link rel="alternate" type="application/rss+xml" title="RSS" href="$rss" />
   <link rel="stylesheet" type="text/css" href="${root_path}bootstrap/css/bootstrap.min.css?$dummyquery" />
-  <link rel="stylesheet" type="text/css" href="${root_path}bootstrap/css/bootstrap-responsive.min.css?$dummyquery" />
 #for $e in $js
   <script type="text/javascript" src="$root_path$e?$dummyquery"></script>
 #end for

@@ -1,6 +1,6 @@
 ##
 ## Saku Gateway New Element Form.
-## Copyright (c) 2005-2012 shinGETsu Project.
+## Copyright (c) 2005-2013 shinGETsu Project.
 ##
 <div class="row">
 <form method="post" action="$cginame" class="well form-horizontal span6">
@@ -8,22 +8,22 @@
   <input type="hidden" name="file" value="$datfile" />
   <input type="hidden" value="thread" name="type" />
 
-  <div class="control-group">
-    <label class="control-label" for="link">$message['title']</label>
-    <div class="controls"><input name="link" maxlength="$config.title_limit" value="" id="link" /></div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="link">$message['title']</label>
+    <div class="col-sm-10"><input name="link" maxlength="$config.title_limit" value="" id="link" class="form-control" /></div>
   </div>
 
   #if $isadmin
-  <div class="control-group">
-    <label class="control-label" for="tag">$message['tag']</label>
-    <div class="controls">
-      <input name="tag" value="" id="tag" />
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="tag">$message['tag']</label>
+    <div class="col-sm-10">
+      <input name="tag" value="" id="tag" class="form-control" />
       <div class="help-block">$message['tag_desc']</div>
     </div>
   </div>
-  <div class="control-group">
-    <label class="control-label" for="search">$message['search_new_file']</label>
-    <div class="controls">
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="search">$message['search_new_file']</label>
+    <div class="col-sm-10">
       <input type="checkbox" id="search" name="search_new_file" value="yes" checked="checked" />
     </div>
   </div>

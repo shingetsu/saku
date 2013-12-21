@@ -1,17 +1,17 @@
 ##
 ## Saku Gateway Index List.
-## Copyright (c) 2005-2012 shinGETsu Project.
+## Copyright (c) 2005-2013 shinGETsu Project.
 ##
 #if $target
-  <form method="get" action="$gateway_cgi/$target" id="filterform" class="form-search"><div>
+  <form method="get" action="$gateway_cgi/$target" id="filterform" class="form-horizontal"><div>
     <label>$message['filter'] ($message['regexp'])<br />
-    <input name="filter" value="$filter" class="search-query" /></label>
-    <button class="btn"><i class="icon-search"></i> $message['show']</button>
+    <input name="filter" value="$filter" class="form-control" size="40" /></label>
+    <button class="btn"><i class="glyphicon glyphicon-search"></i> $message['show']</button>
   </div></form>
   <form method="get" action="$gateway_cgi/$target" id="tagform" class="form-search"><div>
     <label>$message['tag'] ($message['string'])<br />
-    <input name="tag" value="$tag" class="search-query" /></label>
-    <button class="btn"><i class="icon-tag"></i> $message['show']</button>
+    <input name="tag" value="$tag" class="form-control" size="40" /></label>
+    <button class="btn"><i class="glyphicon glyphicon-tag"></i> $message['show']</button>
   </p></form>
 #end if
 

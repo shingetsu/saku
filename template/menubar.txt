@@ -1,16 +1,14 @@
 #* Saku Gateway Menubar.
- * Copyright (c) 2005-2012 shinGETsu Project.
- * $Id$
+ * Copyright (c) 2005-2013 shinGETsu Project.
  *#
 
 #if $id
-  <aside class="navbar" id="$id">
+  <aside class="navbar-collapse" id="$id">
 #else
-  <aside class="navbar">
+  <aside class="navbar-collapse">
 #end if
 
-<div class="navbar-inner">
-<ul class="nav">
+<ul class="nav navbar-nav">
   <li><a href="$gateway_cgi">$message['top']</a></li>
   #for $i in ('changes',)
     <li>$gateway_link($gateway_cgi, $i)</li>
@@ -22,6 +20,5 @@
   #end if
   <li><a href="$rss">$message['rss']</a></li>
 </ul>
-</div>
 
 </aside>
