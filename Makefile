@@ -1,6 +1,6 @@
 #
 # Makefile
-# Copyright (C) 2005-2012 shinGETsu Project.
+# Copyright (C) 2005-2014 shinGETsu Project.
 #
 
 PREFIX = /usr/local
@@ -26,6 +26,7 @@ check:
 
 clean:
 	rm -f saku tksaku
+	rm -f www/__merged.css www/__merged.js
 	rm -Rf build dist root
 	rm -Rf cache log run
 	find . -name "*.py[co]" -print0 | xargs -0 rm -f
