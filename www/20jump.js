@@ -26,7 +26,11 @@ shingetsu.initialize(function () {
     function jumpto(id) {
         var s = new String(window.location);
         if (s.search("#") < 0) {
-            window.location.hash = "r" + id;
+            $("html").animate({
+                scrollTop: $("#r" + id).offset().top
+            }, {
+                duration: 200
+            });
         }
     }
 
@@ -34,6 +38,7 @@ shingetsu.initialize(function () {
         if (lastpage) {
             var a = dt.getElementsByTagName('a')[0];
             a.style.fontWeight = 'bold';
+            $(a).addClass("newpost");
         }
     }
 
@@ -43,28 +48,26 @@ shingetsu.initialize(function () {
         } else {
             var read = 0;
         }
-        var dt = document.getElementsByTagName('dt');
-        var newid = '';
-        for (var i=0; i<dt.length; i++) {
-            var span = dt[i].getElementsByTagName('span');
-            for (var j=0; j<span.length; j++) {
-                if ((span[j].className == 'stamp') &&
-                    (span[j].id.search(/s([0-9]*)$/) == 0)) {
-                    var stamp = RegExp.$1;
-                    if (stamp > read) {
-                        if (! newid) {
-                            newid = dt[i].id.substring(1);
-                        }
-                        setNewPost(dt[i]);
+        var newid = "";
+        var lastStamp = null;
+        $("dt span.stamp").each(function () {
+            if (this.id.search(/s([0-9]*)$/) == 0) {
+                var stamp = RegExp.$1;
+                if (stamp > read) {
+                    var dt = $(this).closest("dt").get(0);
+                    if (!newid) {
+                        newid = dt.id.substring(1);
                     }
+                    setNewPost(dt);
                 }
             }
-        }
+            lastStamp = this;
+        });
         if (! access) {
         } else if (newid) {
             jumpto(newid);
         } else {
-            jumpto(dt[dt.length-1].id.substring(1));
+            jumpto($(lastStamp).closest("dt").get(0).id.substring(1));
         }
     }
 
