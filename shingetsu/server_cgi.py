@@ -1,7 +1,7 @@
 """Server CGI methods.
 """
 #
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,8 +25,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import gzip
 import re
@@ -39,8 +37,6 @@ import basecgi
 from cache import *
 from node import *
 from updatequeue import UpdateQueue
-
-__version__ = "$Revision$"
 
 
 class CGI(basecgi.CGI):
@@ -110,21 +106,28 @@ class CGI(basecgi.CGI):
             inode = choice(init_node())
             self.stdout.write("%s\n" % inode)
 
+    def get_remote_hostname(self, host):
+        remote_addr = self.environ['REMOTE_ADDR']
+        if host == '':
+            return remote_addr
+        ipaddr = socket.gethostbyname(host)
+        if ipaddr == remote_addr:
+            return host
+        return None
+
     def do_join(self, path_info):
         self.header("text/plain")
         m = re.search(r"^join/([^:]*):(\d+)(.*)", path_info)
         if m is None:
             return
         (host, port, path) = m.groups()
-        if host == "":
-            host = self.environ["REMOTE_ADDR"]
+        host = self.get_remote_hostname(host)
+        if not host:
+            return
         node = Node(host=host, port=port, path=path)
         nodelist = NodeList()
         searchlist = SearchList()
-        ipaddr = socket.gethostbyname(host)
-        if ipaddr != self.environ["REMOTE_ADDR"]:
-            pass
-        elif (not node_allow().check(str(node))) and \
+        if (not node_allow().check(str(node))) and \
              node_deny().check(str(node)):
             pass
         elif not node.ping():
@@ -154,18 +157,17 @@ class CGI(basecgi.CGI):
         if m is None:
             return
         (host, port, path) = m.groups()
-        if host == "":
-            host = self.environ["REMOTE_ADDR"]
+        host = self.get_remote_hostname(host)
+        if not host:
+            return
         node = Node(host=host, port=port, path=path)
         nodelist = NodeList()
-        ipaddr = socket.gethostbyname(host)
-        if ipaddr == self.environ["REMOTE_ADDR"]:
-            try:
-                nodelist.remove(node)
-                nodelist.sync()
-            except ValueError:
-                pass
-            self.stdout.write("BYEBYE\n")
+        try:
+            nodelist.remove(node)
+            nodelist.sync()
+        except ValueError:
+            pass
+        self.stdout.write("BYEBYE\n")
 
     def do_have(self, path):
         self.header("text/plain")
@@ -254,8 +256,9 @@ class CGI(basecgi.CGI):
         if m is None:
             return False
         (datfile, stamp, id, host, port, path) = m.groups()
-        if host == "":
-            host = self.environ["REMOTE_ADDR"]
+        host = self.get_remote_hostname(host)
+        if not host:
+            return
         node = Node(host=host, port=port, path=path)
         searchlist = SearchList()
         searchlist.append(node)
