@@ -19,10 +19,11 @@ shingetsu.initialize(function () {
 
         var anchor = $('<a>');
         anchor.attr('href', '#r' + id)
-              .mouseover(function (e) { shingetsu.plugins.popupAnchor(e, id) })
-              .mouseout(function (e) { shingetsu.plugins.hidePopup(e, id) })
+              .addClass('innerlink')
               .text('>>' + id);
+
         $('#resreferrer').append(anchor);
+        shingetsu.plugins.rootResAnchor.parseContent();
         textArea.focus();
     }
 

@@ -34,8 +34,16 @@ table.solid td {
     padding: 5px 5px 5px 1em;
     text-align: right;
 }
-#popup {
+.popup > * {
     background-color: #aff;
+}
+.popup > dl > dt,
+.popup > dl > dd {
+    padding-right: 1em;
+    padding-left: 1em;
+}
+.popup > div {
+    padding: 1em;
 }
 #preview {
     border: 1px solid #000;
