@@ -1,45 +1,141 @@
 /* Popup.
  * Copyright (C) 2005-2012 shinGETsu Project.
  */
+(function () {
+    function Coordinate(e, opt_y, opt_z) {
+        $.extend(this, {
+            x: e,
+            y: opt_y,
+            z: opt_z
+        });
 
-shingetsu.plugins.Coordinate = function (e) {
-    if (e) {
-        this.x = e.pageX;
-        this.y = e.pageY;
-    } else {
-        this.x = event.clientX;
-        this.y = event.clientY;
+        if (this.y === undefined) {
+            if (e) {
+                this.x = e.pageX;
+                this.y = e.pageY;
+            } else {
+                this.x = event.clientX;
+                this.y = event.clientY;
+            }
+        }
     }
-}
+    shingetsu.plugins.Coordinate = Coordinate;
+})();
 
-shingetsu.plugins.hidePopup = function () {
-    $('#popup').html('').hide().css('padding', 0);
-    $('select').show();
-}
+(function () {
+    function Popup(opt_parameters) {
+        $.extend(this, {
+            parentPopup: null,
+            childPopups: [],
+            container: null,
+            content: null,
+            coordinate: null
+        }, opt_parameters);
 
-shingetsu.plugins.showPopup = function (coordinate, objects) {
-    var popup = $('#popup');
-    popup.html('');
-    popup.append($(objects));
+        if (!this.container) {
+            this.container = this.createContainer(this.content);
+        } else {
+            this.container = $(this.container);
+        }
+        if ($(document).has(this.container).length === 0) {
+            this.container.hide().appendTo(document.body);
+        }
+    }
+    function createContainer(content) {
+        return $('<div>')
+            .addClass('popup')
+            .css('position', 'absolute')
+            .append(content);
+    }
+    function setContent(content) {
+        this.content = content;
+        this.container.empty().append(content);
+    }
+    function appendChild(childPopup) {
+        this.childPopups.push(childPopup);
+    }
+    function reposition(coordinate) {
+        var width = this.container.width();
+        var height = this.container.height();
+        var x = Math.max($(document).scrollLeft(), coordinate.x + 20);
+        var y = Math.max($(document).scrollTop(), coordinate.y - height);
+        this.container
+            .css('left', x)
+            .css('top', y);
+        if (coordinate.z !== undefined) {
+            this.container.css('zIndex', coordinate.z);
+        }
+    }
+    function show(coordinate) {
+        this.reposition(coordinate);
+        this.container.show();
+    }
+    function hide() {
+        this.container.fadeOut({
+            duration: 200
+        });
+    }
+    function destroy() {
+        while (this.childPopups.length) {
+            var child = this.childPopups[this.childPopups.length - 1];
+            child.destroy();
+            this.childPopups.splice(this.childPopups.length - 1, 1);
+        }
+        if (this.parentPopup) {
+            var siblingPopups = this.parentPopup.childPopups;
+            var i = siblingPopups.length;
+            while (i--) {
+                if (siblingPopups[i] == this) {
+                    this.parentPopup.childPopups.splice(i, 1);
+                    break;
+                }
+            }
+            this.parentPopup = null;
+        }
+        this.container.remove();
+        this.container = null;
+    }
+    Popup.prototype = {
+        constructor: Popup,
+        createContainer: createContainer,
+        setContent: setContent,
+        appendChild: appendChild,
+        reposition: reposition,
+        show: show,
+        hide: hide,
+        destroy: destroy
+    };
+    shingetsu.plugins.Popup = Popup;
+})();
 
-    var width = popup.width();
-    var height = popup.height();
-    var posX = Math.max($(document).scrollLeft(), coordinate.x + 20);
-    var posY = Math.max($(document).scrollTop(), coordinate.y - height);
-    popup.css('left', posX + 'px')
-         .css('top', posY + 'px')
-         .css('paddingLeft', '1em')
-         .css('paddingRight', '1em')
-         .show();
-    $('select').hide();
-}
+(function () {
+    var exclusivePopup;
 
-shingetsu.initialize(function () {
-    var popup = $('<div>');
-    popup.attr('id', 'popup')
-         .css('position', 'absolute')
-         .css('left', '0')
-         .css('top', '0')
-         .hide()
-         .appendTo($(document.body));
-});
+    function showPopup(coordinate, objects) {
+        if (exclusivePopup) {
+            exclusivePopup.hide();
+        }
+        var popup = new shingetsu.plugins.Popup({
+            coordinate: coordinate,
+            content: objects
+        });
+        popup.container.prop('id', 'popup');
+        exclusivePopup = popup;
+        exclusivePopup.show(coordinate);
+
+        $('select').hide();
+        
+        return exclusivePopup;
+    }
+    function hidePopup() {
+        if (exclusivePopup) {
+            exclusivePopup.hide();
+            exclusivePopup = null;
+        }
+
+        $('select').show();
+    }
+
+    shingetsu.plugins.showPopup = showPopup;
+    shingetsu.plugins.hidePopup = hidePopup;
+})();

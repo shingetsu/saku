@@ -63,10 +63,7 @@ shingetsu.initialize(function () {
         message = message.replace(/</g, '&lt;');
         message = message.replace(/>/g, '&gt;');
         message = message.replace(/&gt;&gt;([0-9a-f]{8})/g,
-            '<a href="#r$1"' +
-            ' onmouseover="shingetsu.plugins.popupAnchor(' + e +', \'$1\');"' +
-            ' onmouseout="shingetsu.plugins.hidePopup();"' +
-            '>&gt;&gt;$1</a>');
+            '<a class="reclink" href="#r$1">&gt;&gt;$1</a>');
         message = message.replace(
             /(https?:..[^\x00-\x20"'()<>\[\]\x7F-\xFF]*)/g,
             '<a href="$1">$1</a>');
@@ -79,7 +76,7 @@ shingetsu.initialize(function () {
         message = message.replace(
             /\[\[([^/<>\[\]]+)\/([0-9a-f]{8})\]\]/g,
             function ($0, $1, $2) {
-                return '<a href="/thread.cgi/' + encodeURIComponent($1) +
+                return '<a class="reclink" href="/thread.cgi/' + encodeURIComponent($1) +
                        '/' + $2 +
                        '">[[' + $1 + '/' + $2 + ']]</a>';
             });
@@ -108,8 +105,9 @@ shingetsu.initialize(function () {
         $.each(this._textAreaFriends, function (i, v) { v.hide() });
         this._textArea.hide();
         var message = html_format(this._textArea.val());
-        this._previewArea.html(message).show();
-        console.log(this._previewArea);
+        this._previewArea.html(message);
+        shingetsu.plugins.rootResAnchor.parseContent();
+        this._previewArea.show();
         this._button.text(msg_edit);
         this._isPreview = true;
     };
