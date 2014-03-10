@@ -70,10 +70,11 @@
         this.reposition(coordinate);
         this.container.show();
     }
-    function hide() {
-        this.container.fadeOut({
-            duration: 200
-        });
+    function hide(options) {
+        options = $.extend({
+            duration: Popup.hidingDuration
+        }, options);
+        this.container.fadeOut(options);
     }
     function destroy() {
         while (this.childPopups.length) {
@@ -95,6 +96,9 @@
         this.container.remove();
         this.container = null;
     }
+    $.extend(Popup, {
+        hidingDuration: 200
+    });
     Popup.prototype = {
         constructor: Popup,
         createContainer: createContainer,
@@ -113,7 +117,11 @@
 
     function showPopup(coordinate, objects) {
         if (exclusivePopup) {
-            exclusivePopup.hide();
+            exclusivePopup.hide({
+                complete: $.proxy(function () {
+                    this.destroy();
+                }, exclusivePopup)
+            });
         }
         var popup = new shingetsu.plugins.Popup({
             coordinate: coordinate,
@@ -129,7 +137,11 @@
     }
     function hidePopup() {
         if (exclusivePopup) {
-            exclusivePopup.hide();
+            exclusivePopup.hide({
+                complete: $.proxy(function () {
+                    this.destroy();
+                }, exclusivePopup)
+            });
             exclusivePopup = null;
         }
 
