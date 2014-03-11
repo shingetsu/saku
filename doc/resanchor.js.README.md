@@ -1,8 +1,54 @@
-20resanchor.js 説明.md
+resanchor.js
 ================================================================================
 
-レス安価の上にマウスポインタを乗せたときに、安価先のレスの内容を
-ポップアップするプラグインです。
+
+機能
+--------------------------------------------------------------------------------
+
+- 安価の上にマウスポインタを乗せたときに、安価先のレスの内容をポップアップ
+- 安価をクリックしたとき、その先がページ上であればアニメーションでスクロール
+
+
+API
+--------------------------------------------------------------------------------
+
+### shingetsu.plugins.ResAnchor(Object opt_parameters)
+
+安価を表すインスタンスを返します。
+
+##### このメソッドを参照するファイル
+
+- 20response.js
+- 20textarea.js
+
+### shingetsu.plugins.rootResAnchor
+
+ルートの ResAnchor オブジェクトです。
+このオブジェクトの `parseContent` メソッドを呼ぶと、ページ内の安価を再解析して
+出現した安価に再度イベントを登録します。
+
+##### このプロパティを参照するファイル
+
+- 20response.js
+- 20textarea.js
+
+### shingetsu.plugins.tryJump(DOMEvent event, string resId)
+
+`resId` で表されるレスがページ内にあれば、ページの移動を行わずに
+その位置へアニメーションでスクロールします。
+
+
+依存対象
+--------------------------------------------------------------------------------
+
+* 20popup.js
+
+    - shingetsu.plugins.Coordinate(DOMEvent event)
+    - shingetsu.plugins.Popup(Object opt_parameters)
+
+
+その他
+--------------------------------------------------------------------------------
 
 このプラグインではポップアップに関わる処理を 20popup.js に任せています。
 安価に関わる処理、例えば安価のパース、安価先の読み込みなどのみを行います。
@@ -14,32 +60,3 @@
 安価先のレスの内容がページ上にある場合はそれをそのまま使い、
 ない場合は AJAX でページを取得し、取得し終わったら表示します。
 AJAX の結果は JavaScript の変数上にキャッシュされ、2回目以降はそれが使われます。
-
-********************************************************************************
-
-提供する API
---------------------------------------------------------------------------------
-
-* ```function shingetsu.plugins.popupAnchor(DOMEvent event, string resId)```
-
-  ```event``` が持っているイベントの発生位置に、```resID``` で表される
-  レスの内容をポップアップします。
-
-  #### このメソッドを参照するファイル
-
-  - 20response.js
-  - 20textarea.js
-
-* ```function shingetsu.plugins.tryJump(DOMEvent event, string resId)```
-
-  ```resId``` で表されるレスがページ内にあれば、ページの移動を行わずに
-  その位置へスクロールします。
-
-依存する API
---------------------------------------------------------------------------------
-
-### 20popup.js
-
-* ```function shingetsu.plugins.Coordinate(DOMEvent event)```
-* ```function shingetsu.plugins.showPopup(Coordinate coordinate, Elements elements)```
-* ```function shingetsu.plugins.hidePopup()```
