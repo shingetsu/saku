@@ -12,26 +12,26 @@ shingetsu.initialize(function () {
             aid: null,
             url: null,
             furtherPopup: null,
-            hidingTimer: null
+            destroyTimer: null
         }, opt_parameters);
 
         if (this.container) {
             this.container
                 .on('mouseenter', $.proxy(function (event) {
-                    this.cancelDescentHidingTimer();
+                    this.cancelDescentDestroyTimer();
                     if (!this.furtherPopup) {
                         this.popup(
                             new shingetsu.plugins.Coordinate(event));
                     }
                 }, this))
                 .on('mouseleave', $.proxy(function () {
-                    this.cancelHidingTimer();
-                    this.hidingTimer = setTimeout($.proxy(function () {
+                    this.cancelDestroyTimer();
+                    this.destroyTimer = setTimeout($.proxy(function () {
                         if (this.furtherPopup) {
                             this.furtherPopup.destroy();
                             this.furtherPopup = null;
                         }
-                    }, this), 200);
+                    }, this), shingetsu.plugins.Popup.hidingDuration);
                     this.furtherPopup.hide();
                 }, this));
         }
@@ -49,16 +49,15 @@ shingetsu.initialize(function () {
         });
         furtherPopup.container
             .on("mouseenter", function () {
-                that.cancelDescentHidingTimer();
+                that.cancelDescentDestroyTimer();
             })
-            // =====================================
             .on("mouseleave", $.proxy(function () {
-                that.cancelHidingTimer();
-                that.hidingTimer
+                that.cancelDestroyTimer();
+                that.destroyTimer
                 = setTimeout($.proxy(function () {
                     this.destroy();
                     that.furtherPopup = null;
-                }, this), 200);
+                }, this), shingetsu.plugins.Popup.hidingDuration);
                 that.furtherPopup.hide();
                 that.refireDescentMouseleave();
             }, furtherPopup));
@@ -81,7 +80,8 @@ shingetsu.initialize(function () {
                 this.setHtml(html);
                 this.parseContent();
             } else {
-                this.furtherPopup.setContent('<div>Loading...</div>');
+                this.furtherPopup.setContent('<div>'
+                    + ResAnchor.message.loading + '</div>');
                 $.ajax({
                     url: this.url + '?ajax=true',
                     dataType: 'html',
@@ -101,7 +101,7 @@ shingetsu.initialize(function () {
         html = html.replace(new RegExp('</?(input)[^<>]*>', 'ig'), '')
                        .replace(new RegExp('(<br[^<>]*>\\s*)*$', 'i'), '');
         if (html.search(/<dt/) < 0) {
-            html = '<div>Error or Not Found</div>';
+            html = '<div>' + ResAnchor.message.notFound + '</div>';
         }
         this.furtherPopup.setContent(
             $(html).addClass('panel panel-default'));
@@ -127,20 +127,20 @@ shingetsu.initialize(function () {
             that.childResAnchors.push(resAnchor);
 
             $(this).click(function (e) {
-                that.tryJump(e, id);
+                that.tryJump(e, aid);
             });
         });
     }
-    function cancelHidingTimer() {
-        clearTimeout(this.hidingTimer);
+    function cancelDestroyTimer() {
+        clearTimeout(this.destroyTimer);
         if (this.furtherPopup) {
             $(this.furtherPopup.container).stop(true, true).show();
         }
     }
-    function cancelDescentHidingTimer() {
-        this.cancelHidingTimer();
+    function cancelDescentDestroyTimer() {
+        this.cancelDestroyTimer();
         if (this.parentResAnchor) {
-            this.parentResAnchor.cancelDescentHidingTimer();
+            this.parentResAnchor.cancelDescentDestroyTimer();
         }
     }
     function refireMouseleave() {
@@ -155,7 +155,12 @@ shingetsu.initialize(function () {
         }
     }
     function tryJump(event, id) {
-        shingetsu.plugins.hidePopup();
+        var root = shingetsu.plugins.rootResAnchor.furtherPopup;
+        var i = root.childPopups.length;
+        while (i--) {
+            root.childPopups[i].destroy();
+            root.childPopups.splice(i, 1);
+        }
         if (!document.getElementById('r' + id)) {
             return;
         }
@@ -167,6 +172,19 @@ shingetsu.initialize(function () {
         location.hash = '#r' + id;
     }
 
+    var message = {
+        'en': {
+            loading: 'Loading...',
+            notFound: 'Error or Not Found'
+        },
+        'ja': {
+            loading: '読み込み中です・・・',
+            notFound: 'エラーが発生したか、見つかりません'
+        }
+    };
+    $.extend(ResAnchor, {
+        message: message[shingetsu.uiLang] || message['en']
+    });
     ResAnchor.prototype = {
         constructor: ResAnchor,
         cache: {},
@@ -174,8 +192,8 @@ shingetsu.initialize(function () {
         loadContent: loadContent,
         setHtml: setHtml,
         parseContent: parseContent,
-        cancelHidingTimer: cancelHidingTimer,
-        cancelDescentHidingTimer: cancelDescentHidingTimer,
+        cancelDestroyTimer: cancelDestroyTimer,
+        cancelDescentDestroyTimer: cancelDescentDestroyTimer,
         refireMouseleave: refireMouseleave,
         refireDescentMouseleave: refireDescentMouseleave,
         tryJump: tryJump
