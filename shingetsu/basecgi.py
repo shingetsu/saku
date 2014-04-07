@@ -1,7 +1,7 @@
 '''Base CGI module.
 '''
 #
-# Copyright (c) 2005,2006 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,8 +25,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import os
 import sys
@@ -49,6 +47,8 @@ class BodyFilter:
         self.buf = ''
 
     def write(self, msg):
+        if isinstance(msg, unicode):
+            msg = msg.encode('utf-8', 'replace')
         if not self.ishead:
             self.output.write(msg)
         elif self.ishead and self.flag_body:

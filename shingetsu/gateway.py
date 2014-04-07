@@ -1,7 +1,7 @@
 """Saku Gateway base module.
 """
 #
-# Copyright (c) 2005-2013 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,7 @@ class Message(dict):
                     buf = line.split("<>")
                     if len(buf) == 2:
                         buf[1] = urllib2.unquote(buf[1])
-                        self[buf[0]] = buf[1]
+                        self[buf[0]] = unicode(buf[1], 'utf-8', 'replace')
             f.close()
         except IOError:
             sys.stderr.write(file + ": IOError\n")
@@ -527,6 +527,8 @@ class CGI(basecgi.CGI):
         return self.isadmin or self.isfriend or self.isvisitor
 
     def escape_space(self, text):
+        if isinstance(text, str):
+            text = unicode(text, 'utf-8', 'replace')
         text = re.sub(r'  ', '&nbsp;&nbsp;', text)
         text = re.sub(r'<br> ', '<br>&nbsp;', text)
         text = re.sub(r'^ ', '&nbsp;', text)

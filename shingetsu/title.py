@@ -1,7 +1,7 @@
 '''Title Utilities.
 '''
 #
-# Copyright (c) 2005-2012 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -42,6 +42,8 @@ def str_encode(query):
     >>> str_encode('~')
     '%7E'
     '''
+    if isinstance(query, unicode):
+        query = query.encode('utf-8', 'replace')
     return urllib2.quote(str(query))
 
 def str_decode(query):
@@ -59,6 +61,8 @@ def file_encode(type, query):
     'foo_7E'
     '''
     buf = [type, '_']
+    if isinstance(query, unicode):
+        query = query.encode('utf-8', 'replace')
     for i in query:
         buf.append('%02X' % ord(i))
     return ''.join(buf)
@@ -80,6 +84,8 @@ def file_decode(query, type=None):
     >>> file_decode('foo_7E')
     '~'
     '''
+    if isinstance(query, unicode):
+        query = query.encode('utf-8', 'replace')
     q = query.split('_')
     if len(q) < 2:
         return None

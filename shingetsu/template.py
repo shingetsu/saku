@@ -82,7 +82,7 @@ class Template:
                 sl.update(eachsl)
 
         if tmpl is not None:
-            return str(tmpl.render(sl))
+            return tmpl.render(sl)
         else:
             return ''
 
