@@ -14,7 +14,3 @@
 #    [Tt]his is (SPAM|Spam)
 #    This.*Spam
 #
-# $Id$
-#
-^((?!<>suffix).)*<>mail:[\w\-.@\s]+((?!<>pubkey).)*<>name:[\w\-.@\s]+$
-#^((?!<>suffix).)*<>mail:[\w\-.@\s'/\(\)]+((?!<>pubkey).)*<>name:[\w\-.@\s'/\(\)]+$

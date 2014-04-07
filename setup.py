@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (C) 2005-2014 shinGETsu Project.
+# Copyright (C) 2005-2013 shinGETsu Project.
 #
 
 import re
@@ -38,7 +38,6 @@ def globcat(src, dst):
 
 def setup_script_files():
     copy("saku.py", "saku")
-    copy("tksaku.pyw", "tksaku")
 
 def setup_data_files():
     for i in (lib_dir, data_dir, file_dir, template_dir,
@@ -59,22 +58,18 @@ def setup_data_files():
     copytree("www/jquery", os.path.join(www_dir, 'jquery'))
 
     globcopy("README*", doc_dir)
-    globcopy("file/changelog*", doc_dir)
-    globcopy("doc/*", doc_dir)
+    globcopy("doc/README*", doc_dir)
 
-    globcopy("file/*.ini", sample_dir)
-    globcopy("file/*.sample", sample_dir)
     globcopy("file/*node*.txt", sample_dir)
     globcopy("file/spam.txt", sample_dir)
-    globcopy("tool/saku.init", sample_dir)
+    globcopy("doc/*.sample", sample_dir)
+    copy('doc/sample.ini', os.path.join(sample_dir, 'saku.ini'))
 
-    #copy("file/sample.ini", os.path.join(conf_dir, "saku.ini"))
+    #copy("doc/sample.ini", os.path.join(conf_dir, "saku.ini"))
     #copy("file/spam.txt", os.path.join(conf_dir, "spam.txt"))
     #copy("file/initnode.txt", os.path.join(conf_dir, "initnode.txt"))
-    #copy("tool/saku.init", os.path.join(init_dir, "saku"))
+    #copy("doc/init.sample", os.path.join(init_dir, "saku"))
     copy("tool/mkrss.py", os.path.join(lib_dir, "mkrss"))
-    copy("tool/mkarchive.py", os.path.join(lib_dir, "mkarchive"))
-    copy("tool/mailpost.py", os.path.join(lib_dir, "mailpost"))
 
 
 def make_data_files():
@@ -88,8 +83,6 @@ def make_data_files():
         data_files.append((r[len("root")+1:], data))
     #os.chmod(os.path.join(init_dir, "saku"), execmode)
     os.chmod(os.path.join(lib_dir, "mkrss"), execmode)
-    os.chmod(os.path.join(lib_dir, "mkarchive"), execmode)
-    os.chmod(os.path.join(lib_dir, "mailpost"), execmode)
 
     return data_files
 
@@ -117,8 +110,7 @@ setup(name = "saku",
       platforms = 'any',
       long_description =
             'A clone of P2P anonymous BBS shinGETsu written by Python.'
-            ' This includes daemon, GUI application(GTK),'
-            ' and Apache config files.',
-      scripts = ["saku", "tksaku"],
+            ' This includes libraries, daemon, and Apache config files.',
+      scripts = ["saku"],
       packages = ["shingetsu"],
       data_files = data_files)

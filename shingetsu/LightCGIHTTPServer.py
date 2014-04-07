@@ -36,16 +36,13 @@ import SocketServer
 from compatible import RLock
 
 import config
-import admin_cgi, client_cgi, server_cgi, mailapi_cgi
-import gateway_cgi, thread_cgi, mobile_cgi
+import admin_cgi, client_cgi, server_cgi, gateway_cgi, thread_cgi
 
 cgimodule = {"admin.cgi": admin_cgi,
              "client.cgi": client_cgi,
              "server.cgi": server_cgi,
-             "mailapi.cgi": mailapi_cgi,
              "gateway.cgi": gateway_cgi,
-             "thread.cgi": thread_cgi,
-             "mobile.cgi": mobile_cgi}
+             "thread.cgi": thread_cgi}
 
 
 class ConnectionCounter:

@@ -1,8 +1,0 @@
-#* Saku Gateway Mobile Thrad Top.
- * Copyright (c) 2007 shinGETsu Project.
- * $Id$
- *#
-#if len($cache)
-  <p><a href="$mobile_cgi">[0]$message['top']</a> |
-  <a href="#top" id="bottom" name="bottom" accesskey="2">[2]$message['top_of_page']</a>
-#end if

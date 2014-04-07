@@ -2,9 +2,8 @@
 '''
 #
 # This module contributed by a shinGETsu user.
-# http://archive.shingetsu.info/b1129f37d45b15269a0db850ac053d46/16186b33.html
 #
-# Copyright (c) 2008 shinGETsu Project.
+# Copyright (c) 2008,2012 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,11 +27,9 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 
-__all__ = ['threading', 'RLock', 'Thread', 'listdir', 'md5', 'Set', 'StringIO']
+__all__ = ['threading', 'RLock', 'Thread', 'md5', 'Set', 'StringIO']
 
 import os
 import sys
@@ -51,11 +48,6 @@ except ImportError:
 
 RLock = threading.RLock
 Thread = threading.Thread
-
-if hasattr(sys, "winver"):
-    from os import listdir
-else:
-    from dircache import listdir
 
 
 try:

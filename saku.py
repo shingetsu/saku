@@ -1,9 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/python -3
 #
 '''shinGETsu clone.
 '''
 #
-# Copyright (c) 2005 shinGETsu Project.
+# Copyright (c) 2005,2012 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,15 +27,12 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import sys
 import time
 
 import shingetsu.daemon as daemon
 
-__version__ = "$Revision$"
 
 def main():
     try:

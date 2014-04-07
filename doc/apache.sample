@@ -28,20 +28,9 @@
         RewriteRule ^(bootstrap|html5js|jquery)/(.*) /STATIC/$1/$2
         RewriteRule ^favicon.ico$ /STATIC/favicon.ico
         RewriteRule rss1.xsl /STATIC/rss1.xsl
-        RewriteCond %{REQUEST_METHOD} GET
-            RewriteCond %{QUERY_STRING} ^$
-            RewriteCond %{HTTP_USER_AGENT} DoCoMo/2.0
-            RewriteRule ^mobile.cgi /mobile.xhtml
-        RewriteCond %{REQUEST_METHOD} GET
-            RewriteCond %{QUERY_STRING} ^$
-            RewriteCond %{HTTP_USER_AGENT} !DoCoMo
-            RewriteRule ^mobile.cgi /mobile.html
+        RewriteRule ^mobile.cgi / [R]
         RewriteCond %{QUERY_STRING} cmd=post
             RewriteRule . /cgi-bin/dummy.php?
-        RewriteCond %{REQUEST_METHOD} POST
-            RewriteCond %{HTTP_REFERER} $^
-            RewriteCond %{REQUEST_URI} !^/mobile.cgi$
-            RewriteRule thread.cgi /cgi-bin/dummy.php
         RewriteCond %{REQUEST_METHOD} POST
             RewriteCond %{HTTP_REFERER} %25|thread.cgi$
             RewriteRule thread.cgi /cgi-bin/dummy.php
@@ -50,11 +39,6 @@
         RewriteRule ^gw$ /cgi-bin/gw.cgi
         RewriteRule ^thread.cgi/(thread_[0-9A-F]*)/([0-9a-f]*)/(s?[0-9]*).(.*) \
                     /CACHE/$1/attach/$3_$2.$4
-        <Files "mobile.cgi">
-            <Limit POST>
-                Include /etc/httpd/acl.d/mobile
-            </Limit>
-        </Files>
         <IfModule mod_proxy.c>
             #RewriteRule ^$ http://bbs.shingetsu.info:8000/gateway.cgi [P]
             RewriteRule ^(gateway|thread).cgi(.*) \

@@ -34,7 +34,7 @@ import re
 import shutil
 import sys
 from time import time
-from compatible import md5, Set, listdir, RLock
+from compatible import md5, Set, RLock
 
 import apollo
 import config
@@ -48,7 +48,6 @@ try:
     import PIL.Image
 except ImportError:
     PIL = None
-    sys.stdout.write('system does not have PIL.\n');
 
 __all__ = ['Record', 'Cache', 'CacheList', 'UpdateList', 'RecentList']
 
@@ -251,7 +250,7 @@ class Record(dict):
             return None
         dir = "/".join((config.cache_dir, self.dathash, "attach"))
         thumbnail = []
-        for i in listdir(dir):
+        for i in os.listdir(dir):
             if i.startswith("s" + self.idstr):
                 thumbnail.append("/".join((dir, i)))
         return thumbnail
@@ -269,7 +268,7 @@ class Record(dict):
                 return dir + "/" + "s" + self.idstr + "." + thumbnail_size + "." + suffix
             else:
                 return dir + "/" + self.idstr + "." + suffix
-        for i in listdir(dir):
+        for i in os.listdir(dir):
             if i.startswith(self.idstr):
                 return dir + "/" + i
         return None
@@ -418,18 +417,6 @@ class Record(dict):
             self.free()
             return False
 
-    def has_valid_stamp(self):
-        """The record has valid stamp or not.
-
-        In 2ch.net BBS, 'sage' command prohibit updating timestamp of the
-        thread.
-
-        When a 'sage' is in mail field and config.sage is true,
-        the timestamp of the file is not updated.
-        """
-        return ((not config.sage) or
-                (not ('sage' in self.get('mail', '').lower())))
-
 # End of Record
 
 
@@ -539,7 +526,7 @@ class Cache(dict):
         if (not self.loaded) and self.exists():
             self.loaded = True
             try:
-                for k in listdir(self.datpath + "/record"):
+                for k in os.listdir(self.datpath + "/record"):
                     self[k] = Record(datfile=self.datfile, idstr=k)
             except OSError:
                 sys.stderr.write("%s/record: OSError\n" % self.datpath)
@@ -551,7 +538,7 @@ class Cache(dict):
         removed = self.datpath + "/removed"
         return bool(self) or \
                (os.path.exists(removed) and
-                bool(listdir(removed)))
+                bool(os.listdir(removed)))
 
     def _load_status(self, key):
         path = "%s/%s.stat" % (self.datpath, key)
@@ -604,7 +591,6 @@ class Cache(dict):
         '''Check a data and add it cache.'''
         flag_got = False
         flag_spam = False
-        spam_count = 0
         count = 0
         for i in res:
             count += 1
@@ -624,7 +610,6 @@ class Cache(dict):
                     self.add_data(r, False)
                     r.remove()
                     flag_spam = True
-                    spam_count += 1
                 else:
                     self.add_data(r)
             else:
@@ -637,9 +622,6 @@ class Cache(dict):
                 sys.stderr.write("Warning: %s%s: broken record.\n" %
                                  (self.datfile, str_stamp))
             r.free()
-            if spam_count > config.accept_spam_count:
-                sys.stderr.write("Warning: %s: too many spams. skip fetching it.\n" % self.datfile)
-                break
         return count, flag_got, flag_spam
 
     def get_data(self, stamp=0, id="", node=None):
@@ -699,8 +681,7 @@ class Cache(dict):
             self.count += 1
         if really:
             if self.valid_stamp < rec.stamp:
-                if rec.has_valid_stamp():
-                    self.valid_stamp = rec.stamp
+                self.valid_stamp = rec.stamp
         if self.stamp < rec.stamp:
             self.stamp = rec.stamp
 
@@ -708,7 +689,7 @@ class Cache(dict):
         '''Remove body cache that is a field of removed record.'''
         try:
             dir = os.path.join(config.cache_dir, self.dathash, 'body')
-            for idstr in listdir(dir):
+            for idstr in os.listdir(dir):
                 rec = Record(datfile=self.datfile, idstr=idstr)
                 if not rec.exists():
                     try:
@@ -723,7 +704,7 @@ class Cache(dict):
         """Remove attach cache that is a field of removed record."""
         try:
             dir = os.path.join(config.cache_dir, self.dathash, 'attach')
-            for f in listdir(dir):
+            for f in os.listdir(dir):
                 idstr = f
                 i = f.find(".")
                 if i >= 0:
@@ -820,7 +801,7 @@ class CacheList(list):
         sugtagtable = SuggestedTagTable()
         recentlist = RecentList()
         del self[:]
-        for i in listdir(config.cache_dir):
+        for i in os.listdir(config.cache_dir):
             if config.cache_hash_method == 'asis':
                 c = Cache(i, sugtagtable, recentlist)
                 self.append(c)
@@ -840,7 +821,7 @@ class CacheList(list):
         """Rename file path hash if it is old.
         """
         to_reload = False
-        for i in listdir(config.cache_dir):
+        for i in os.listdir(config.cache_dir):
             try:
                 dat_stat_file = os.path.join(config.cache_dir, i, 'dat.stat')
                 if os.path.isfile(dat_stat_file):
@@ -889,8 +870,7 @@ class CacheList(list):
                         if cache.stamp < rec.stamp:
                             cache.stamp = rec.stamp
                         if cache.valid_stamp < rec.stamp:
-                            if rec.has_valid_stamp():
-                                cache.valid_stamp = rec.stamp
+                            cache.valid_stamp = rec.stamp
                         cache.size += len(str(rec))
                         cache.count += 1
                         rec.sync()
@@ -926,7 +906,7 @@ class CacheList(list):
         """Remove removed record from disk."""
         now = int(time())
         for cache in self:
-            for r in listdir(cache.datpath + "/removed"):
+            for r in os.listdir(cache.datpath + "/removed"):
                 rec = Record(datfile=cache.datfile, idstr=r)
                 if (cache.save_removed > 0) and \
                    (rec.stamp + cache.save_removed < now) and \
@@ -976,8 +956,8 @@ class UpdateList:
     def __iter__(self):
         return iter(self.tiedlist)
 
-    def __getslice__(self, i, j):
-        return self.tiedlist[i:j]
+    def __getitem__(self, i):
+        return self.tiedlist[i]
 
     def append(self, rec):
         rec = VirtualRecord(datfile=rec.datfile, idstr=rec.idstr)

@@ -31,9 +31,7 @@ status<>Status
 agreement<>Agreement
 title<>Title
 recent_changes<>Recent Changes
-archive<>Archive
 all<>All
-mobile<>Mobile
 
 # index
 filter<>Filter
@@ -53,8 +51,6 @@ suffix<>Suffix
 error<>Error in timestamp
 comment<>Comment
 post<>POST
-mail_post<>Post with mail
-mail_message<>Write message from next line
 post_body<>Post text
 
 # admin

@@ -123,9 +123,6 @@ class CGI(basecgi.CGI):
         if int(time()) - status["sync"] >= config.sync_cycle:
             self.do_sync()
 
-        if config.moonlight:
-            self.do_moonlight()
-
     def check(self, key):
         status = Status()
         status.check(key)
@@ -190,19 +187,3 @@ class CGI(basecgi.CGI):
 
         cachelist.getall(timelimit=self.timelimit)
         self.stderr.write("shingetsu.cache.CacheList.getall() finished\n")
-
-    def do_moonlight(self):
-        """Auto get new threads.
-        """
-        recentlist = RecentList()[:]
-        check = []
-        for rec in recentlist:
-            cache = Cache(rec.datfile)
-            if rec.datfile not in check:
-                if not cache.exists():
-                    result = cache.search()
-                    if result:
-                        self.stderr.write("shingetsu moonlight: %s\n" % rec.datfile)
-                    else:
-                        self.stderr.write("shingetsu moonlight failed: %s\n" % rec.datfile)
-                check.append(rec.datfile)

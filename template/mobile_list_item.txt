@@ -1,7 +1,0 @@
-#* Saku Gateway Mobile List Item.
- * Copyright (c) 2007 shinGETsu Project.
- * $Id$
- *#
-<li><span class="stamp">$localtime($cache.valid_stamp)</span>
-<a href="$mobile_cgi?thread=$str_title">$escape_space($title)</a>
-(${len($cache)})</li>

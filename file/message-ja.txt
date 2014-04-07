@@ -22,9 +22,7 @@ status<>状態
 agreement<>ネットワーク利用規約
 title<>タイトル
 recent_changes<>最近の更新
-archive<>保管庫
 all<>全部
-mobile<>モバイル
 
 # description
 desc_index<>ディスクに保存され、自動的に更新される掲示板の一覧(文字コード順)
@@ -34,7 +32,6 @@ desc_search<>ディスクに保存されている掲示板から検索
 desc_error<>匿名性の保持のための機能。連続投稿するときは無効にしてください
 desc_comment<>他のノードにも通知するときには削除の理由を書いてください
 desc_send<>掲示板の最初の書き込みで、なおかつ匿名性を保ちたいときだけ無効にしてください
-show<>表示
 
 # index
 filter<>フィルタ
@@ -42,6 +39,7 @@ regexp<>正規表現
 tag<>タグ
 string<>文字列
 tag_desc<>スペースで区切ってタグを入力してください。&lt;&gt;&amp;は使えません。
+show<>表示
 
 # post
 send<>他のノードにも通知する
@@ -53,8 +51,6 @@ suffix<>拡張子
 error<>書き込み時刻に誤差
 comment<>コメント
 post<>投稿
-mail_post<>メールで投稿(添付OK)
-mail_message<>↓この下に記事を書いてください↓
 post_body<>本文
 
 # admin

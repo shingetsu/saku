@@ -29,8 +29,6 @@
 import base64
 from compatible import md5
 
-__version__ = "$Revision$"
-
 # Count for Rabin-Miller test.
 # Error rate is 1/(4^count).
 sprp_test_count = 10
@@ -104,8 +102,8 @@ def spsp(n, a):
     r = 1
     s = 0
     while r != 0:
-        r = d%2
-        d = d/2
+        r = d % 2
+        d = d // 2
         s += 1
 
     # start with p = a^q (mod n)
@@ -184,7 +182,7 @@ def modinv(a, n):
     v = 0
 
     while s > 0:
-        q = int(t / s)
+        q = t // s
         w = t - q * s
         t = s
         s = w
@@ -200,7 +198,7 @@ def rsa_base_generate(p_seed, q_seed):
     q = q_seed
     p = p_seed
 
-    for count in range(rsa_create_giveup):
+    for count in xrange(rsa_create_giveup):
         q = primize(q)
         q1 = q - 1
         p = primize(p)
@@ -214,14 +212,11 @@ def rsa_base_generate(p_seed, q_seed):
         test = pow(test, e, key_n)
         test = pow(test, key_d, key_n)
         if test == 0x7743:
-            break
+            return (key_n, key_d)
         p += 2
         q += 2
 
-    if count != rsa_create_giveup - 1:
-        return (key_n, key_d)
-    else:
-        return (0, 0)
+    return (0, 0)
 
 def rsa_base_encrypt(m, key_n, key_d):
     return pow(m, key_d, key_n)
@@ -262,7 +257,7 @@ def int_to_base64(n):
     buf = []
     while n > 0:
         buf.append(base64en[n%64])
-        n /= 64
+        n //= 64
     return "".join(buf) + (base64en[0] * (86-len(buf)))
 
 def bin_to_int(bin):

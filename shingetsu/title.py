@@ -1,7 +1,7 @@
 '''Title Utilities.
 '''
 #
-# Copyright (c) 2005-2011 shinGETsu Project.
+# Copyright (c) 2005-2012 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,15 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id: gateway.py 1296 2006-11-20 14:14:02Z fuktommy $
-#
 
 import hashlib
-import urllib
+import urllib2
 import sys
 
 import config
 from compatible import md5
 
 __all__ = ['str_encode', 'str_decode', 'file_encode', 'file_decode']
-__version__ = '$Revision$'
 
 
 def str_encode(query):
@@ -45,7 +42,7 @@ def str_encode(query):
     >>> str_encode('~')
     '%7E'
     '''
-    return urllib.quote(str(query))
+    return urllib2.quote(str(query))
 
 def str_decode(query):
     '''Decode URI.
@@ -53,7 +50,7 @@ def str_decode(query):
     >>> str_decode('%7E')
     '~'
     '''
-    return urllib.unquote(query)
+    return urllib2.unquote(query)
 
 def file_encode(type, query):
     '''Encode for filename.

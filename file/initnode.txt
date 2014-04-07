@@ -1,6 +1,6 @@
 #
 # Initial Node List for Saku.
-# Copyright (c) 2006-2009 shinGETsu Project.
+# Copyright (c) 2006-2011 shinGETsu Project.
 #
 # $Id$
 #
@@ -9,4 +9,3 @@ pushare.zenno.info:8000/server.cgi
 rep4649.ddo.jp:8000/server.cgi
 skaphy.dyndns.info:8039/saku/server.cgi
 sg.r00tz0n3.com:49494/server.cgi
-

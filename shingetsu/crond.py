@@ -26,13 +26,12 @@
 # SUCH DAMAGE.
 #
 
-import dircache
 import gc
 import re
 import sys
 import time
 from threading import Thread
-from urllib import urlopen
+from urllib2 import urlopen
 
 import config
 import tiedobj
@@ -42,23 +41,13 @@ class Client(Thread):
 
     """Access client.cgi."""
 
-    def __init__(self, router=None):
+    def __init__(self):
         Thread.__init__(self)
-        self.router = router
 
     def run(self):
-        if self.router:
-            sys.stderr.write("sending router openport %d: %s\n" %
-                             (config.port, self.router))
-            flag = self.router.openport(config.port, "TCP", "shinGETsu")
-            if flag:
-                sys.stderr.write("openport succeed: %s\n" % self.router)
-            else:
-                sys.stderr.write("Error: openport failed: %s\n" % self.router)
         try:
             con = urlopen("http://localhost:%d%s" %
-                          (config.port, config.client),
-                          proxies={})
+                          (config.port, config.client))
             con.close()
         except IOError:
             pass
@@ -71,30 +60,22 @@ class Crond(Thread):
 
     gc_counter = {}
 
-    def __init__(self, router):
+    def __init__(self):
         Thread.__init__(self)
-        self.router = router
 
     def run(self):
         time.sleep(5)
-        lastupnp = 0
         gc.set_debug(gc.DEBUG_UNCOLLECTABLE)
         while True:
             self.clear_cache()
             #self.gc_debug()
             now = int(time.time())
-            if self.router and (lastupnp + config.upnp_cycle < now):
-                lastupnp = now
-                c = Client(self.router)
-            else:
-                c = Client()
-            c.start()
+            Client().start()
             time.sleep(config.client_cycle)
 
     def clear_cache(self):
         try:
             re.purge()
-            dircache.reset()
             tiedobj.reset()
         except Exception, err:
             sys.stderr.write('Crond.clear_cache(): %s\n' % err)

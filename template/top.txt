@@ -11,15 +11,11 @@
     <li>$gateway_link($gateway_cgi, $i)</li>
   #end for
 #end if
-#if $archive_uri:
-  <li><a href="$archive_uri">$message['archive']</a></li>
-#end if
 #if $isadmin
   #for $i in ('search', 'status')
     <li>$gateway_link($admin_cgi, $i)</li>
   #end for
 #end if
-<li><a href="$mobile_cgi">$message['mobile']</a></li>
 <li><a href="http://www.shingetsu.info/">$message['site']</a></li>
 <li><a href="$gateway_cgi/motd">$message['agreement']</a></li>
 <li><a href="$gateway_cgi/rss">$message['rss']</a></li>

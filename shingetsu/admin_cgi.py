@@ -1,7 +1,7 @@
 """Saku Admin CGI methods.
 """
 #
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2012 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,8 +25,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import os
 import cgi
@@ -39,8 +37,6 @@ import gateway
 from cache import *
 from node import *
 from tag import UserTagList
-
-__version__ = "$Revision$"
 
 
 class CGI(gateway.CGI):
@@ -251,7 +247,7 @@ class CGI(gateway.CGI):
                                   'replace')
                 if query.search(datfile):
                     result.append(i)
-            result.sort(lambda a,b: cmp(b.stamp, a.stamp))
+            result.sort(key=lambda x: x.stamp, reverse=True)
             self.print_index_list(result, footer=False)
         except (re.error, UnicodeDecodeError):
             self.print_paragraph(self.message['regexp_error'])

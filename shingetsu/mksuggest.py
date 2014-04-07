@@ -11,7 +11,7 @@
      src="http://example.com/suggest.js" charset="utf-8"></script>
 '''
 #
-# Copyright (c) 2006-2008 shinGETsu Project.
+# Copyright (c) 2006-2012 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -35,15 +35,13 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import os
 import re
 import sys
 import cgi
 import socket
-import urllib
+import urllib2
 
 import config
 from template import Template
@@ -55,8 +53,8 @@ port = config.port
 docroot = config.apache_docroot
 
 def get_titles():
-    f = urllib.urlopen('http://localhost:%d/gateway.cgi/csv/changes/title' %
-                       port)
+    f = urllib2.urlopen('http://localhost:%d/gateway.cgi/csv/changes/title' %
+                        port)
     titles = []
     for line in f:
         line = line.strip()

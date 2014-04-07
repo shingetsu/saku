@@ -17,9 +17,6 @@ $cookie
   <meta name="robots" content="NOINDEX" />
 #end if
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-#if $mobile
-  <link rel="alternate" media="handheld" href="$mobile" />
-#end if
   <link rel="author" href="http://www.shingetsu.info/" />
   <link rel="contents" href="/" />
   <link rel="index" href="/gateway.cgi/index" />

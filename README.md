@@ -9,14 +9,12 @@ Authors
 * (compatible) A shinGETsu user.
 * (thumbnail patch) A shinGETsu user.
 * (imghdr patch) A shinGETsu user.
-* (moonlight) A shinGETsu user.
 * (js extensions) shinGETsu users.
 
 Contributers
 ------------
 * (run_cgi) Python Software Foundation.
 * (SimpleGzipFile) Python Software Foundation.
-* (popup.js) Zero corp.
 * (Cheetah) The Cheetah Development Team:
   Tavis Rudd, Mike Orr, Ian Bicking, Chuck Esterbrook.
 * (jQuery) The jQuery Foundation.
@@ -44,8 +42,7 @@ Agree following terms and join shinGETsu network.
 Description
 -----------
 * Saku is a P2P anonymous BBS works on Python.
-* We confirm that Saku works on CPython 2.6 on GNU/Linux and
-    CPython 2.7 on Windows 7.
+* We confirm that Saku works on CPython 2.6 on GNU/Linux.
     Saku may not work on MacOS(ver.9 or before).
 * The features of shinGETsu are...
     * 2ch.net style interface
@@ -58,7 +55,6 @@ Saku requires
 * Python (ver.2.4 or later)
 * Cheetah (ver.2.0rc7 or later) if you install Saku
 * PIL (Python Imaging Libraty) if you need
-* MiniUPnPc if you need
 
 Usage Saku without install
 --------------------------

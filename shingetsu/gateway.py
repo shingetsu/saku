@@ -1,7 +1,7 @@
 """Saku Gateway base module.
 """
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2013 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,15 +27,11 @@
 #
 
 import cgi
-import os.path
+import os
 import re
-import urllib
+import urllib2
 import sys
 import time
-if hasattr(sys, "winver"):
-    from os import listdir
-else:
-    from dircache import listdir
 
 import basecgi
 import config
@@ -68,7 +64,7 @@ class Message(dict):
                 else:
                     buf = line.split("<>")
                     if len(buf) == 2:
-                        buf[1] = urllib.unquote(buf[1])
+                        buf[1] = urllib2.unquote(buf[1])
                         self[buf[0]] = buf[1]
             f.close()
         except IOError:
@@ -96,7 +92,7 @@ def search_message(accept_language):
                 q[i] = 1
 
         lang = q.keys()
-        lang.sort(lambda a,b: cmp(q[b], q[a]))
+        lang.sort(key=lambda x: q[x], reverse=True)
     lang.append(config.language)
     for i in lang:
         short_lang = i.split('-')[0]
@@ -117,7 +113,6 @@ class CGI(basecgi.CGI):
     gateway_cgi = config.gateway
     thread_cgi = config.thread_cgi
     admin_cgi = config.admin_cgi
-    mobile_cgi = config.mobile_cgi
     message = None
     filter = None
     str_filter = ''
@@ -157,9 +152,7 @@ class CGI(basecgi.CGI):
             'gateway_cgi': self.gateway_cgi,
             'thread_cgi': self.thread_cgi,
             'admin_cgi': self.admin_cgi,
-            'mobile_cgi': self.mobile_cgi,
             'root_path': config.root_path,
-            'archive_uri': config.archive_uri,
             'types': config.types,
             'isadmin': self.isadmin,
             'isfriend': self.isfriend,
@@ -228,7 +221,7 @@ class CGI(basecgi.CGI):
 
     def extension(self, suffix):
         filename = []
-        for i in listdir(config.abs_docroot):
+        for i in os.listdir(config.abs_docroot):
             if i.endswith('.%s' % suffix) and \
                (not (i.startswith('.') or i.startswith('_'))):
                 filename.append(i)
@@ -245,7 +238,7 @@ class CGI(basecgi.CGI):
         return self.template('menubar', var)
 
     def header(self, title='', rss='',
-               cookie=None, deny_robot=False, mobile=''):
+               cookie=None, deny_robot=False):
         '''Print CGI and HTTP header.
         '''
         if rss == '':
@@ -256,7 +249,6 @@ class CGI(basecgi.CGI):
             'rss': rss,
             'cookie': cookie,
             'deny_robot': deny_robot,
-            'mobile': mobile,
             'js': self.extension('js'),
             'css': self.extension('css'),
             'menubar': self.menubar('top', rss)
@@ -264,7 +256,7 @@ class CGI(basecgi.CGI):
         self.stdout.write(self.template('header', var))
 
     def footer(self, menubar=None):
-       self.stdout.write(self.template('footer', {'menubar': menubar}))
+        self.stdout.write(self.template('footer', {'menubar': menubar}))
 
     def localtime(self, stamp=0):
         """Return YYYY-mm-dd HH:MM."""
@@ -378,11 +370,6 @@ class CGI(basecgi.CGI):
         '''Print CGI header (404 not found).'''
         self.header(self.message['404'], deny_robot=True)
         self.print_paragraph(self.message['404_body'])
-        if hasattr(self, 'archive_uri'):
-            if id:
-                self.print_jump('%s%s.html' % (self.archive_uri, id))
-            else:
-                self.print_jump(self.archive_uri)
         if cache is not None:
             self.remove_file_form(cache)
         self.footer()
@@ -561,17 +548,14 @@ class CGI(basecgi.CGI):
             return None
         elif self.tag:
             matchtag = False
-            for t in (cache.tags + cache.sugtags):
+            for t in cache.tags:
                 if str(t).lower() == self.tag:
                     matchtag = True
                     break
             if not matchtag:
                 return None
         x = self.escape_space(x)
-        if cache.tags:
-            tags, tagclassname = cache.tags, 'tags'
-        else:
-            tags, tagclassname = cache.sugtags, 'sugtags'
+        tags, tagclassname = cache.tags, 'tags'
         if search:
             str_opts = '?search_new_file=yes'
         else:

@@ -1,7 +1,7 @@
 '''Tied List and Dictionaly.
 '''
 #
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2012 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,8 +25,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import re
 import sys
@@ -35,7 +33,6 @@ from compatible import RLock
 
 import config
 
-__version__ = '$Revision$'
 __all__ = ['tiedlist', 'tieddict']
 
 lock = RLock()
@@ -91,8 +88,8 @@ class ListFile:
     def __iter__(self):
         return iter(self.data)
 
-    def __getslice__(self, i, j):
-        return self.data[i:j]
+    def __getitem__(self, i):
+        return self.data[i]
 
     def append(self, data, allow_duplication=True):
         try:

@@ -25,8 +25,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import gzip
 import random
@@ -35,7 +33,7 @@ import os
 import socket
 import sys
 import time
-import urllib
+import urllib2
 import zlib
 from compatible import StringIO
 from compatible import threading as _threading
@@ -44,23 +42,18 @@ import config
 from tiedobj import *
 from conflist import *
 
-__version__ = "$Revision$"
 __all__ = ['Node', 'RawNodeList', 'NodeList', 'SearchList', 'LookupTable',
            'init_node', 'node_allow', 'node_deny']
-
-urllib.URLopener.version = config.version
-
-class SakuAgent(urllib.URLopener):
-    def __init__(self):
-        self.version = config.version
-        urllib.URLopener.__init__(self, proxies={})
-        self.addheader("Accept-Encoding", "gzip")
-
-agent = SakuAgent()
 
 _init_node = None
 _node_allow = None
 _node_deny = None
+
+def urlopen(url):
+    req = urllib2.Request(url)
+    req.add_header('Accept-Encoding', 'gzip')
+    req.add_header('User-Agent', config.version)
+    return urllib2.urlopen(req)
 
 def init_node():
     global _init_node
@@ -176,7 +169,7 @@ class Node:
         message = 'http://%s%s' % (self, message)
         try:
             sys.stderr.write('talk: %s\n' % message)
-            res = agent.open(message)
+            res = urlopen(message)
         except Exception, err:
             sys.stderr.write('%s: %s\n' % (message, err))
             return StringIO('')

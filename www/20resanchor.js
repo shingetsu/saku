@@ -1,5 +1,5 @@
 /* Popup Res Anchor.
- * Copyright (C) 2005-2012 shinGETsu Project.
+ * Copyright (C) 2005-2013 shinGETsu Project.
  */
 
 shingetsu.initialize(function () {

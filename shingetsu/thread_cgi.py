@@ -42,7 +42,6 @@ from tag import UserTagList
 import os.path
 
 
-
 class CGI(gateway.CGI):
 
     """Class for /thread.cgi."""
@@ -124,7 +123,7 @@ class CGI(gateway.CGI):
 
     def print_page_navi(self, page, cache, path, str_path, id):
         size = config.thread_page_size
-        first = len(cache) / size
+        first = len(cache) // size
         if len(cache) % size:
             first += 1
         var = {
@@ -134,13 +133,11 @@ class CGI(gateway.CGI):
             'str_path': str_path,
             'id': id,
             'first': first,
-            'archive_uri': self.archive_uri,
         }
         self.stdout.write(self.template('page_navi', var))
 
     def print_tags(self, cache):
-        for tags, classname, target in ((cache.tags, 'tags', 'changes'),
-                                        (cache.sugtags, 'sugtags', 'recent')):
+        for tags, classname, target in ((cache.tags, 'tags', 'changes'),):
             if not (self.isadmin or self.isfriend):
                 target = 'changes'
             var = {
@@ -155,8 +152,6 @@ class CGI(gateway.CGI):
         str_path = self.str_encode(path)
         file_path = self.file_encode('thread', path)
         form = cgi.FieldStorage(environ=self.environ, fp=self.stdin)
-        self.archive_uri = '%s%s/' % (config.archive_uri,
-                                      md5.new(file_path).hexdigest())
         cache = Cache(file_path)
         if id and form.getfirst('ajax'):
             self.print_thread_ajax(path, id, form)
@@ -183,14 +178,8 @@ class CGI(gateway.CGI):
             newcookie = self.setcookie(cache, access)
         else:
             newcookie = ''
-        mobileuri = '%s?thread=%s' % (self.mobile_cgi, str_path)
-        if page:
-            mobileuri += '&amp;page=%d' % page
-        elif id:
-            mobileuri += '&amp;id=%s' % id
         rss = self.gateway_cgi + '/rss'
-        self.header(path, rss=rss, cookie=newcookie, mobile=mobileuri)
-        form = cgi.FieldStorage(environ=self.environ, fp=self.stdin)
+        self.header(path, rss=rss, cookie=newcookie)
         tags = form.getfirst('tag', '').strip().split()
         if self.isadmin and tags:
             cache.tags.add(tags)
@@ -228,8 +217,6 @@ class CGI(gateway.CGI):
                 printed = True
             rec.free()
         self.stdout.write("</dl>\n")
-        if id and (not printed) and config.archive_uri:
-            self.print_jump('%s%s.html' % (self.archive_uri, id))
         escaped_path = cgi.escape(path)
         escaped_path = re.sub(r'  ', '&nbsp;&nbsp;', escaped_path)
         var = {
@@ -302,7 +289,7 @@ class CGI(gateway.CGI):
         var = {
             'cache': cache,
             'suffixes': suffixes,
-            'limit': config.record_limit*3/4,
+            'limit': config.record_limit * 3 // 4,
         }
         self.stdout.write(self.template('post_form', var))
 

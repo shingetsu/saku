@@ -1,7 +1,7 @@
 '''Tagging.
 '''
 #
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2012 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,8 +25,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import re
 import sys
@@ -37,7 +35,6 @@ from compatible import Set
 import config
 from tiedobj import *
 
-__version__ = '$Revision$'
 __all__ = ['TagList', 'UserTagList', 'SuggestedTagList', 'SuggestedTagTable']
 
 
@@ -139,7 +136,7 @@ class SuggestedTagList(TagList):
             self.tiedlist.append(i)
 
     def prune(self, size=config.tag_size):
-        self.sort(lambda a,b: cmp(b.weight, a.weight))
+        self.sort(key=lambda x: x.weight, reverse=True)
         for tag in self[size:]:
             self.tiedlist.remove(tag)
         del self[size:]

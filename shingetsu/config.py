@@ -31,7 +31,6 @@ import sys
 import os.path
 import ConfigParser
 
-
 def _get_value(parser, section, key, default, vtype=''):
     """Get config value or default value."""
     try:
@@ -54,11 +53,11 @@ def _get_version():
     if (not re.search(r'^\d', version)) and os.path.isfile(version_file):
         try:
             f = open(version_file)
-            version += '/git/' + f.read().strip()
+            version = f.read().strip()
             f.close()
         except (IOError, OSError):
             pass
-    return 'shinGETsu/0.7 (Saku/%s)' % version
+    return 'shinGETsu/0.7 (Saku-Ex/%s)' % version
 
 
 # External config files.
@@ -72,7 +71,6 @@ _extconf.read(['file/saku.ini',
 types = ("thread",)
 
 port = _get_value(_extconf, 'Network', 'port', 8000, 'int')
-use_upnp = _get_value(_extconf, 'Network', 'upnp', False, 'boolean')
 max_connection = _get_value(_extconf, 'Network', 'max_connection', 20, 'int')
 
 docroot = _get_value(_extconf, 'Path', 'docroot', './www', 'path')
@@ -92,8 +90,6 @@ node_deny = _get_value(_extconf, 'Path', 'node_deny',
                         '../file/node_deny.txt', 'path')
 apache_docroot = _get_value(_extconf, 'Path', 'apache_docroot',
                        '/var/local/www/shingetsu', 'path')
-archive_dir = _get_value(_extconf, 'Path', 'archive_dir',
-                       '/var/local/www/archive', 'path')
 
 admin = _get_value(_extconf, 'Gateway', 'admin', r'^127')
 friend = _get_value(_extconf, 'Gateway', 'friend', r'^127')
@@ -107,15 +103,11 @@ recent_range = _get_value(_extconf, 'Gateway', 'recent_range',
                           31*24*60*60, 'int')
 record_limit = _get_value(_extconf, 'Gateway', 'record_limit', 2048, 'int')
 proxy_destination = _get_value(_extconf, 'Gateway', 'proxy_destination', '')
-archive_uri = _get_value(_extconf, 'Gateway', 'archive_uri',
-                         'http://archive.shingetsu.info/')
-mobile_mail_domain = _get_value(_extconf, 'Gateway', 'mobile_mail_domain', '')
 tmpaddr_span = _get_value(_extconf, 'Gateway', 'tmpaddr_span', 60*60, 'int')
 re_admin = re.compile(admin)
 re_friend = re.compile(friend)
 re_visitor = re.compile(visitor)
 template_suffix = '.txt'
-moonlight = _get_value(_extconf, 'Gateway', 'moonlight', False, 'boolean')
 
 tklog = _get_value(_extconf, 'Interface', 'tklog', 100, 'int')
 
@@ -141,22 +133,17 @@ for type in types:
 thread_page_size = _get_value(_extconf,
                               'Application Thread',
                               'page_size', 50, 'int')
-mobile_page_size = _get_value(_extconf,
-                              'Application Thread',
-                              'mobile_page_size', 10, 'int')
 thumbnail_size = _get_value(_extconf,
                             'Application Thread',
                             'thumbnail_size', None, '')
 force_thumbnail = _get_value(_extconf,
                              'Application Thread',
                              'force_thumbnail', False, 'boolean')
-sage = _get_value(_extconf, 'Application Thread', 'sage', False, 'boolean')
 
 client_cycle = 5*60         # Seconds; Access client.cgi
 ping_cycle = 5*60           # Seconds; Check nodes
 sync_cycle = 5*60*60        # Seconds; Check cache
 init_cycle = 20*60          # Seconds; Check initial node
-upnp_cycle = 1*60*60        # Seconds
 update_range = 24*60*60     # Seconds
 wait_update = 10            # Seconds
 time_error = 60             # Seconds
@@ -164,16 +151,13 @@ search_timeout = 10*60      # Seconds
 timeout = 20                # Seconds; Timeout for TCP
 get_timeout = 2*60          # Seconds; Timeout for /get
 client_timeout = 30*60      # Seconds; client_timeout < sync_cycle
-upnp_timeout = 20           # Seconds
 tk_save_warn = 5*60         # Seconds
 retry = 5                   # Times; Common setting
 retry_join = 2              # Times; Join network
 nodes = 5                   # Nodes keeping in node list
 share_nodes = 5             # Nodes having the file
 search_depth = 30           # Search node size
-accept_spam_count = 10
-tmpaddr_size = 10
-tmpaddr_length = 16
+tiedfile_cache_size = 30
 
 broadcast = "../tool/broadcast.py"  # Broadcast script path
 
@@ -208,10 +192,8 @@ read_status = run_dir + '/readstatus.txt'
 server = root_path + "server.cgi"
 client = root_path + "client.cgi"
 gateway = root_path + "gateway.cgi"
-mailapi = root_path + "mailapi.cgi"
 thread_cgi = root_path + "thread.cgi"
 admin_cgi = root_path + "admin.cgi"
-mobile_cgi = root_path + "mobile.cgi"
 xsl = root_path + "rss1.xsl"
 root_index = _get_value(_extconf, 'Gateway', 'root_index', gateway)
 

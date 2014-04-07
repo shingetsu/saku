@@ -1,7 +1,7 @@
 """Data structure of RSS and useful functions.
 """
 #
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2012 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,15 +25,12 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import re
 import cgi
 
 from template import Template
 
-__version__ = "$Revision$"
 
 class Item:
     """One item."""
@@ -121,7 +118,7 @@ class RSS(dict):
         """List of links sorted by date."""
 
         links = dict.keys(self)
-        links.sort(lambda x,y: cmp(self[y].date, self[x].date))
+        links.sort(key=lambda x: self[x].date, reverse=True)
         return links
 
     def __iter__(self):
