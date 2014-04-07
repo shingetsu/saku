@@ -14,9 +14,8 @@ Authors
 Contributers
 ------------
 * (run_cgi) Python Software Foundation.
-* (SimpleGzipFile) Python Software Foundation.
-* (Cheetah) The Cheetah Development Team:
-  Tavis Rudd, Mike Orr, Ian Bicking, Chuck Esterbrook.
+* (Jinja2) the Jinja Team.
+* (MarkupSafe) Armin Ronacher and contributors.
 * (jQuery) The jQuery Foundation.
 * (Twitter Bootstrap) Twitter.
 * (HTML5 Shiv) @afarkas @jdalton @jon_neal @rem

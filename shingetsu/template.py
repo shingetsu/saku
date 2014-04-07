@@ -1,7 +1,7 @@
 '''Saku Template Wrapper.
 '''
 #
-# Copyright (c) 2007 shinGETsu Project.
+# Copyright (c) 2007,2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,56 +25,46 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import os.path
 import sys
 
-import Cheetah.Template
+import jinja2
 
 import config
 
-__version__ = "$Revision$"
 __all__ = ['Template']
 
-class CachedTemplate:
-    '''Cached Template
 
-    cached[path] = Cheetah.Template.Template.compile(path)
-    '''
-    def __init__(self, directory):
-        self.directory = directory
+class CachedTemplate(jinja2.BytecodeCache):
+    def __init__(self):
         self.template = {}
-        self.mtime = {}
+
+    def load_bytecode(self, bucket):
+        if bucket.key in self.template:
+            bucket.bytecode_from_string(self.template[bucket.key])
+
+    def dump_bytecode(self, bucket):
+        self.template[bucket.key] = bucket.bytecode_to_string()
 
 # End of CachedTemplate
 
-cached = CachedTemplate(config.template_dir)
-
 
 class Template:
-    '''Wrapper for Cheetah.Template.Template.
-    '''
     def __init__(self):
         self.defaults = {}
-        self.loaded = {}
+        self.env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(config.template_dir),
+            bytecode_cache=CachedTemplate()
+        )
 
     def __getitem__(self, filename):
-        path = os.path.join(cached.directory, filename+config.template_suffix)
-        if os.path.isfile(path):
-            mtime = os.path.getmtime(path)
-            if (path not in cached.template) or \
-               ((path not in self.loaded) and
-                (cached.mtime.get(path, 0) < mtime)):
-                cached.mtime[path] = mtime
-                cached.template[path] = \
-                    Cheetah.Template.Template.compile(file=path)
-                self.loaded[path] = True
-            return cached.template[path]
-        else:
+        basename = filename + config.template_suffix
+        path = os.path.join(config.template_dir, basename)
+        if not os.path.isfile(path):
             sys.stderr.write('%s: file not exists.\n' % path)
             return None
+        return self.env.get_template(basename)
 
     def set_defaults(self, nameSpace):
         self.defaults.update(nameSpace)
@@ -82,15 +72,18 @@ class Template:
     def display(self, file, searchList=None):
         tmpl = self[file]
         if searchList is None:
-            sl = [self.defaults]
+            sl = self.defaults
         elif not isinstance(searchList, list):
-            sl = [searchList, self.defaults]
+            sl = self.defaults.copy()
+            sl.update(searchList)
         else:
-            sl = searchList+[self.defaults]
+            sl = self.defaults.copy()
+            for eachsl in searchList:
+                sl.update(eachsl)
 
         if tmpl is not None:
-            return str(tmpl(searchList=sl))
+            return str(tmpl.render(sl))
         else:
             return ''
 
-#End of Template
+# End of Template
