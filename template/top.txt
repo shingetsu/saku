@@ -1,44 +1,43 @@
-#* Saku Gateway Toppage.
- * Copyright (c) 2005-2007 shinGETsu Project.
- * $Id$
- *#
+{# Saku Gateway Toppage.
+ # Copyright (c) 2005-2014 shinGETsu Project.
+ #}
 <ul class="topmenu">
-#for $i in ('changes', 'index')
-  <li>$gateway_link($gateway_cgi, $i)</li>
-#end for
-#if $isfriend or $isadmin
-  #for $i in ('recent', 'new')
-    <li>$gateway_link($gateway_cgi, $i)</li>
-  #end for
-#end if
-#if $isadmin
-  #for $i in ('search', 'status')
-    <li>$gateway_link($admin_cgi, $i)</li>
-  #end for
-#end if
-<li><a href="http://www.shingetsu.info/">$message['site']</a></li>
-<li><a href="$gateway_cgi/motd">$message['agreement']</a></li>
-<li><a href="$gateway_cgi/rss">$message['rss']</a></li>
+{% for i in ('changes', 'index') %}
+  <li>{{gateway_link(gateway_cgi, i)}}</li>
+{% endfor %}
+{% if isfriend or isadmin %}
+  {% for i in ('recent', 'new') %}
+    <li>{{gateway_link(gateway_cgi, i)}}</li>
+  {% endfor %}
+{% endif %}
+{% if isadmin %}
+  {% for i in ('search', 'status') %}
+    <li>{{gateway_link(admin_cgi, i)}}</li>
+  {% endfor %}
+{% endif %}
+<li><a href="http://www.shingetsu.info/">{{message.site}}</a></li>
+<li><a href="{{gateway_cgi}}/motd">{{message.agreement}}</a></li>
+<li><a href="{{gateway_cgi}}/rss">{{message.rss}}</a></li>
 </ul>
 
-#if (not $cachelist) and ($isfriend or $isadmin)
-  <p><em style="font-size:x-large">$gateway_link($gateway_cgi, 'recent')</em></p>
-#end if
+{% if (not cachelist) and (isfriend or isadmin) %}
+  <p><em style="font-size:x-large">{{gateway_link(gateway_cgi, 'recent')}}</em></p>
+{% endif %}
 
-<h2>$message['recent_changes']</h2>
+<h2>{{message.recent_changes}}</h2>
 <ul id="top_index">
-#for $cache in $cachelist
-  #if $cache.type in $types
-    $make_list_item($cache, remove=False, target=$target)
-  #end if
-#end for
+{% for cache in cachelist %}
+  {% if cache.type in types %}
+    {{make_list_item(cache, remove=False, target=target)}}
+  {% endif %}
+{% endfor %}
 </ul>
 
-#if $taglist
-  <h2>$message['tag']</h2>
-#end if
+{% if taglist %}
+  <h2>{{message.tag}}</h2>
+{% endif %}
 <p class="tags" style="margin-bottom: 2em;">
-#for $t in $taglist
-  <a href="$gateway_cgi/$target?tag=$str_encode($t)" class="tag">$t</a>
-#end for
+{% for t in taglist %}
+  <a href="{{gateway_cgi}}/{{target}}?tag={{str_encode(t)}}" class="tag">{{t}}</a>
+{% endfor %}
 </p>

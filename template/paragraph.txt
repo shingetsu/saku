@@ -1,5 +1,4 @@
-#* Saku Gateway Common Paragraph.
- * Copyright (c) 2007 shinGETsu Project.
- * $Id$
- *#
-<p>$contents</p>
+{# Saku Gateway Common Paragraph.
+ # Copyright (c) 2007,2014 shinGETsu Project.
+ #}
+<p>{{contents}}</p>

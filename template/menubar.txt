@@ -1,24 +1,22 @@
-#* Saku Gateway Menubar.
- * Copyright (c) 2005-2013 shinGETsu Project.
- *#
-
-#if $id
-  <aside class="navbar-collapse" id="$id">
-#else
+{# Saku Gateway Menubar.
+ # Copyright (c) 2005-2014 shinGETsu Project.
+ #}
+{% if id %}
+  <aside class="navbar-collapse" id="{{id}}">
+{% else %}
   <aside class="navbar-collapse">
-#end if
-
+{% endif %}
 <ul class="nav navbar-nav">
-  <li><a href="$gateway_cgi">$message['top']</a></li>
-  #for $i in ('changes',)
-    <li>$gateway_link($gateway_cgi, $i)</li>
-  #end for
-  #if $isfriend or $isadmin
-    #for $i in ('recent', 'new')
-      <li>$gateway_link($gateway_cgi, $i)</li>
-    #end for
-  #end if
-  <li><a href="$rss">$message['rss']</a></li>
+  <li><a href="{{gateway_cgi}}">{{message.top}}</a></li>
+  {% for i in ('changes',) %}
+    <li>{{gateway_link(gateway_cgi, i)}}</li>
+  {% endfor %}
+  {% if isfriend or isadmin %}
+    {% for i in ('recent', 'new') %}
+      <li>{{gateway_link(gateway_cgi, i)}}</li>
+    {% endfor %}
+  {% endif %}
+  <li><a href="{{rss}}">{{message.rss}}</a></li>
 </ul>
 
 </aside>

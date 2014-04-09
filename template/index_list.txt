@@ -1,47 +1,46 @@
-##
-## Saku Gateway Index List.
-## Copyright (c) 2005-2013 shinGETsu Project.
-##
-#if $target
-  <form method="get" action="$gateway_cgi/$target" id="filterform" class="form-horizontal"><div>
-    <label>$message['filter'] ($message['regexp'])<br />
-    <input name="filter" value="$filter" class="form-control" size="40" /></label>
-    <button class="btn"><i class="glyphicon glyphicon-search"></i> $message['show']</button>
+{#
+ # Saku Gateway Index List.
+ # Copyright (c) 2005-2014 shinGETsu Project.
+ #}
+{% if target %}
+  <form method="get" action="{{gateway_cgi}}/{{target}}" id="filterform" class="form-horizontal"><div>
+    <label>{{message.filter}} ({{message.regexp}})<br />
+    <input name="filter" value="{{filter}}" class="form-control" size="40" /></label>
+    <button class="btn"><i class="glyphicon glyphicon-search"></i> {{message.show}}</button>
   </div></form>
-  <form method="get" action="$gateway_cgi/$target" id="tagform" class="form-search"><div>
-    <label>$message['tag'] ($message['string'])<br />
-    <input name="tag" value="$tag" class="form-control" size="40" /></label>
-    <button class="btn"><i class="glyphicon glyphicon-tag"></i> $message['show']</button>
+  <form method="get" action="{{gateway_cgi}}/{{target}}" id="tagform" class="form-search"><div>
+    <label>{{message.tag}} ({{message.string}})<br />
+    <input name="tag" value="{{tag}}" class="form-control" size="40" /></label>
+    <button class="btn"><i class="glyphicon glyphicon-tag"></i> {{message.show}}</button>
   </p></form>
-#end if
+{% endif %}
 
-#if $isadmin
-  <form method="post" action="$admin_cgi">
+{% if isadmin %}
+  <form method="post" action="{{admin_cgi}}">
   <p><input type="hidden" name="cmd" value="fdel" /></p>
-#end if
+{% endif %}
 
 <p class="tags">
-#for $t in $taglist
-  <a href="$gateway_cgi/$target?tag=$str_encode($t)" class="tag">$t</a>
-#end for
+{% for t in taglist %}
+  <a href="{{gateway_cgi}}/{{target}}?tag={{str_encode(t)}}" class="tag">{{t}}</a>
+{% endfor %}
 </p>
 
-#for $type in $types
-  <ul id="${type}_index">
-  #for $cache in $cachelist
-    #if $cache.type == $type
-      $make_list_item($cache, target=$target, search=$search_new_file)
-    #end if
-  #end for
+{% for type in types %}
+  <ul id="{{type}}_index">
+  {% for cache in cachelist %}
+    {% if cache.type == type %}
+      {{make_list_item(cache, target=target, search=search_new_file)}}
+    {% endif %}
+  {% endfor %}
   </ul>
-#end for
+{% endfor %}
 
-#if $isadmin:
-  <p><input type="submit" value="$message['del_file']" class="btn" /></p>
+{% if isadmin %}
+  <p><input type="submit" value="{{message.del_file}}" class="btn" /></p>
   </form>
-#end if
+{% endif %}
 
-#if $target:
-  #set $cols = 'file,stamp,date,path,uri,type,title,records,size,tag,sugtag'
-  <p><a href="$gateway_cgi/csv/$target/$cols" class="btn">CSV</a></p>
-#end if
+{% if target %}
+  <p><a href="{{gateway_cgi}}/csv/{{target}}/file,stamp,date,path,uri,type,title,records,size,tag,sugtag" class="btn">CSV</a></p>
+{% endif %}
