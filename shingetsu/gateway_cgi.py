@@ -1,7 +1,7 @@
 """Gateway CGI methods.
 """
 #
-# Copyright (c) 2005-2013 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -50,10 +50,10 @@ class CGI(gateway.CGI):
             tag = self.form.getfirst('tag', '')
             if filter:
                 self.filter = re.compile(unicode(filter, 'utf-8'), re.I)
-                self.str_filter = cgi.escape(filter, True)
+                self.str_filter = unicode(cgi.escape(filter, True), 'utf-8', 'replace')
             elif tag:
                 self.tag = tag.lower()
-                self.str_tag = cgi.escape(tag, True)
+                self.str_tag = unicode(cgi.escape(tag, True), 'utf-8', 'replace')
         except (re.error, UnicodeDecodeError):
             self.header(self.message['regexp_error'], deny_robot=True)
             self.footer()
@@ -171,7 +171,7 @@ class CGI(gateway.CGI):
     def print_recent(self):
         """Print changes page."""
         if self.str_filter:
-            title = '%s : %s' % (self.message['recent'], self.str_filter)
+            title = u'%s : %s' % (self.message['recent'], self.str_filter)
         else:
             title = self.message['recent']
         self.header(title)
@@ -266,6 +266,8 @@ class CGI(gateway.CGI):
             self.print404()
 
     def rss_text_format(self, plain):
+        if not isinstance(plain, unicode):
+            plain = unicode(plain, 'utf-8', 'replace')
         buf = plain.replace("<br>", " ")
         buf = buf.replace("&", "&amp;")
         buf = re.sub(r'&amp;(#\d+|lt|gt|amp);', r'&\1;', buf)
@@ -279,7 +281,7 @@ class CGI(gateway.CGI):
         title = self.str_decode(path)
         buf = self.html_format(plain, appli, title, absuri=True)
         if buf:
-            buf = '<p>%s</p>' % buf
+            buf = u'<p>%s</p>' % buf
         return buf
 
     def print_rss(self):

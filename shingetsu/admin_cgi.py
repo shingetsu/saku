@@ -1,7 +1,7 @@
 """Saku Admin CGI methods.
 """
 #
-# Copyright (c) 2005-2012 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -128,7 +128,7 @@ class CGI(gateway.CGI):
         recs = [Record(datfile=datfile, idstr=r) for r in records]
         def getbody(rec):
             rec.load_body()
-            recstr = cgi.escape(rec.recstr)
+            recstr = unicode(cgi.escape(rec.recstr), 'utf-8', 'replace')
             rec.free()
             return recstr
         var = {
@@ -202,7 +202,7 @@ class CGI(gateway.CGI):
             contents = []
             for rec in cache:
                 rec.load_body()
-                contents.append(cgi.escape(rec.recstr))
+                contents.append(unicode(cgi.escape(rec.recstr), 'utf-8', 'replace'))
                 rec.free()
                 if (len(contents) > 2):
                     return contents
@@ -230,7 +230,7 @@ class CGI(gateway.CGI):
         self.stdout.write(self.template('search_form', var))
 
     def print_search_result(self, query):
-        str_query = cgi.escape(query, True)
+        str_query = unicode(cgi.escape(query, True), 'utf-8', 'replace')
         title = '%s : %s' % (self.message['search'], str_query)
         self.header(title, deny_robot=True)
         self.print_paragraph(self.message['desc_search'])
@@ -242,9 +242,7 @@ class CGI(gateway.CGI):
             for i in cachelist:
                 if i in result:
                     continue
-                datfile = unicode(self.file_decode(i.datfile),
-                                  'utf-8',
-                                  'replace')
+                datfile = self.file_decode(i.datfile)
                 if query.search(datfile):
                     result.append(i)
             result.sort(key=lambda x: x.stamp, reverse=True)

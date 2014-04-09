@@ -1,7 +1,7 @@
 """Cache of Saku BBS.
 """
 #
-# Copyright (c) 2005-2012 shinGETsu Project.
+# Copyright (c) 2005-2013 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -133,6 +133,9 @@ class Record(dict):
 
     def __ne__(self, y):
         return self.idstr != y.idstr
+
+    def getstr(self, key, default=''):
+        return unicode(self.get(key, default), 'utf-8', 'replace')
 
     def setpath(self):
         if (self.idstr == "") or (self.datfile == ""):

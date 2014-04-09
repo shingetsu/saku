@@ -78,7 +78,7 @@ def file_decode_type(query, type=None):
         return type
     return q[0]
 
-def file_decode(query, type=None):
+def file_decode(query, type=None, as_unicode=True):
     '''Decode filename.
 
     >>> file_decode('foo_7E')
@@ -99,7 +99,11 @@ def file_decode(query, type=None):
         except (ValueError, IndexError):
             sys.stderr.write(query + ': ValueError/IndexError\n')
             return None
-    return ''.join(buf)
+    ret = ''.join(buf)
+    if as_unicode:
+        return unicode(ret, 'utf-8', 'replace')
+    else:
+        return ret
 
 def file_hash(query):
     """Make hash from filename.

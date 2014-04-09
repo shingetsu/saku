@@ -1,7 +1,7 @@
 '''Tagging.
 '''
 #
-# Copyright (c) 2005-2012 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -50,6 +50,9 @@ class Tag:
 
     def __str__(self):
         return self.tagstr
+
+    def __unicode__(self):
+        return unicode(self.tagstr, 'utf-8', 'replace')
 
 # End of Tag
 

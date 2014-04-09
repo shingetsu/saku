@@ -20,11 +20,13 @@
   <p><input type="hidden" name="cmd" value="fdel" /></p>
 {% endif %}
 
-<p class="tags">
-{% for t in taglist %}
-  <a href="{{gateway_cgi}}/{{target}}?tag={{str_encode(t)}}" class="tag">{{t}}</a>
-{% endfor %}
-</p>
+{% if target %}
+  <p class="tags">
+  {% for t in taglist %}
+    <a href="{{gateway_cgi}}/{{target}}?tag={{str_encode(t)}}" class="tag">{{t}}</a>
+  {% endfor %}
+  </p>
+{% endif %}
 
 {% for type in types %}
   <ul id="{{type}}_index">

@@ -1,18 +1,17 @@
-#* Saku Gateway suggest.js.
- * Copyright (c) 2007 shinGETsu Project.
- * $Id$
- *#
+{# Saku Gateway suggest.js.
+ # Copyright (c) 2007,2014 shinGETsu Project.
+ #}
 (function () {
     var titles = [
-    #if $titles
-      #for $i in $titles[:-1]
-        "$escape_simple($i)",
-      #end for
-        "$escape_simple($titles[-1])"
-    #end if
+    {% if titles %}
+      {% for i in titles[:-1] %}
+        "{{escape_simple(i)}}",
+      {% endfor %}
+        "{{escape_simple(titles[-1])}}"
+    {% endif %}
     ];
 
-    var node = 'http://$server/thread.cgi/';
+    var node = 'http://{{server}}/thread.cgi/';
     var link;
 
     function similarity(data, title) {

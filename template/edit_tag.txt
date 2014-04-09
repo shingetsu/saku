@@ -1,29 +1,29 @@
-##
-## Saku Gateway Edit Tag Form.
-## Copyright (c) 2007,2012 shinGETsu Project.
-##
-<form id="savetag" method="post" action="$admin_cgi/savetag" class="form-horizontal"><div>
-  <input type="hidden" name="file" value="$datfile" />
+{#
+ # Saku Gateway Edit Tag Form.
+ # Copyright (c) 2007-2014 shinGETsu Project.
+ #}
+<form id="savetag" method="post" action="{{admin_cgi}}/savetag" class="form-horizontal"><div>
+  <input type="hidden" name="file" value="{{datfile}}" />
   <div class="control-group">
-    <label class="control-label" for="tag">$message['tag']</label>
+    <label class="control-label" for="tag">{{message.tag}}</label>
     <div class="controls">
-      <input name="tag" value="$escape_simple($tags)" id="tag" />
-      <div class="help-block">$message['tag_desc']</div>
+      <input name="tag" value="{{escape_simple(tags)}}" id="tag" />
+      <div class="help-block">{{message.tag_desc}}</div>
     </div>
   </div>
   <p class="tags">
-  #for $tag in $usertags
-    <span class="tag">$escape_simple(str($tag))</span>
-  #end for
+  {% for tag in usertags %}
+    <span class="tag">{{escape_simple(tag.__str__())}}</span>
+  {% endfor %}
   </p>
   <p class="sugtags">
-  #for $tag in $sugtags
-    <span class="tag">$escape_simple(str($tag))</span>
-  #end for
+  {% for tag in sugtags %}
+    <span class="tag">{{escape_simple(tag.__str__())}}</span>
+  {% endfor %}
   </p>
   <div class="form-actions">
-    <input type="submit" value="$message['edit_tag']" class="btn btn-primary"/>
-    <a href="javascript:history.back()" class="btn">$message['cancel']</a>
+    <input type="submit" value="{{message.edit_tag}}" class="btn btn-primary"/>
+    <a href="javascript:history.back()" class="btn">{{message.cancel}}</a>
   </div>
 </div></form>
 

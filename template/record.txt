@@ -7,15 +7,15 @@
 {% endif %}
 <a href="{{thread_cgi}}/{{str_path}}/{{sid}}" class="id" id="i{{sid}}" name="i{{sid}}">{{sid}}</a>
 {% if rec.get('name', '') %}
-  <span class="name">{{rec.name}}</span>
+  <span class="name">{{rec.getstr('name')}}</span>
 {% else %}
   <span class="name">{{message.anonymous}}</span>
 {% endif %}
 {% if rec.get('mail', '') %}
-  [{{rec.mail}}]
+  [{{rec.getstr('mail')}}]
 {% endif %}
 {% if rec.get('pubkey', '') %}
-  <span class="sign" title="{{message.signature}}:{{rec.get('target','')}}">{{rec.pubkey}}</span>
+  <span class="sign" title="{{message.signature}}:{{rec.getstr('target')}}">{{rec.getstr('pubkey')}}</span>
 {% endif %}
 <span class="stamp" id="s{{rec.stamp}}">localtime(rec.stamp)</span>
 {% if 'attach' in rec %}
@@ -26,7 +26,7 @@
 <dd id="b{{sid}}">{{body}}
 {% if ('remove_id' in rec) and ('remove_stamp' in rec) %}
   <br />[[{{message.remove}}]:
-  {{res_anchor(rec['remove_id'][:8], thread_cgi, path)}}{{rec.remove_id[:8]}}</a>]]
+  {{res_anchor(rec.getstr('remove_id')[:8], thread_cgi, path)}}{{rec.getstr('remove_id')[:8]}}</a>]]
 {% endif %}
 {% if thumbnail %}
   <br /><a href="{{thread_cgi}}/{{cache.datfile}}/{{rec.id}}/{{rec.stamp}}.{{suffix}}">

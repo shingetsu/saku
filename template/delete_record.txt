@@ -1,46 +1,46 @@
-##
-## Saku Gateway Delete Record Page.
-## Copyright (c) 2005-2012 shinGETsu Project.
-##
-<form method="post" action="$admin_cgi" class="form-horizontal"><div class="well">
+{#
+ # Saku Gateway Delete Record Page.
+ # Copyright (c) 2005-2014 shinGETsu Project.
+ #}
+<form method="post" action="{{admin_cgi}}" class="form-horizontal"><div class="well">
   <input type="hidden" name="cmd" value="xrdel" />
-  <input type="hidden" name="file" value="$datfile" />
-  <input type="hidden" name="sid" value="$sid" />
-  #if len($records) == 1
+  <input type="hidden" name="file" value="{{datfile}}" />
+  <input type="hidden" name="sid" value="{{sid}}" />
+  {% if records.__len__() == 1 %}
     <div class="control-group">
-      <label class="control-label" for="dopost">$message['send']</label>
+      <label class="control-label" for="dopost">{{message.send}}</label>
       <div class="controls">
         <input type="checkbox" name="dopost" value="dopost" id="dopost" />
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="name">$message['name']</label>
+      <label class="control-label" for="name">{{message.name}}</label>
       <div class="controls"><input name="name" value="" id="name" /></div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="passwd">$message['signature']</label>
+      <label class="control-label" for="passwd">{{message.signature}}</label>
       <div class="controls"><input type="password" name="passwd" alue="" id="passwd" /></div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="body">$message['comment']</label>
+      <label class="control-label" for="body">{{message.comment}}</label>
       <div class="controls">
         <input name="body" size="40" value="" id="body" />
-        <div class="help-block">$message['desc_comment']</div>
+        <div class="help-block">{{message.desc_comment}}</div>
       </div>
     </div>
-  #end if
+  {% endif %}
   <div class="form-actions">
-    <input type="submit" value="$message['remove']" class="btn btn-danger" />
-    <a href="javascript:history.back();" class="btn">$message['cancel']</a>
+    <input type="submit" value="{{message.remove}}" class="btn btn-danger" />
+    <a href="javascript:history.back();" class="btn">{{message.cancel}}</a>
   </div>
   </div>
 
-#for $rec in $records
-  #if $rec.exists()
-    <p><label><input type="checkbox" checked="checked" name="record" value="$rec.idstr" />
-    $getbody($rec)</label></p>
-  #else
-    <p>$message['no_record']</p>
-  #end if
-#end for
+{% for rec in records %}
+  {% if rec.exists() %}
+    <p><label><input type="checkbox" checked="checked" name="record" value="{{rec.idstr}}" />
+    {{getbody(rec)}}</label></p>
+  {% else %}
+    <p>{{message.no_record}}</p>
+  {% endif %}
+{% endfor %}
 </form>

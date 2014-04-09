@@ -1,8 +1,7 @@
-#* Saku Gateway Search Form.
- * Copyright (c) 2005-2007 shinGETsu Project.
- * $Id$
- *#
-<form method="get" action="$admin_cgi/search"><p>
-<input type="submit" value="$message['search']" />
-$message['regexp']:<input name="query" size="40" value="$query" />
+{# Saku Gateway Search Form.
+ # Copyright (c) 2005-2014 shinGETsu Project.
+ #}
+<form method="get" action="{{admin_cgi}}/search"><p>
+<input type="submit" value="{{message.search}}" />
+{{message.regexp}}:<input name="query" size="40" value="{{query}}" />
 </p></form>

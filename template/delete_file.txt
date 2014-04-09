@@ -1,23 +1,23 @@
-##
-## Saku Gateway Delete File Form.
-## Copyright (c) 2005-2012 shinGETsu Project.
-##
-<form method="post" action="$admin_cgi">
+{#
+ # Saku Gateway Delete File Form.
+ # Copyright (c) 2005-2014 shinGETsu Project.
+ #}
+<form method="post" action="{{admin_cgi}}">
 <div class="well form-horizontal"><div class="form-actions">
   <input type="hidden" name="cmd" value="xfdel" />
-  <input type="hidden" name="sid" value="$sid" />
-  <input type="submit" value="$message['remove']" class="btn btn-danger" />
-  <a href="javascript:history.back();" class="btn">$message['cancel']</a>
+  <input type="hidden" name="sid" value="{{sid}}" />
+  <input type="submit" value="{{message.remove}}" class="btn btn-danger" />
+  <a href="javascript:history.back();" class="btn">{{message.cancel}}</a>
 </div></div>
 
-#for $cache in $files
-  #if $cache.exists()
-    <h2><input type="checkbox" checked="checked" name="file" value="$cache.datfile" />$gettitle($cache)</h2>
-    #for $rec in $getcontents($cache)
-      <p>$rec</p>
-    #end for
-  #else
-    <p>$cache.datfile: $message['no_file']</p>
-  #end if
-#end for
+{% for cache in files %}
+  {% if cache.exists() %}
+    <h2><input type="checkbox" checked="checked" name="file" value="{{cache.datfile}}" />{{gettitle(cache)}}</h2>
+    {% for rec in getcontents(cache) %}
+      <p>{{rec}}</p>
+    {% endfor %}
+  {% else %}
+    <p>{{cache.datfile}}: {{message.no_file}}</p>
+  {% endif %}
+{% endfor %}
 </form>

@@ -161,7 +161,7 @@ class CGI(basecgi.CGI):
             'str_encode': self.str_encode,
             'file_decode': self.file_decode,
             'escape': self.escape,
-            'escape_simple': lambda s: cgi.escape(s, True),
+            'escape_simple': lambda s: unicode(cgi.escape(s, True), 'utf-8', 'replace'),
             'escape_space': self.escape_space,
             'escape_js': self.escape_js,
             'make_list_item': self.make_list_item,
@@ -197,8 +197,8 @@ class CGI(basecgi.CGI):
     def file_encode(self, type, query):
         return file_encode(type, query)
 
-    def file_decode(self, query):
-        return file_decode(query)
+    def file_decode(self, query, as_unicode=True):
+        return file_decode(query, as_unicode)
 
     def escape(self, msg):
         msg = msg.replace("&", "&amp;")
@@ -545,9 +545,8 @@ class CGI(basecgi.CGI):
         if not x:
             return ''
         y = self.str_encode(x)
-        u = unicode(x, 'utf-8', 'replace')
-        if self.filter and (not self.filter.search(u)):
-            return None
+        if self.filter and (not self.filter.search(x)):
+            return ''
         elif self.tag:
             matchtag = False
             for t in cache.tags:
@@ -555,7 +554,7 @@ class CGI(basecgi.CGI):
                     matchtag = True
                     break
             if not matchtag:
-                return None
+                return ''
         x = self.escape_space(x)
         tags, tagclassname = cache.tags, 'tags'
         if search:
