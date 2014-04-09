@@ -1,86 +1,86 @@
-##
-## Saku Gateway Post Form.
-## Copyright (c) 2005-2013 shinGETsu Project.
-##
+{#
+ # Saku Gateway Post Form.
+ # Copyright (c) 2005-2014 shinGETsu Project.
+ #}
 
-#if $isadmin
-  #if $cache
-    <p><input type="submit" value="$message['del_record']" class="btn" /></p>
-  #end if
+{% if isadmin %}
+  {% if cache %}
+    <p><input type="submit" value="{{message.del_record}}" class="btn" /></p>
+  {% endif %}
   </form>
-#end if
+{% endif %}
 
-<form id="postarticle" name="postarticle" method="post" action="$thread_cgi"
+<form id="postarticle" name="postarticle" method="post" action="{{thread_cgi}}"
   enctype="multipart/form-data" class="well form-horizontal"><div>
 
   <input type="hidden" name="cmd" value="post" />
-  <input type="hidden" name="file" value="$cache.datfile" />
+  <input type="hidden" name="file" value="{{cache.datfile}}" />
 
   <div class="form-group post-advanced">
-    <label class="control-label col-sm-2" for="name">$message['name']</label>
+    <label class="control-label col-sm-2" for="name">{{message.name}}</label>
     <div class="col-sm-10"><input name="name" value="" id="name" class="form-control" /></div>
   </div>
 
   <div class="form-group post-advanced">
-    <label class="control-label col-sm-2" for="mail">$message['mail']</label>
+    <label class="control-label col-sm-2" for="mail">{{message.mail}}</label>
     <div class="col-sm-10"><input name="mail" value="" id="mail" class="form-control" /></div>
   </div>
 
-  #if $isadmin
+  {% if isadmin %}
     <div class="form-group post-advanced">
-      <label class="control-label col-sm-2" for="passwd">$message['signature']</label>
+      <label class="control-label col-sm-2" for="passwd">{{message.signature}}</label>
       <div class="col-sm-10"><input type="password" name="passwd" value="" id="passwd" class="form-control" /></div>
     </div>
-  #end if
+  {% endif %}
 
   <div class="form-group">
-    <label class="control-label col-sm-2" for="body">$message['post_body']</label>
+    <label class="control-label col-sm-2" for="body">{{message.post_body}}</label>
     <div class="col-sm-10">
       <textarea rows="5" name="body" id="body" class="form-control"></textarea>
-      <div class="help-block"><a href="$gateway_cgi/motd" target="_blank">$message['agreement']</a></div>
+      <div class="help-block"><a href="{{gateway_cgi}}/motd" target="_blank">{{message.agreement}}</a></div>
     </div>
   </div>
 
   <div class="form-group">
-    <label class="control-label col-sm-2" for="attach">$message['attach']</label>
+    <label class="control-label col-sm-2" for="attach">{{message.attach}}</label>
     <div class="col-sm-10">
       <input type="file" name="attach" size="19" value="" id="attach" class="input-file" />
-      <div class="help-inline">$message['limit']: $limit$message['kb']</div>
+      <div class="help-inline">{{message.limit}}: {{limit}}{{message.kb}}</div>
     </div>
   </div>
 
   <div class="form-group post-advanced">
-    <label class="control-label col-sm-2" for="suffix">$message['suffix']</label>
+    <label class="control-label col-sm-2" for="suffix">{{message.suffix}}</label>
     <div class="col-sm-10">
       <select name="suffix" size="1" id="suffix">
         <option>AUTO</option>
-        #for $suffix in $suffixes
-          <option>$suffix</option>
-        #end for
+        {% for suffix in suffixes %}
+          <option>{{suffix}}</option>
+        {% endfor %}
       </select>
     </div>
   </div>
 
   <div class="form-group post-advanced">
-    <label class="control-label col-sm-2" for="dopost">$message['send']</label>
+    <label class="control-label col-sm-2" for="dopost">{{message.send}}</label>
     <div class="col-sm-10"><label>
       <input type="checkbox" id="dopost" name="dopost" value="dopost" checked="checked" />
-      <div class="help-inline">$message['desc_send']</div>
+      <div class="help-inline">{{message.desc_send}}</div>
     </label></div>
   </div>
 
   <div class="form-group post-advanced">
-    <label class="control-label col-sm-2" for="error">$message['error']</label>
+    <label class="control-label col-sm-2" for="error">{{message.error}}</label>
     <div class="col-sm-10"><label>
       <input type="checkbox" id="error" name="error" value="error" checked="checked" />
-      <div class="help-inline">$message['desc_error']</div>
+      <div class="help-inline">{{message.desc_error}}</div>
     </label></div>
   </div>
 
   <div class="form-actions">
     <button class="btn btn-primary">
       <i class="glyphicon glyphicon-pencil"></i>
-      $message['post']
+      {{message.post}}
     </button>
   </div>
 

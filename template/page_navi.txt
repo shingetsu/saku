@@ -1,27 +1,26 @@
-#* Saku Gateway Thread Page Navigation.
- * Copyright (c) 2007 shinGETsu Project.
- * $Id$
- *#
-#if len($cache)
+{# Saku Gateway Thread Page Navigation.
+ # Copyright (c) 2007,2014 shinGETsu Project.
+ #}
+{% if cache.__len__() %}
   |
-#end if
-#if ($page > 0) or $id
-  <a href="$thread_cgi/$str_path">$message['last_page']</a>
-#end if
-#if $page > 1
-  <a href="$thread_cgi/$str_path/p$($page-1)">$message['new_page']</a>
-#end if
-#if $first > 1
-  #for $p in range($first):
-    #if (not $id) and ($p == $page)
-      $p
-    #elif (not $id) and (p == 0)
-      <a href="$thread_cgi/$str_path">$p</a>
-    #else
-      <a href="$thread_cgi/$str_path/p$p">$p</a>
-    #end if
-  #end for
-#end if
-#if (not $id) and (($page+1) * $config.thread_page_size < len($cache))
-  <a href="$thread_cgi/$str_path/p${$page+1}">$message['old_page']</a>
-#end if
+{% endif %}
+{% if (page > 0) or id %}
+  <a href="{{thread_cgi}}/{{str_path}}">{{message.last_page}}</a>
+{% endif %}
+{% if page > 1 %}
+  <a href="{{thread_cgi}}/{{str_path}}/p{{page-1}}">{{message.new_page}}</a>
+{% endif %}
+{% if first > 1 %}
+  {% for p in range(first) %}
+    {% if (not id) and (p == page) %}
+      {{p}}
+    {% elif (not id) and (p == 0) %}
+      <a href="{{thread_cgi}}/{{str_path}}">{{p}}</a>
+    {% else %}
+      <a href="{{thread_cgi}}/{{str_path}}/p{{p}}">{{p}}</a>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{% if (not id) and ((page+1) * config.thread_page_size < cache.__len__()) %}
+  <a href="{{thread_cgi}}/{{str_path}}/p{{page+1}}">{{message.old_page}}</a>
+{% endif %}

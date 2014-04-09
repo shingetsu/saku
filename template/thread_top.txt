@@ -1,24 +1,23 @@
-##
-## Saku Gateway Thrad Top.
-## Copyright (c) 2005-2012 shinGETsu Project.
-##
-
-#if ($isfriend or $isadmin) and (not len($cache))
-  <form method="get" action="$thread_cgi/$str_path"><p>
+{#
+ # Saku Gateway Thrad Top.
+ # Copyright (c) 2005-2014 shinGETsu Project.
+ #}
+{% if (isfriend or isadmin) and (not cache.__len__()) %}
+  <form method="get" action="{{thread_cgi}}/{{str_path}}"><p>
     <input type="hidden" name="search_new_file" value="yes" />
-    <input type="submit" value="$message['sync_from_network']" class="btn" />
+    <input type="submit" value="{{message.sync_from_network}}" class="btn" />
   </p></form>
-#end if
-#if $isadmin
-  <form method="post" action="$admin_cgi">
+{% endif %}
+{% if isadmin %}
+  <form method="post" action="{{admin_cgi}}">
   <p id="pagenavi">
   <input type="hidden" name="cmd" value="rdel" />
-  <input type="hidden" name="file" value="$cache.datfile" />
-#else
+  <input type="hidden" name="file" value="{{cache.datfile}}" />
+{% else %}
   <p id="pagenavi">
-#end if
-#if $lastrec is not None
-  $res_anchor($lastrec.id[:8], $thread_cgi, $path)$message['last_article']</a>
-#elif len($cache)
-  <a href="#bottom">$message['bottom_of_page']</a>
-#end if
+{% endif %}
+{% if lastrec %}
+  {{res_anchor(lastrec.id[:8], thread_cgi, path)}}{{message.last_article}}</a>
+{% elif cache.__len__() %}
+  <a href="#bottom">{{message.bottom_of_page}}</a>
+{% endif %}

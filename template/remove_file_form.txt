@@ -1,17 +1,18 @@
-#* Saku Gateway Remove File Form.
- * Copyright (c) 2005-2012 shinGETsu Project.
- *#
-#set $status = '(%s/%d/%.1f%s)' % \
-     ($title, len($cache), $cache.size//1024/1024.0, $message['mb'])
-
-#if $isadmin
-  <form method="post" action="$admin_cgi">
+{# Saku Gateway Remove File Form.
+ # Copyright (c) 2005-2014 shinGETsu Project.
+ #}
+{% if isadmin %}
+  <form method="post" action="{{admin_cgi}}">
   <p id="status">
-  <input type="submit" value="$message['del_file']" class="btn" />
+  <input type="submit" value="{{message.del_file}}" class="btn" />
   <input type="hidden" name="cmd" value="fdel" />
-  <input type="hidden" name="file" value="$cache.datfile" />
-  $status
+  <input type="hidden" name="file" value="{{cache.datfile}}" />
+{% else %}
+  <p id="status">
+{% endif %}
+{{'(%s/%d/%.1f%s)' % (title, cache.__len__(), cache.size//1024/1024.0, message.mb)}}
+{% if isadmin %}
   </p></form>
-#else
-  <p id="status">$status</p>
-#end if
+{% else %}
+  </p>
+{% endif %}

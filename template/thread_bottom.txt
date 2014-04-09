@@ -1,9 +1,8 @@
-#* Saku Gateway Thrad Bottom.
- * Copyright (c) 2005-2007 shinGETsu Project.
- * $Id$
- *#
-#if len($cache)
+{# Saku Gateway Thrad Bottom.
+ # Copyright (c) 2005-2014 shinGETsu Project.
+ #}
+{% if cache.__len__() %}
   <p><a href="#top"
   onclick="window.scroll(0,0); return false;"
-  onkeypress="window.scroll(0,0); return false;">$message['top_of_page']</a>
-#end if
+  onkeypress="window.scroll(0,0); return false;">{{message.top_of_page}}</a>
+{% endif %}

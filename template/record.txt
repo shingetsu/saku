@@ -1,40 +1,37 @@
-#* Saku Gateway Thread Record.
- * Copyright (c) 2005-2012 shinGETsu Project.
- *#
-#set images = ['jpg', 'gif', 'png']
-#set height = '210'
-#set width = '160'
-<dt id="r$sid">
-#if $isadmin
-  <input type="checkbox" name="record" value="${rec['stamp']}_$rec['id']" />
-#end if
-<a href="$thread_cgi/$str_path/$sid" class="id" id="i$sid" name="i$sid">$sid</a>
-#if $rec.get('name', '')
-  <span class="name">$rec['name']</span>
-#else
-  <span class="name">$message['anonymous']</span>
-#end if
-#if $rec.get('mail', '')
-  [$rec['mail']]
-#end if
-#if $rec.get('pubkey', '')
-  <span class="sign" title="$message['signature']:$rec.get('target','')">$rec['pubkey']</span>
-#end if
-<span class="stamp" id="s$rec['stamp']">$localtime($rec['stamp'])</span>
-#if 'attach' in $rec
-  <a href="$thread_cgi/$cache.datfile/$rec['id']/$rec['stamp'].$suffix">$rec['stamp'].$suffix</a>
-  (${int($attach_size//1024)}$message['kb'])
-#end if
+{# Saku Gateway Thread Record.
+ # Copyright (c) 2005-2014 shinGETsu Project.
+ #}
+<dt id="r{{sid}}">
+{% if isadmin %}
+  <input type="checkbox" name="record" value="{{rec.stamp}}_{{rec.id}}" />
+{% endif %}
+<a href="{{thread_cgi}}/{{str_path}}/{{sid}}" class="id" id="i{{sid}}" name="i{{sid}}">{{sid}}</a>
+{% if rec.get('name', '') %}
+  <span class="name">{{rec.name}}</span>
+{% else %}
+  <span class="name">{{message.anonymous}}</span>
+{% endif %}
+{% if rec.get('mail', '') %}
+  [{{rec.mail}}]
+{% endif %}
+{% if rec.get('pubkey', '') %}
+  <span class="sign" title="{{message.signature}}:{{rec.get('target','')}}">{{rec.pubkey}}</span>
+{% endif %}
+<span class="stamp" id="s{{rec.stamp}}">localtime(rec.stamp)</span>
+{% if 'attach' in rec %}
+  <a href="{{thread_cgi}}/{{cache.datfile}}/{{rec.id}}/{{rec.stamp}}.{{suffix}}">{{rec.stamp}}.{{suffix}}</a>
+  ({{attach_size//1024}}{{message.kb}})
+{% endif %}
 </dt>
-<dd id="b$sid">$body
-#if ('remove_id' in $rec) and ('remove_stamp' in $rec)
-  <br />[[$message['remove']:
-  $res_anchor($rec['remove_id'][:8], $thread_cgi, $path)$rec['remove_id'][:8]</a>]]
-#end if
-#if $thumbnail is not None:
-  <br /><a href="$thread_cgi/$cache.datfile/$rec['id']/$rec['stamp'].$suffix">
-    <img src="$thread_cgi/$cache.datfile/$rec['id']/s$rec['stamp'].$thumbnail.$suffix" alt="" /></a>
-#elif ('attach' in $rec) and ($suffix in $images):
-  <br /><img src="$thread_cgi/$cache.datfile/$rec['id']/$rec['stamp'].$suffix" height="$height" alt="" /></a>
-#end if
+<dd id="b{{sid}}">{{body}}
+{% if ('remove_id' in rec) and ('remove_stamp' in rec) %}
+  <br />[[{{message.remove}}]:
+  {{res_anchor(rec['remove_id'][:8], thread_cgi, path)}}{{rec.remove_id[:8]}}</a>]]
+{% endif %}
+{% if thumbnail %}
+  <br /><a href="{{thread_cgi}}/{{cache.datfile}}/{{rec.id}}/{{rec.stamp}}.{{suffix}}">
+    <img src="{{thread_cgi}}/{{cache.datfile}}/{{rec.id}}/s{{rec.stamp}}.{{thumbnail}}.{{suffix}}" alt="" /></a>
+{% elif ('attach' in rec) and (suffix in ('jpg', 'gif', 'png')) %}
+  <br /><img src="{{thread_cgi}}/{{cache.datfile}}/{{rec.id}}/{{rec.stamp}}.{{suffix}}" height="210" alt="" /></a>
+{% endif %}
 </dd>
