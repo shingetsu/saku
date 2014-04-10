@@ -46,14 +46,14 @@ class CGI(gateway.CGI):
         path = self.path_info()
         self.form = cgi.FieldStorage(environ=self.environ, fp=self.stdin)
         try:
-            filter = self.form.getfirst('filter', '')
-            tag = self.form.getfirst('tag', '')
+            filter = unicode(self.form.getfirst('filter', ''), 'utf-8', 'replace')
+            tag = unicode(self.form.getfirst('tag', ''), 'utf-8', 'replace')
             if filter:
-                self.filter = re.compile(unicode(filter, 'utf-8'), re.I)
-                self.str_filter = unicode(cgi.escape(filter, True), 'utf-8', 'replace')
+                self.filter = re.compile(filter, re.I)
+                self.str_filter = cgi.escape(filter, True)
             elif tag:
                 self.tag = tag.lower()
-                self.str_tag = unicode(cgi.escape(tag, True), 'utf-8', 'replace')
+                self.str_tag = cgi.escape(tag, True)
         except (re.error, UnicodeDecodeError):
             self.header(self.message['regexp_error'], deny_robot=True)
             self.footer()
@@ -266,8 +266,6 @@ class CGI(gateway.CGI):
             self.print404()
 
     def rss_text_format(self, plain):
-        if not isinstance(plain, unicode):
-            plain = unicode(plain, 'utf-8', 'replace')
         buf = plain.replace("<br>", " ")
         buf = buf.replace("&", "&amp;")
         buf = re.sub(r'&amp;(#\d+|lt|gt|amp);', r'&\1;', buf)

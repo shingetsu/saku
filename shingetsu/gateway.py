@@ -161,7 +161,7 @@ class CGI(basecgi.CGI):
             'str_encode': self.str_encode,
             'file_decode': self.file_decode,
             'escape': self.escape,
-            'escape_simple': lambda s: unicode(cgi.escape(s, True), 'utf-8', 'replace'),
+            'escape_simple': lambda s: cgi.escape(s, True),
             'escape_space': self.escape_space,
             'escape_js': self.escape_js,
             'make_list_item': self.make_list_item,
@@ -527,8 +527,6 @@ class CGI(basecgi.CGI):
         return self.isadmin or self.isfriend or self.isvisitor
 
     def escape_space(self, text):
-        if isinstance(text, str):
-            text = unicode(text, 'utf-8', 'replace')
         text = re.sub(r'  ', '&nbsp;&nbsp;', text)
         text = re.sub(r'<br> ', '<br>&nbsp;', text)
         text = re.sub(r'^ ', '&nbsp;', text)

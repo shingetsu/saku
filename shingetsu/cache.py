@@ -134,9 +134,6 @@ class Record(dict):
     def __ne__(self, y):
         return self.idstr != y.idstr
 
-    def getstr(self, key, default=''):
-        return unicode(self.get(key, default), 'utf-8', 'replace')
-
     def setpath(self):
         if (self.idstr == "") or (self.datfile == ""):
             return
@@ -159,13 +156,13 @@ class Record(dict):
         self.recstr = re.sub(r"[\r\n]*$", "", recstr)
         tmp = self.recstr.split("<>")
         try:
-            self["stamp"] = tmp.pop(0)
-            self["id"] = tmp.pop(0)
-            self.idstr = self["stamp"] + "_" + self["id"]
-            self.stamp = int(self["stamp"])
-            self.id = self["id"]
+            self['stamp'] = unicode(tmp.pop(0), 'utf-8', 'replace')
+            self['id'] = unicode(tmp.pop(0), 'utf-8', 'replace')
+            self.idstr = self['stamp'] + '_' + self['id']
+            self.stamp = int(self['stamp'])
+            self.id = self['id']
         except (ValueError, KeyError, IndexError):
-            sys.stderr.write(recstr + ": bad format\n")
+            sys.stderr.write(recstr + ': bad format\n')
             return False
         for i in tmp:
             buf = i.split(":", 1)
@@ -174,7 +171,10 @@ class Record(dict):
                 buf[1] = re.sub(r"<", "&lt;", buf[1])
                 buf[1] = re.sub(r">", "&gt;", buf[1])
                 buf[1] = re.sub(r"\n", "<br>", buf[1])
-                self[buf[0]] = buf[1]
+                if buf[0] == 'attach':
+                    self[buf[0]] = buf[1]
+                else:
+                    self[buf[0]] = unicode(buf[1], 'utf-8', 'replace')
         if self.get('attach', '') != '1':
             self.flag_load = True
         self.flag_load_body = True
@@ -890,7 +890,7 @@ class CacheList(list):
             for rec in cache:
                 try:
                     rec.load_body()
-                    if query.search(unicode(str(rec), 'utf-8', 'replace')):
+                    if query.search(unicode(rec)):
                         result.append(cache)
                         rec.free()
                         break

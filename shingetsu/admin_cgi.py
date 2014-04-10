@@ -128,7 +128,7 @@ class CGI(gateway.CGI):
         recs = [Record(datfile=datfile, idstr=r) for r in records]
         def getbody(rec):
             rec.load_body()
-            recstr = unicode(cgi.escape(rec.recstr), 'utf-8', 'replace')
+            recstr = cgi.escape(rec.recstr)
             rec.free()
             return recstr
         var = {
@@ -202,7 +202,7 @@ class CGI(gateway.CGI):
             contents = []
             for rec in cache:
                 rec.load_body()
-                contents.append(unicode(cgi.escape(rec.recstr), 'utf-8', 'replace'))
+                contents.append(cgi.escape(rec.recstr))
                 rec.free()
                 if (len(contents) > 2):
                     return contents
@@ -230,13 +230,13 @@ class CGI(gateway.CGI):
         self.stdout.write(self.template('search_form', var))
 
     def print_search_result(self, query):
-        str_query = unicode(cgi.escape(query, True), 'utf-8', 'replace')
+        str_query = cgi.escape(query, True)
         title = '%s : %s' % (self.message['search'], str_query)
         self.header(title, deny_robot=True)
         self.print_paragraph(self.message['desc_search'])
         self.print_search_form(str_query)
         try:
-            query = re.compile(unicode(cgi.escape(query), 'utf-8'), re.I)
+            query = re.compile(cgi.escape(query), re.I)
             cachelist = CacheList()
             result = cachelist.search(query)
             for i in cachelist:
