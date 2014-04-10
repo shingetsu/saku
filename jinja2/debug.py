@@ -13,9 +13,8 @@
 import sys
 import traceback
 from types import TracebackType
-from jinja2.utils import missing, internal_code
+from jinja2.utils import CodeType, missing, internal_code
 from jinja2.exceptions import TemplateSyntaxError
-from jinja2._compat import iteritems, reraise, code_type
 
 # on pypy we can take advantage of transparent proxies
 try:
@@ -26,7 +25,7 @@ except ImportError:
 
 # how does the raise helper look like?
 try:
-    exec("raise TypeError, 'foo'")
+    exec "raise TypeError, 'foo'"
 except SyntaxError:
     raise_helper = 'raise __jinja_exception__[1]'
 except TypeError:
@@ -78,7 +77,7 @@ def make_frame_proxy(frame):
 
 
 class ProcessedTraceback(object):
-    """Holds a Jinja preprocessed traceback for printing or reraising."""
+    """Holds a Jinja preprocessed traceback for priting or reraising."""
 
     def __init__(self, exc_type, exc_value, frames):
         assert frames, 'no frames for this traceback?'
@@ -159,7 +158,7 @@ def translate_exception(exc_info, initial_skip=0):
     frames = []
 
     # skip some internal frames if wanted
-    for x in range(initial_skip):
+    for x in xrange(initial_skip):
         if tb is not None:
             tb = tb.tb_next
     initial_tb = tb
@@ -190,7 +189,7 @@ def translate_exception(exc_info, initial_skip=0):
     # reraise it unchanged.
     # XXX: can we backup here?  when could this happen?
     if not frames:
-        reraise(exc_info[0], exc_info[1], exc_info[2])
+        raise exc_info[0], exc_info[1], exc_info[2]
 
     return ProcessedTraceback(exc_info[0], exc_info[1], frames)
 
@@ -207,7 +206,7 @@ def fake_exc_info(exc_info, filename, lineno):
             locals = ctx.get_all()
         else:
             locals = {}
-        for name, value in iteritems(real_locals):
+        for name, value in real_locals.iteritems():
             if name.startswith('l_') and value is not missing:
                 locals[name[2:]] = value
 
@@ -245,17 +244,17 @@ def fake_exc_info(exc_info, filename, lineno):
                 location = 'block "%s"' % function[6:]
             else:
                 location = 'template'
-        code = code_type(0, code.co_nlocals, code.co_stacksize,
-                         code.co_flags, code.co_code, code.co_consts,
-                         code.co_names, code.co_varnames, filename,
-                         location, code.co_firstlineno,
-                         code.co_lnotab, (), ())
+        code = CodeType(0, code.co_nlocals, code.co_stacksize,
+                        code.co_flags, code.co_code, code.co_consts,
+                        code.co_names, code.co_varnames, filename,
+                        location, code.co_firstlineno,
+                        code.co_lnotab, (), ())
     except:
         pass
 
     # execute the code and catch the new traceback
     try:
-        exec(code, globals, locals)
+        exec code in globals, locals
     except:
         exc_info = sys.exc_info()
         new_tb = exc_info[2].tb_next
@@ -331,7 +330,10 @@ def _init_ugly_crap():
 tb_set_next = None
 if tproxy is None:
     try:
-        tb_set_next = _init_ugly_crap()
-    except:
-        pass
+        from jinja2._debugsupport import tb_set_next
+    except ImportError:
+        try:
+            tb_set_next = _init_ugly_crap()
+        except:
+            pass
     del _init_ugly_crap

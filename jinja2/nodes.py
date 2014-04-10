@@ -13,15 +13,13 @@
     :license: BSD, see LICENSE for more details.
 """
 import operator
-
+from itertools import chain, izip
 from collections import deque
-from jinja2.utils import Markup
-from jinja2._compat import next, izip, with_metaclass, text_type, \
-     method_type, function_type
+from jinja2.utils import Markup, MethodType, FunctionType
 
 
 #: the types we support for context functions
-_context_function_types = (function_type, method_type)
+_context_function_types = (FunctionType, MethodType)
 
 
 _binop_to_func = {
@@ -104,9 +102,9 @@ def get_eval_context(node, ctx):
     return ctx
 
 
-class Node(with_metaclass(NodeType, object)):
+class Node(object):
     """Baseclass for all Jinja2 nodes.  There are a number of nodes available
-    of different types.  There are four major types:
+    of different types.  There are three major types:
 
     -   :class:`Stmt`: statements
     -   :class:`Expr`: expressions
@@ -120,6 +118,7 @@ class Node(with_metaclass(NodeType, object)):
     The `environment` attribute is set at the end of the parsing process for
     all nodes automatically.
     """
+    __metaclass__ = NodeType
     fields = ()
     attributes = ('lineno', 'environment')
     abstract = True
@@ -143,7 +142,7 @@ class Node(with_metaclass(NodeType, object)):
             setattr(self, attr, attributes.pop(attr, None))
         if attributes:
             raise TypeError('unknown attribute %r' %
-                            next(iter(attributes)))
+                            iter(attributes).next())
 
     def iter_fields(self, exclude=None, only=None):
         """This method iterates over all fields that are defined and yields
@@ -231,9 +230,6 @@ class Node(with_metaclass(NodeType, object)):
 
     def __ne__(self, other):
         return not self.__eq__(other)
-
-    # Restore Python 2 hashing behavior on Python 3
-    __hash__ = object.__hash__
 
     def __repr__(self):
         return '%s(%s)' % (
@@ -444,7 +440,7 @@ class Const(Literal):
         constant value in the generated code, otherwise it will raise
         an `Impossible` exception.
         """
-        from .compiler import has_safe_repr
+        from compiler import has_safe_repr
         if not has_safe_repr(value):
             raise Impossible()
         return cls(value, lineno=lineno, environment=environment)
@@ -691,7 +687,7 @@ class Concat(Expr):
 
     def as_const(self, eval_ctx=None):
         eval_ctx = get_eval_context(self, eval_ctx)
-        return ''.join(text_type(x.as_const(eval_ctx)) for x in self.nodes)
+        return ''.join(unicode(x.as_const(eval_ctx)) for x in self.nodes)
 
 
 class Compare(Expr):

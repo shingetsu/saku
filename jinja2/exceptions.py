@@ -8,40 +8,24 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD, see LICENSE for more details.
 """
-from jinja2._compat import imap, text_type, PY2, implements_to_string
 
 
 class TemplateError(Exception):
     """Baseclass for all template errors."""
 
-    if PY2:
-        def __init__(self, message=None):
+    def __init__(self, message=None):
+        if message is not None:
+            message = unicode(message).encode('utf-8')
+        Exception.__init__(self, message)
+
+    @property
+    def message(self):
+        if self.args:
+            message = self.args[0]
             if message is not None:
-                message = text_type(message).encode('utf-8')
-            Exception.__init__(self, message)
-
-        @property
-        def message(self):
-            if self.args:
-                message = self.args[0]
-                if message is not None:
-                    return message.decode('utf-8', 'replace')
-
-        def __unicode__(self):
-            return self.message or u''
-    else:
-        def __init__(self, message=None):
-            Exception.__init__(self, message)
-
-        @property
-        def message(self):
-            if self.args:
-                message = self.args[0]
-                if message is not None:
-                    return message
+                return message.decode('utf-8', 'replace')
 
 
-@implements_to_string
 class TemplateNotFound(IOError, LookupError, TemplateError):
     """Raised if a template does not exist."""
 
@@ -58,6 +42,13 @@ class TemplateNotFound(IOError, LookupError, TemplateError):
         self.templates = [name]
 
     def __str__(self):
+        return self.message.encode('utf-8')
+
+    # unicode goes after __str__ because we configured 2to3 to rename
+    # __unicode__ to __str__.  because the 2to3 tree is not designed to
+    # remove nodes from it, we leave the above __str__ around and let
+    # it override at runtime.
+    def __unicode__(self):
         return self.message
 
 
@@ -71,13 +62,12 @@ class TemplatesNotFound(TemplateNotFound):
 
     def __init__(self, names=(), message=None):
         if message is None:
-            message = u'none of the templates given were found: ' + \
-                      u', '.join(imap(text_type, names))
+            message = u'non of the templates given were found: ' + \
+                      u', '.join(map(unicode, names))
         TemplateNotFound.__init__(self, names and names[-1] or None, message)
         self.templates = list(names)
 
 
-@implements_to_string
 class TemplateSyntaxError(TemplateError):
     """Raised to tell the user that there is a problem with the template."""
 
@@ -93,6 +83,13 @@ class TemplateSyntaxError(TemplateError):
         self.translated = False
 
     def __str__(self):
+        return unicode(self).encode('utf-8')
+
+    # unicode goes after __str__ because we configured 2to3 to rename
+    # __unicode__ to __str__.  because the 2to3 tree is not designed to
+    # remove nodes from it, we leave the above __str__ around and let
+    # it override at runtime.
+    def __unicode__(self):
         # for translated errors we only return the message
         if self.translated:
             return self.message

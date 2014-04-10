@@ -10,14 +10,26 @@
 """
 import re
 from jinja2.runtime import Undefined
-from jinja2._compat import text_type, string_types, mapping_types
+
+try:
+    from collections import Mapping as MappingType
+except ImportError:
+    import UserDict
+    MappingType = (UserDict.UserDict, UserDict.DictMixin, dict)
+
+# nose, nothing here to test
+__test__ = False
 
 
 number_re = re.compile(r'^-?\d+(\.\d+)?$')
 regex_type = type(number_re)
 
 
-test_callable = callable
+try:
+    test_callable = callable
+except NameError:
+    def test_callable(x):
+        return hasattr(x, '__call__')
 
 
 def test_odd(value):
@@ -64,17 +76,17 @@ def test_none(value):
 
 def test_lower(value):
     """Return true if the variable is lowercased."""
-    return text_type(value).islower()
+    return unicode(value).islower()
 
 
 def test_upper(value):
     """Return true if the variable is uppercased."""
-    return text_type(value).isupper()
+    return unicode(value).isupper()
 
 
 def test_string(value):
     """Return true if the object is a string."""
-    return isinstance(value, string_types)
+    return isinstance(value, basestring)
 
 
 def test_mapping(value):
@@ -82,12 +94,12 @@ def test_mapping(value):
 
     .. versionadded:: 2.6
     """
-    return isinstance(value, mapping_types)
+    return isinstance(value, MappingType)
 
 
 def test_number(value):
     """Return true if the variable is a number."""
-    return isinstance(value, (int, float, complex))
+    return isinstance(value, (int, long, float, complex))
 
 
 def test_sequence(value):
