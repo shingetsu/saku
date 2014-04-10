@@ -51,9 +51,6 @@ class Tag:
     def __str__(self):
         return self.tagstr
 
-    def __unicode__(self):
-        return str(self.tagstr, 'utf-8', 'replace')
-
 # End of Tag
 
 

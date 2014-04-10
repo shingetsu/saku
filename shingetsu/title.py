@@ -78,14 +78,12 @@ def file_decode_type(query, type=None):
         return type
     return q[0]
 
-def file_decode(query, type=None, as_unicode=True):
+def file_decode(query, type=None):
     '''Decode filename.
 
     >>> file_decode('foo_7E')
     '~'
     '''
-    if isinstance(query, str):
-        query = query.encode('utf-8', 'replace')
     q = query.split('_')
     if len(q) < 2:
         return None
@@ -95,15 +93,11 @@ def file_decode(query, type=None, as_unicode=True):
     buf = []
     for i in range(0, len(query), 2):
         try:
-            buf.append('%c' % int(query[i:i+2], 16))
+            buf.append(int(query[i:i+2], 16).to_bytes(1, 'big'))
         except (ValueError, IndexError):
             sys.stderr.write(query + ': ValueError/IndexError\n')
             return None
-    ret = ''.join(buf)
-    if as_unicode:
-        return str(ret, 'utf-8', 'replace')
-    else:
-        return ret
+    return str(b''.join(buf), 'utf-8', 'replace')
 
 def file_hash(query):
     """Make hash from filename.

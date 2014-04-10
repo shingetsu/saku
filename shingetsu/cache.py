@@ -1,7 +1,7 @@
 """Cache of Saku BBS.
 """
 #
-# Copyright (c) 2005-2013 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,7 @@ def fsdiff(f, s):
     '''
     try:
         if os.path.isfile(f):
-            buf = file(f, 'rb').read()
+            buf = open(f, 'rb').read()
         else:
             buf = ''
     except (IOError, OSError) as e:
@@ -156,8 +156,8 @@ class Record(dict):
         self.recstr = re.sub(r"[\r\n]*$", "", recstr)
         tmp = self.recstr.split("<>")
         try:
-            self['stamp'] = str(tmp.pop(0), 'utf-8', 'replace')
-            self['id'] = str(tmp.pop(0), 'utf-8', 'replace')
+            self['stamp'] = tmp.pop(0)
+            self['id'] = tmp.pop(0)
             self.idstr = self['stamp'] + '_' + self['id']
             self.stamp = int(self['stamp'])
             self.id = self['id']
@@ -174,7 +174,7 @@ class Record(dict):
                 if buf[0] == 'attach':
                     self[buf[0]] = buf[1]
                 else:
-                    self[buf[0]] = str(buf[1], 'utf-8', 'replace')
+                    self[buf[0]] = buf[1]
         if self.get('attach', '') != '1':
             self.flag_load = True
         self.flag_load_body = True
@@ -189,7 +189,7 @@ class Record(dict):
             if self.size() <= 0:
                 self.remove()
                 return False
-            f = file(filename)
+            f = open(filename)
             parse_ok = self.parse(f.readline())
             f.close()
             return parse_ok
@@ -290,7 +290,7 @@ class Record(dict):
             sys.stderr.write("Null file name\n")
             return False
         try:
-            f = file(path, "wb")
+            f = open(path, "wb")
             f.write(data)
             f.close()
             return True
@@ -546,7 +546,7 @@ class Cache(dict):
     def _load_status(self, key):
         path = "%s/%s.stat" % (self.datpath, key)
         try:
-            f = file(path)
+            f = open(path)
             v = f.readline()
             f.close()
             return int(v.strip())
@@ -564,7 +564,7 @@ class Cache(dict):
             if not fsdiff(path, buf):
                 try:
                     lock.acquire(True)
-                    f = file(path, 'wb')
+                    f = open(path, 'wb')
                     f.write(buf)
                     f.close()
                 finally:

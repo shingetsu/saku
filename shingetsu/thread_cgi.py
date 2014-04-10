@@ -49,7 +49,7 @@ class CGI(gateway.CGI):
     appli_type = "thread"
 
     def run(self):
-        path = str(self.path_info(), 'utf-8', 'replace')
+        path = self.path_info()
         if config.server_name:
             self.host = config.server_name
         else:
@@ -324,7 +324,7 @@ class CGI(gateway.CGI):
                 self.stdout.write("Content-Disposition: attachment\n")
             self.stdout.write("\n")
             try:
-                f = file(attach_file, "rb")
+                f = open(attach_file, "rb")
                 buf = f.read(1024)
                 while (buf != ""):
                     self.stdout.write(buf)

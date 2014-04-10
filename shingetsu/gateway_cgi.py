@@ -46,8 +46,8 @@ class CGI(gateway.CGI):
         path = self.path_info()
         self.form = cgi.FieldStorage(environ=self.environ, fp=self.stdin)
         try:
-            filter = str(self.form.getfirst('filter', ''), 'utf-8', 'replace')
-            tag = str(self.form.getfirst('tag', ''), 'utf-8', 'replace')
+            filter = self.form.getfirst('filter', '')
+            tag = self.form.getfirst('tag', '')
             if filter:
                 self.filter = re.compile(filter, re.I)
                 self.str_filter = cgi.escape(filter, True)
@@ -341,7 +341,7 @@ class CGI(gateway.CGI):
     def print_motd(self):
         self.stdout.write("Content-Type: text/plain; charset=UTF-8\n\n")
         try:
-            f = file(config.motd)
+            f = open(config.motd)
             for line in f:
                 self.stdout.write(line)
             f.close()

@@ -102,7 +102,7 @@ class CGI(gateway.CGI):
             r += str(random())
         sid = md5.new(r).hexdigest()
         try:
-            file(sidfile, "wb").write(sid + "\n")
+            open(sidfile, "wb").write(sid + "\n")
         except IOError as err:
             self.stderr.write("%s: IOError: %s\n" % (sidfile, err))
         return sid
@@ -111,7 +111,7 @@ class CGI(gateway.CGI):
         """Check admin sid for security."""
         sidfile = config.admin_sid
         try:
-            saved = file(sidfile).read().strip()
+            saved = open(sidfile).read().strip()
             os.remove(sidfile)
             return sid == saved
         except IOError as err:

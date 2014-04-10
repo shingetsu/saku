@@ -1,7 +1,7 @@
 """Tiny HTTP server supporting threading CGI.
 """
 #
-# Copyright (c) 2005-2012 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,7 @@
 # SUCH DAMAGE.
 #
 
+import copy
 import os
 import re
 import sys
@@ -83,8 +84,11 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
     """
     root_index = "/"
 
-    # Make rfile buffered -- we don't use subprocess.
-    rbufsize = -1
+    def parse_request(self):
+        r = http.server.CGIHTTPRequestHandler.parse_request(self)
+        if self.path == "/":
+            self.path = self.root_index
+        return r
 
     def is_cgi(self):
         """Test request URI is *.cgi."""
@@ -94,18 +98,6 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
             return True
         else:
             return False
-
-    def common(self):
-        if self.path == "/":
-            self.path = self.root_index
-
-    def do_POST(self):
-        self.common()
-        return http.server.CGIHTTPRequestHandler.do_POST(self)
-
-    def send_head(self):
-        self.common()
-        return http.server.CGIHTTPRequestHandler.send_head(self)
 
     def address_string(self):
         host, port = self.client_address[:2]
@@ -136,23 +128,41 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
         if config.max_connection < int(_counter):
             self.send_error(503, "Service Unavailable")
             return
+        path = self.path
         dir, rest = self.cgi_info
+
+        i = path.find('/', len(dir) + 1)
+        while i >= 0:
+            nextdir = path[:i]
+            nextrest = path[i+1:]
+
+            scriptdir = self.translate_path(nextdir)
+            if os.path.isdir(scriptdir):
+                dir, rest = nextdir, nextrest
+                i = path.find('/', len(dir) + 1)
+            else:
+                break
+
+        # find an explicit query string, if present.
         i = rest.rfind('?')
         if i >= 0:
             rest, query = rest[:i], rest[i+1:]
         else:
             query = ''
+        # dissect the part after the directory name into a script name &
+        # a possible additional path, to be stored in PATH_INFO.
         i = rest.find('/')
         if i >= 0:
             script, rest = rest[:i], rest[i:]
         else:
             script, rest = rest, ''
+
         scriptname = dir + '/' + script
         scriptfile = self.translate_path(scriptname)
 
         # Reference: http://hoohoo.ncsa.uiuc.edu/cgi/env.html
         # XXX Much of the following could be prepared ahead of time!
-        env = {}
+        env = copy.deepcopy(os.environ)
         env['SERVER_SOFTWARE'] = self.version_string()
         env['SERVER_NAME'] = self.server.server_name
         env['GATEWAY_INTERFACE'] = 'CGI/1.1'
@@ -169,19 +179,34 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
         if host != self.client_address[0]:
             env['REMOTE_HOST'] = host
         env['REMOTE_ADDR'] = self.client_address[0]
-        # XXX AUTH_TYPE
-        # XXX REMOTE_USER
+        authorization = self.headers.get("authorization")
+        if authorization:
+            authorization = authorization.split()
+            if len(authorization) == 2:
+                import base64, binascii
+                env['AUTH_TYPE'] = authorization[0]
+                if authorization[0].lower() == "basic":
+                    try:
+                        authorization = authorization[1].encode('ascii')
+                        authorization = base64.decodebytes(authorization).\
+                                        decode('ascii')
+                    except (binascii.Error, UnicodeError):
+                        pass
+                    else:
+                        authorization = authorization.split(':')
+                        if len(authorization) == 2:
+                            env['REMOTE_USER'] = authorization[0]
         # XXX REMOTE_IDENT
-        if self.headers.typeheader is None:
-            env['CONTENT_TYPE'] = self.headers.type
+        if self.headers.get('content-type') is None:
+            env['CONTENT_TYPE'] = self.headers.get_content_type()
         else:
-            env['CONTENT_TYPE'] = self.headers.typeheader
-        length = self.headers.getheader('content-length')
+            env['CONTENT_TYPE'] = self.headers['content-type']
+        length = self.headers.get('content-length')
         if length:
             env['CONTENT_LENGTH'] = length
-            if int(length) > config.record_limit*1024:
-                self.send_error(503, "Service Unavailable")
-                return
+        referer = self.headers.get('referer')
+        if referer:
+            env['HTTP_REFERER'] = referer
         accept = []
         for line in self.headers.getallmatchingheaders('accept'):
             if line[:1] in "\t\n\r ":
@@ -189,17 +214,18 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
             else:
                 accept = accept + line[7:].split(',')
         env['HTTP_ACCEPT'] = ','.join(accept)
-        ua = self.headers.getheader('user-agent')
+        ua = self.headers.get('user-agent')
         if ua:
             env['HTTP_USER_AGENT'] = ua
-        co = [_f for _f in self.headers.getheaders('cookie') if _f]
-        if co:
-            env['HTTP_COOKIE'] = ', '.join(co)
+        co = filter(None, self.headers.get_all('cookie', []))
+        cookie_str = ', '.join(co)
+        if cookie_str:
+            env['HTTP_COOKIE'] = cookie_str
         # XXX Other HTTP_* headers
         # Since we're setting the env in the parent, provide empty
         # values to override previously set values
         for k in ('QUERY_STRING', 'REMOTE_HOST', 'CONTENT_LENGTH',
-                  'HTTP_USER_AGENT', 'HTTP_COOKIE'):
+                  'HTTP_USER_AGENT', 'HTTP_COOKIE', 'HTTP_REFERER'):
             env.setdefault(k, "")
 
         # HTTP_* headers require by SAKU
@@ -212,6 +238,10 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
         if 'X-Forwarded-For' in self.headers:
             env['HTTP_X_FORWARDED_FOR'] = self.headers['X-Forwarded-For']
 
+        self.send_response(200, "Script output follows")
+
+        decoded_query = query.replace('+', ' ')
+
         # import CGI module
         try:
             cgiclass = cgimodule[script].CGI
@@ -219,8 +249,6 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
             self.send_error(404, "No such CGI script (%s)" % repr(scriptname))
             return
         self.send_response(200, "Script output follows")
-
-        decoded_query = query.replace('+', ' ')
 
         # execute script in this process
         try:
@@ -239,19 +267,3 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
 
 class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
     pass
-
-
-def test(HandlerClass=None, ServerClass=None, port=8000):
-    import http.server
-    if HandlerClass is None:
-        HandlerClass = HTTPRequestHandler
-    if ServerClass is None:
-        ServerClass = HTTPServer
-    server_address = ('', port)
-    httpd = ServerClass(server_address, HandlerClass)
-    sa = httpd.socket.getsockname()
-    print("Serving HTTP on", sa[0], "port", sa[1], "...")
-    httpd.serve_forever()
-
-if __name__ == '__main__':
-    test()

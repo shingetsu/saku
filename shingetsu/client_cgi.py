@@ -1,7 +1,7 @@
 '''Client CGI methods.
 '''
 #
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ class Status(dict):
         self.update({"ping": 0, "init": 0, "sync": 0})
         try:
             if os.path.isfile(self.statusfile):
-                f = file(self.statusfile)
+                f = open(self.statusfile)
                 for k in ("ping", "init", "sync"):
                     self[k] = int(f.readline())
                 f.close()
@@ -71,7 +71,7 @@ class Status(dict):
 
     def sync(self):
         try:
-            f = file(self.statusfile, "wb")
+            f = open(self.statusfile, "wb")
             for k in ("ping", "init", "sync"):
                 f.write(str(self[k]) + "\n")
             f.close()

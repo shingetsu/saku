@@ -10,7 +10,7 @@ Write one string per one line.
 Lines starts with '#' are comments.
 '''
 #
-# Copyright (c) 2006 shinGETsu Project.
+# Copyright (c) 2006,2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ class ConfList:
             if mtime <= self.mtime:
                 return
             self.mtime = mtime
-            f = file(self.path)
+            f = open(self.path)
             for line in f:
                 buf.append(line.strip())
             f.close()

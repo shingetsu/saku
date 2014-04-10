@@ -65,7 +65,7 @@ class Message(dict):
                     buf = line.split("<>")
                     if len(buf) == 2:
                         buf[1] = urllib.parse.unquote(buf[1])
-                        self[buf[0]] = str(buf[1], 'utf-8', 'replace')
+                        self[buf[0]] = buf[1]
             f.close()
         except IOError:
             sys.stderr.write(file + ": IOError\n")
@@ -197,8 +197,8 @@ class CGI(basecgi.CGI):
     def file_encode(self, type, query):
         return file_encode(type, query)
 
-    def file_decode(self, query, as_unicode=True):
-        return file_decode(query, as_unicode)
+    def file_decode(self, query):
+        return file_decode(query)
 
     def escape(self, msg):
         msg = msg.replace("&", "&amp;")
@@ -380,11 +380,11 @@ class CGI(basecgi.CGI):
         else:
             lockfile = config.search_lock
         if not os.path.isfile(lockfile):
-            f = file(lockfile, 'wb')
+            f = open(lockfile, 'wb')
             f.close()
             return True
         elif os.path.getmtime(lockfile) + config.search_timeout < time.time():
-            f = file(lockfile, 'wb')
+            f = open(lockfile, 'wb')
             f.close()
             return True
         else:

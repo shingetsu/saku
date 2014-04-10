@@ -58,11 +58,11 @@ class Logger:
             pass
         elif self.logfile == '':
             self.logfile = newlog
-            self.output = file(self.logfile, 'a')
+            self.output = open(self.logfile, 'a')
         else:
             self.output.close()
             self.logfile = newlog
-            self.output = file(self.logfile, 'a')
+            self.output = open(self.logfile, 'a')
 
         self.output.write(msg)
         self.output.flush()
@@ -102,13 +102,13 @@ def start_daemon():
     if hasattr(os, 'getpid'):
         try:
             pidfile = os.path.join(config.docroot, config.pid)
-            file(pidfile, 'w').write('%d' % os.getpid())
+            open(pidfile, 'w').write('%d' % os.getpid())
         except (IOError, OSError) as err:
             sys.stderr.write('IOError/OSError: %s\n' % err)
 
-    crondaemon = crond.Crond()
-    crondaemon.setDaemon(True)
-    crondaemon.start()
+    #crondaemon = crond.Crond()
+    #crondaemon.setDaemon(True)
+    #crondaemon.start()
 
     httpdaemon = httpd.Httpd()
     httpdaemon.setDaemon(True)

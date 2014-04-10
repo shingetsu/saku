@@ -1,7 +1,7 @@
 '''Tied List and Dictionaly.
 '''
 #
-# Copyright (c) 2005-2012 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ class ListFile:
             self.caching = False
         try:
             if (self.path is not None) and os.path.isfile(self.path):
-                for line in file(self.path):
+                for line in open(self.path):
                     if self.elemclass is not None:
                         try:
                             obj = self.elemclass(line.strip())
@@ -116,7 +116,7 @@ class ListFile:
                 _cache[self.path] = self
             elif self.path in _cache:
                 del _cache[self.path]
-            f = file(self.path, 'wb')
+            f = open(self.path, 'wb')
             for elem in self.data:
                 f.write('%s\n' % elem)
             f.close()
@@ -139,7 +139,7 @@ class DictFile:
         self.caching = caching
         try:
             if (self.path is not None) and os.path.isfile(self.path):
-                for line in file(self.path):
+                for line in open(self.path):
                     try:
                         key, str_values = line.strip().split('<>', 1)
                         if listclass is not None:
@@ -224,7 +224,7 @@ class DictFile:
                 _cache[self.path] = self
             elif self.path in _cache:
                 del _cache[self.path]
-            f = file(self.path, 'wb')
+            f = open(self.path, 'wb')
             for key in self.data:
                 f.write('%s<>%s\n' %
                         (key, ' '.join([str(i) for i in self.data[key]])))
