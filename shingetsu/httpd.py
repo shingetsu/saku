@@ -30,11 +30,11 @@
 
 import os
 import threading
-import BaseHTTPServer
-import SimpleHTTPServer
+import http.server
+import http.server
 
-import config
-import LightCGIHTTPServer
+from . import config
+from . import LightCGIHTTPServer
 
 __version__ = "$Revision$"
 

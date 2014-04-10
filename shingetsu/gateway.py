@@ -29,19 +29,19 @@
 import cgi
 import os
 import re
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import sys
 import time
 
-import basecgi
-import config
-import spam
-from cache import *
-from node import *
-from title import *
-from tag import *
-from template import Template
-from updatequeue import UpdateQueue
+from . import basecgi
+from . import config
+from . import spam
+from .cache import *
+from .node import *
+from .title import *
+from .tag import *
+from .template import Template
+from .updatequeue import UpdateQueue
 
 
 dummyquery = str(int(time.time()));
@@ -64,8 +64,8 @@ class Message(dict):
                 else:
                     buf = line.split("<>")
                     if len(buf) == 2:
-                        buf[1] = urllib2.unquote(buf[1])
-                        self[buf[0]] = unicode(buf[1], 'utf-8', 'replace')
+                        buf[1] = urllib.parse.unquote(buf[1])
+                        self[buf[0]] = str(buf[1], 'utf-8', 'replace')
             f.close()
         except IOError:
             sys.stderr.write(file + ": IOError\n")
@@ -91,7 +91,7 @@ def search_message(accept_language):
             else:
                 q[i] = 1
 
-        lang = q.keys()
+        lang = list(q.keys())
         lang.sort(key=lambda x: q[x], reverse=True)
     lang.append(config.language)
     for i in lang:
@@ -397,7 +397,7 @@ class CGI(basecgi.CGI):
             lockfile = config.search_lock
         try:
             os.remove(lockfile)
-        except (OSError, IOError), err:
+        except (OSError, IOError) as err:
             self.stderr.write('%s: OSError/IOError: %s\n' % (lockfile, err))
             return False
 

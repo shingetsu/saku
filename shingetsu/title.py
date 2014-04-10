@@ -27,11 +27,11 @@
 #
 
 import hashlib
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import sys
 
-import config
-from compatible import md5
+from . import config
+from .compatible import md5
 
 __all__ = ['str_encode', 'str_decode', 'file_encode', 'file_decode']
 
@@ -42,9 +42,9 @@ def str_encode(query):
     >>> str_encode('~')
     '%7E'
     '''
-    if isinstance(query, unicode):
+    if isinstance(query, str):
         query = query.encode('utf-8', 'replace')
-    return urllib2.quote(str(query))
+    return urllib.parse.quote(str(query))
 
 def str_decode(query):
     '''Decode URI.
@@ -52,7 +52,7 @@ def str_decode(query):
     >>> str_decode('%7E')
     '~'
     '''
-    return urllib2.unquote(query)
+    return urllib.parse.unquote(query)
 
 def file_encode(type, query):
     '''Encode for filename.
@@ -61,7 +61,7 @@ def file_encode(type, query):
     'foo_7E'
     '''
     buf = [type, '_']
-    if isinstance(query, unicode):
+    if isinstance(query, str):
         query = query.encode('utf-8', 'replace')
     for i in query:
         buf.append('%02X' % ord(i))
@@ -84,7 +84,7 @@ def file_decode(query, type=None, as_unicode=True):
     >>> file_decode('foo_7E')
     '~'
     '''
-    if isinstance(query, unicode):
+    if isinstance(query, str):
         query = query.encode('utf-8', 'replace')
     q = query.split('_')
     if len(q) < 2:
@@ -101,7 +101,7 @@ def file_decode(query, type=None, as_unicode=True):
             return None
     ret = ''.join(buf)
     if as_unicode:
-        return unicode(ret, 'utf-8', 'replace')
+        return str(ret, 'utf-8', 'replace')
     else:
         return ret
 

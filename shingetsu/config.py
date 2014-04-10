@@ -29,7 +29,7 @@
 import re
 import sys
 import os.path
-import ConfigParser
+import configparser
 
 def _get_value(parser, section, key, default, vtype=''):
     """Get config value or default value."""
@@ -42,7 +42,7 @@ def _get_value(parser, section, key, default, vtype=''):
             return parser.getboolean(section, key)
         else:
             return parser.get(section, key)
-    except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
+    except (configparser.NoOptionError, configparser.NoSectionError):
         return default
 
 def _get_version():
@@ -61,7 +61,7 @@ def _get_version():
 
 
 # External config files.
-_extconf = ConfigParser.SafeConfigParser()
+_extconf = configparser.SafeConfigParser()
 _extconf.read(['file/saku.ini',
                '/usr/local/etc/saku/saku.ini',
                '/etc/saku/saku.ini',

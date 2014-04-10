@@ -32,12 +32,12 @@ import re
 import sys
 from time import time
 from random import choice
-from compatible import RLock, Thread
+from .compatible import RLock, Thread
 
-import config
-from cache import *
-from node import *
-from tiedobj import *
+from . import config
+from .cache import *
+from .node import *
+from .tiedobj import *
 
 __version__ = '$Revision$'
 __all__ = ['UpdateQueue']
@@ -72,7 +72,7 @@ class _UpdateQueue:
         finally:
             lock.release()
         try:
-            for updateid in self.queue.keys():
+            for updateid in list(self.queue.keys()):
                 self.do_update(updateid)
         finally:
             try:

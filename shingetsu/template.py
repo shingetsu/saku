@@ -31,7 +31,7 @@ import sys
 
 import jinja2
 
-import config
+from . import config
 
 __all__ = ['Template']
 

@@ -67,7 +67,7 @@ class ConfList:
             for line in f:
                 buf.append(line.strip())
             f.close()
-        except (IOError, OSError), err:
+        except (IOError, OSError) as err:
             sys.stderr.write('IOError/OSError: %s\n' % err)
         declaration = re.compile(r'coding[=:]\s*([-\w_.]+)')
         encoding = 'utf-8'
@@ -107,9 +107,9 @@ class RegExpList(ConfList):
     def compile(self, pat, encoding=None):
         try:
             if encoding:
-                pat = unicode(pat, encoding)
+                pat = str(pat, encoding)
             return re.compile(pat)
-        except (re.error, UnicodeDecodeError), e:
+        except (re.error, UnicodeDecodeError) as e:
             sys.stderr.write('RegExp Error: %s: %s\n' % (pat, e))
             return None
 
@@ -118,8 +118,8 @@ class RegExpList(ConfList):
         '''
         try:
             if encoding:
-                target = unicode(target, encoding)
-        except UnicodeDecodeError, e:
+                target = str(target, encoding)
+        except UnicodeDecodeError as e:
             sys.stderr.write('UnicodeDecodeError: %s\n' % e)
             return None
         for r in self.data:

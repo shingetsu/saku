@@ -41,7 +41,7 @@ Agree following terms and join shinGETsu network.
 Description
 -----------
 * Saku is a P2P anonymous BBS works on Python.
-* We confirm that Saku works on CPython 2.6 on GNU/Linux.
+* We confirm that Saku works on CPython 3.2 on GNU/Linux.
     Saku may not work on MacOS(ver.9 or before).
 * The features of shinGETsu are...
     * 2ch.net style interface
@@ -51,8 +51,9 @@ Description
 
 Saku requires
 -------------
-* Python (ver.2.4 or later)
-* Cheetah (ver.2.0rc7 or later) if you install Saku
+* Python (ver.3.2 or later)
+* Jinja2 (ver.2.6) if you install Saku
+* markupsafe (ver.0.19 or later) if you install Saku
 * PIL (Python Imaging Libraty) if you need
 
 Usage Saku without install
@@ -66,7 +67,7 @@ Usage Saku without install
 
 Usage Saku with install
 -----------------------
-1. Install [Cheetah](http://www.cheetahtemplate.org/).
+1. Install [Jinja2](http://jinja.pocoo.org/).
 2. Open port 8000/tcp.
 3. Compile and install.
 
@@ -74,8 +75,8 @@ Usage Saku with install
    You can use PREFIX option for make, and use setup.py directly.
    If your system do not read modules in /usr/bin/local, do
 
-        # ln -s /usr/local/lib/python2.5/site-packages/shingetsu \
-                /usr/lib/python2.5/site-packages
+        # ln -s /usr/local/lib/python3.2/site-packages/shingetsu \
+                /usr/lib/python3.2/site-packages
 
 4. Configration files are installed into /usr/local/share/doc/saku/sample.
    You shoud install them:

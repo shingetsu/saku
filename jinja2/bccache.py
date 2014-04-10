@@ -18,7 +18,7 @@ from os import path, listdir
 import sys
 import marshal
 import tempfile
-import cPickle as pickle
+import pickle as pickle
 import fnmatch
 try:
     from hashlib import sha1
@@ -33,7 +33,7 @@ if sys.version_info > (3, 0):
     marshal_dump = marshal.dump
     marshal_load = marshal.load
 else:
-    from cStringIO import StringIO as BytesIO
+    from io import StringIO as BytesIO
 
     def marshal_dump(code, f):
         if isinstance(f, file):
@@ -165,7 +165,7 @@ class BytecodeCache(object):
         hash = sha1(name.encode('utf-8'))
         if filename is not None:
             filename = '|' + filename
-            if isinstance(filename, unicode):
+            if isinstance(filename, str):
                 filename = filename.encode('utf-8')
             hash.update(filename)
         return hash.hexdigest()

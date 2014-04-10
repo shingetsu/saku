@@ -47,7 +47,7 @@ class BodyFilter:
         self.buf = ''
 
     def write(self, msg):
-        if isinstance(msg, unicode):
+        if isinstance(msg, str):
             msg = msg.encode('utf-8', 'replace')
         if not self.ishead:
             self.output.write(msg)
@@ -99,7 +99,7 @@ class CGI:
         import socket
         try:
             self.run()
-        except (IOError, socket.error, socket.timeout), strerror:
+        except (IOError, socket.error, socket.timeout) as strerror:
             self.stderr.write("%s: %s\n" %
                               (self.environ['REMOTE_ADDR'], strerror))
 

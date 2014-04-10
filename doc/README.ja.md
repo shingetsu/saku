@@ -35,7 +35,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 * HTTPのGETメソッドのみを用いて記事を配信する
   peer to peer 電子掲示板システムです。
 * 朔は Python 上で動きます。
-  動作確認は主に GNU/Linux 上の CPython 2.6 で行っています。
+  動作確認は主に GNU/Linux 上の CPython 3.2 で行っています。
     MacOS(9以前)では動かないと思います。
 * 次のような特徴を備えた掲示板が利用できます。
     * 2ちゃんねる型掲示板のインタフェース
@@ -45,8 +45,9 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
 朔に必要なプログラム
 --------------------
-* Python (ver.2.5以降)
-* Cheetah (ver.2.0rc7 以降) 朔をインストールする場合
+* Python (ver.3.2以降)
+* Jinja2 (ver.2.6) 朔をインストールする場合
+* markupsafe (ver.0.19以降) 朔をインストールする場合
 * PIL (Python Imaging Library) もし必要なら
 
 朔をインストールせずに使う場合
@@ -63,7 +64,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
 朔をインストールする場合
 ------------------------
-1. [Cheetah](http://www.cheetahtemplate.org/) をインストールします。
+1. [Jinja2](http://jinja.pocoo.org/) をインストールします。
 2. ポート 8000/tcp が開いていることを確認します。
 3. 次のコマンドを実行します。
 
@@ -75,8 +76,8 @@ Sakuは Shingetsu Another Keen Utility の略です。
    環境によっては /usr/bin/local 以下のPythonモジュールは読み込みません。
    その場合は次のようにしてリンクを張ってください。
 
-        # ln -s /usr/local/lib/python2.5/site-packages/shingetsu \
-                /usr/lib/python2.5/site-packages
+        # ln -s /usr/local/lib/python3.2/site-packages/shingetsu \
+                /usr/lib/python3.2/site-packages
 
 5. 設定ファイルは /usr/local/share/doc/saku/sample にインストールされます。
    これを必要に応じて、次のようにインストールしてください。

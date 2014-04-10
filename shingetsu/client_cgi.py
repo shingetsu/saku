@@ -33,12 +33,12 @@ import sys
 import os.path
 from time import time
 
-import config
-import basecgi
-from cache import *
-from node import *
-from tag import UserTagList
-from updatequeue import UpdateQueue
+from . import config
+from . import basecgi
+from .cache import *
+from .node import *
+from .tag import UserTagList
+from .updatequeue import UpdateQueue
 
 __version__ = "$Revision$"
 

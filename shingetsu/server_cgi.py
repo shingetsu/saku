@@ -32,11 +32,11 @@ import socket
 from time import time
 from random import choice
 
-import config
-import basecgi
-from cache import *
-from node import *
-from updatequeue import UpdateQueue
+from . import config
+from . import basecgi
+from .cache import *
+from .node import *
+from .updatequeue import UpdateQueue
 
 
 class CGI(basecgi.CGI):

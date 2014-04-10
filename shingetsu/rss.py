@@ -29,7 +29,7 @@
 import re
 import cgi
 
-from template import Template
+from .template import Template
 
 
 class Item:
@@ -122,7 +122,7 @@ class RSS(dict):
         return links
 
     def __iter__(self):
-        return iter(self.keys())
+        return iter(list(self.keys()))
 
 def make_rss1(rss):
     '''Generate RSS 1.0.

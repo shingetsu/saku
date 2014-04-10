@@ -41,10 +41,10 @@ import re
 import sys
 import cgi
 import socket
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
-import config
-from template import Template
+from . import config
+from .template import Template
 
 socket.setdefaulttimeout(10)
 
@@ -53,7 +53,7 @@ port = config.port
 docroot = config.apache_docroot
 
 def get_titles():
-    f = urllib2.urlopen('http://localhost:%d/gateway.cgi/csv/changes/title' %
+    f = urllib.request.urlopen('http://localhost:%d/gateway.cgi/csv/changes/title' %
                         port)
     titles = []
     for line in f:

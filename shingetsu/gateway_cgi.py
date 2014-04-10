@@ -31,11 +31,11 @@ import cgi
 import csv
 from time import time
 
-import config
-import gateway
-from cache import *
-from tag import UserTagList
-from rss import RSS, make_rss1
+from . import config
+from . import gateway
+from .cache import *
+from .tag import UserTagList
+from .rss import RSS, make_rss1
 
 
 class CGI(gateway.CGI):
@@ -46,8 +46,8 @@ class CGI(gateway.CGI):
         path = self.path_info()
         self.form = cgi.FieldStorage(environ=self.environ, fp=self.stdin)
         try:
-            filter = unicode(self.form.getfirst('filter', ''), 'utf-8', 'replace')
-            tag = unicode(self.form.getfirst('tag', ''), 'utf-8', 'replace')
+            filter = str(self.form.getfirst('filter', ''), 'utf-8', 'replace')
+            tag = str(self.form.getfirst('tag', ''), 'utf-8', 'replace')
             if filter:
                 self.filter = re.compile(filter, re.I)
                 self.str_filter = cgi.escape(filter, True)
@@ -171,7 +171,7 @@ class CGI(gateway.CGI):
     def print_recent(self):
         """Print changes page."""
         if self.str_filter:
-            title = u'%s : %s' % (self.message['recent'], self.str_filter)
+            title = '%s : %s' % (self.message['recent'], self.str_filter)
         else:
             title = self.message['recent']
         self.header(title)
@@ -279,7 +279,7 @@ class CGI(gateway.CGI):
         title = self.str_decode(path)
         buf = self.html_format(plain, appli, title, absuri=True)
         if buf:
-            buf = u'<p>%s</p>' % buf
+            buf = '<p>%s</p>' % buf
         return buf
 
     def print_rss(self):
@@ -332,8 +332,8 @@ class CGI(gateway.CGI):
         self.stdout.write("Content-Type: text/xml; charset=UTF-8\n")
         try:
             self.stdout.write("Last-Modified: %s\n" %
-                              self.rfc822_time(rss[rss.keys()[0]].date))
-        except IndexError, KeyError:
+                              self.rfc822_time(rss[list(rss.keys())[0]].date))
+        except IndexError as KeyError:
             pass
         self.stdout.write("\n")
         self.stdout.write(make_rss1(rss))

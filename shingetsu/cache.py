@@ -34,15 +34,15 @@ import re
 import shutil
 import sys
 from time import time
-from compatible import md5, Set, RLock
+from .compatible import md5, Set, RLock
 
-import apollo
-import config
-import spam
-import title
-from node import *
-from tag import *
-from tiedobj import *
+from . import apollo
+from . import config
+from . import spam
+from . import title
+from .node import *
+from .tag import *
+from .tiedobj import *
 
 try:
     import PIL.Image
@@ -64,7 +64,7 @@ def fsdiff(f, s):
             buf = file(f, 'rb').read()
         else:
             buf = ''
-    except (IOError, OSError), e:
+    except (IOError, OSError) as e:
         sys.stderr.write('%s: %s\n' % (f, e))
         buf = ''
     if len(s) != len(buf):
@@ -156,8 +156,8 @@ class Record(dict):
         self.recstr = re.sub(r"[\r\n]*$", "", recstr)
         tmp = self.recstr.split("<>")
         try:
-            self['stamp'] = unicode(tmp.pop(0), 'utf-8', 'replace')
-            self['id'] = unicode(tmp.pop(0), 'utf-8', 'replace')
+            self['stamp'] = str(tmp.pop(0), 'utf-8', 'replace')
+            self['id'] = str(tmp.pop(0), 'utf-8', 'replace')
             self.idstr = self['stamp'] + '_' + self['id']
             self.stamp = int(self['stamp'])
             self.id = self['id']
@@ -174,7 +174,7 @@ class Record(dict):
                 if buf[0] == 'attach':
                     self[buf[0]] = buf[1]
                 else:
-                    self[buf[0]] = unicode(buf[1], 'utf-8', 'replace')
+                    self[buf[0]] = str(buf[1], 'utf-8', 'replace')
         if self.get('attach', '') != '1':
             self.flag_load = True
         self.flag_load_body = True
@@ -193,7 +193,7 @@ class Record(dict):
             parse_ok = self.parse(f.readline())
             f.close()
             return parse_ok
-        except (IOError, OSError), err:
+        except (IOError, OSError) as err:
             sys.stderr.write('IOError/OSError: %s\n' % err)
             self.free()
             return False
@@ -212,7 +212,7 @@ class Record(dict):
             return self.load()
 
     def build(self, stamp, body, passwd=""):
-        target = body.keys()
+        target = list(body.keys())
         bodyary = []
         for key in target:
             bodyary.append(key + ":" + body[key])
@@ -319,7 +319,7 @@ class Record(dict):
             im = PIL.Image.open(attach_path)
             im.thumbnail(size, PIL.Image.ANTIALIAS)
             im.save(thumbnail_path)
-        except (IOError, KeyError), err:
+        except (IOError, KeyError) as err:
             sys.stderr.write('PIL error: %s for %s\n' % (err, attach_path))
         return
 
@@ -395,7 +395,7 @@ class Record(dict):
     def size(self):
         try:
             return os.path.getsize(self.path)
-        except OSError, err:
+        except OSError as err:
             sys.stderr.write('OSError: %s\n' % err)
             return 0
 
@@ -415,7 +415,7 @@ class Record(dict):
                     os.remove(path)
             self.free()
             return True
-        except (IOError, OSError), err:
+        except (IOError, OSError) as err:
             sys.stderr.write('IOError/OSError: %s\n' % err)
             self.free()
             return False
@@ -439,9 +439,9 @@ class RecordGetter:
                 try:
                     res = self.node.talk('/get/%s/%d/%s' %
                                     (self.datfile, r.stamp, r.id))
-                    first = re.sub(r'[\r\n]*$', '', iter(res).next())
+                    first = re.sub(r'[\r\n]*$', '', next(iter(res)))
                     yield first
-                except StopIteration, err:
+                except StopIteration as err:
                     sys.stderr.write('get %s: %s\n' % (self, err))
 
 # End of RecordGetter
@@ -522,7 +522,7 @@ class Cache(dict):
         return k
 
     def __iter__(self):
-        for idstr in self.keys():
+        for idstr in list(self.keys()):
             yield self[idstr]
 
     def load(self):
@@ -697,10 +697,10 @@ class Cache(dict):
                 if not rec.exists():
                     try:
                         os.remove(os.path.join(dir, idstr))
-                    except OSError, err:
+                    except OSError as err:
                         sys.stderr.write("%s/%s: OSError: %s\n" %
                                          (dir, idstr, err))
-        except (IOError, OSError), err:
+        except (IOError, OSError) as err:
             sys.stderr.write('IOError/OSError: %s\n' % err)
 
     def check_attach(self):
@@ -718,9 +718,9 @@ class Cache(dict):
                 if not rec.exists():
                     try:
                         os.remove(dir + "/" + f)
-                    except OSError, err:
+                    except OSError as err:
                         sys.stderr.write('OSError: %s\n' % err)
-        except (IOError, OSError), err:
+        except (IOError, OSError) as err:
             sys.stderr.write('IOError/OSError: %s\n' % err)
 
     def remove(self):
@@ -731,7 +731,7 @@ class Cache(dict):
         try:
             shutil.rmtree(self.datpath)
             return True
-        except (IOError, OSError), err:
+        except (IOError, OSError) as err:
             sys.stderr.write('IOError/OSError: %s\n' % err)
             return False
 
@@ -739,7 +739,7 @@ class Cache(dict):
         '''Remove records which are older than limit.
         '''
         # Remove old records.
-        ids = self.keys()
+        ids = list(self.keys())
         if self.save_size < len(ids):
             ids = ids[:-self.save_size]
             if limit > 0:
@@ -750,7 +750,7 @@ class Cache(dict):
 
         # Remove redundant records.
         once = Set()
-        ids = self.keys()
+        ids = list(self.keys())
         for r in ids:
             rec = self[r]
             if not rec.exists():
@@ -843,7 +843,7 @@ class CacheList(list):
                 shutil.move(os.path.join(config.cache_dir, i),
                             os.path.join(config.cache_dir, hash))
                 to_reload = True
-            except (IOError, OSError, IndexError), err:
+            except (IOError, OSError, IndexError) as err:
                 sys.stderr.write('rehash error %s for %s\n' % (err, i))
         if to_reload:
             self.load()
@@ -890,7 +890,7 @@ class CacheList(list):
             for rec in cache:
                 try:
                     rec.load_body()
-                    if query.search(unicode(rec)):
+                    if query.search(str(rec)):
                         result.append(cache)
                         rec.free()
                         break
@@ -916,7 +916,8 @@ class CacheList(list):
                    (rec.stamp < cache.stamp):
                     try:
                         os.remove(cache.datpath + "/removed/" + r)
-                    except OSError, (errno, errorstr):
+                    except OSError as xxx_todo_changeme:
+                        (errno, errorstr) = xxx_todo_changeme.args
                         sys.stderr.write("OSError: %s: %s\n" %
                                          (cache.datpath + "/removed/" + r,
                                           errorstr))

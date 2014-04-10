@@ -33,14 +33,14 @@ import os
 import socket
 import sys
 import time
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import zlib
-from compatible import StringIO
-from compatible import threading as _threading
+from .compatible import StringIO
+from .compatible import threading as _threading
 
-import config
-from tiedobj import *
-from conflist import *
+from . import config
+from .tiedobj import *
+from .conflist import *
 
 __all__ = ['Node', 'RawNodeList', 'NodeList', 'SearchList', 'LookupTable',
            'init_node', 'node_allow', 'node_deny']
@@ -50,10 +50,10 @@ _node_allow = None
 _node_deny = None
 
 def urlopen(url):
-    req = urllib2.Request(url)
+    req = urllib.request.Request(url)
     req.add_header('Accept-Encoding', 'gzip')
     req.add_header('User-Agent', config.version)
-    return urllib2.urlopen(req)
+    return urllib.request.urlopen(req)
 
 def init_node():
     global _init_node
@@ -116,7 +116,7 @@ class SocketIO:
         try:
             for line in self.fp:
                 yield line
-        except Exception, err:
+        except Exception as err:
             sys.stderr.write('%s: %s\n' % (self.msg, err))
             raise StopIteration
 
@@ -133,7 +133,7 @@ class Node:
         if nodestr is not None:
             nodestr = nodestr.strip()
             if not re.search(r"\d+/[^: ]+$", nodestr):
-                raise NodeError, 'bad format'
+                raise NodeError('bad format')
             self.nodestr = nodestr.replace('+', '/')
         else:
             self.nodestr = host + ":" + str(port) + re.sub(r"\+", "/", path)
@@ -170,7 +170,7 @@ class Node:
         try:
             sys.stderr.write('talk: %s\n' % message)
             res = urlopen(message)
-        except Exception, err:
+        except Exception as err:
             sys.stderr.write('%s: %s\n' % (message, err))
             return StringIO('')
 
@@ -183,7 +183,7 @@ class Node:
     def ping(self):
         try:
             res = self.talk('/ping')
-            first = iter(res).next()
+            first = next(iter(res))
             return first.strip() == 'PONG'
         except StopIteration:
             sys.stderr.write('/ping %s: error\n' % self)
@@ -205,7 +205,7 @@ class Node:
             res = self.talk('/join/%s:%d%s' % (name, port, path))
             lines = iter(res)
             welcome = (lines.next().strip() == 'WELCOME')
-            extnode = Node(lines.next())
+            extnode = Node(next(lines))
             return (welcome, extnode)
         except StopIteration:
             return (welcome, extnode)
@@ -213,7 +213,7 @@ class Node:
     def get_node(self):
         try:
             res = self.talk('/node')
-            first = iter(res).next()
+            first = next(iter(res))
             return Node(first)
         except StopIteration:
             sys.stderr.write('/node %s: error\n' % self)
@@ -226,7 +226,7 @@ class Node:
             path = config.server.replace('/', '+')
             name = config.dnsname
             res = self.talk('/bye/%s:%d%s' % (name, port, path))
-            first = iter(res).next()
+            first = next(iter(res))
             return first.strip() == 'BYEBYE'
         except StopIteration:
             sys.stderr.write('/bye %s: error\n' % self)
@@ -298,7 +298,7 @@ class NodeList(RawNodeList):
             try:
                 res = n.talk('ping')
                 lines = iter(res)
-                buf = (lines.next(), lines.next())
+                buf = (next(lines), next(lines))
                 if buf[0].strip() == 'PONG':
                     return Node(host=buf[1].strip(), port=port, path=path)
             except StopIteration:
@@ -502,7 +502,7 @@ class LookupTable:
         self.tosave = True
 
     def clear(self):
-        for key in self.tieddict.keys():
+        for key in list(self.tieddict.keys()):
             del self.tieddict[key]
 
     def get(self, key, default=None):

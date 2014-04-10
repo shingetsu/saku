@@ -29,9 +29,9 @@
 import re
 import sys
 import os.path
-from compatible import RLock
+from .compatible import RLock
 
-import config
+from . import config
 
 __all__ = ['tiedlist', 'tieddict']
 
@@ -75,11 +75,11 @@ class ListFile:
                             obj = self.elemclass(line.strip())
                             if obj is not None:
                                 self.data.append(obj)
-                        except Exception, err:
+                        except Exception as err:
                             sys.stderr.write('ListFile: %s\n' % err)
                     else:
                         self.data.append(line.strip())
-        except (IOError, OSError), err:
+        except (IOError, OSError) as err:
             sys.stderr.write('%s: %s\n' % (self.path, err))
         if caching and (self.path not in _cache) \
                    and os.path.isfile(self.path):
@@ -152,13 +152,13 @@ class DictFile:
                                     obj = elemclass(elem)
                                     if obj is not None:
                                         self.data[key].append(obj)
-                                except Exception, err:
+                                except Exception as err:
                                     sys.stderr.write('DictFile: %s\n' % err)
                             else:
                                 self.data[key].append(line.strip())
-                    except ValueError, err:
+                    except ValueError as err:
                         sys.stderr.write('%s: %s\n' % (self.path, err))
-        except (IOError, OSError), err:
+        except (IOError, OSError) as err:
             sys.stderr.write('%s: %s\n' % (self.path, err))
 
     def __iter__(self):
@@ -171,7 +171,7 @@ class DictFile:
         return self.data.get(key, default)
 
     def keys(self):
-        return self.data.keys()
+        return list(self.data.keys())
 
     def __setitem__(self, key, data):
         try:

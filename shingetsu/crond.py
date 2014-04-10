@@ -31,10 +31,10 @@ import re
 import sys
 import time
 from threading import Thread
-from urllib2 import urlopen
+from urllib.request import urlopen
 
-import config
-import tiedobj
+from . import config
+from . import tiedobj
 
 
 class Client(Thread):
@@ -77,7 +77,7 @@ class Crond(Thread):
         try:
             re.purge()
             tiedobj.reset()
-        except Exception, err:
+        except Exception as err:
             sys.stderr.write('Crond.clear_cache(): %s\n' % err)
 
     def gc_debug(self):
@@ -88,8 +88,8 @@ class Crond(Thread):
             t = str(type(i))
             counter[t] = counter.get(t, 0) + 1
         tmp = {}
-        for k in counter.keys():
+        for k in list(counter.keys()):
             if self.gc_counter.get(k, 0) != counter[k]:
                 tmp[k] = counter[k] - self.gc_counter.get(k, 0)
                 self.gc_counter[k] = counter[k]
-        print 'GC', len(objects), len(gc.garbage), collect, tmp
+        print('GC', len(objects), len(gc.garbage), collect, tmp)

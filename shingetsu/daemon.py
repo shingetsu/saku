@@ -30,9 +30,9 @@ import os
 import sys
 from datetime import datetime
 
-import config
-import httpd
-import crond
+from . import config
+from . import httpd
+from . import crond
 
 
 class Logger:
@@ -103,7 +103,7 @@ def start_daemon():
         try:
             pidfile = os.path.join(config.docroot, config.pid)
             file(pidfile, 'w').write('%d' % os.getpid())
-        except (IOError, OSError), err:
+        except (IOError, OSError) as err:
             sys.stderr.write('IOError/OSError: %s\n' % err)
 
     crondaemon = crond.Crond()

@@ -27,7 +27,7 @@
 #
 
 import base64
-from compatible import md5
+from .compatible import md5
 
 # Count for Rabin-Miller test.
 # Error rate is 1/(4^count).
@@ -198,7 +198,7 @@ def rsa_base_generate(p_seed, q_seed):
     q = q_seed
     p = p_seed
 
-    for count in xrange(rsa_create_giveup):
+    for count in range(rsa_create_giveup):
         q = primize(q)
         q1 = q - 1
         p = primize(p)

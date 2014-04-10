@@ -1,9 +1,9 @@
-#!/usr/bin/python -3
+#!/usr/bin/python3
 #
 '''shinGETsu clone.
 '''
 #
-# Copyright (c) 2005,2012 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without

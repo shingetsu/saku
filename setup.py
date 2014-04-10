@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-# Copyright (C) 2005-2013 shinGETsu Project.
+#!/usr/bin/env python3
+# Copyright (C) 2005-2014 shinGETsu Project.
 #
 
 import re

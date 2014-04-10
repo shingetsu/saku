@@ -29,14 +29,14 @@
 import os
 import re
 import sys
-import urllib2
-import BaseHTTPServer
-import CGIHTTPServer
-import SocketServer
-from compatible import RLock
+import urllib.request, urllib.error, urllib.parse
+import http.server
+import http.server
+import socketserver
+from .compatible import RLock
 
-import config
-import admin_cgi, client_cgi, server_cgi, gateway_cgi, thread_cgi
+from . import config
+from . import admin_cgi, client_cgi, server_cgi, gateway_cgi, thread_cgi
 
 cgimodule = {"admin.cgi": admin_cgi,
              "client.cgi": client_cgi,
@@ -74,7 +74,7 @@ class ConnectionCounter:
 _counter = ConnectionCounter()
 
 
-class HTTPRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
+class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
 
     """Tiny HTTP Server.
 
@@ -101,11 +101,11 @@ class HTTPRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
 
     def do_POST(self):
         self.common()
-        return CGIHTTPServer.CGIHTTPRequestHandler.do_POST(self)
+        return http.server.CGIHTTPRequestHandler.do_POST(self)
 
     def send_head(self):
         self.common()
-        return CGIHTTPServer.CGIHTTPRequestHandler.send_head(self)
+        return http.server.CGIHTTPRequestHandler.send_head(self)
 
     def address_string(self):
         host, port = self.client_address[:2]
@@ -159,7 +159,7 @@ class HTTPRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         env['SERVER_PROTOCOL'] = self.protocol_version
         env['SERVER_PORT'] = str(self.server.server_port)
         env['REQUEST_METHOD'] = self.command
-        uqrest = urllib2.unquote(rest)
+        uqrest = urllib.parse.unquote(rest)
         env['PATH_INFO'] = uqrest
         env['PATH_TRANSLATED'] = self.translate_path(uqrest)
         env['SCRIPT_NAME'] = scriptname
@@ -192,7 +192,7 @@ class HTTPRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         ua = self.headers.getheader('user-agent')
         if ua:
             env['HTTP_USER_AGENT'] = ua
-        co = filter(None, self.headers.getheaders('cookie'))
+        co = [_f for _f in self.headers.getheaders('cookie') if _f]
         if co:
             env['HTTP_COOKIE'] = ', '.join(co)
         # XXX Other HTTP_* headers
@@ -231,18 +231,18 @@ class HTTPRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
                                   stderr=sys.stderr,
                                   environ=env)
                 cgiobj.start()
-            except SystemExit, sts:
+            except SystemExit as sts:
                 self.log_error("CGI script exit status %s", str(sts))
         finally:
             _counter.declement()
 
 
-class HTTPServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
+class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
     pass
 
 
 def test(HandlerClass=None, ServerClass=None, port=8000):
-    import SimpleHTTPServer
+    import http.server
     if HandlerClass is None:
         HandlerClass = HTTPRequestHandler
     if ServerClass is None:
@@ -250,7 +250,7 @@ def test(HandlerClass=None, ServerClass=None, port=8000):
     server_address = ('', port)
     httpd = ServerClass(server_address, HandlerClass)
     sa = httpd.socket.getsockname()
-    print "Serving HTTP on", sa[0], "port", sa[1], "..."
+    print("Serving HTTP on", sa[0], "port", sa[1], "...")
     httpd.serve_forever()
 
 if __name__ == '__main__':

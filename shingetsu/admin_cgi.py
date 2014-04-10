@@ -30,13 +30,13 @@ import os
 import cgi
 import re
 from random import random
-from compatible import md5
+from .compatible import md5
 
-import config
-import gateway
-from cache import *
-from node import *
-from tag import UserTagList
+from . import config
+from . import gateway
+from .cache import *
+from .node import *
+from .tag import UserTagList
 
 
 class CGI(gateway.CGI):
@@ -103,7 +103,7 @@ class CGI(gateway.CGI):
         sid = md5.new(r).hexdigest()
         try:
             file(sidfile, "wb").write(sid + "\n")
-        except IOError, err:
+        except IOError as err:
             self.stderr.write("%s: IOError: %s\n" % (sidfile, err))
         return sid
 
@@ -114,10 +114,10 @@ class CGI(gateway.CGI):
             saved = file(sidfile).read().strip()
             os.remove(sidfile)
             return sid == saved
-        except IOError, err:
+        except IOError as err:
             self.stderr.write("%s: IOError: %s\n" % (sidfile, err))
             return False
-        except OSError, err:
+        except OSError as err:
             self.stderr.write("%s: OSError: %s\n" % (sidfile, err))
             return sid == saved
 
@@ -315,7 +315,7 @@ class CGI(gateway.CGI):
 
     def save_tag(self, datfile, tags):
         cache = Cache(datfile)
-        print cache
+        print(cache)
         if not cache.exists():
             print404()
             return

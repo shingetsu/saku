@@ -30,14 +30,14 @@ import cgi
 import mimetypes
 import re
 import time
-from Cookie import SimpleCookie
-from compatible import md5
+from http.cookies import SimpleCookie
+from .compatible import md5
 
-import attachutil
-import config
-import gateway
-from cache import *
-from tag import UserTagList
+from . import attachutil
+from . import config
+from . import gateway
+from .cache import *
+from .tag import UserTagList
 
 import os.path
 
@@ -49,7 +49,7 @@ class CGI(gateway.CGI):
     appli_type = "thread"
 
     def run(self):
-        path = unicode(self.path_info(), 'utf-8', 'replace')
+        path = str(self.path_info(), 'utf-8', 'replace')
         if config.server_name:
             self.host = config.server_name
         else:
@@ -173,7 +173,7 @@ class CGI(gateway.CGI):
                 cookie = SimpleCookie(self.environ.get('HTTP_COOKIE', ''))
                 if 'access' in cookie:
                     access = cookie['access'].value
-            except CookieError, err:
+            except CookieError as err:
                 self.stderr.write('%s\n' % err)
             newcookie = self.setcookie(cache, access)
         else:
@@ -189,7 +189,7 @@ class CGI(gateway.CGI):
             user_tag_list.sync()
         self.print_tags(cache)
         lastrec = None
-        ids = cache.keys()
+        ids = list(cache.keys())
         if len(cache) and (not page) and (not id) and (not ids):
             lastrec = cache[ids[-1]]
         var = {
@@ -239,7 +239,7 @@ class CGI(gateway.CGI):
         if not cache.has_record():
             return
         self.stdout.write('<dl>\n')
-        for k in cache.keys():
+        for k in list(cache.keys()):
             rec = cache[k]
             if ((not id) or (rec.id[:8] == id)) and rec.load_body():
                 self.print_record(cache, rec, path, str_path)
@@ -284,7 +284,7 @@ class CGI(gateway.CGI):
         self.stdout.write(self.template('record', var))
 
     def print_post_form(self, cache):
-        suffixes = mimetypes.types_map.keys()
+        suffixes = list(mimetypes.types_map.keys())
         suffixes.sort()
         var = {
             'cache': cache,

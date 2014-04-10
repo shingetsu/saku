@@ -30,10 +30,10 @@ import re
 import sys
 import os.path
 from time import time
-from compatible import Set
+from .compatible import Set
 
-import config
-from tiedobj import *
+from . import config
+from .tiedobj import *
 
 __all__ = ['TagList', 'UserTagList', 'SuggestedTagList', 'SuggestedTagTable']
 
@@ -52,7 +52,7 @@ class Tag:
         return self.tagstr
 
     def __unicode__(self):
-        return unicode(self.tagstr, 'utf-8', 'replace')
+        return str(self.tagstr, 'utf-8', 'replace')
 
 # End of Tag
 
@@ -113,7 +113,7 @@ class UserTagList(TagList):
         TagList.__init__(self, None, config.taglist, True)
 
     def update_all(self):
-        from cache import CacheList
+        from .cache import CacheList
         cachelist = CacheList()
         self.update([])
         for cache in cachelist:
@@ -176,13 +176,13 @@ class SuggestedTagTable:
         del self.tieddict[key]
 
     def keys(self):
-        return self.tieddict.keys()
+        return list(self.tieddict.keys())
 
     def sync(self):
         self.tieddict.sync()
 
     def prune(self, recentlist):
-        tmp = Set(self.keys())
+        tmp = Set(list(self.keys()))
         for r in recentlist:
             tmp.discard(r.datfile)
             if r.datfile in self:

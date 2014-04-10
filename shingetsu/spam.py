@@ -28,8 +28,8 @@
 # $Id$
 #
 
-import config
-from conflist import RegExpList
+from . import config
+from .conflist import RegExpList
 
 __version__ = '$Revision$'
 __all__ = ['check']
