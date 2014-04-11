@@ -238,8 +238,6 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
         if 'X-Forwarded-For' in self.headers:
             env['HTTP_X_FORWARDED_FOR'] = self.headers['X-Forwarded-For']
 
-        self.send_response(200, "Script output follows")
-
         decoded_query = query.replace('+', ' ')
 
         # import CGI module

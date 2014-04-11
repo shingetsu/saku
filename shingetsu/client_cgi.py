@@ -25,8 +25,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import re
 import sys
@@ -73,7 +71,7 @@ class Status(dict):
         try:
             f = open(self.statusfile, "wb")
             for k in ("ping", "init", "sync"):
-                f.write(str(self[k]) + "\n")
+                f.write((str(self[k]) + "\n").encode('utf-8', 'replace'))
             f.close()
         except IOError:
             sys.stderr.write(self.statusfile + ": IOError\n")

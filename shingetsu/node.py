@@ -1,7 +1,7 @@
 """Saku Node and NodeList.
 """
 #
-# Copyright (c) 2005-2013 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -174,7 +174,7 @@ class Node:
             sys.stderr.write('%s: %s\n' % (message, err))
             return StringIO('')
 
-        if res.info().getheader("Content-Encoding", "") == "gzip":
+        if res.info().get("Content-Encoding", "") == "gzip":
             buffer = StringIO(res.read())
             return SocketIO(gzip.GzipFile(fileobj=buffer), message)
         else:

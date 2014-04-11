@@ -30,10 +30,12 @@ import hashlib
 import urllib.request, urllib.error, urllib.parse
 import sys
 
-from . import config
-from .compatible import md5
+from shingetsu import config
 
 __all__ = ['str_encode', 'str_decode', 'file_encode', 'file_decode']
+
+_allchars_quoter = urllib.parse.Quoter('')
+_allchars_quoter.safe = []
 
 
 def str_encode(query):
@@ -41,10 +43,10 @@ def str_encode(query):
 
     >>> str_encode('~')
     '%7E'
+    >>> str_encode(b'~')
+    '%7E'
     '''
-    if isinstance(query, str):
-        query = query.encode('utf-8', 'replace')
-    return urllib.parse.quote(str(query))
+    return urllib.parse.quote(query)
 
 def str_decode(query):
     '''Decode URI.
@@ -57,16 +59,17 @@ def str_decode(query):
 def file_encode(type, query):
     '''Encode for filename.
 
+    >>> file_encode('foo', 'a')
+    'foo_61'
     >>> file_encode('foo', '~')
     'foo_7E'
     '''
     buf = [type, '_']
     if isinstance(query, str):
         query = query.encode('utf-8', 'replace')
-    for i in query:
-        buf.append('%02X' % ord(i))
-    return ''.join(buf)
-
+    quoted = ''.join([_allchars_quoter[char] for char in query])
+    return ''.join([type, '_', quoted.replace('%', '')])
+                   
 def file_decode_type(query, type=None):
     """Decode file type.
 
@@ -102,7 +105,7 @@ def file_decode(query, type=None):
 def file_hash(query):
     """Make hash from filename.
 
-    >>> import config
+    >>> import shingetsu.config
     >>> config.cache_hash_method = 'asis'
     >>> file_hash('thread_41')
     'thread_41'
@@ -120,7 +123,7 @@ def file_hash(query):
         sys.stderr.write('Invalid filename: %s\n' % query)
         return query
     hash = getattr(hashlib, config.cache_hash_method)()
-    hash.update(title)
+    hash.update(title.encode('utf-8', 'replace'))
     return type + '_' + hash.hexdigest()
 
 

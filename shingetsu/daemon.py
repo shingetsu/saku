@@ -106,9 +106,9 @@ def start_daemon():
         except (IOError, OSError) as err:
             sys.stderr.write('IOError/OSError: %s\n' % err)
 
-    #crondaemon = crond.Crond()
-    #crondaemon.setDaemon(True)
-    #crondaemon.start()
+    crondaemon = crond.Crond()
+    crondaemon.setDaemon(True)
+    crondaemon.start()
 
     httpdaemon = httpd.Httpd()
     httpdaemon.setDaemon(True)

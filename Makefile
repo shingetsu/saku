@@ -1,6 +1,6 @@
 #
 # Makefile
-# Copyright (C) 2005-2012 shinGETsu Project.
+# Copyright (C) 2005-2014 shinGETsu Project.
 #
 
 PREFIX = /usr/local
@@ -10,10 +10,10 @@ PACKAGE = saku-$(shell cat file/version.txt)
 .PHONY: all install exe version check clean distclean package
 
 all:
-	python setup.py build
+	python3 setup.py build
 
 install:
-	python setup.py install --prefix=$(PREFIX)
+	python3 setup.py install --prefix=$(PREFIX)
 
 version:
 	./tool/git2ver.sh > file/version.txt
