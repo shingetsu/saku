@@ -106,7 +106,7 @@ class RegExpList(ConfList):
 
     def compile(self, pat, encoding=None):
         try:
-            if encoding:
+            if encoding and not isinstance(pat, str):
                 pat = str(pat, encoding)
             return re.compile(pat)
         except (re.error, UnicodeDecodeError) as e:

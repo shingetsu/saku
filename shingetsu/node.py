@@ -36,7 +36,7 @@ import threading
 import time
 import urllib.request, urllib.error, urllib.parse
 import zlib
-from io import StringIO
+from io import BytesIO
 
 from . import config
 from .tiedobj import *
@@ -115,7 +115,7 @@ class SocketIO:
     def __iter__(self):
         try:
             for line in self.fp:
-                yield line
+                yield str(line, 'utf-8', 'replace')
         except Exception as err:
             sys.stderr.write('%s: %s\n' % (self.msg, err))
             raise StopIteration
@@ -172,10 +172,10 @@ class Node:
             res = urlopen(message)
         except Exception as err:
             sys.stderr.write('%s: %s\n' % (message, err))
-            return StringIO('')
+            return BytesIO('')
 
         if res.info().get("Content-Encoding", "") == "gzip":
-            buffer = StringIO(res.read())
+            buffer = BytesIO(res.read())
             return SocketIO(gzip.GzipFile(fileobj=buffer), message)
         else:
             return SocketIO(res, message)
@@ -204,8 +204,9 @@ class Node:
             name = config.dnsname
             res = self.talk('/join/%s:%d%s' % (name, port, path))
             lines = iter(res)
-            welcome = (lines.next().strip() == 'WELCOME')
+            welcome = (next(lines).strip() == 'WELCOME')
             extnode = Node(next(lines))
+            print('xxx', welcome, extnode)
             return (welcome, extnode)
         except StopIteration:
             return (welcome, extnode)
@@ -454,7 +455,7 @@ class SearchList(RawNodeList):
             lookuptable = LookupTable()
             res = n.talk('/have/' + cache.datfile)
             try:
-                first = iter(res).next().strip()
+                first = next(iter(res)).strip()
             except StopIteration:
                 first = ''
             if first == 'YES':

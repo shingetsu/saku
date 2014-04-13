@@ -92,7 +92,6 @@ class CGI(basecgi.CGI):
         if (not re.search(config.admin, self.environ["REMOTE_ADDR"])) and \
            (not self.environ["REMOTE_ADDR"].startswith('127')):
             self.stdout.write("You are not the administrator.\n")
-            self.stdout.close()
             return
         status = Status()
         self.timelimit = int(time()) + config.client_timeout

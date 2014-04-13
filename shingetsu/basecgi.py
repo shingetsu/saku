@@ -67,7 +67,6 @@ class BodyFilter:
     def close(self):
         if self.buf:
             self.output.write(self.buf.replace('\n', '\r\n'))
-        return self.output.close()
 
     def __del__(self):
         self.close()

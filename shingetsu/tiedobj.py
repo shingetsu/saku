@@ -118,7 +118,9 @@ class ListFile:
                 del _cache[self.path]
             f = open(self.path, 'wb')
             for elem in self.data:
-                f.write('%s\n' % elem)
+                if not isinstance(elem, str):
+                    elem = str(elem)
+                f.write(elem.encode('utf-8', 'replace') + b'\n')
             f.close()
         finally:
             lock.release()
@@ -226,8 +228,9 @@ class DictFile:
                 del _cache[self.path]
             f = open(self.path, 'wb')
             for key in self.data:
-                f.write('%s<>%s\n' %
+                line = ('%s<>%s\n' %
                         (key, ' '.join([str(i) for i in self.data[key]])))
+                f.write(line.encode('utf-8', 'replace'))
             f.close()
         finally:
             lock.release()

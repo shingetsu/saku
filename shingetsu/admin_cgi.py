@@ -102,7 +102,7 @@ class CGI(gateway.CGI):
             r += str(random())
         sid = hashlib.md5(r.encode('utf-8')).hexdigest()
         try:
-            open(sidfile, "wb").write(sid + "\n")
+            open(sidfile, 'wb').write(sid.encode('utf-8') + b'\n')
         except IOError as err:
             self.stderr.write("%s: IOError: %s\n" % (sidfile, err))
         return sid
