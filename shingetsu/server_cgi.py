@@ -204,10 +204,10 @@ class CGI(basecgi.CGI):
                     and ((id is None) or r.idstr.endswith(id)):
                 if method == "get":
                     r.load()
-                    fp.write(str(r) + '\n')
+                    fp.write(str(r).encode('utf-8') + b'\n')
                     r.free()
                 else:
-                    fp.write(r.idstr.replace("_", "<>") + '\n')
+                    fp.write(r.idstr.replace("_", "<>").encode('utf-8') + b'\n')
 
     def parse_stamp(self, stamp, last):
         buf = stamp.split("/")
@@ -248,7 +248,8 @@ class CGI(basecgi.CGI):
                     tagstr = '<>tag:%s' % cache.tags
                 else:
                     tagstr = ''
-                fp.write('%s<>%s<>%s%s\n' % (i.stamp, i.id, i.datfile, tagstr))
+                line = '%s<>%s<>%s%s\n' % (i.stamp, i.id, i.datfile, tagstr)
+                fp.write(line.encode('utf-8', 'replace'))
 
     def do_update(self, path_info):
         self.header("text/plain")

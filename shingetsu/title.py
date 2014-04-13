@@ -46,6 +46,8 @@ def str_encode(query):
     >>> str_encode(b'~')
     '%7E'
     '''
+    if not isinstance(query, bytes):
+        query = str(query)
     return urllib.parse.quote(query)
 
 def str_decode(query):

@@ -36,7 +36,7 @@ import threading
 import time
 import urllib.request, urllib.error, urllib.parse
 import zlib
-from io import BytesIO
+from io import BytesIO, StringIO
 
 from . import config
 from .tiedobj import *
@@ -172,7 +172,7 @@ class Node:
             res = urlopen(message)
         except Exception as err:
             sys.stderr.write('%s: %s\n' % (message, err))
-            return BytesIO('')
+            return StringIO('')
 
         if res.info().get("Content-Encoding", "") == "gzip":
             buffer = BytesIO(res.read())
@@ -206,7 +206,6 @@ class Node:
             lines = iter(res)
             welcome = (next(lines).strip() == 'WELCOME')
             extnode = Node(next(lines))
-            print('xxx', welcome, extnode)
             return (welcome, extnode)
         except StopIteration:
             return (welcome, extnode)
