@@ -29,7 +29,7 @@
 import re
 import sys
 import os.path
-from .compatible import RLock
+from threading import RLock
 
 from . import config
 

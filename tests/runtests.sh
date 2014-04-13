@@ -34,6 +34,7 @@ for t in tests/test_*.py; do
     python3 $t || code=1
 done
 
+python3 shingetsu/cache.py -v || code=1
 python3 shingetsu/title.py -v || code=1
 
 if [ "$code" != 0 ]; then

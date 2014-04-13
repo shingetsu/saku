@@ -117,7 +117,7 @@ class RegExpList(ConfList):
         '''Match target for all regexp.
         '''
         try:
-            if encoding:
+            if encoding and not isinstance(target, str):
                 target = str(target, encoding)
         except UnicodeDecodeError as e:
             sys.stderr.write('UnicodeDecodeError: %s\n' % e)

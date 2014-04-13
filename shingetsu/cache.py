@@ -27,22 +27,23 @@
 #
 
 import base64
+import hashlib
 import imghdr
 import os
 import random
 import re
 import shutil
 import sys
+from threading import RLock
 from time import time
-from .compatible import md5, Set, RLock
 
-from . import apollo
-from . import config
-from . import spam
-from . import title
-from .node import *
-from .tag import *
-from .tiedobj import *
+from shingetsu import apollo
+from shingetsu import config
+from shingetsu import spam
+from shingetsu import title
+from shingetsu.node import *
+from shingetsu.tag import *
+from shingetsu.tiedobj import *
 
 try:
     import PIL.Image
@@ -53,6 +54,17 @@ __all__ = ['Record', 'Cache', 'CacheList', 'UpdateList', 'RecentList']
 
 lock = RLock()
 
+
+def md5digest(s):
+    """Get MD5 hex digest.
+    >>> md5digest('abc')
+    '900150983cd24fb0d6963f7d28e17f72'
+    >>> md5digest(b'abc')
+    '900150983cd24fb0d6963f7d28e17f72'
+    """
+    if isinstance(s, str):
+        s = s.encode('utf-8', 'replace')
+    return hashlib.md5(s).hexdigest()
 
 def fsdiff(f, s):
     '''Diff between file and string.
@@ -220,7 +232,7 @@ class Record(dict):
         bodystr = "<>".join(bodyary)
         if passwd != "":
             (pubkey, prikey) = apollo.key_pair(passwd)
-            md = md5.new(bodystr).hexdigest()
+            md = md5digest(bodystr)
             sign = apollo.sign(md, pubkey, prikey)
             self["pubkey"] = pubkey
             self["sign"] = sign
@@ -230,7 +242,7 @@ class Record(dict):
                        "<>sign:" + sign + \
                        "<>target:" + ",".join(target)
 
-        id = md5.new(bodystr).hexdigest()
+        id = md5digest(bodystr)
         self.stamp = int(stamp)
         self.recstr = str(stamp) + "<>" + id + "<>" + bodystr
         self.idstr = str(stamp) + "_" + id
@@ -243,7 +255,7 @@ class Record(dict):
     def md5check(self):
         buf = str(self).split("<>", 2)
         if (len(buf) > 2):
-            return md5.new(buf[2]).hexdigest() == self["id"]
+            return md5digest(buf[2]) == self['id']
         else:
             return False
 
@@ -291,6 +303,8 @@ class Record(dict):
             return False
         try:
             f = open(path, "wb")
+            if isinstance(data, str):
+                data = data.encode('utf-8', 'replace')
             f.write(data)
             f.close()
             return True
@@ -333,7 +347,7 @@ class Record(dict):
             self._write_file(self.path, str(self)+"\n")
         body = self.body_string()+'\n'
         if 'attach' in self:
-            attach = base64.decodestring(self['attach'])
+            attach = base64.decodestring(self['attach'].encode('utf-8'))
             attach_path = self.attach_path(self.get('suffix', 'txt'))
             thumbnail_path = self.attach_path(self.get('suffix', 'jpg'),
                                 thumbnail_size=config.thumbnail_size)
@@ -380,7 +394,7 @@ class Record(dict):
                 return False
         target = target[2:]         # remove ^<>
 
-        md = md5.new(target).hexdigest()
+        md = md5digest(target)
         if apollo.verify(md, self["sign"], self["pubkey"]):
             return True
         else:
@@ -517,7 +531,7 @@ class Cache(dict):
 
     def keys(self):
         self.load()
-        k = dict.keys(self)
+        k = list(dict.keys(self))
         k.sort()
         return k
 
@@ -565,7 +579,7 @@ class Cache(dict):
                 try:
                     lock.acquire(True)
                     f = open(path, 'wb')
-                    f.write(buf)
+                    f.write(buf.encode('utf-8', 'replace'))
                     f.close()
                 finally:
                     lock.release()
@@ -749,7 +763,7 @@ class Cache(dict):
                         rec.remove()
 
         # Remove redundant records.
-        once = Set()
+        once = set()
         ids = list(self.keys())
         for r in ids:
             rec = self[r]
@@ -1059,3 +1073,12 @@ class RecentList(UpdateList):
         UpdateList.sync(self)
 
 # End of RecentList
+
+
+def _test(*args, **kwargs):
+    import doctest
+    doctest.testmod()
+
+
+if __name__ == '__main__':
+    _test()

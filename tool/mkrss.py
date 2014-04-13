@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 '''Make Static Toppage, Sitemap and RSS.
 
@@ -33,7 +33,7 @@ Set server_name, proxy_destination and apache_docroot in saku.ini.
 import os
 import sys
 import socket
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from shutil import copy
 
 import shingetsu.config
@@ -50,9 +50,9 @@ sep = shingetsu.config.query_separator
 
 
 def urlopen(url, lang='en'):
-    req = urllib2.Request(url)
+    req = urllib.request.Request(url)
     req.add_header('Accept-Language', '%s;q=1.0' % lang)
-    return urllib2.urlopen(req)
+    return urllib.request.urlopen(req)
 
 def get_rss():
     rssfile = urlopen('%s%s%srss' % (destination,

@@ -34,7 +34,7 @@ import urllib.request, urllib.error, urllib.parse
 import http.server
 import http.server
 import socketserver
-from .compatible import RLock
+from threading import RLock
 
 from . import config
 from . import admin_cgi, client_cgi, server_cgi, gateway_cgi, thread_cgi

@@ -1,7 +1,7 @@
 '''Signature Module.
 '''
 #
-# Copyright (c) 2005,2013 shinGETsu Project.
+# Copyright (c) 2005-2015 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,7 @@
 #
 
 import base64
-from .compatible import md5
+import hashlib
 
 # Count for Rabin-Miller test.
 # Error rate is 1/(4^count).
@@ -265,11 +265,13 @@ def bin_to_int(bin):
 
     0x16 0x22 -> 0x16*256 + 0x22.
     """
+    if isinstance(bin, str):
+        bin = bin.encode('utf-8', 'replace')
     tmp = 0
     buf = list(bin)
     buf.reverse()
     for i in buf:
-        tmp = tmp*256 + ord(i)
+        tmp = 256 * tmp + i
     return tmp
 
 def rsa_sign(mes, publickey, secretkey):
@@ -290,10 +292,11 @@ def rsa_verify(mes, testsignature, publickey):
     return m == c
 
 def make512pq(keystr):
-    seedbuf = md5.new(keystr).digest()
-    seedbuf += md5.new(keystr+"pad1").digest()
-    seedbuf += md5.new(keystr+"pad2").digest()
-    seedbuf += md5.new(keystr+"pad3").digest()
+    keystr = keystr.encode('utf-8', 'replace')
+    seedbuf = hashlib.md5(keystr).digest()
+    seedbuf += hashlib.md5(keystr + b'pad1').digest()
+    seedbuf += hashlib.md5(keystr + b'pad2').digest()
+    seedbuf += hashlib.md5(keystr + b'pad3').digest()
     p = bin_to_int(seedbuf[0:28])
     q = bin_to_int(seedbuf[28:64])
     p |= 2**215
@@ -328,5 +331,6 @@ def verify(target, sign, pubkey):
 
 def cut_key(key):
     """Cut KeyStr to 11words."""
-    short_key = base64.encodestring(md5.new(key[:512]).digest())[:11]
-    return short_key
+    digest = hashlib.md5(key[:512].encode('utf-8', 'replace')).digest()
+    short_key = base64.encodestring(digest)[:11]
+    return str(short_key, 'utf-8', 'replace')

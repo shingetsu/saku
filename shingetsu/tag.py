@@ -30,7 +30,6 @@ import re
 import sys
 import os.path
 from time import time
-from .compatible import Set
 
 from . import config
 from .tiedobj import *
@@ -179,7 +178,7 @@ class SuggestedTagTable:
         self.tieddict.sync()
 
     def prune(self, recentlist):
-        tmp = Set(list(self.keys()))
+        tmp = set(list(self.keys()))
         for r in recentlist:
             tmp.discard(r.datfile)
             if r.datfile in self:

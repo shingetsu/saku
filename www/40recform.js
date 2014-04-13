@@ -18,7 +18,13 @@ shingetsu.initialize(function() {
 
         $('#postarticle').find('.post-advanced').each(function (i, element) {
             element = $(element);
-            if (element.find(':text[value!=""], :password[value!=""]').length > 0) {
+            if (saved.name && element.find('#name').length > 0) {
+                element.removeClass('post-advanced');
+            }
+            if (saved.mail && element.find('#mail').length > 0) {
+                element.removeClass('post-advanced');
+            }
+            if (saved.sign && element.find('#passwd').length > 0) {
                 element.removeClass('post-advanced');
             }
             if (element.find(':checkbox:not(:checked)').length > 0) {

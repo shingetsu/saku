@@ -26,11 +26,11 @@
 # SUCH DAMAGE.
 #
 
+import hashlib
 import os
 import cgi
 import re
 from random import random
-from .compatible import md5
 
 from . import config
 from . import gateway
@@ -100,7 +100,7 @@ class CGI(gateway.CGI):
         r = ""
         for i in range(4):
             r += str(random())
-        sid = md5.new(r).hexdigest()
+        sid = hashlib.md5(r.encode('utf-8')).hexdigest()
         try:
             open(sidfile, "wb").write(sid + "\n")
         except IOError as err:

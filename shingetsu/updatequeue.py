@@ -1,7 +1,7 @@
 '''Update Manager.
 '''
 #
-# Copyright (c) 2005-2007 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,12 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import re
 import sys
+from threading import RLock, Thread
 from time import time
 from random import choice
-from .compatible import RLock, Thread
 
 from . import config
 from .cache import *

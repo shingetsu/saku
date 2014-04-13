@@ -31,7 +31,6 @@ import mimetypes
 import re
 import time
 from http.cookies import SimpleCookie
-from .compatible import md5
 
 from . import attachutil
 from . import config

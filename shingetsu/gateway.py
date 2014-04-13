@@ -434,7 +434,8 @@ class CGI(basecgi.CGI):
                 self.header(self.message["big_file"], deny_robot=True)
                 self.footer()
                 return None
-            str_attach = base64.encodestring(attach.value).replace("\n", "")
+            b64attach = base64.encodestring(attach.value)
+            str_attach = str(b64attach, 'utf-8', 'replace').replace("\n", "")
         guess_suffix = "txt"
         if (attach is not None) and attach.filename:
             found = re.search(r"\.([^.]+)$", attach.filename)

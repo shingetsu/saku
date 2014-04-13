@@ -32,11 +32,11 @@ import re
 import os
 import socket
 import sys
+import threading
 import time
 import urllib.request, urllib.error, urllib.parse
 import zlib
-from .compatible import StringIO
-from .compatible import threading as _threading
+from io import StringIO
 
 from . import config
 from .tiedobj import *
@@ -82,9 +82,9 @@ def node_deny():
     return _node_deny
 
 
-class Broadcast(_threading.Thread):
+class Broadcast(threading.Thread):
     def __init__(self, msg, cache):
-        _threading.Thread.__init__(self)
+        threading.Thread.__init__(self)
         self.msg = msg
         self.cache = cache
 

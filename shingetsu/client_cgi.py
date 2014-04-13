@@ -94,7 +94,6 @@ class CGI(basecgi.CGI):
             self.stdout.write("You are not the administrator.\n")
             self.stdout.close()
             return
-        self.stdout.close()
         status = Status()
         self.timelimit = int(time()) + config.client_timeout
 
