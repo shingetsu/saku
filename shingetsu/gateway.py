@@ -434,7 +434,11 @@ class CGI(basecgi.CGI):
                 self.header(self.message["big_file"], deny_robot=True)
                 self.footer()
                 return None
-            b64attach = base64.encodestring(attach.value)
+            if isinstance(attach.value, str):
+                attach_value = attach.value.encode('utf-8', 'replace')
+            else:
+                attach_value = attach.value
+            b64attach = base64.encodestring(attach_value)
             str_attach = str(b64attach, 'utf-8', 'replace').replace("\n", "")
         guess_suffix = "txt"
         if (attach is not None) and attach.filename:

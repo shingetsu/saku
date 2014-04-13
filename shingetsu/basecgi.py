@@ -54,10 +54,10 @@ class BodyFilter:
         elif self.ishead and self.flag_body:
             pass
         else:
-            self.buf += msg.replace('\r\n', '\n')
-            i = self.buf.find('\n\n')
+            self.buf += msg.replace(b'\r\n', b'\n')
+            i = self.buf.find(b'\n\n')
             if i >= 0:
-                self.output.write(self.buf[:i+2].replace('\n', '\r\n'))
+                self.output.write(self.buf[:i+2].replace(b'\n', b'\r\n'))
                 self.buf = ''
                 self.flag_body = True
 
