@@ -247,6 +247,8 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
             self.send_error(404, "No such CGI script (%s)" % repr(scriptname))
             return
         self.send_response(200, "Script output follows")
+        if hasattr(self, 'flush_headers'):
+            self.flush_headers()
 
         # execute script in this process
         try:

@@ -86,7 +86,7 @@ class CGI(basecgi.CGI):
     def do_motd(self):
         self.header("text/plain")
         try:
-            f = open(config.motd)
+            f = open(config.motd, encoding='utf-8')
             for line in f:
                 self.stdout.write(line)
             f.close()

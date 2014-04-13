@@ -54,7 +54,7 @@ class Message(dict):
     def __init__(self, file):
         dict.__init__(self)
         try:
-            f = open(file)
+            f = open(file, encoding='utf-8')
             del_eos = re.compile(r"[\r\n]*")
             iscomment = re.compile(r"^#$").search
             for line in f:

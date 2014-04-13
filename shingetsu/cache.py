@@ -201,7 +201,7 @@ class Record(dict):
             if self.size() <= 0:
                 self.remove()
                 return False
-            f = open(filename)
+            f = open(filename, encoding='utf-8')
             parse_ok = self.parse(f.readline())
             f.close()
             return parse_ok
@@ -560,7 +560,7 @@ class Cache(dict):
     def _load_status(self, key):
         path = "%s/%s.stat" % (self.datpath, key)
         try:
-            f = open(path)
+            f = open(path, encoding='utf-8')
             v = f.readline()
             f.close()
             return int(v.strip())
@@ -824,7 +824,8 @@ class CacheList(list):
                 self.append(c)
                 continue
             try:
-                f = open(config.cache_dir + "/" + i + "/dat.stat")
+                dat_stat_file = config.cache_dir + '/' + i + '/dat.stat'
+                f = open(dat_stat_file, encoding='utf-8')
                 dat_stat = f.readlines()[0].strip()
                 f.close()
                 c = Cache(dat_stat, sugtagtable, recentlist)
@@ -842,7 +843,7 @@ class CacheList(list):
             try:
                 dat_stat_file = os.path.join(config.cache_dir, i, 'dat.stat')
                 if os.path.isfile(dat_stat_file):
-                    f = open(dat_stat_file)
+                    f = open(dat_stat_file, encoding='utf-8')
                     dat_stat = f.readlines()[0].strip()
                     f.close()
                 else:

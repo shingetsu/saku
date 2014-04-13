@@ -69,7 +69,7 @@ class ListFile:
             self.caching = False
         try:
             if (self.path is not None) and os.path.isfile(self.path):
-                for line in open(self.path):
+                for line in open(self.path, encoding='utf-8'):
                     if self.elemclass is not None:
                         try:
                             obj = self.elemclass(line.strip())
@@ -141,7 +141,7 @@ class DictFile:
         self.caching = caching
         try:
             if (self.path is not None) and os.path.isfile(self.path):
-                for line in open(self.path):
+                for line in open(self.path, encoding='utf-8'):
                     try:
                         key, str_values = line.strip().split('<>', 1)
                         if listclass is not None:
