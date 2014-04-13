@@ -5,7 +5,7 @@
 Set server_name, proxy_destination and apache_docroot in saku.ini.
 '''
 #
-# Copyright (c) 2006-2012 shinGETsu Project.
+# Copyright (c) 2006-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ def get_rss():
     rssfile = urlopen('%s%s%srss' % (destination,
                                      shingetsu.config.gateway,
                                      sep))
-    date = rssfile.info().getheader("last-modified", "")
+    date = rssfile.info().get("last-modified", "")
     rss = rssfile.read()
     rssfile.close()
     return date, rss
@@ -67,23 +67,23 @@ def get_html(src, dst, lang='en'):
     htmlfile = urlopen(src, lang)
     html = htmlfile.read()
     htmlfile.close()
-    f = file(os.path.join(docroot, dst), 'w')
+    f = open(os.path.join(docroot, dst), 'wb')
     f.write(html)
     f.close()
 
 def check_date(date):
     rssdate = os.path.join(docroot, 'rssdate')
     try:
-        olddate = file(rssdate).read().strip()
+        olddate = open(rssdate, encoding='utf-8').read().strip()
     except IOError:
         olddate = ""
     if date == olddate:
         sys.exit()
     else:
-        file(rssdate, 'w').write(date)
+        open(rssdate, 'w', encoding='utf-8').write(date)
 
 def write_rss(rss):
-    f = file(os.path.join(docroot, 'rss.rdf'), 'w')
+    f = open(os.path.join(docroot, 'rss.rdf'), 'wb')
     f.write(rss)
     f.close()
 
@@ -100,13 +100,13 @@ def get_links():
             yield '%s/%s' % (link, record.id[:8])
 
 def write_sitemap():
-    f = file(os.path.join(docroot, 'sitemap.txt'), 'w')
+    f = open(os.path.join(docroot, 'sitemap.txt'), 'w', encoding='utf-8')
     for i in get_links():
         f.write(i + "\n")
     f.close()
 
 def make_suggest():
-    fp = file(os.path.join(docroot, 'suggest.js'), 'w')
+    fp = open(os.path.join(docroot, 'suggest.js'), 'w', encoding='utf-8')
     titles = shingetsu.mksuggest.get_titles()
     shingetsu.mksuggest.print_jsfile(titles, fp)
 

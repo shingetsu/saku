@@ -57,7 +57,7 @@ def get_titles():
                         port)
     titles = []
     for line in f:
-        line = line.strip()
+        line = str(line, 'utf-8', 'replace').strip()
         line = re.sub(r'^"|"$', '', line)
         line = line.replace('""', '"')
         titles.append(line)

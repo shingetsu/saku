@@ -117,7 +117,7 @@ class RSS(dict):
     def keys(self):
         """List of links sorted by date."""
 
-        links = dict.keys(self)
+        links = list(dict.keys(self))
         links.sort(key=lambda x: self[x].date, reverse=True)
         return links
 
