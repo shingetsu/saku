@@ -44,7 +44,7 @@ class BodyFilter:
         self.output = output
         self.ishead = (env['REQUEST_METHOD'] == 'HEAD')
         self.flag_body = False
-        self.buf = ''
+        self.buf = b''
 
     def write(self, msg):
         if isinstance(msg, str):
@@ -58,7 +58,7 @@ class BodyFilter:
             i = self.buf.find(b'\n\n')
             if i >= 0:
                 self.output.write(self.buf[:i+2].replace(b'\n', b'\r\n'))
-                self.buf = ''
+                self.buf = b''
                 self.flag_body = True
 
     def flush(self):
@@ -66,7 +66,7 @@ class BodyFilter:
 
     def close(self):
         if self.buf:
-            self.output.write(self.buf.replace('\n', '\r\n'))
+            self.output.write(self.buf.replace(b'\n', b'\r\n'))
 
     def __del__(self):
         self.close()

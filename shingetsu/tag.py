@@ -117,7 +117,7 @@ class UserTagList(TagList):
         self.sync()
 
     def sync(self):
-        self.sort()
+        self.sort(key=lambda x: str(x))
         TagList.sync(self)
 
 # End of UserTagList
