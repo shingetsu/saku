@@ -156,7 +156,6 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
             script, rest = rest[:i], rest[i:]
         else:
             script, rest = rest, ''
-
         scriptname = dir + '/' + script
         scriptfile = self.translate_path(scriptname)
 
@@ -179,23 +178,8 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
         if host != self.client_address[0]:
             env['REMOTE_HOST'] = host
         env['REMOTE_ADDR'] = self.client_address[0]
-        authorization = self.headers.get("authorization")
-        if authorization:
-            authorization = authorization.split()
-            if len(authorization) == 2:
-                import base64, binascii
-                env['AUTH_TYPE'] = authorization[0]
-                if authorization[0].lower() == "basic":
-                    try:
-                        authorization = authorization[1].encode('ascii')
-                        authorization = base64.decodebytes(authorization).\
-                                        decode('ascii')
-                    except (binascii.Error, UnicodeError):
-                        pass
-                    else:
-                        authorization = authorization.split(':')
-                        if len(authorization) == 2:
-                            env['REMOTE_USER'] = authorization[0]
+        # XXX AUTH_TYPE
+        # XXX REMOTE_USER
         # XXX REMOTE_IDENT
         if self.headers.get('content-type') is None:
             env['CONTENT_TYPE'] = self.headers.get_content_type()

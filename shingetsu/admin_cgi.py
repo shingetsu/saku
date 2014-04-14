@@ -315,7 +315,6 @@ class CGI(gateway.CGI):
 
     def save_tag(self, datfile, tags):
         cache = Cache(datfile)
-        print(cache)
         if not cache.exists():
             print404()
             return
