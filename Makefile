@@ -27,6 +27,7 @@ clean:
 	rm -Rf build dist root
 	rm -Rf cache log run
 	find . -name "*.py[co]" \! -path ".git/*" -print0 | xargs -0 -r rm -f
+	-find . -type d -name "__pycache__" -print0 | xargs -0 -r rmdir
 
 distclean: clean
 	find . \( -name "*~" -o -name "#*" -o -name ".#*" \) \! -path ".git/*" \
@@ -35,7 +36,6 @@ distclean: clean
 
 package: distclean version
 	-rm -Rf $(PACKAGE_DIR)/$(PACKAGE).tar.gz $(PACKAGE_DIR)/$(PACKAGE)
-	cp -a . $(PACKAGE_DIR)/$(PACKAGE)
-	-rm -Rf $(PACKAGE_DIR)/$(PACKAGE)/.git*
+	rsync -a --exclude=".git*" . $(PACKAGE_DIR)/$(PACKAGE)
 	tar -zcf $(PACKAGE_DIR)/$(PACKAGE).tar.gz -C $(PACKAGE_DIR) $(PACKAGE)
 	-rm -Rf $(PACKAGE_DIR)/$(PACKAGE)
