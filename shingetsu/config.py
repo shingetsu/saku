@@ -1,7 +1,7 @@
 """Saku Configuration.
 """
 #
-# Copyright (c) 2005-2012 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ def _get_version():
             f.close()
         except (IOError, OSError):
             pass
-    return 'shinGETsu/0.7 (Saku-Ex/%s)' % version
+    return 'shinGETsu/0.7 (Saku/%s)' % version
 
 
 # External config files.
