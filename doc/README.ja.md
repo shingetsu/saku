@@ -48,7 +48,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 * Python (ver.3.2以降)
 * Jinja2 (ver.2.6) 朔をインストールする場合
 * markupsafe (ver.0.19以降) 朔をインストールする場合
-* PIL (Python Imaging Library) もし必要なら
+* PIL または Pillow (Python Imaging Library) もし必要なら
 
 朔をインストールせずに使う場合
 ------------------------------
@@ -105,6 +105,12 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
 11. /usr/local/bin/saku でも起動できます。
     この場合はユーザアプリケーションとしての動作です。
+
+Debian GNU/Linux 7.4 で依存パッケージをインストールする方法
+-----------------------------------------------------------
+1. sudo aptitude install python3 python3-jinja2 python3-pip
+2. sudo aptitude install libjpeg-dev libopenjpeg-dev libtiff-dev libwebp-dev
+3. sudo pip-3.2 install Pillow
 
 謝辞
 ----

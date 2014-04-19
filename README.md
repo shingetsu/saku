@@ -54,7 +54,7 @@ Saku requires
 * Python (ver.3.2 or later)
 * Jinja2 (ver.2.6) if you install Saku
 * markupsafe (ver.0.19 or later) if you install Saku
-* PIL (Python Imaging Libraty) if you need
+* PIL or Pillow (Python Imaging Libraty) if you need
 
 Usage Saku without install
 --------------------------
@@ -104,6 +104,12 @@ Usage Saku with install
         # /usr/local/etc/init.d/saku stop
 
 9. Run /usr/local/bin/saku for user application.
+
+How to Insatall Required Packages on Debian GNU/Linux 7.4
+---------------------------------------------------------
+1. sudo aptitude install python3 python3-jinja2 python3-pip
+2. sudo aptitude install libjpeg-dev libopenjpeg-dev libtiff-dev libwebp-dev
+3. sudo pip-3.2 install Pillow
 
 Acknowledge
 -----------
