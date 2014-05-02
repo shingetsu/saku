@@ -32,6 +32,7 @@ import os.path
 from threading import RLock
 
 from . import config
+from .util import opentext
 
 __all__ = ['tiedlist', 'tieddict']
 
@@ -69,7 +70,7 @@ class ListFile:
             self.caching = False
         try:
             if (self.path is not None) and os.path.isfile(self.path):
-                for line in open(self.path, encoding='utf-8'):
+                for line in opentext(self.path):
                     if self.elemclass is not None:
                         try:
                             obj = self.elemclass(line.strip())
@@ -116,11 +117,11 @@ class ListFile:
                 _cache[self.path] = self
             elif self.path in _cache:
                 del _cache[self.path]
-            f = open(self.path, 'wb')
+            f = opentext(self.path, 'w')
             for elem in self.data:
                 if not isinstance(elem, str):
                     elem = str(elem)
-                f.write(elem.encode('utf-8', 'replace') + b'\n')
+                f.write(elem + '\n')
             f.close()
         finally:
             lock.release()
@@ -141,7 +142,7 @@ class DictFile:
         self.caching = caching
         try:
             if (self.path is not None) and os.path.isfile(self.path):
-                for line in open(self.path, encoding='utf-8'):
+                for line in opentext(self.path):
                     try:
                         key, str_values = line.strip().split('<>', 1)
                         if listclass is not None:
@@ -226,11 +227,11 @@ class DictFile:
                 _cache[self.path] = self
             elif self.path in _cache:
                 del _cache[self.path]
-            f = open(self.path, 'wb')
+            f = opentext(self.path, 'w')
             for key in self.data:
                 line = ('%s<>%s\n' %
                         (key, ' '.join([str(i) for i in self.data[key]])))
-                f.write(line.encode('utf-8', 'replace'))
+                f.write(line)
             f.close()
         finally:
             lock.release()

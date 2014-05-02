@@ -29,6 +29,7 @@
 import gzip
 import re
 import socket
+from io import TextIOWrapper
 from time import time
 from random import choice
 
@@ -37,6 +38,7 @@ from . import basecgi
 from .cache import *
 from .node import *
 from .updatequeue import UpdateQueue
+from .util import opentext
 
 
 class CGI(basecgi.CGI):
@@ -86,7 +88,7 @@ class CGI(basecgi.CGI):
     def do_motd(self):
         self.header("text/plain")
         try:
-            f = open(config.motd, encoding='utf-8')
+            f = opentext(config.motd)
             for line in f:
                 self.stdout.write(line)
             f.close()
@@ -188,7 +190,7 @@ class CGI(basecgi.CGI):
         else:
             self.header("text/plain")
             fp = self.stdout
-        return fp
+        return TextIOWrapper(fp, 'utf-8', 'replace')
 
     def do_get_head(self, path):
         m = re.search(r"^(get|head)/([0-9A-Za-z_]+)/([-0-9A-Za-z/]*)$", path)
@@ -204,10 +206,10 @@ class CGI(basecgi.CGI):
                     and ((id is None) or r.idstr.endswith(id)):
                 if method == "get":
                     r.load()
-                    fp.write(str(r).encode('utf-8') + b'\n')
+                    fp.write(str(r) + '\n')
                     r.free()
                 else:
-                    fp.write(r.idstr.replace("_", "<>").encode('utf-8') + b'\n')
+                    fp.write(r.idstr.replace('_', '<>') + '\n')
 
     def parse_stamp(self, stamp, last):
         buf = stamp.split("/")
@@ -249,7 +251,7 @@ class CGI(basecgi.CGI):
                 else:
                     tagstr = ''
                 line = '%s<>%s<>%s%s\n' % (i.stamp, i.id, i.datfile, tagstr)
-                fp.write(line.encode('utf-8', 'replace'))
+                fp.write(line)
 
     def do_update(self, path_info):
         self.header("text/plain")

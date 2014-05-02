@@ -37,8 +37,7 @@ from .cache import *
 from .node import *
 from .tag import UserTagList
 from .updatequeue import UpdateQueue
-
-__version__ = "$Revision$"
+from .util import opentext
 
 
 class Status(dict):
@@ -69,9 +68,9 @@ class Status(dict):
 
     def sync(self):
         try:
-            f = open(self.statusfile, "wb")
+            f = opentext(self.statusfile, 'w')
             for k in ("ping", "init", "sync"):
-                f.write((str(self[k]) + "\n").encode('utf-8', 'replace'))
+                f.write(str(self[k]) + '\n')
             f.close()
         except IOError:
             sys.stderr.write(self.statusfile + ": IOError\n")

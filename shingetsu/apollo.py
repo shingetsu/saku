@@ -1,7 +1,7 @@
 '''Signature Module.
 '''
 #
-# Copyright (c) 2005-2015 shinGETsu Project.
+# Copyright (c) 2005-2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,8 @@
 
 import base64
 import hashlib
+
+__all__ = ['cut_key', 'key_pair', 'sign', 'verify']
 
 # Count for Rabin-Miller test.
 # Error rate is 1/(4^count).
@@ -250,7 +252,7 @@ def base64_to_int(s):
     buf = list(s)
     buf.reverse()
     for i in buf:
-        tmp = tmp*64 + base64de[ord(i)]
+        tmp = tmp*64 + base64de[i]
     return tmp
 
 def int_to_base64(n):
@@ -265,8 +267,6 @@ def bin_to_int(bin):
 
     0x16 0x22 -> 0x16*256 + 0x22.
     """
-    if isinstance(bin, str):
-        bin = bin.encode('utf-8', 'replace')
     tmp = 0
     buf = list(bin)
     buf.reverse()
@@ -292,7 +292,6 @@ def rsa_verify(mes, testsignature, publickey):
     return m == c
 
 def make512pq(keystr):
-    keystr = keystr.encode('utf-8', 'replace')
     seedbuf = hashlib.md5(keystr).digest()
     seedbuf += hashlib.md5(keystr + b'pad1').digest()
     seedbuf += hashlib.md5(keystr + b'pad2').digest()
@@ -313,24 +312,30 @@ def keycreate512(keystr):
         secretkey = int_to_base64(key_d)
         return (publickey, secretkey)
 
+def strtobin(string):
+    if isinstance(string, str):
+        return string.encode('utf-8', 'replace')[:512]
+    else:
+        return string[:512]
+
 
 def key_pair(key_generator):
     """Generate key pair."""
-    (pubkey, prikey) = keycreate512(key_generator[:512])
+    (pubkey, prikey) = keycreate512(strtobin(key_generator))
     return (pubkey, prikey)
 
 def sign(target, pubkey, prikey):
     """Sign Message."""
-    sign = rsa_sign(target[:512], pubkey[:512], prikey[:512])
+    sign = rsa_sign(strtobin(target), strtobin(pubkey), strtobin(prikey))
     return sign
 
 def verify(target, sign, pubkey):
     """Verify Signature."""
-    result = rsa_verify(target[:512], sign[:512], pubkey[:512])
+    result = rsa_verify(strtobin(target), strtobin(sign), strtobin(pubkey))
     return result
 
 def cut_key(key):
     """Cut KeyStr to 11words."""
-    digest = hashlib.md5(key[:512].encode('utf-8', 'replace')).digest()
+    digest = hashlib.md5(strtobin(key)).digest()
     short_key = base64.encodestring(digest)[:11]
     return str(short_key, 'utf-8', 'replace')

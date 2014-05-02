@@ -44,6 +44,7 @@ from shingetsu import title
 from shingetsu.node import *
 from shingetsu.tag import *
 from shingetsu.tiedobj import *
+from shingetsu.util import *
 
 try:
     import PIL.Image
@@ -53,37 +54,6 @@ except ImportError:
 __all__ = ['Record', 'Cache', 'CacheList', 'UpdateList', 'RecentList']
 
 lock = RLock()
-
-
-def md5digest(s):
-    """Get MD5 hex digest.
-    >>> md5digest('abc')
-    '900150983cd24fb0d6963f7d28e17f72'
-    >>> md5digest(b'abc')
-    '900150983cd24fb0d6963f7d28e17f72'
-    """
-    if isinstance(s, str):
-        s = s.encode('utf-8', 'replace')
-    return hashlib.md5(s).hexdigest()
-
-def fsdiff(f, s):
-    '''Diff between file and string.
-
-    Return same data or not.
-    '''
-    try:
-        if os.path.isfile(f):
-            buf = open(f, 'rb').read()
-        else:
-            buf = ''
-    except (IOError, OSError) as e:
-        sys.stderr.write('%s: %s\n' % (f, e))
-        buf = ''
-    if len(s) != len(buf):
-        return False
-    else:
-        return s == buf
-# End of sfdiff
 
 
 class Record(dict):
@@ -201,7 +171,7 @@ class Record(dict):
             if self.size() <= 0:
                 self.remove()
                 return False
-            f = open(filename, encoding='utf-8')
+            f = opentext(filename)
             parse_ok = self.parse(f.readline())
             f.close()
             return parse_ok
@@ -560,7 +530,7 @@ class Cache(dict):
     def _load_status(self, key):
         path = "%s/%s.stat" % (self.datpath, key)
         try:
-            f = open(path, encoding='utf-8')
+            f = opentext(path)
             v = f.readline()
             f.close()
             return int(v.strip())
@@ -578,8 +548,8 @@ class Cache(dict):
             if not fsdiff(path, buf):
                 try:
                     lock.acquire(True)
-                    f = open(path, 'wb')
-                    f.write(buf.encode('utf-8', 'replace'))
+                    f = opentext(path, 'w')
+                    f.write(buf)
                     f.close()
                 finally:
                     lock.release()
@@ -825,7 +795,7 @@ class CacheList(list):
                 continue
             try:
                 dat_stat_file = config.cache_dir + '/' + i + '/dat.stat'
-                f = open(dat_stat_file, encoding='utf-8')
+                f = opentext(dat_stat_file)
                 dat_stat = f.readlines()[0].strip()
                 f.close()
                 c = Cache(dat_stat, sugtagtable, recentlist)
@@ -843,12 +813,12 @@ class CacheList(list):
             try:
                 dat_stat_file = os.path.join(config.cache_dir, i, 'dat.stat')
                 if os.path.isfile(dat_stat_file):
-                    f = open(dat_stat_file, encoding='utf-8')
+                    f = opentext(dat_stat_file)
                     dat_stat = f.readlines()[0].strip()
                     f.close()
                 else:
                     dat_stat = i
-                    f = open(dat_stat_file, 'wb')
+                    f = opentext(dat_stat_file, 'w')
                     f.write(i + '\n')
                     f.close()
                 hash = title.file_hash(dat_stat)

@@ -1,7 +1,7 @@
-'''Spam Rules List.
-'''
+"""Utilities.
+"""
 #
-# Copyright (c) 2006,2014 shinGETsu Project.
+# Copyright (c) 2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,22 +26,51 @@
 # SUCH DAMAGE.
 #
 
-from . import config
-from .conflist import RegExpList
+import hashlib
+import os.path
+import sys
 
-__all__ = ['check']
+__all__ = ['md5digest', 'fsdiff', 'opentext']
 
 
-cached_rules = None
+def md5digest(s):
+    """Get MD5 hex digest.
+    >>> md5digest('abc')
+    '900150983cd24fb0d6963f7d28e17f72'
+    >>> md5digest(b'abc')
+    '900150983cd24fb0d6963f7d28e17f72'
+    """
+    if isinstance(s, str):
+        s = s.encode('utf-8', 'replace')
+    return hashlib.md5(s).hexdigest()
 
-def check(recstr):
-    global cached_rules
-    if cached_rules is None:
-        cached_rules = RegExpList(config.spam_list)
+
+def fsdiff(f, s):
+    '''Diff between file and string.
+
+    Return same data or not.
+    '''
+    try:
+        if os.path.isfile(f):
+            buf = open(f, 'rb').read()
+        else:
+            buf = ''
+    except (IOError, OSError) as e:
+        sys.stderr.write('%s: %s\n' % (f, e))
+        buf = ''
+    if isinstance(s, str):
+        s = s.encode('utf-8', 'replace')
+    if len(s) != len(buf):
+        return False
     else:
-        cached_rules.update()
-    tmp = cached_rules.check(recstr)
-    if tmp is None:
-        return True
+        return s == buf
+
+
+def opentext(path, mode='r'):
+    if mode == 'r':
+        newline = None
     else:
-        return tmp
+        newline = '\n'
+    return open(path, mode,
+                encoding='utf-8', errors='replace',
+                newline=newline)

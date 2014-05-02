@@ -26,7 +26,6 @@
 # SUCH DAMAGE.
 #
 
-import hashlib
 import os
 import cgi
 import re
@@ -37,6 +36,7 @@ from . import gateway
 from .cache import *
 from .node import *
 from .tag import UserTagList
+from .util import *
 
 
 class CGI(gateway.CGI):
@@ -100,9 +100,9 @@ class CGI(gateway.CGI):
         r = ""
         for i in range(4):
             r += str(random())
-        sid = hashlib.md5(r.encode('utf-8')).hexdigest()
+        sid = md5digest(r)
         try:
-            open(sidfile, 'wb').write(sid.encode('utf-8') + b'\n')
+            opentext(sidfile, 'w').write(sid + '\n')
         except IOError as err:
             self.stderr.write("%s: IOError: %s\n" % (sidfile, err))
         return sid

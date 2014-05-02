@@ -34,14 +34,11 @@ Lines starts with '#' are comments.
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id: spam.py 1210 2006-06-07 06:42:15Z fuktommy $
-#
 
 import re
 import sys
 import os.path
 
-__version__ = '$Revision$'
 __all__ = ['ConfList', 'RegExpList']
 
 
@@ -113,15 +110,9 @@ class RegExpList(ConfList):
             sys.stderr.write('RegExp Error: %s: %s\n' % (pat, e))
             return None
 
-    def check(self, target, encoding=None):
+    def check(self, target):
         '''Match target for all regexp.
         '''
-        try:
-            if encoding and not isinstance(target, str):
-                target = str(target, encoding)
-        except UnicodeDecodeError as e:
-            sys.stderr.write('UnicodeDecodeError: %s\n' % e)
-            return None
         for r in self.data:
             if r.search(target):
                 return True

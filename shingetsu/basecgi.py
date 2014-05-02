@@ -29,7 +29,6 @@
 import os
 import sys
 
-__version__ = "$Revision$"
 __all__ = ['CGI']
 
 

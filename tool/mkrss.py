@@ -40,6 +40,7 @@ import shingetsu.config
 import shingetsu.mksuggest
 from shingetsu.cache import *
 from shingetsu.title import *
+from shingetsu.util import opentext
 
 socket.setdefaulttimeout(60)
 
@@ -74,13 +75,13 @@ def get_html(src, dst, lang='en'):
 def check_date(date):
     rssdate = os.path.join(docroot, 'rssdate')
     try:
-        olddate = open(rssdate, encoding='utf-8').read().strip()
+        olddate = opentext(rssdate).read().strip()
     except IOError:
         olddate = ""
     if date == olddate:
         sys.exit()
     else:
-        open(rssdate, 'w', encoding='utf-8').write(date)
+        opentext(rssdate, 'w').write(date)
 
 def write_rss(rss):
     f = open(os.path.join(docroot, 'rss.rdf'), 'wb')
@@ -100,13 +101,13 @@ def get_links():
             yield '%s/%s' % (link, record.id[:8])
 
 def write_sitemap():
-    f = open(os.path.join(docroot, 'sitemap.txt'), 'w', encoding='utf-8')
+    f = opentext(os.path.join(docroot, 'sitemap.txt'), 'w')
     for i in get_links():
         f.write(i + "\n")
     f.close()
 
 def make_suggest():
-    fp = open(os.path.join(docroot, 'suggest.js'), 'w', encoding='utf-8')
+    fp = opentext(os.path.join(docroot, 'suggest.js'), 'w')
     titles = shingetsu.mksuggest.get_titles()
     shingetsu.mksuggest.print_jsfile(titles, fp)
 

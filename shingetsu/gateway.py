@@ -42,6 +42,7 @@ from .title import *
 from .tag import *
 from .template import Template
 from .updatequeue import UpdateQueue
+from .util import opentext
 
 
 dummyquery = str(int(time.time()));
@@ -54,7 +55,7 @@ class Message(dict):
     def __init__(self, file):
         dict.__init__(self)
         try:
-            f = open(file, encoding='utf-8')
+            f = opentext(file)
             del_eos = re.compile(r"[\r\n]*")
             iscomment = re.compile(r"^#$").search
             for line in f:
