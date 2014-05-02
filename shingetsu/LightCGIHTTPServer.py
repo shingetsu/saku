@@ -169,6 +169,8 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
         env['SERVER_PORT'] = str(self.server.server_port)
         env['REQUEST_METHOD'] = self.command
         uqrest = urllib.parse.unquote(rest)
+        if isinstance(uqrest, bytes):
+            uqrest = str(uqrest, 'utf-8', 'replace')
         env['PATH_INFO'] = uqrest
         env['PATH_TRANSLATED'] = self.translate_path(uqrest)
         env['SCRIPT_NAME'] = scriptname
