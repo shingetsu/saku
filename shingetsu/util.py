@@ -50,21 +50,20 @@ def fsdiff(f, s):
 
     Return same data or not.
     '''
-    try:
-        if os.path.isfile(f):
-            buf = open(f, 'rb').read()
-        else:
-            buf = ''
-    except (IOError, OSError) as e:
-        sys.stderr.write('%s: %s\n' % (f, e))
-        buf = ''
     if isinstance(s, str):
         s = s.encode('utf-8', 'replace')
-    if len(s) != len(buf):
+    try:
+        if not os.path.isfile(f):
+            return False
+        elif os.path.getsize(f) != len(s):
+            return False
+        elif open(f, 'rb').read() != s:
+            return False
+        else:
+            return True
+    except (IOError, OSError) as e:
+        sys.stderr.write('%s: %s\n' % (f, e))
         return False
-    else:
-        return s == buf
-
 
 def opentext(path, mode='r'):
     if mode == 'r':

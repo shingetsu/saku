@@ -334,7 +334,7 @@ class Record(dict):
     def body_string(self):
         """Remove attach field."""
         buf = [self["stamp"], self["id"]]
-        for k in self:
+        for k in sorted(self.keys()):
             if k in ("stamp", "id"):
                 pass
             elif k == "attach":
@@ -501,9 +501,7 @@ class Cache(dict):
 
     def keys(self):
         self.load()
-        k = list(dict.keys(self))
-        k.sort()
-        return k
+        return sorted(super().keys())
 
     def __iter__(self):
         for idstr in list(self.keys()):

@@ -10,6 +10,7 @@ from shutil import copy, copytree
 from distutils.core import setup
 
 import shingetsu.config
+from shingetsu.util import opentext
 
 conf_dir = "root/etc/saku"
 init_dir = "root/etc/init.d"
@@ -29,11 +30,11 @@ def globcopy(src, dst):
         copy(i, dst)
 
 def globcat(src, dst):
-    f = open(dst, 'w')
+    f = opentext(dst, 'w')
     files = glob(src)
     files.sort()
     for i in files:
-        f.write(open(i).read())
+        f.write(opentext(i).read())
     f.close()
 
 def setup_script_files():

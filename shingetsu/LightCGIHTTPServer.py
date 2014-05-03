@@ -85,7 +85,7 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
     root_index = "/"
 
     def parse_request(self):
-        r = http.server.CGIHTTPRequestHandler.parse_request(self)
+        r = super().parse_request()
         if self.path == "/":
             self.path = self.root_index
         return r
@@ -161,7 +161,7 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
 
         # Reference: http://hoohoo.ncsa.uiuc.edu/cgi/env.html
         # XXX Much of the following could be prepared ahead of time!
-        env = copy.deepcopy(os.environ)
+        env = dict(copy.deepcopy(os.environ))
         env['SERVER_SOFTWARE'] = self.version_string()
         env['SERVER_NAME'] = self.server.server_name
         env['GATEWAY_INTERFACE'] = 'CGI/1.1'
@@ -169,8 +169,6 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
         env['SERVER_PORT'] = str(self.server.server_port)
         env['REQUEST_METHOD'] = self.command
         uqrest = urllib.parse.unquote(rest)
-        if isinstance(uqrest, bytes):
-            uqrest = str(uqrest, 'utf-8', 'replace')
         env['PATH_INFO'] = uqrest
         env['PATH_TRANSLATED'] = self.translate_path(uqrest)
         env['SCRIPT_NAME'] = scriptname
