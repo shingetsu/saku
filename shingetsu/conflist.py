@@ -3,11 +3,7 @@
 The object is tied a file.
 When the file is updated, the object is updated too.
 
-Python style encode declaration can be used in first line,
-like this:  ``-*- coding: utf-8 -*-''.
-
-Write one string per one line.
-Lines starts with '#' are comments.
+Encoding must be UTF-8.
 '''
 #
 # Copyright (c) 2006,2014 shinGETsu Project.
@@ -39,6 +35,8 @@ import re
 import sys
 import os.path
 
+from .util import opentext
+
 __all__ = ['ConfList', 'RegExpList']
 
 
@@ -51,7 +49,6 @@ class ConfList:
         self.update()
 
     def update(self):
-        buf = []
         try:
             if not os.path.exists(self.path):
                 self.data = []
@@ -60,27 +57,17 @@ class ConfList:
             if mtime <= self.mtime:
                 return
             self.mtime = mtime
-            f = open(self.path)
+            self.data = []
+            f = opentext(self.path)
             for line in f:
-                buf.append(line.strip())
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    self.data.append(self.compile(line))
             f.close()
         except (IOError, OSError) as err:
             sys.stderr.write('IOError/OSError: %s\n' % err)
-        declaration = re.compile(r'coding[=:]\s*([-\w_.]+)')
-        encoding = 'utf-8'
-        for pat in buf[:2]:
-            found = declaration.search(pat)
-            if found:
-                encoding = found.group(1)
-                break
-        self.data = []
-        for pat in buf:
-            if pat and (not pat.startswith('#')):
-                tmp = self.compile(pat, encoding)
-                if tmp is not None:
-                    self.data.append(tmp)
 
-    def compile(self, pat, encoding=None):
+    def compile(self, pat):
         return pat
 
     def __iter__(self):
@@ -101,12 +88,10 @@ class RegExpList(ConfList):
     One regexp per one line.
     '''
 
-    def compile(self, pat, encoding=None):
+    def compile(self, pat):
         try:
-            if encoding and not isinstance(pat, str):
-                pat = str(pat, encoding)
             return re.compile(pat)
-        except (re.error, UnicodeDecodeError) as e:
+        except re.error as e:
             sys.stderr.write('RegExp Error: %s: %s\n' % (pat, e))
             return None
 

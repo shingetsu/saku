@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 #
 # Regexp list for spam posts.
-# Copyright (c) 2006 shinGETsu Project.
+# Copyright (c) 2006,2014 shinGETsu Project.
 #
-# Python style encode declaration can be used in first line,
-# like this:  ``-*- coding: utf-8 -*-''.
+# Encoding must be UTF-8.
 #
 # Write one regexp per one line.
 # The regexp is tested for a record line.
