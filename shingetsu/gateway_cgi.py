@@ -36,6 +36,7 @@ from . import gateway
 from .cache import *
 from .tag import UserTagList
 from .rss import RSS, make_rss1
+from .util import opentext
 
 
 class CGI(gateway.CGI):
@@ -341,10 +342,7 @@ class CGI(gateway.CGI):
     def print_motd(self):
         self.stdout.write("Content-Type: text/plain; charset=UTF-8\n\n")
         try:
-            f = open(config.motd)
-            for line in f:
-                self.stdout.write(line)
-            f.close()
+            self.stdout.write(opentext(config.motd).read())
         except IOError:
             self.stderr.write(config.motd + ": IOError\n")
 
