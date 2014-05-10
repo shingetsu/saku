@@ -33,6 +33,7 @@ from datetime import datetime
 from . import config
 from . import httpd
 from . import crond
+from .util import opentext
 
 
 class Logger:
@@ -58,11 +59,11 @@ class Logger:
             pass
         elif self.logfile == '':
             self.logfile = newlog
-            self.output = open(self.logfile, 'a')
+            self.output = opentext(self.logfile, 'a')
         else:
             self.output.close()
             self.logfile = newlog
-            self.output = open(self.logfile, 'a')
+            self.output = opentext(self.logfile, 'a')
 
         self.output.write(msg)
         self.output.flush()
