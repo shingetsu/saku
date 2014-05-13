@@ -103,13 +103,11 @@ recent_range = _get_value(_extconf, 'Gateway', 'recent_range',
                           31*24*60*60, 'int')
 record_limit = _get_value(_extconf, 'Gateway', 'record_limit', 2048, 'int')
 proxy_destination = _get_value(_extconf, 'Gateway', 'proxy_destination', '')
-tmpaddr_span = _get_value(_extconf, 'Gateway', 'tmpaddr_span', 60*60, 'int')
 re_admin = re.compile(admin)
 re_friend = re.compile(friend)
 re_visitor = re.compile(visitor)
 template_suffix = '.txt'
 
-tklog = _get_value(_extconf, 'Interface', 'tklog', 100, 'int')
 
 # Seconds; 0 for infinity
 save_record = {}
@@ -120,7 +118,7 @@ save_removed = {}
 for type in types:
     ctype = 'Application %s' % type.capitalize()
     save_record[type] = \
-        _get_value(_extconf, ctype, 'save_record', 0, 'int')
+        _get_value(_extconf, ctype, 'save_record', 366*24*60*60, 'int')
     save_size[type] = \
         _get_value(_extconf, ctype, 'save_size', 1, 'int')
     get_range[type] = \
@@ -186,7 +184,6 @@ pid = run_dir + "/pid.txt"
 lookup = run_dir + "/lookup.txt"
 taglist = run_dir + "/tag.txt"
 sugtag = run_dir + "/sugtag.txt"
-tmpaddr_file = run_dir + '/tmpaddr.txt'
 read_status = run_dir + '/readstatus.txt'
 
 server = root_path + "server.cgi"
