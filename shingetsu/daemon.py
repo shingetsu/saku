@@ -35,6 +35,8 @@ from . import httpd
 from . import crond
 from .util import opentext
 
+import mch
+
 
 class Logger:
 
@@ -110,6 +112,11 @@ def start_daemon():
     crondaemon = crond.Crond()
     crondaemon.setDaemon(True)
     crondaemon.start()
+
+    if config.enable2ch:
+        datdaemon = mch.Datd()
+        datdaemon.setDaemon(True)
+        datdaemon.start()
 
     httpdaemon = httpd.Httpd()
     httpdaemon.setDaemon(True)

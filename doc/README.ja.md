@@ -62,6 +62,20 @@ Sakuは Shingetsu Another Keen Utility の略です。
 4. その後 http://localhost:8000/ を表示してください。
 5. 止めるときは ^C (Ctrl+C)を押下してください。
 
+2ch専用ブラウザから使う場合
+---------------------------
+1. file/saku.iniに
+
+       [Gateway]
+       2ch: yes
+
+   を追加してください。
+2. sakuを起動してください。
+3. http://localhost:8001/all/subject.txt を外部板として登録してください。
+4. おたのしみください。
+
+[2chインターフェイスについて詳細](./2ch-interface.README.md)
+
 朔をインストールする場合
 ------------------------
 1. [Jinja2](http://jinja.pocoo.org/) をインストールします。
