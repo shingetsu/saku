@@ -118,7 +118,7 @@ save_removed = {}
 for type in types:
     ctype = 'Application %s' % type.capitalize()
     save_record[type] = \
-        _get_value(_extconf, ctype, 'save_record', 366*24*60*60, 'int')
+        _get_value(_extconf, ctype, 'save_record', 0, 'int')
     save_size[type] = \
         _get_value(_extconf, ctype, 'save_size', 1, 'int')
     get_range[type] = \
