@@ -17,7 +17,7 @@
 {% if rec.get('pubkey', '') %}
   <span class="sign" title="{{message.signature}}:{{rec.target}}">{{rec.pubkey}}</span>
 {% endif %}
-<span class="stamp" id="s{{rec.stamp}}">localtime(rec.stamp)</span>
+<span class="stamp" id="s{{rec.stamp}}">{{localtime(rec.stamp)}}</span>
 {% if 'attach' in rec %}
   <a href="{{thread_cgi}}/{{cache.datfile}}/{{rec.id}}/{{rec.stamp}}.{{suffix}}">{{rec.stamp}}.{{suffix}}</a>
   ({{attach_size//1024}}{{message.kb}})
