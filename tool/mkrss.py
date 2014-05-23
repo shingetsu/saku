@@ -37,7 +37,6 @@ import urllib.request, urllib.error, urllib.parse
 from shutil import copy
 
 import shingetsu.config
-import shingetsu.mksuggest
 from shingetsu.cache import *
 from shingetsu.title import *
 from shingetsu.util import opentext
@@ -106,11 +105,6 @@ def write_sitemap():
         f.write(i + "\n")
     f.close()
 
-def make_suggest():
-    fp = opentext(os.path.join(docroot, 'suggest.js'), 'w')
-    titles = shingetsu.mksuggest.get_titles()
-    shingetsu.mksuggest.print_jsfile(titles, fp)
-
 def main():
     os.chdir(shingetsu.config.docroot)
     date, rss = get_rss()
@@ -120,7 +114,6 @@ def main():
     get_html(destination, 'index.html')
     get_html(destination, 'index.en.html', 'en')
     get_html(destination, 'index.ja.html', 'ja')
-    make_suggest()
 
 if __name__ == "__main__":
     main()
