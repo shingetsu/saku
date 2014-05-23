@@ -16,12 +16,19 @@
 {% endif %}
 
 <a href="{{appli[cache.type]}}/{{str_title}}{{str_opts}}">{{title}}</a>
+({{cache.__len__()}}/{{'%.1f' % (cache.size//1024//1024.0)}}{{message.mb}})
 {% if tags %}
-  <span class="{{tagclassname}}">
+  <span class="tags">
   {% for tag in tags %}
     <a href="{{gateway_cgi}}/{{target}}?tag={{str_encode(tag)}}" class="tag">{{tag}}</a>
   {% endfor %}
   </span>
 {% endif %}
-({{cache.__len__()}}/{{'%.1f' % (cache.size//1024//1024.0)}}{{message.mb}})
+{% if sugtags %}
+  <span class="sugtags">
+  {% for tag in sugtags %}
+    <a href="{{gateway_cgi}}/{{target}}?tag={{str_encode(tag)}}" class="tag">{{tag}}</a>
+  {% endfor %}
+  </span>
+{% endif %}
 </li>

@@ -553,14 +553,17 @@ class CGI(basecgi.CGI):
             return ''
         elif self.tag:
             matchtag = False
-            for t in cache.tags:
+            if target == 'recent':
+                cache_tags = cache.tags + cache.sugtags
+            else:
+                cache_tags = cache.tags
+            for t in cache_tags:
                 if str(t).lower() == self.tag:
                     matchtag = True
                     break
             if not matchtag:
                 return ''
         x = self.escape_space(x)
-        tags, tagclassname = cache.tags, 'tags'
         if search:
             str_opts = '?search_new_file=yes'
         else:
@@ -569,8 +572,8 @@ class CGI(basecgi.CGI):
             'cache': cache,
             'title': x,
             'str_title': y,
-            'tags': tags,
-            'tagclassname': tagclassname,
+            'tags': cache.tags,
+            'sugtags': cache.sugtags if target == 'recent' else [],
             'target': target,
             'remove': remove,
             'str_opts': str_opts,
