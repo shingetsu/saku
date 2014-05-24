@@ -1,15 +1,10 @@
 /* Localtime of User Agent.
- * Copyright (C) 2006,2010 shinGETsu Project.
- * $Id$
+ * Copyright (C) 2006-2014 shinGETsu Project.
  */
 
 shingetsu.initialize(function () {
     function format(n) {
-        if (n < 10) {
-            return '0' + n;
-        } else {
-            return n;
-        }
+        return ('0' + n).substr(-2);
     }
 
     function myLocaltime(date) {
@@ -22,14 +17,10 @@ shingetsu.initialize(function () {
         return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
     }
 
-    var span = document.getElementsByTagName('span');
-    for (var i=0; i<span.length; i++) {
-        if ((span[i].className == 'stamp') &&
-            (span[i].id.search(/^s([0-9]+)$/) == 0)) {
-            var stamp = RegExp.$1;
-            var date = new Date();
-            date.setTime(stamp*1000);
-            span[i].innerHTML = myLocaltime(date);
-        }
-    }
+    $('span.stamp[data-stamp]').each(function() {
+        var container = $(this);
+        var date = new Date();
+        date.setTime(container.attr('data-stamp') * 1000);
+        container.html(myLocaltime(date));
+    });
 });

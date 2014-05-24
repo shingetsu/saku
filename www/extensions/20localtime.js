@@ -1,15 +1,10 @@
 /* Localtime of User Agent.
- * Copyright (C) 2006,2010 shinGETsu Project.
- * $Id: 20localtime.js 1501 2010-12-12 05:45:40Z fuktommy $
+ * Copyright (C) 2006-2014 shinGETsu Project.
  */
 
-shingetsu.addInitializer(function () {
+shingetsu.initialize(function () {
     function format(n) {
-        if (n < 10) {
-            return '0' + n;
-        } else {
-            return n;
-        }
+        return ('0' + n).substr(-2);
     }
 
     var tblE = new Array('Sun','Mon','Tue','Wed','Thu','Fri','Sat');
@@ -25,23 +20,20 @@ shingetsu.addInitializer(function () {
         }
     }
 
-    var span = document.getElementsByTagName('span');
-    for (var i=0; i<span.length; i++) {
-        if ((span[i].className == 'stamp') &&
-            (span[i].id.search(/^s([0-9]+)$/) == 0)) {
-            var stamp = RegExp.$1;
-            var date = new Date();
-            date.setTime(stamp*1000);
-
-            var year = date.getYear();
-            if (year < 1900) year += 1900;
-            var month = format(date.getMonth()+1);
-            var day = format(date.getDate());
-            var hours = format(date.getHours());
-            var minutes = format(date.getMinutes());
-
-            span[i].innerHTML = year + '-' + month + '-' + day + tbl[date.getDay()]
-                                 + hours + ":" + minutes;
-        }
+    function myLocaltime(date) {
+        var year = date.getYear();
+        if (year < 1900) year += 1900;
+        var month = format(date.getMonth()+1);
+        var day = format(date.getDate());
+        var hours = format(date.getHours());
+        var minutes = format(date.getMinutes());
+        return year + '-' + month + '-' + day + ' ' + tbl[date.getDay()] + ' ' + hours + ':' + minutes;
     }
+
+    $('span.stamp[data-stamp]').each(function() {
+        var container = $(this);
+        var date = new Date();
+        date.setTime(container.attr('data-stamp') * 1000);
+        container.html(myLocaltime(date));
+    });
 });
