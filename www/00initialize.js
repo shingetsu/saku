@@ -35,22 +35,11 @@ var shingetsu = (function () {
         }
         var sep = (path.indexOf('?') > 0) ? '&' : '?';
         var realPath = shingetsu.rootPath + path + sep + shingetsu.dummyQuery;
-        var script = document.createElement('script');
-        script.setAttribute('type', 'text/javascript');
-        script.setAttribute('src', realPath);
-        if ($.browser.msie) {
-            script.onreadystatechange = function() {
-                if (script.readyState == 'complete'
-                    || script.readyState == 'loaded') {
-                    onload();
-                }
-            };
-        } else {
-            script.onload = function() {
-                onload();
-            };
-        }
-        document.getElementsByTagName('head')[0].appendChild(script);
+        var script = $('<script>');
+        script.attr('type', 'text/javascript')
+              .attr('src', realPath)
+              .on('load', function() { onload(); });
+        document.getElementsByTagName('head')[0].appendChild(script[0]);
     };
 
     var _initialize = function () {

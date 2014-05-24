@@ -4,10 +4,6 @@
  */
 
 shingetsu.initialize(function () {
-    if ($.browser.msie) {
-        return;
-    }
-
     function onload(){
         $('#records').find('img').spoilerAlert({max: 10, partial: 2});
     }
