@@ -90,6 +90,8 @@ node_deny = _get_value(_extconf, 'Path', 'node_deny',
                         '../file/node_deny.txt', 'path')
 apache_docroot = _get_value(_extconf, 'Path', 'apache_docroot',
                        '/var/local/www/shingetsu', 'path')
+archive_dir = _get_value(_extconf, 'Path', 'archive_dir',
+                       '/var/local/www/archive', 'path')
 
 admin = _get_value(_extconf, 'Gateway', 'admin', r'^127')
 friend = _get_value(_extconf, 'Gateway', 'friend', r'^127')
@@ -103,6 +105,8 @@ recent_range = _get_value(_extconf, 'Gateway', 'recent_range',
                           31*24*60*60, 'int')
 record_limit = _get_value(_extconf, 'Gateway', 'record_limit', 2048, 'int')
 proxy_destination = _get_value(_extconf, 'Gateway', 'proxy_destination', '')
+archive_uri = _get_value(_extconf, 'Gateway', 'archive_uri',
+                         'http://archive.shingetsu.info/')
 re_admin = re.compile(admin)
 re_friend = re.compile(friend)
 re_visitor = re.compile(visitor)
