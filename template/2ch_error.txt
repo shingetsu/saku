@@ -1,0 +1,14 @@
+<html><head><meta http-equiv="Content-Type" content="text/html";>
+<title>ＥＲＲＯＲ！</title>
+</head>
+
+<body bgcolor="#FFFFFF" "-webkit-user-select: auto;"><!-- 2ch_X:error -->
+<font size="+1" color="#FF0000"><b>ＥＲＲＯＲ：{{message}}</b></font>
+<ul><br>
+ホスト<b>{{host}}</b><br>
+名前： <b>{{name}}</b><br>
+E-mail： {{mail}}<br>
+内容：{{body}}<br><br>
+</ul>
+<hr>
+</body></html>
