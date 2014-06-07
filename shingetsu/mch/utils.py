@@ -39,7 +39,7 @@ def log(s, *args, **kwds):
 def log_request(env):  # same as saku's log format
     fmt = '{host}<>{proxy}<>{method} {path} {protocol}<>{referer}<>{ua}'
     msg = fmt.format(host=env['REMOTE_ADDR'],
-                     proxy=env.get('X-Forwarded-For', 'direct'),
+                     proxy=env.get('HTTP_X_FORWARDED_FOR', 'direct'),
                      method=env['REQUEST_METHOD'],
                      path=env['PATH_INFO'],
                      protocol=env['SERVER_PROTOCOL'],
