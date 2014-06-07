@@ -13,7 +13,7 @@ weekday = {0: '月', 1: '火', 2: '水', 3: '木', 4: '金', 5: '土', 6: '日',
 
 def _datestr_2ch(epoch_str):
     d = datetime.datetime.fromtimestamp(int(epoch_str))
-    s = d.strftime(u'%Y/%m/%d({}) %H:%M:%S.00')
+    s = d.strftime('%Y/%m/%d({}) %H:%M:%S.00')
     return s.format(weekday[d.weekday()])
 
 
@@ -33,7 +33,7 @@ def make_dat(cache, env, board):
         if rec.get('pubkey'):  # 2ch trip
             name += '◆' + rec.get('pubkey')[:10]  # 10 is 2ch trip length
 
-        comment = u'{name}<>{mail}<>{date} ID:{id}<>{body}<>'.format(
+        comment = '{name}<>{mail}<>{date} ID:{id}<>{body}<>'.format(
                 name=name,
                 mail=rec.get('mail', ''),
                 date=_datestr_2ch(rec.get('stamp', 0)),
@@ -54,7 +54,7 @@ class ResTable(dict):
     'res_number is 1 origin'
     def __init__(self, cache):
         cache.load()
-        for i, k in enumerate(cache.keys(), 1):
+        for i, k in enumerate(list(cache.keys()), 1):
             rec = cache[k]
             rec.load()
             self[i] = rec.id[:8]

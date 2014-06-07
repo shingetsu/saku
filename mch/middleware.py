@@ -23,14 +23,14 @@ def gzipped(app):
         accepted = 'gzip' in environ.get('HTTP_ACCEPT_ENCODING', '')
         if not accepted or already:
             # no compress
-            start_response(status, headers.items())
+            start_response(status, list(headers.items()))
             return body
 
         content = gzip.compress(b''.join(body))
         if hasattr(body, 'close'):
             body.close()
         headers['Content-Encoding'] = 'gzip'
-        start_response(status, headers.items())
+        start_response(status, list(headers.items()))
         return [content]
 
     return newapp
@@ -49,16 +49,16 @@ def last_modified(app):
 
         if (not 'Last-Modified' in headers
             or not environ.get('HTTP_IF_MODIFIED_SINCE')):
-            start_response(status, headers.items())
+            start_response(status, list(headers.items()))
             return raw
 
         last_m = eutils.parsedate(headers['Last-Modified'])
         since_m = eutils.parsedate(environ['HTTP_IF_MODIFIED_SINCE'])
         if since_m < last_m:
-            start_response(status, headers.items())
+            start_response(status, list(headers.items()))
             return raw
         else:
-            start_response('304 Not Modified', headers.items())
+            start_response('304 Not Modified', list(headers.items()))
             if hasattr(raw, 'close'):
                 raw.close()
             return [b'']
@@ -85,12 +85,12 @@ def simple_range(app):
         if (range is None
             or ',' in range  # not deal with multi-part range
             or not status.startswith('2')):  # not success status
-            start_response(status, headers.items())
+            start_response(status, list(headers.items()))
             return raw
 
         def error_416():
             start_response('416 Requested Range Not Satisfiable',
-                           headers.items())
+                           list(headers.items()))
             if hasattr(raw, 'close'):
                 raw.close()
             return [b'']
@@ -132,7 +132,7 @@ def simple_range(app):
             body = content[len(content)-end:]
 
         headers['Content-Ranges'] = c_range
-        start_response('206 Partial Content', headers.items())
+        start_response('206 Partial Content', list(headers.items()))
         if hasattr(raw, 'close'):
             raw.close()
         return [body]

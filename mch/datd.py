@@ -101,7 +101,7 @@ def thread_app(env, resp):
     headers = Headers([('Content-Type', 'text/plain; charset=Shift_JIS')])
     last_m = eutils.formatdate(data.stamp)
     headers['Last-Modified'] = last_m
-    resp("200 OK", headers.items())
+    resp("200 OK", list(headers.items()))
 
     return [c.encode('sjis', 'ignore') for c in thread]
 
@@ -123,7 +123,7 @@ def subject_app(env, resp):
         if last_stamp < c.stamp:
             last_stamp = c.stamp
 
-        subjects.append(u'{key}.dat<>{title} ({num})\n'.format(
+        subjects.append('{key}.dat<>{title} ({num})\n'.format(
             key=utils.thread_to_num(c.datfile),  # datkey is integer
             title=title.file_decode(c.datfile),
             num=len(c)))
