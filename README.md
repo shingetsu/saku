@@ -6,7 +6,7 @@ Authors
 * (main) Satoshi Fukutomi <fuktommy@shingetsu.info>
 * sbwhitecap
 * (apollo) replaceable anonymous.
-* (compatible) A shinGETsu user.
+* (2ch interface) kkka
 * (thumbnail patch) A shinGETsu user.
 * (imghdr patch) A shinGETsu user.
 * (js extensions) shinGETsu users.

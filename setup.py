@@ -108,12 +108,12 @@ setup(name = "saku",
       author = "Fuktommy",
       maintainer = "Fuktommy",
       maintainer_email = "fuktommy@shingetsu.info",
-      url = "http://shingetsu.info/",
+      url = "http://www.shingetsu.info/",
       license = '2-clause BSD license',
       platforms = 'any',
       long_description =
             'A clone of P2P anonymous BBS shinGETsu written by Python.'
             ' This includes libraries, daemon, and Apache config files.',
-      scripts = ["saku"],
-      packages = ["shingetsu"],
+      scripts = ['saku'],
+      packages = ['shingetsu', 'shingetsu.mch'],
       data_files = data_files)

@@ -108,7 +108,7 @@ record_limit = _get_value(_extconf, 'Gateway', 'record_limit', 2048, 'int')
 proxy_destination = _get_value(_extconf, 'Gateway', 'proxy_destination', '')
 archive_uri = _get_value(_extconf, 'Gateway', 'archive_uri',
                          'http://archive.shingetsu.info/')
-enable2ch = _get_value(_extconf, 'Gateway', '2ch', False, 'boolean')
+enable2ch = _get_value(_extconf, 'Gateway', 'enable_2ch', False, 'boolean')
 re_admin = re.compile(admin)
 re_friend = re.compile(friend)
 re_visitor = re.compile(visitor)

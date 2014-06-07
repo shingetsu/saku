@@ -31,11 +31,10 @@ import sys
 from datetime import datetime
 
 from . import config
-from . import httpd
 from . import crond
+from . import httpd
+from . import mch
 from .util import opentext
-
-import mch
 
 
 class Logger:

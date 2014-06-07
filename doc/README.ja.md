@@ -6,7 +6,7 @@ Authors
 * (main) Satoshi Fukutomi <fuktommy@shingetsu.info>
 * sbwhitecap
 * (apollo) replaceable anonymous.
-* (compatible) A shinGETsu user.
+* (2ch interface) kkka
 * (thumbnail patch) A shinGETsu user.
 * (imghdr patch) A shinGETsu user.
 * (js extensions) shinGETsu users.
@@ -67,7 +67,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 1. file/saku.iniに
 
        [Gateway]
-       2ch: yes
+       enable_2ch: yes
 
    を追加してください。
 2. sakuを起動してください。
