@@ -72,6 +72,8 @@ class CGI(gateway.CGI):
             self.print_motd()
         elif path == "rss":
             self.print_rss()
+        elif path == 'recent_rss':
+            self.print_recent_rss()
         elif path == "index":
             self.print_index()
         elif path == "changes":
@@ -337,6 +339,35 @@ class CGI(gateway.CGI):
         except IndexError as KeyError:
             pass
         self.stdout.write("\n")
+        self.stdout.write(make_rss1(rss))
+
+    def print_recent_rss(self):
+        rss = RSS(encode = 'UTF-8',
+                  title = '%s - %s' % (
+                          self.message['recent'], self.message['logo']),
+                  parent = 'http://' + self.host,
+                  uri = 'http://' + self.host
+                                  + self.gateway_cgi + self.sep + 'recent_rss',
+                  description = self.message['desc_recent'],
+                  xsl = config.xsl)
+        cachelist = self.make_recent_cachelist()
+        for cache in cachelist:
+            title = self.escape(self.file_decode(cache.datfile))
+            tags = list(set([str(t) for t in cache.tags + cache.sugtags]))
+            rss.append(
+                self.appli[cache.type][1:]+self.sep+self.str_encode(title),
+                date = cache.recent_stamp,
+                title = title,
+                subject = tags,
+                content = cgi.escape(title))
+
+        self.stdout.write('Content-Type: text/xml; charset=UTF-8\n')
+        try:
+            self.stdout.write('Last-Modified: %s\n' %
+                              self.rfc822_time(rss[list(rss.keys())[0]].date))
+        except IndexError as KeyError:
+            pass
+        self.stdout.write('\n')
         self.stdout.write(make_rss1(rss))
 
     def print_motd(self):

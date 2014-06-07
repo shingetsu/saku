@@ -44,5 +44,9 @@
 {% endif %}
 
 {% if target %}
-  <p><a href="{{gateway_cgi}}/csv/{{target}}/file,stamp,date,path,uri,type,title,records,size,tag,sugtag" class="btn">CSV</a></p>
+  <p><a href="{{gateway_cgi}}/csv/{{target}}/file,stamp,date,path,uri,type,title,records,size,tag,sugtag" class="btn">CSV</a>
+  {% if target == 'recent' %}
+  <a href="{{gateway_cgi}}/recent_rss" class="btn">RSS</a>
+  {% endif %}
+  </p>
 {% endif %}

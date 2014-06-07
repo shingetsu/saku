@@ -23,6 +23,7 @@
 
         RewriteEngine on
         RewriteRule gateway.cgi/rss rss.rdf
+        RewriteRule gateway.cgi/recent_rss recent_rss.rdf
         RewriteRule server.cgi - [F]
         RewriteRule ^([0-9_][^/]*).js$ /STATIC/$1.js
         RewriteRule ^([0-9_][^/]*).css$ /STATIC/$1.css

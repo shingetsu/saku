@@ -54,10 +54,11 @@ def urlopen(url, lang='en'):
     req.add_header('Accept-Language', '%s;q=1.0' % lang)
     return urllib.request.urlopen(req)
 
-def get_rss():
-    rssfile = urlopen('%s%s%srss' % (destination,
+def get_rss(path):
+    rssfile = urlopen('%s%s%s%s' % (destination,
                                      shingetsu.config.gateway,
-                                     sep))
+                                     sep,
+                                     path))
     date = rssfile.info().get("last-modified", "")
     rss = rssfile.read()
     rssfile.close()
@@ -71,8 +72,8 @@ def get_html(src, dst, lang='en'):
     f.write(html)
     f.close()
 
-def check_date(date):
-    rssdate = os.path.join(docroot, 'rssdate')
+def check_date(date, filename):
+    rssdate = os.path.join(docroot, filename)
     try:
         olddate = opentext(rssdate).read().strip()
     except IOError:
@@ -82,10 +83,15 @@ def check_date(date):
     else:
         opentext(rssdate, 'w').write(date)
 
-def write_rss(rss):
-    f = open(os.path.join(docroot, 'rss.rdf'), 'wb')
+def write_rss(rss, filename):
+    f = open(os.path.join(docroot, filename), 'wb')
     f.write(rss)
     f.close()
+
+def update_rss(command, filename, datefilename):
+    date, rss = get_rss(command)
+    check_date(date, datefilename)
+    write_rss(rss, filename)
 
 def get_links():
     yield 'http://%s/' % server
@@ -107,9 +113,8 @@ def write_sitemap():
 
 def main():
     os.chdir(shingetsu.config.docroot)
-    date, rss = get_rss()
-    check_date(date)
-    write_rss(rss)
+    update_rss('recent_rss', 'recent_rss.rdf', 'recentrssdate')
+    update_rss('rss', 'rss.rdf', 'rssdate')
     write_sitemap()
     get_html(destination, 'index.html')
     get_html(destination, 'index.en.html', 'en')
