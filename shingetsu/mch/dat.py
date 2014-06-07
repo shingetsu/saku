@@ -62,29 +62,26 @@ class ResTable(dict):
 
 def _make_body(rec, env, board, table):
     if config.server_name:
-        host = config.server_name  # LightCGIHTTPServer's host
+        dat_host = saku_host = config.server_name
     else:
-        host = env.get('HTTP_HOST', 'localhost')  # 2ch-interface's host
+        host = env['HTTP_HOST']
+        dat_host = re.sub(r':/d+', str(config.dat_port), host)
+        saku_host = re.sub(r':/d+', str(config.port), host)
 
-    body = _make_attach_link(rec, host)
+    body = _make_attach_link(rec, saku_host)
     body = _make_res_anchor(body, table)
-    body = _make_bracket_link(body, host, board, table)
+    body = _make_bracket_link(body, dat_host, board, table)
     return body
 
 
-def _make_attach_link(rec, host):
+def _make_attach_link(rec, saku_host):
     if 'attach' not in rec:
         return rec.get('body', '')
 
-    # port is LightCGIHTTPServer's
-    if ':' in host:
-        host = re.sub(r':\d+', ':' + str(config.port), host)
-    else:
-        host = host + ':' + str(config.port)
 
     # saku's thread.cgi deal with attach file.
     url = 'http://{}/thread.cgi/{}/{}/{}.{}'.format(
-        host, rec.datfile, rec.id,
+        saku_host, rec.datfile, rec.id,
         rec.stamp, rec.get('suffix', 'txt'))
     body = rec.get('body', '') + '<br><br>[Attached]<br>' + url
     return body
@@ -99,12 +96,7 @@ def _make_res_anchor(body, table):
     return re.sub(r'&gt;&gt;([0-9a-f]{8})', replace, body)
 
 
-def _make_bracket_link(body, host, board, table):
-    # port is 2ch-interface's
-    if ':' in host:
-        host = re.sub(r':\d+', ':' + str(config.dat_port), host)
-    else:
-        host = host + ':' + str(config.dat_port)
+def _make_bracket_link(body, dat_host, board, table):
 
     def replace(match):
         link = match.group(1)
@@ -129,7 +121,7 @@ def _make_bracket_link(body, host, board, table):
         datkey = utils.thread_to_num(file)
         if id is None:
             # same `board` is required for the dedicated browser to work properly
-            url = 'http://{}/{}/dat/{}.dat'.format(host, board, datkey)
+            url = 'http://{}/{}/dat/{}.dat'.format(dat_host, board, datkey)
             return '[[{title}({url})]]'.format(title=_title, url=url)
         else:
             # anchor to specific comment
@@ -137,7 +129,7 @@ def _make_bracket_link(body, host, board, table):
             table = ResTable(cache)
             no = table.get(id)
             # this format url expect that dedicated browser get res number
-            url = 'http://{}/test/read.cgi/{}/{}/{}'.format(host, board, datkey, no)
+            url = 'http://{}/test/read.cgi/{}/{}/{}'.format(dat_host, board, datkey, no)
             return '[[{title}(&gt;&gt;{no} {url})]]'.format(title=_title, no=no, url=url)
 
     return re.sub(r'\[\[([^<>]+?)\]\]', replace, body)
