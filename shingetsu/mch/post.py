@@ -15,6 +15,7 @@ from shingetsu import template
 
 from . import dat
 from . import utils
+from . import keylib
 
 
 
@@ -71,7 +72,7 @@ def post_comment_app(env, resp):
     if subject:
         key = title.file_encode('thread', subject)
     else:
-        key = utils.num_to_thread(datkey)
+        key = keylib.get_filekey(datkey)
 
     if (not subject and not key):
         return error_resp('フォームが変です.', resp, **info)

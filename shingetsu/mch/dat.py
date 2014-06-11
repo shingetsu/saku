@@ -8,6 +8,7 @@ from shingetsu import title
 from shingetsu import cache as cachelib
 
 from . import utils
+from . import keylib
 
 weekday = {0: '月', 1: '火', 2: '水', 3: '木', 4: '金', 5: '土', 6: '日',}
 
@@ -121,7 +122,7 @@ def _make_bracket_link(body, dat_host, board, table):
         if not type:
             type = 'thread'
         file = title.file_encode(type, _title)
-        datkey = utils.thread_to_num(file)
+        datkey = keylib.get_datkey(file)
         if id is None:
             # same `board` is required for the dedicated browser to work properly
             url = 'http://{}/{}/dat/{}.dat'.format(dat_host, board, datkey)
