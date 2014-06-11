@@ -8,6 +8,7 @@ from wsgiref.headers import Headers
 from email import utils as eutils
 import threading
 import collections
+import socketserver
 
 from shingetsu import cache
 from shingetsu import title
@@ -170,7 +171,11 @@ class Datd(threading.Thread):
             import waitress
         except ImportError:
             utils.log('use wsgiref')
-            _server = simple_server.make_server('', self._port, dat_app)
+            class Server(socketserver.ThreadingMixIn,
+                         simple_server.WSGIServer):
+                pass
+            _server = simple_server.make_server('', self._port, dat_app,
+                                                server_class=Server)
             _server.serve_forever()
         else:
             utils.log('use waitress')
