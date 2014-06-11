@@ -65,8 +65,8 @@ def _make_body(rec, env, board, table):
         dat_host = saku_host = config.server_name
     else:
         host = env['HTTP_HOST']
-        dat_host = re.sub(r':/d+', str(config.dat_port), host)
-        saku_host = re.sub(r':/d+', str(config.port), host)
+        dat_host = re.sub(r':\d+', ':' + str(config.dat_port), host)
+        saku_host = re.sub(r':\d+', ':' + str(config.port), host)
 
     body = _make_attach_link(rec, saku_host)
     body = _make_res_anchor(body, table)
