@@ -100,7 +100,7 @@ def board_app(env, resp):
         '<h1>%s - %s</h1>' % (message['logo'], message['description']),
         '</body></html>',
     ]
-    return [c.encode('sjis', 'ignore') for c in html]
+    return (c.encode('sjis', 'ignore') for c in html)
 
 
 def thread_app(env, resp):
@@ -127,7 +127,7 @@ def thread_app(env, resp):
     headers['Last-Modified'] = last_m
     resp("200 OK", headers.items())
 
-    return [c.encode('sjis', 'ignore') for c in thread]
+    return (c.encode('sjis', 'ignore') for c in thread)
 
 
 
@@ -154,7 +154,7 @@ def subject_app(env, resp):
 
     resp('200 OK', [('Content-Type', 'text/plain; charset=Shift_JIS'),
                     ('Last-Modified', eutils.formatdate(last_stamp))])
-    return [s.encode('sjis', 'ignore') for s in subjects]
+    return (s.encode('sjis', 'ignore') for s in subjects)
 
 
 class Datd(threading.Thread):
