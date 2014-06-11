@@ -60,6 +60,9 @@ class ResTable(dict):
             self[i] = rec.id[:8]
             self[rec.id[:8]] = i
 
+    def __getitem__(self, key):
+        return self.get(key, key)
+
 def _make_body(rec, env, board, table):
     if config.server_name:
         dat_host = saku_host = config.server_name
@@ -90,7 +93,7 @@ def _make_attach_link(rec, saku_host):
 def _make_res_anchor(body, table):
     def replace(match):
         id = match.group(1)
-        no = str(table.get(id, id))
+        no = str(table[id])
         return '&gt;&gt;' + no  # '>>' is escape to '&gt;&gt;'
 
     return re.sub(r'&gt;&gt;([0-9a-f]{8})', replace, body)
@@ -127,7 +130,7 @@ def _make_bracket_link(body, dat_host, board, table):
             # anchor to specific comment
             cache = cachelib.Cache(file)
             table = ResTable(cache)
-            no = table.get(id)
+            no = table[id]
             # this format url expect that dedicated browser get res number
             url = 'http://{}/test/read.cgi/{}/{}/{}'.format(dat_host, board, datkey, no)
             return '[[{title}(&gt;&gt;{no} {url})]]'.format(title=_title, no=no, url=url)

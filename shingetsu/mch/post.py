@@ -81,7 +81,7 @@ def post_comment_app(env, resp):
     table = dat.ResTable(cache.Cache(key))
     def replace(match):
         no = int(match.group(1))
-        return '>>' + table.get(no, no)
+        return '>>' + table[no]
     # replace number anchor to id anchor
     body = re.sub(r'>>([1-9][0-9]*)', replace, body)  # before escape '>>'
 
