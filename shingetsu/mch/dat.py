@@ -125,7 +125,7 @@ def _make_bracket_link(body, dat_host, board, table):
         datkey = keylib.get_datkey(file)
         if id is None:
             # same `board` is required for the dedicated browser to work properly
-            url = 'http://{}/{}/dat/{}.dat'.format(dat_host, board, datkey)
+            url = 'http://{}/test/read.cgi/{}/{}/'.format(dat_host, board, datkey)
             return '[[{title}({url})]]'.format(title=_title, url=url)
         else:
             # anchor to specific comment
