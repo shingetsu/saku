@@ -21,6 +21,7 @@ from . import utils
 
 
 
+board_re= re.compile(r'/([^/]+)/$')
 thread_re = re.compile(r'/([^/]+)/dat/([^.]+)\.dat')
 subject_re = re.compile(r'/([^/]+)/subject.txt')
 post_comment_re = re.compile(r'/test/bbs.cgi')
@@ -44,13 +45,16 @@ def dat_app(env, resp):
         resp('403 Forbidden', [('Content-Type', 'text/plain')])
         return [b'403 Forbidden']
 
+    if board_re.match(path):
+        return board_app(env, resp)
+
     if subject_re.match(path):
         return subject_app(env, resp)
 
-    elif thread_re.match(path):
+    if thread_re.match(path):
         return thread_app(env, resp)
 
-    elif post_comment_re.match(path) and env['REQUEST_METHOD'] == 'POST':
+    if post_comment_re.match(path) and env['REQUEST_METHOD'] == 'POST':
         return post.post_comment_app(env, resp)
 
     resp("404 Not Found", [('Content-Type', 'text/plain')])
@@ -79,6 +83,26 @@ def _count_is_update(thread_key):
             _update_counter[thread_key] %= _UPDATE_COUNT
 
 
+def board_app(env, resp):
+    path = env['PATH_INFO']
+    m = board_re.match(path)
+    board = m.group(1)
+    message = gateway.search_message(env['HTTP_ACCEPT_LANGUAGE'])
+
+    headers = Headers([('Content-Type', 'text/html; charset=Shift_JIS')])
+    resp("200 OK", headers.items())
+
+    html = [
+        '<html><head>',
+        '<meta http-equiv="content-type" content="text/html; charset=Shift_JIS">',
+        '<title>%s - %s</title>' % (message['logo'], message['description']),
+        '</head><body>',
+        '<h1>%s - %s</h1>' % (message['logo'], message['description']),
+        '</body></html>',
+    ]
+    return [c.encode('sjis', 'ignore') for c in html]
+
+
 def thread_app(env, resp):
     path = env['PATH_INFO']
     # utils.log('thread_app', path)
@@ -93,15 +117,15 @@ def thread_app(env, resp):
             data.search()  # update thread
 
     if not data.exists():
-        reps('404 Not Found', [('Content-Type', 'text/plain; charset=Shift_JIS')])
-        return ['404 Not Found']
+        resp('404 Not Found', [('Content-Type', 'text/plain; charset=Shift_JIS')])
+        return [b'404 Not Found']
 
     thread = dat.make_dat(data, env, board)
 
     headers = Headers([('Content-Type', 'text/plain; charset=Shift_JIS')])
     last_m = eutils.formatdate(data.stamp)
     headers['Last-Modified'] = last_m
-    resp("200 OK", list(headers.items()))
+    resp("200 OK", headers.items())
 
     return [c.encode('sjis', 'ignore') for c in thread]
 
