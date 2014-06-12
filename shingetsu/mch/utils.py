@@ -1,35 +1,9 @@
+
 'utils'
 
 import sys
 
 from shingetsu import title
-
-
-def num_to_thread(n):
-    """num to thread key.
-
-    >>> num_to_thread(15)
-    'thread_F'
-    """
-    try:
-        n = int(n)
-    except TypeError:
-        return None
-    return 'thread_' + ('%x' % n).upper()
-
-
-def thread_to_num(f):
-    """ thread key to num.
-
-    >>> thread_to_num('thread_F')
-    15
-    """
-    try:
-        type, key = f.split('_', 1)
-    except IndexError:
-        return None
-
-    return int(key, 16)
 
 
 def log(s, *args, **kwds):

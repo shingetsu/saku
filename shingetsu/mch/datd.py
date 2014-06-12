@@ -10,6 +10,7 @@ import threading
 import collections
 import socketserver
 
+
 from shingetsu import cache
 from shingetsu import title
 from shingetsu import config
@@ -19,7 +20,7 @@ from . import post
 from . import middleware
 from . import dat
 from . import utils
-
+from . import keylib
 
 
 board_re= re.compile(r'/([^/]+)/$')
@@ -46,18 +47,21 @@ def dat_app(env, resp):
         resp('403 Forbidden', [('Content-Type', 'text/plain')])
         return [b'403 Forbidden']
 
-    if board_re.match(path):
-        return board_app(env, resp)
+    try:
+        if board_re.match(path):
+            return board_app(env, resp)
 
-    if subject_re.match(path):
-        return subject_app(env, resp)
+        if subject_re.match(path):
+            return subject_app(env, resp)
 
-    if thread_re.match(path):
-        return thread_app(env, resp)
+        if thread_re.match(path):
+            return thread_app(env, resp)
 
-    if post_comment_re.match(path) and env['REQUEST_METHOD'] == 'POST':
-        return post.post_comment_app(env, resp)
+        if post_comment_re.match(path) and env['REQUEST_METHOD'] == 'POST':
+            return post.post_comment_app(env, resp)
 
+    except keylib.DatkeyNotFound:
+        pass
     resp("404 Not Found", [('Content-Type', 'text/plain')])
     return [b'404 Not Found']
 
@@ -112,7 +116,7 @@ def thread_app(env, resp):
     m = thread_re.match(path)
     board, datkey = m.group(1), m.group(2)
 
-    key = utils.num_to_thread(datkey)
+    key = keylib.get_filekey(datkey)
     data = cache.Cache(key)
     data.load()
     if check_get_cache(env):
@@ -151,7 +155,7 @@ def subject_app(env, resp):
             last_stamp = c.stamp
 
         subjects.append('{key}.dat<>{title} ({num})\n'.format(
-            key=utils.thread_to_num(c.datfile),  # datkey is integer
+            key=keylib.get_datkey(c.datfile),
             title=title.file_decode(c.datfile),
             num=len(c)))
 
@@ -167,6 +171,7 @@ class Datd(threading.Thread):
 
     def run(self):
         utils.log('start 2ch interface')
+        keylib.load(config.cache_dir)
         try:
             import waitress
         except ImportError:

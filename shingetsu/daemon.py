@@ -112,14 +112,14 @@ def start_daemon():
     crondaemon.setDaemon(True)
     crondaemon.start()
 
+    httpdaemon = httpd.Httpd()
+    httpdaemon.setDaemon(True)
+    httpdaemon.start()
+
     if config.enable2ch:
         datdaemon = mch.Datd()
         datdaemon.setDaemon(True)
         datdaemon.start()
-
-    httpdaemon = httpd.Httpd()
-    httpdaemon.setDaemon(True)
-    httpdaemon.start()
 
     return httpdaemon
 
