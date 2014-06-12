@@ -144,6 +144,7 @@ def subject_app(env, resp):
     board = subject_re.match(path).group(1)
 
     cachelist = cache.CacheList()
+    cachelist.sort(key=lambda x: x.valid_stamp, reverse=True)
     subjects = []
     last_stamp = 0
     for c in cachelist:
