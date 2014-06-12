@@ -87,20 +87,22 @@ def board_app(env, resp):
     path = env['PATH_INFO']
     m = board_re.match(path)
     board = m.group(1)
-    message = gateway.search_message(env['HTTP_ACCEPT_LANGUAGE'])
+    message = gateway.search_message(env.get('HTTP_ACCEPT_LANGUAGE', 'ja'))
 
     headers = Headers([('Content-Type', 'text/html; charset=Shift_JIS')])
     resp("200 OK", headers.items())
 
     html = [
+        '<!DOCTYPE html>',
         '<html><head>',
         '<meta http-equiv="content-type" content="text/html; charset=Shift_JIS">',
         '<title>%s - %s</title>' % (message['logo'], message['description']),
+        '<meta name="description" content="%s - %s">' % (message['logo'], message['description']),
         '</head><body>',
         '<h1>%s - %s</h1>' % (message['logo'], message['description']),
         '</body></html>',
     ]
-    return (c.encode('sjis', 'ignore') for c in html)
+    return ((c + '\n').encode('sjis', 'ignore') for c in html)
 
 
 def thread_app(env, resp):
