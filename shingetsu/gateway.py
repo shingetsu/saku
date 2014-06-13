@@ -348,6 +348,17 @@ class CGI(basecgi.CGI):
         }
         self.stdout.write(self.template('remove_file_form', var))
 
+    def mch_url(self):
+        path = '/all/subject.txt'
+        if not config.enable2ch:
+            return ''
+        if config.server_name:
+            return '//' + config.server_name + path
+        host = re.sub(r':\d+', '', self.environ.get('HTTP_HOST', ''))
+        if not host:
+            return ''
+        return '//%s:%d%s' % (host, config.dat_port, path)
+
     def print_jump(self, next):
         '''Print jump script.'''
         var = {

@@ -17,6 +17,9 @@
 {% endif %}
 <li><a href="http://www.shingetsu.info/">{{message.site}}</a></li>
 <li><a href="{{gateway_cgi}}/motd">{{message.agreement}}</a></li>
+{% if mch_url %}
+  <li><a href="{{mch_url}}">{{message.mch}}</a></li>
+{% endif %}
 <li><a href="{{gateway_cgi}}/rss">{{message.rss}}</a></li>
 </ul>
 

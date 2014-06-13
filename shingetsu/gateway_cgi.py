@@ -128,6 +128,7 @@ class CGI(gateway.CGI):
             'cachelist': output_cachelist,
             'target': 'changes',
             'taglist': UserTagList(),
+            'mch_url': self.mch_url(),
         }
         self.stdout.write(self.template('top', var))
         self.print_new_element_form()
