@@ -163,18 +163,14 @@ def print_record(fp, rec):
 
 def write_html(fp, rec):
     fp.write(
-        '<?xml version="1.0" encoding="UTF-8"?>\n' +
-        '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"\n' +
-        '  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n' +
+        '<!DOCTYPE html>\n' +
         '<html xmlns="http://www.w3.org/1999/xhtml"' +
         ' lang="ja" xml:lang="ja">\n' +
         '<head>\n' +
         '  <meta http-equiv="content-type"' +
         ' content="text/html; charset=UTF-8" />\n' +
-        '  <meta http-equiv="content-script-type"' +
-        ' content="text/javascript" />\n' +
         '  <title>%s</title>\n' % file_decode(rec.datfile) +
-        '  <link rev="made" href="http://www.shingetsu.info/" />\n' +
+        '  <link rel="author" href="http://www.shingetsu.info/" />\n' +
         '  <link rel="contents" href="/" />\n' +
         '  <link rel="stylesheet" type="text/css" href="/default.css" />\n' +
         '</head>\n' +
