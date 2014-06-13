@@ -30,14 +30,21 @@
 
 import sys
 import time
+import argparse
 
 import shingetsu.daemon as daemon
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    log_group = parser.add_mutually_exclusive_group()
+    log_group.add_argument('-v', default=True, action='store_true', dest='print_log', help='print logs (default)')
+    log_group.add_argument('--silent', action='store_false', dest='print_log', help='suppress logs')
+    args = parser.parse_args()
+
     try:
         daemon.setup()
-        if ('-v' in sys.argv[1:]) or hasattr(sys, 'winver'):
+        if args.print_log:
             daemon.set_logger(additional=sys.stdout)
         else:
             daemon.set_logger()
