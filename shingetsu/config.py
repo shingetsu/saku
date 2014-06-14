@@ -48,12 +48,12 @@ def _get_value(parser, section, key, default, vtype=''):
 def _get_version():
     """Get Saku version for useragent and servername.
     """
-    version = 'Unstable'
+    version = '4.1.0'
     version_file = os.path.join(docroot, file_dir, 'version.txt')
-    if (not re.search(r'^\d', version)) and os.path.isfile(version_file):
+    if os.path.isfile(version_file):
         try:
-            f = open(version_file)
-            version = f.read().strip()
+            f = open(version_file, encoding='utf-8', errors='replace')
+            version += '; git/%s' % f.read().strip()
             f.close()
         except (IOError, OSError):
             pass
