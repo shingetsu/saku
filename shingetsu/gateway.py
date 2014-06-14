@@ -349,7 +349,7 @@ class CGI(basecgi.CGI):
         self.stdout.write(self.template('remove_file_form', var))
 
     def mch_url(self):
-        path = '/all/subject.txt'
+        path = '/2ch/subject.txt'
         if not config.enable2ch:
             return ''
         if config.server_name:

@@ -71,7 +71,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
    を追加してください。
 2. sakuを起動してください。
-3. http://localhost:8001/all/subject.txt を外部板として登録してください。
+3. http://localhost:8001/2ch/subject.txt を外部板として登録してください。
 4. おたのしみください。
 
 [2chインターフェイスについて詳細](./2ch-interface.README.md)
