@@ -27,6 +27,7 @@ board_re= re.compile(r'/([^/]+)/$')
 thread_re = re.compile(r'/([^/]+)/dat/([^.]+)\.dat')
 subject_re = re.compile(r'/([^/]+)/subject\.txt')
 post_comment_re = re.compile(r'/test/bbs\.cgi')
+head_re = re.compile(r'/([^/]+)/head\.txt$')
 
 
 @middleware.simple_range
@@ -59,6 +60,9 @@ def dat_app(env, resp):
 
         if post_comment_re.match(path) and env['REQUEST_METHOD'] == 'POST':
             return post.post_comment_app(env, resp)
+
+        if head_re.match(path):
+            return head_app(env, resp)
 
     except keylib.DatkeyNotFound:
         pass
@@ -164,6 +168,15 @@ def subject_app(env, resp):
     resp('200 OK', [('Content-Type', 'text/plain; charset=Shift_JIS'),
                     ('Last-Modified', eutils.formatdate(last_stamp))])
     return (s.encode('sjis', 'ignore') for s in subjects)
+
+
+def head_app(env, resp):
+    resp('200 OK', [('Content-Type', 'text/plain; charset=Shift_JIS')])
+    body = []
+    with open(config.motd, encoding='utf-8', errors='ignore') as f:
+        for line in f:
+            body.append(line.rstrip('\n') + '<br>\n')
+    return [''.join(body).encode('sjis')]
 
 
 class Datd(threading.Thread):
