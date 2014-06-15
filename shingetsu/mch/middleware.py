@@ -66,8 +66,6 @@ def last_modified(app):
     return newapp
 
 
-# BUG: Jane Styleにて差分取得時に「(；ﾟДﾟ)サイズが合わない･･･ 」と出る.
-#      なぜかJaneに通知される未読変換のバイト数がContent-Lengthよりも1多くなる.
 def simple_range(app):
     resp = {}
     def capture(s, h):
@@ -131,7 +129,7 @@ def simple_range(app):
                                               len(content)-1, len(content))
             body = content[len(content)-end:]
 
-        headers['Content-Ranges'] = c_range
+        headers['Content-Range'] = c_range
         start_response('206 Partial Content', list(headers.items()))
         if hasattr(raw, 'close'):
             raw.close()

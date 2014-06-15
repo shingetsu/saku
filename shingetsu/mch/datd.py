@@ -29,7 +29,7 @@ subject_re = re.compile(r'/([^/]+)/subject\.txt')
 post_comment_re = re.compile(r'/test/bbs\.cgi')
 
 
-#@middleware.simple_range
+@middleware.simple_range
 @middleware.last_modified
 @middleware.gzipped
 def dat_app(env, resp):
