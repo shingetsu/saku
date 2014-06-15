@@ -25,8 +25,8 @@ from . import keylib
 
 board_re= re.compile(r'/([^/]+)/$')
 thread_re = re.compile(r'/([^/]+)/dat/([^.]+)\.dat')
-subject_re = re.compile(r'/([^/]+)/subject.txt')
-post_comment_re = re.compile(r'/test/bbs.cgi')
+subject_re = re.compile(r'/([^/]+)/subject\.txt')
+post_comment_re = re.compile(r'/test/bbs\.cgi')
 
 
 #@middleware.simple_range
