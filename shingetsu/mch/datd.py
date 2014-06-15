@@ -121,7 +121,8 @@ def thread_app(env, resp):
     data.load()
     if check_get_cache(env):
         if _count_is_update(key):
-            data.search()  # update thread
+            # update thread
+            threading.Thread(target=data.search, daemon=True).start()
 
     if not data.exists():
         resp('404 Not Found', [('Content-Type', 'text/plain; charset=Shift_JIS')])
