@@ -355,6 +355,8 @@ class CGI(gateway.CGI):
         for cache in cachelist:
             title = self.escape(self.file_decode(cache.datfile))
             tags = list(set([str(t) for t in cache.tags + cache.sugtags]))
+            if cache.type not in self.appli:
+                continue
             rss.append(
                 self.appli[cache.type][1:]+self.sep+self.str_encode(title),
                 date = cache.recent_stamp,
