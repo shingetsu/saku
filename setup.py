@@ -50,6 +50,7 @@ def setup_data_files():
     globcopy("template/*.txt", template_dir)
     globcopy("www/*.css", www_dir)
     globcopy("www/*.ico", www_dir)
+    globcopy("www/*.gif", www_dir)
     globcopy("www/*.js", www_dir)
     globcopy("www/*.xsl", www_dir)
     globcat("www/*.css", os.path.join(www_dir, '__merged.css'))
