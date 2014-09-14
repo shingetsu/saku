@@ -1,6 +1,6 @@
 /* -*- coding: utf-8 -*-
  * Text Area Conttoller.
- * Copyright (C) 2006-2012 shinGETsu Project.
+ * Copyright (C) 2006-2014 shinGETsu Project.
  */
 
 shingetsu.initialize(function () {
@@ -59,14 +59,21 @@ shingetsu.initialize(function () {
 
     function html_format(message) {
         var e = document.all? 'null': 'event';
+        if (document.location.href.search(/(.*?\/thread\.cgi\/[^\/]+)/) != 0) {
+            return;
+        }
+        var thread_uri = RegExp.$1;
+        thread_uri = thread_uri.replace(/&/g, '&amp;');
+        thread_uri = thread_uri.replace(/</g, '&lt;');
+        thread_uri = thread_uri.replace(/>/g, '&gt;');
         message = message.replace(/&/g, '&amp;');
         message = message.replace(/</g, '&lt;');
         message = message.replace(/>/g, '&gt;');
-        message = message.replace(/&gt;&gt;([0-9a-f]{8})/g,
-            '<a class="reclink" href="#r$1">&gt;&gt;$1</a>');
         message = message.replace(
             /(https?:..[^\x00-\x20"'()<>\[\]\x7F-\xFF]*)/g,
             '<a href="$1">$1</a>');
+        message = message.replace(/&gt;&gt;([0-9a-f]{8})/g,
+            '<a class="reclink" href="' + thread_uri + '/$1">&gt;&gt;$1</a>');
         message = message.replace(
             /\[\[([^/<>\[\]]+)\]\]/g,
             function ($0, $1) {
