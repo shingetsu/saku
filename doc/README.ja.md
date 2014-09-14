@@ -19,6 +19,7 @@ Contributers
 * (jQuery) The jQuery Foundation.
 * (Twitter Bootstrap) Twitter.
 * (HTML5 Shiv) @afarkas @jdalton @jon_neal @rem
+* (jQuery Lazy) Daniel 'Eisbehr' Kern
 * (Spoiler Alert) Joshua Hull, Jared Volpe, Dwayne Charrington
 
 WebSite

@@ -30,8 +30,8 @@
 {% endif %}
 {% if thumbnail %}
   <br /><a href="{{thread_cgi}}/{{cache.datfile}}/{{rec.id}}/{{rec.stamp}}.{{suffix}}">
-    <img src="{{thread_cgi}}/{{cache.datfile}}/{{rec.id}}/s{{rec.stamp}}.{{thumbnail}}.{{suffix}}" alt="" /></a>
+    <img src="/x.gif" data-lazyimg data-src="{{thread_cgi}}/{{cache.datfile}}/{{rec.id}}/s{{rec.stamp}}.{{thumbnail}}.{{suffix}}" alt="" /></a>
 {% elif ('attach' in rec) and (suffix in ('jpg', 'gif', 'png')) %}
-  <br /><img src="{{thread_cgi}}/{{cache.datfile}}/{{rec.id}}/{{rec.stamp}}.{{suffix}}" height="210" alt="" /></a>
+  <br /><img src="/x.gif" data-lazyimg data-src="{{thread_cgi}}/{{cache.datfile}}/{{rec.id}}/{{rec.stamp}}.{{suffix}}" height="210" alt="" /></a>
 {% endif %}
 </dd>

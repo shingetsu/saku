@@ -24,6 +24,7 @@ Content-Type: text/html; charset=UTF-8
       <script type="text/javascript" src="{{root_path}}html5js/html5.js?{{dummyquery}}"></script>
   <![endif]-->
   <script type="text/javascript" src="{{root_path}}jquery/jquery.min.js?{{dummyquery}}"></script>
+  <script type="text/javascript" src="{{root_path}}jquery/jquery.lazy.min.js?{{dummyquery}}"></script>
   <script type="text/javascript" src="{{root_path}}bootstrap/js/bootstrap.min.js?{{dummyquery}}"></script>
   <link rel="alternate" type="application/rss+xml" title="RSS" href="{{rss}}" />
   <link rel="stylesheet" type="text/css" href="{{root_path}}bootstrap/css/bootstrap.min.css?{{dummyquery}}" />
