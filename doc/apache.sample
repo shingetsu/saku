@@ -31,6 +31,7 @@
         RewriteRule ^favicon.ico$ /STATIC/favicon.ico
         RewriteRule ^x.gif$ /STATIC/x.gif
         RewriteRule rss1.xsl /STATIC/rss1.xsl
+        RewriteRule ^gateway.cgi/mergedjs /STATIC/__merged.js
         RewriteRule ^mobile.cgi / [R]
         RewriteCond %{QUERY_STRING} cmd=post
             RewriteRule . /cgi-bin/dummy.php?

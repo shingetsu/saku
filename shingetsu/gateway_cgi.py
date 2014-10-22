@@ -29,7 +29,7 @@
 import re
 import cgi
 import csv
-from time import time
+from time import strftime, time
 
 from . import config
 from . import gateway
@@ -70,6 +70,8 @@ class CGI(gateway.CGI):
             return
         elif path == "motd":
             self.print_motd()
+        elif path == "mergedjs":
+            self.print_mergedjs()
         elif path == "rss":
             self.print_rss()
         elif path == 'recent_rss':
@@ -372,6 +374,13 @@ class CGI(gateway.CGI):
             pass
         self.stdout.write('\n')
         self.stdout.write(make_rss1(rss))
+
+    def print_mergedjs(self):
+        self.stdout.write('Content-Type: application/javascript\n')
+        self.stdout.write('Last-Modified: '
+            + self.rfc822_time(self.jscache.mtime) + '\n')
+        self.stdout.write('\n')
+        self.stdout.write(self.jscache.script)
 
     def print_motd(self):
         self.stdout.write("Content-Type: text/plain; charset=UTF-8\n\n")

@@ -37,6 +37,7 @@ from . import basecgi
 from . import config
 from . import spam
 from .cache import *
+from .jscache import JsCache
 from .node import *
 from .title import *
 from .tag import *
@@ -142,6 +143,7 @@ class CGI(basecgi.CGI):
         self.isvisitor = config.re_visitor.search(addr)
         self.obj_template = Template()
         self.template = self.obj_template.display
+        self.jscache = JsCache(config.abs_docroot)
         var = {
             'cgi': self,
             'environ': self.environ,
@@ -244,13 +246,14 @@ class CGI(basecgi.CGI):
         '''
         if rss == '':
             rss = self.gateway_cgi + '/rss'
+        self.jscache.update()
         var = {
             'title': title,
             'str_title': self.str_encode(title),
             'rss': rss,
             'cookie': cookie,
             'deny_robot': deny_robot,
-            'js': self.extension('js'),
+            'js': self.jscache,
             'css': self.extension('css'),
             'menubar': self.menubar('top', rss)
         }

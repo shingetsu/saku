@@ -19,7 +19,7 @@ Content-Type: text/html; charset=UTF-8
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="author" href="http://www.shingetsu.info/" />
   <link rel="contents" href="/" />
-  <link rel="index" href="/gateway.cgi/index" />
+  <link rel="index" href="{{root_path}}gateway.cgi/index" />
   <!--[if lt IE 9]>
       <script type="text/javascript" src="{{root_path}}html5js/html5.js?{{dummyquery}}"></script>
   <![endif]-->
@@ -28,9 +28,7 @@ Content-Type: text/html; charset=UTF-8
   <script type="text/javascript" src="{{root_path}}bootstrap/js/bootstrap.min.js?{{dummyquery}}"></script>
   <link rel="alternate" type="application/rss+xml" title="RSS" href="{{rss}}" />
   <link rel="stylesheet" type="text/css" href="{{root_path}}bootstrap/css/bootstrap.min.css?{{dummyquery}}" />
-{%- for e in js %}
-  <script type="text/javascript" src="{{root_path}}{{e}}?{{dummyquery}}"></script>
-{%- endfor %}
+  <script type="text/javascript" src="{{root_path}}gateway.cgi/mergedjs?{{js.mtime}}"></script>
 {%- for e in css %}
   <link rel="stylesheet" type="text/css" href="{{root_path}}{{e}}?{{dummyquery}}" />
 {%- endfor %}
