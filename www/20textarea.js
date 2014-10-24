@@ -113,7 +113,7 @@ shingetsu.initialize(function () {
         this._textArea.hide();
         var message = html_format(this._textArea.val());
         this._previewArea.html(message);
-        shingetsu.plugins.rootResAnchor.parseContent();
+        shingetsu.plugins.rootResAnchor.parseContent($(this._previewArea));
         this._previewArea.show();
         this._button.text(msg_edit);
         this._isPreview = true;

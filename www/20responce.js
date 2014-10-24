@@ -23,7 +23,7 @@ shingetsu.initialize(function () {
               .text('>>' + id);
 
         $('#resreferrer').append(anchor);
-        shingetsu.plugins.rootResAnchor.parseContent();
+        shingetsu.plugins.rootResAnchor.parseContent($('#resreferrer'));
         textArea.focus();
     }
 
@@ -33,6 +33,7 @@ shingetsu.initialize(function () {
         var anchor = $('<a>');
         anchor.attr('href', 'javascript:;')
               .text(msg_res)
+              .attr('data-responce-id', id)
               .click(function (e) { res(id) });
         dt.append(anchor);
     });
@@ -40,4 +41,8 @@ shingetsu.initialize(function () {
     var ref = $('<div>');
     ref.attr('id', 'resreferrer');
     $('#body').before(ref);
+
+    shingetsu.plugins.responce = {
+        responceTo: res
+    };
 });

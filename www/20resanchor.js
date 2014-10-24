@@ -1,5 +1,6 @@
-/* Popup Res Anchor.
- * Copyright (C) 2005-2013 shinGETsu Project.
+/* -*- coding: utf-8 -*-
+ * Popup Res Anchor.
+ * Copyright (C) 2005-2014 shinGETsu Project.
  */
 
 shingetsu.initialize(function () {
@@ -32,7 +33,9 @@ shingetsu.initialize(function () {
                             this.furtherPopup = null;
                         }
                     }, this), shingetsu.plugins.Popup.hidingDuration);
-                    this.furtherPopup.hide();
+                    if (this.furtherPopup) {
+                        this.furtherPopup.hide();
+                    }
                 }, this));
         }
     }
@@ -106,10 +109,13 @@ shingetsu.initialize(function () {
         this.furtherPopup.setContent(
             $(html).addClass('panel panel-default'));
     }
-    function parseContent() {
+    function parseContent($container) {
+        if (! $container) {
+            $container = $(this.furtherPopup.container);
+        }
         var that = this;
         this.childResAnchors = [];
-        $(this.furtherPopup.container).find("a").each(function () {
+        $container.find('a').each(function () {
             if (!$(this).hasClass("innerlink")
                 && !$(this).hasClass("reclink")) {
                 return;
@@ -128,6 +134,13 @@ shingetsu.initialize(function () {
 
             $(this).click(function (e) {
                 that.tryJump(e, aid);
+            });
+        
+        });
+        $container.find('a[data-responce-id]').each(function () {
+            $(this).click(function (e) {
+                var id = $(this).attr('data-responce-id');
+                shingetsu.plugins.responce.responceTo(id);
             });
         });
     }
