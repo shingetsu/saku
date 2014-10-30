@@ -32,6 +32,7 @@ import re
 import urllib.request, urllib.error, urllib.parse
 import sys
 import time
+from io import BytesIO
 
 from . import basecgi
 from . import config
@@ -179,7 +180,7 @@ class CGI(basecgi.CGI):
         If PATH_INFO is not defined, use QUERY_STRING.
         x.cgi?foo&bar=y -> path="foo".
         """
-        m = re.search(r"([^&;=]*)(&|$)", self.environ.get("QUERY_STRING", ""))
+        m = re.search(r"^([^&;=]*)(&|$)", self.environ.get("QUERY_STRING", ""))
         if self.environ.get("PATH_INFO", "") != "":
             path = self.environ["PATH_INFO"]
             if path.startswith("/"):
@@ -222,13 +223,13 @@ class CGI(basecgi.CGI):
         }
         return self.template('gateway_link', var)
 
-    def extension(self, suffix):
+    def extension(self, suffix, use_merged=True):
         filename = []
         for i in os.listdir(config.abs_docroot):
             if i.endswith('.%s' % suffix) and \
                (not (i.startswith('.') or i.startswith('_'))):
                 filename.append(i)
-            elif i == '__merged.%s' % suffix:
+            elif use_merged and i == '__merged.%s' % suffix:
                 return [i]
         filename.sort()
         return filename
@@ -246,14 +247,20 @@ class CGI(basecgi.CGI):
         '''
         if rss == '':
             rss = self.gateway_cgi + '/rss'
-        self.jscache.update()
+        form = cgi.FieldStorage(environ=self.environ, fp=BytesIO())
+        if form.getfirst('__debug_js'):
+            js = self.extension('js', False)
+        else:
+            self.jscache.update()
+            js = []
         var = {
             'title': title,
             'str_title': self.str_encode(title),
             'rss': rss,
             'cookie': cookie,
             'deny_robot': deny_robot,
-            'js': self.jscache,
+            'mergedjs': self.jscache,
+            'js': js,
             'css': self.extension('css'),
             'menubar': self.menubar('top', rss)
         }

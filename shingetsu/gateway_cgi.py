@@ -376,7 +376,8 @@ class CGI(gateway.CGI):
         self.stdout.write(make_rss1(rss))
 
     def print_mergedjs(self):
-        self.stdout.write('Content-Type: application/javascript\n')
+        self.stdout.write('Content-Type: application/javascript;'
+            + ' charset=UTF-8')
         self.stdout.write('Last-Modified: '
             + self.rfc822_time(self.jscache.mtime) + '\n')
         self.stdout.write('\n')

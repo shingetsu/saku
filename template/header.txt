@@ -28,7 +28,11 @@ Content-Type: text/html; charset=UTF-8
   <script type="text/javascript" src="{{root_path}}bootstrap/js/bootstrap.min.js?{{dummyquery}}"></script>
   <link rel="alternate" type="application/rss+xml" title="RSS" href="{{rss}}" />
   <link rel="stylesheet" type="text/css" href="{{root_path}}bootstrap/css/bootstrap.min.css?{{dummyquery}}" />
-  <script type="text/javascript" src="{{root_path}}gateway.cgi/mergedjs?{{js.mtime}}"></script>
+{%- for e in js %}
+  <script type="text/javascript" src="{{root_path}}{{e}}?{{dummyquery}}"></script>
+{%- else %}
+  <script type="text/javascript" src="{{root_path}}gateway.cgi/mergedjs?{{mergedjs.mtime}}"></script>
+{%- endfor %}
 {%- for e in css %}
   <link rel="stylesheet" type="text/css" href="{{root_path}}{{e}}?{{dummyquery}}" />
 {%- endfor %}
