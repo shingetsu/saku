@@ -17,32 +17,48 @@ shingetsu.initialize(function () {
             textArea.val('>>' + id + '\n');
         }
 
-        var anchor = $('<a>');
-        anchor.attr('href', '#r' + id)
-              .addClass('innerlink')
-              .text('>>' + id);
-
+        var anchor = $('<a>').text('>>' + id);
+        if ($('#records').find('#r' + id).length) {
+            anchor.attr('href', '#r' + id)
+                  .addClass('innerlink');
+        } else {
+            if (location.href.search(/(.+\/thread\.cgi\/[^\/]*)/) == 0) {
+                anchor.attr('href', RegExp.$1 + '/' + id)
+                      .addClass('reclink');
+            }
+        }
         $('#resreferrer').append(anchor);
         shingetsu.plugins.rootResAnchor.parseContent($('#resreferrer'));
         textArea.focus();
     }
 
-    $('dt').each(function (i, dt) {
-        dt = $(dt);
-        var id = dt.attr('id').substr(1);
-        var anchor = $('<a>');
-        anchor.attr('href', 'javascript:;')
-              .text(msg_res)
-              .attr('data-responce-id', id)
-              .click(function (e) { res(id) });
-        dt.append(anchor);
-    });
+    function addLink($container) {
+        $container.find('dt').each(function (i, dt) {
+            var $dt = $(dt);
+            if ($dt.attr('data-record-id')) {
+                $dt.find('a[data-responce-id]').remove();
+                var id = $dt.attr('data-record-id');
+                var $anchor = $('<a>');
+                $anchor.attr('href', 'javascript:;')
+                       .text(msg_res)
+                       .attr('data-responce-id', id);
+            }
+            $dt.append($anchor);
+        });
+    }
 
     var ref = $('<div>');
     ref.attr('id', 'resreferrer');
     $('#body').before(ref);
 
+    addLink($(document));
+
     shingetsu.plugins.responce = {
-        responceTo: res
+        'addLink': addLink
     };
+
+    $(document).on('click', 'a[data-responce-id]', function (e) {
+        res($(this).attr('data-responce-id'));
+        return false;
+    });
 });

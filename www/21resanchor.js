@@ -113,6 +113,8 @@ shingetsu.initialize(function () {
         if (! $container) {
             $container = $(this.furtherPopup.container);
         }
+        shingetsu.plugins.localtime.override($container);
+        shingetsu.plugins.responce.addLink($container);
         var that = this;
         this.childResAnchors = [];
         $container.find('a').each(function () {
@@ -136,12 +138,6 @@ shingetsu.initialize(function () {
                 that.tryJump(e, aid);
             });
         
-        });
-        $container.find('a[data-responce-id]').each(function () {
-            $(this).click(function (e) {
-                var id = $(this).attr('data-responce-id');
-                shingetsu.plugins.responce.responceTo(id);
-            });
         });
     }
     function cancelDestroyTimer() {
