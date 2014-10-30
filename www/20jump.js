@@ -1,6 +1,6 @@
 /*
  * Jump New Posts.
- * Copyright (C) 2006-2012 shinGETsu Project.
+ * Copyright (C) 2006-2014 shinGETsu Project.
  */
 
 shingetsu.initialize(function () {
@@ -26,7 +26,7 @@ shingetsu.initialize(function () {
     function jumpto(id) {
         var s = new String(window.location);
         if (s.search("#") < 0) {
-            $("html").animate({
+            $("html,body").animate({
                 scrollTop: $("#r" + id).offset().top
             }, {
                 duration: 200
@@ -36,9 +36,7 @@ shingetsu.initialize(function () {
 
     function setNewPost(dt) {
         if (lastpage) {
-            var a = dt.getElementsByTagName('a')[0];
-            a.style.fontWeight = 'bold';
-            $(a).addClass("newpost");
+            $(dt).addClass("newpost");
         }
     }
 
@@ -50,16 +48,14 @@ shingetsu.initialize(function () {
         }
         var newid = "";
         var lastStamp = null;
-        $("dt span.stamp").each(function () {
-            if (this.id.search(/s([0-9]*)$/) == 0) {
-                var stamp = RegExp.$1;
-                if (stamp > read) {
-                    var dt = $(this).closest("dt").get(0);
-                    if (!newid) {
-                        newid = dt.id.substring(1);
-                    }
-                    setNewPost(dt);
+        $("dt span.stamp[data-stamp]").each(function () {
+            var stamp = $(this).attr('data-stamp');
+            if (stamp > read) {
+                var dt = $(this).closest("dt").get(0);
+                if (!newid) {
+                    newid = dt.id.substring(1);
                 }
+                setNewPost(dt);
             }
             lastStamp = this;
         });

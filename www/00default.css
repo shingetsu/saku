@@ -11,6 +11,9 @@ h1, h1 a {
 dt {
     background-color: #ccf;
 }
+dt.newpost {
+    background-color: #fcc;
+}
 dd {
     margin-bottom: 1em;
 }
