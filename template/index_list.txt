@@ -12,7 +12,7 @@
     <label>{{message.tag}} ({{message.string}})<br />
     <input name="tag" value="{{tag}}" class="form-control" size="40" /></label>
     <button class="btn"><i class="glyphicon glyphicon-tag"></i> {{message.show}}</button>
-  </p></form>
+  </div></form>
 {% endif %}
 
 {% if isadmin %}
