@@ -27,7 +27,7 @@
         RewriteRule server.cgi - [F]
         RewriteRule ^([0-9_][^/]*).js$ /STATIC/$1.js
         RewriteRule ^([0-9_][^/]*).css$ /STATIC/$1.css
-        RewriteRule ^(bootstrap|html5js|jquery)/(.*) /STATIC/$1/$2
+        RewriteRule ^(bootstrap|jquery)/(.*) /STATIC/$1/$2
         RewriteRule ^favicon.ico$ /STATIC/favicon.ico
         RewriteRule ^x.gif$ /STATIC/x.gif
         RewriteRule rss1.xsl /STATIC/rss1.xsl

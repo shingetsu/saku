@@ -56,7 +56,6 @@ def setup_data_files():
     globcat("www/*.css", os.path.join(www_dir, '__merged.css'))
     globcat("www/*.js", os.path.join(www_dir, '__merged.js'))
     copytree("www/bootstrap", os.path.join(www_dir, 'bootstrap'))
-    copytree("www/html5js", os.path.join(www_dir, 'html5js'))
     copytree("www/jquery", os.path.join(www_dir, 'jquery'))
 
     globcopy("README*", doc_dir)
