@@ -325,7 +325,7 @@ class CGI(gateway.CGI):
             try:
                 f = open(attach_file, "rb")
                 buf = f.read(1024)
-                while (buf != ""):
+                while (buf != b''):
                     self.stdout.write(buf)
                     buf = f.read(1024)
                 f.close()
