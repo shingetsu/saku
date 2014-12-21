@@ -17,18 +17,10 @@ shingetsu.initialize(function () {
         return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
     }
 
-    function overrideDatetime($container) {
-        $container.find('span.stamp[data-stamp]').each(function() {
-            var container = $(this);
-            var date = new Date();
-            date.setTime(container.attr('data-stamp') * 1000);
-            container.html(myLocaltime(date));
-        });
-    }
-
-    overrideDatetime($(document));
-
-    shingetsu.plugins.localtime = {
-        'override': overrideDatetime
-    };
+    $('span.stamp[data-stamp]').each(function() {
+        var container = $(this);
+        var date = new Date();
+        date.setTime(container.attr('data-stamp') * 1000);
+        container.html(myLocaltime(date));
+    });
 });
