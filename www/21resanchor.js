@@ -113,6 +113,7 @@ shingetsu.initialize(function () {
         if (! $container) {
             $container = $(this.furtherPopup.container);
         }
+        shingetsu.plugins.localtime.override($container);
         shingetsu.plugins.responce.addLink($container);
         var that = this;
         this.childResAnchors = [];
