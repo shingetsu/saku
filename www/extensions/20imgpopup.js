@@ -1,6 +1,5 @@
 /* Popup Image Preview.
- * Copyright (C) 2005-2010 shinGETsu Project.
- * $Id$
+ * Copyright (C) 2005-2014 shinGETsu Project.
  */
 
 shingetsu.initialize(function () {
@@ -27,13 +26,16 @@ shingetsu.initialize(function () {
         showPopupImage(coordinate, image, 0);
     }
 
-    shingetsu.debugMode = true;
-    $('a').each (function (i, anchor) {
-        if (anchor.pathname.search(/[.](jpg|jpeg|gif|png|bmp)$/i) <= 0) {
-            return;
-        }
-        var url = anchor.href;
-        $(anchor).mouseover(function (e) { popupImage(e, url) })
-                 .mouseout(function (e) { shingetsu.plugins.hidePopup() });
-    });
+    function addPopup($container) {
+        $container.find('a').each (function (i, anchor) {
+            if (anchor.pathname.search(/[.](jpg|jpeg|gif|png|bmp)$/i) <= 0) {
+                return;
+            }
+            var url = anchor.href;
+            $(anchor).mouseover(function (e) { popupImage(e, url) })
+                     .mouseout(function (e) { shingetsu.plugins.hidePopup() });
+        });
+    }
+
+    shingetsu.addRecordsModifiers(addPopup);
 });

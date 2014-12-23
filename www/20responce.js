@@ -51,11 +51,7 @@ shingetsu.initialize(function () {
     ref.attr('id', 'resreferrer');
     $('#body').before(ref);
 
-    addLink($(document));
-
-    shingetsu.plugins.responce = {
-        'addLink': addLink
-    };
+    shingetsu.addRecordsModifiers(addLink);
 
     $(document).on('click', 'a[data-responce-id]', function (e) {
         res($(this).attr('data-responce-id'));

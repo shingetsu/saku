@@ -26,9 +26,5 @@ shingetsu.initialize(function () {
         });
     }
 
-    overrideDatetime($(document));
-
-    shingetsu.plugins.localtime = {
-        'override': overrideDatetime
-    };
+    shingetsu.addRecordsModifiers(overrideDatetime);
 });

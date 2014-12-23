@@ -113,13 +113,7 @@ shingetsu.initialize(function () {
         if (! $container) {
             $container = $(this.furtherPopup.container);
         }
-        if (
-            shingetsu.plugins.localtime
-            && shingetsu.plugins.localtime.override
-        ) {
-            shingetsu.plugins.localtime.override($container);
-        }
-        shingetsu.plugins.responce.addLink($container);
+        shingetsu.modifyRecords($container);
         var that = this;
         this.childResAnchors = [];
         $container.find('a').each(function () {
@@ -212,8 +206,6 @@ shingetsu.initialize(function () {
         refireDescentMouseleave: refireDescentMouseleave,
         tryJump: tryJump
     };
-
-    shingetsu.plugins.ResAnchor = ResAnchor;
 
     var resAnchor = new ResAnchor();
     resAnchor.furtherPopup = new shingetsu.plugins.Popup({

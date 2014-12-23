@@ -1,5 +1,5 @@
 /* Initializer.
- * Copyright (C) 2010-2013 shinGETsu Project.
+ * Copyright (C) 2010-2014 shinGETsu Project.
  *
  * addScriptPath came from
  * http://temping-amagramer.blogspot.jp/2012/02/jqueryjavascriptscript.html
@@ -7,6 +7,7 @@
 
 var shingetsu = (function () {
     var _initializer = [];
+    var _recordsModifiers = [];
 
     var shingetsu = {
         debugMode: false,
@@ -29,6 +30,10 @@ var shingetsu = (function () {
     };
     shingetsu.addInitializer = shingetsu.initialize;
 
+    shingetsu.addRecordsModifiers = function (func) {
+        _recordsModifiers[_recordsModifiers.length] = func;
+    };
+
     shingetsu.addScriptPath = function (path, onload) {
         if (typeof onload != 'function') {
             onload = function() {};
@@ -42,8 +47,22 @@ var shingetsu = (function () {
         document.getElementsByTagName('head')[0].appendChild(script[0]);
     };
 
+    shingetsu.modifyRecords = function ($container) {
+        for (var i = 0; i < _recordsModifiers.length; i++) {
+            if (shingetsu.debugMode) {
+               _recordsModifiers[i]($container);
+               continue;
+            }
+            try {
+               _recordsModifiers[i]($container);
+            } catch (e) {
+                shingetsu.log(e);
+            }
+        }
+    };
+
     var _initialize = function () {
-        for (var i=0; i < _initializer.length; i++) {
+        for (var i = 0; i < _initializer.length; i++) {
             if (shingetsu.debugMode) {
                _initializer[i]();
                continue;
@@ -54,6 +73,7 @@ var shingetsu = (function () {
                 shingetsu.log(e);
             }
         }
+        shingetsu.modifyRecords($(document));
     };
 
     $(_initialize);
