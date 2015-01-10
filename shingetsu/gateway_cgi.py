@@ -1,7 +1,7 @@
 """Gateway CGI methods.
 """
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2015 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -342,7 +342,12 @@ class CGI(gateway.CGI):
         except IndexError as KeyError:
             pass
         self.stdout.write("\n")
-        self.stdout.write(make_rss1(rss))
+
+        #XXX it does not work on python 3.2.3
+        #self.stdout.write(make_rss1(rss))
+        rss_string = make_rss1(rss)
+        for c in rss_string:
+            self.stdout.write(c)
 
     def print_recent_rss(self):
         rss = RSS(encode = 'UTF-8',

@@ -1,7 +1,7 @@
 """Tiny HTTP server supporting threading CGI.
 """
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2015 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -254,6 +254,11 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
                 self.log_error("CGI script exit status %s", str(sts))
         finally:
             _counter.declement()
+
+    def copyfile(self, source, outputfile):
+        #XXX parent method does not work on some environment
+        for c in source:
+            outputfile.write(c)
 
 
 class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
