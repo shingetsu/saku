@@ -74,6 +74,17 @@ def post_comment_app(env, resp):
     else:
         key = keylib.get_filekey(datkey)
 
+    if cache.Cache(key).exists():
+        pass
+    elif env.get('shingetsu.isadmin', False):
+        pass
+    elif env.get('shingetsu.isfriend', False):
+        pass
+    elif subject:
+        return error_resp('掲示版を作る権限がありません', resp, **info)
+    else:
+        return error_resp('掲示版がありません', resp, **info)
+
     if (not subject and not key):
         return error_resp('フォームが変です.', resp, **info)
 
