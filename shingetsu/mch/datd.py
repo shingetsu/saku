@@ -149,9 +149,15 @@ def thread_app(env, resp):
     key = keylib.get_filekey(datkey)
     data = cache.Cache(key)
     data.load()
+
     if check_get_cache(env):
-        if _count_is_update(key):
+        if not data.exists() or len(data) == 0:
+            # when first access, load data from network
+            data.search()
+
+        elif _count_is_update(key):
             # update thread
+            # limit `data.search` calling. it's slow!
             threading.Thread(target=data.search, daemon=True).start()
 
     if not data.exists():
@@ -168,19 +174,42 @@ def thread_app(env, resp):
     return (c.encode('cp932', 'replace') for c in thread)
 
 
+def make_subject_cachelist():
+    """Make RecentList&CacheList"""
+    recentlist = cache.RecentList()
+    cachelist = cache.CacheList()
+
+    seen = set(c.datfile for c in cachelist)
+    result = cachelist
+    for rec in recentlist:
+        if rec.datfile not in seen:
+            seen.add(rec.datfile)
+
+            c = cache.Cache(rec.datfile)
+            c.recent_stamp = rec.stamp
+            result.append(c)
+
+    # same as order recent page
+    result.sort(key=lambda c: c.recent_stamp, reverse=True)
+    return result
 
 def subject_app(env, resp):
     # utils.log('subject_app')
     path = env['PATH_INFO']
     board = subject_re.match(path).group(1)
 
-    cachelist = cache.CacheList()
-    cachelist.sort(key=lambda x: x.valid_stamp, reverse=True)
+    load_from_net = check_get_cache(env)
+
+    cachelist = make_subject_cachelist()
     subjects = []
     last_stamp = 0
     for c in cachelist:
+        # for Cache.num and Cache.__len__
         c.load()
-        if len(c) == 0:
+
+        if not load_from_net and len(c) == 0:
+            # Because you don't have a permission of getting data from network,
+            # don't need to look a thread that don't have records.
             continue
 
         if last_stamp < c.stamp:
