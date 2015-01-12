@@ -1,6 +1,31 @@
-# coding: utf-8
-'2ch like post'
-
+# -*- encoding: utf-8 -*-
+"""2ch like post
+"""
+#
+# Copyright (c) 2014,2015 shinGETsu Project.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE AUTHORS AND CONTRIBUTORS ``AS IS'' AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGE.
+#
 
 import base64
 import time
@@ -10,6 +35,7 @@ import re
 from shingetsu import title
 from shingetsu import gateway
 from shingetsu import cache
+from shingetsu import spam
 from shingetsu import updatequeue
 from shingetsu import template
 
@@ -18,18 +44,25 @@ from . import utils
 from . import keylib
 
 
+class SpamError(RuntimeError):
+    pass
+
 
 def post_comment(thread_key, name, mail, body, passwd):
     """Post article."""
 
     stamp = int(time.time())
-    body = {'body': gateway.CGI.escape(None, body),
-            'name': gateway.CGI.escape(None, name),
-            'mail': gateway.CGI.escape(None, mail)}
+    recbody = {}
+    if body != '': recbody['body'] = gateway.CGI.escape(None, body)
+    if name != '': recbody['name'] = gateway.CGI.escape(None, name)
+    if mail != '': recbody['mail'] = gateway.CGI.escape(None, mail)
 
     c = cache.Cache(thread_key)
     rec = cache.Record(datfile=c.datfile)
-    id = rec.build(stamp, body, passwd=passwd)
+    id = rec.build(stamp, recbody, passwd=passwd)
+
+    if spam.check(rec.recstr):
+        raise SpamError()
 
     # utils.log('post %s/%d_%s' % (c.datfile, stamp, id))
 
@@ -57,7 +90,10 @@ def _get_comment_data(env):
     fs = cgi.FieldStorage(environ=env, fp=env['wsgi.input'],
                           encoding='cp932')
     prop = lambda s: fs[s].value if s in fs else ''
-    return [prop('subject'), prop('FROM'), prop('mail'), prop('MESSAGE'), prop('key')]
+    mail = prop('mail')
+    if mail.lower() == 'sage':
+        mail = ''
+    return [prop('subject'), prop('FROM'), mail, prop('MESSAGE'), prop('key')]
 
 def post_comment_app(env, resp):
     # utils.log('post_comment_app')
@@ -90,8 +126,6 @@ def post_comment_app(env, resp):
     if (not subject and not key):
         return error_resp('フォームが変です.', resp, **info)
 
-
-
     table = dat.ResTable(cache.Cache(key))
     def replace(match):
         no = int(match.group(1))
@@ -107,7 +141,11 @@ def post_comment_app(env, resp):
     if (passwd and not env['shingetsu.isadmin']):
         return error_resp('自ノード以外で署名機能は使えません', resp, **info)
 
-    post_comment(key, name, mail, body, passwd)
+    try:
+        post_comment(key, name, mail, body, passwd)
+    except SpamError:
+        return error_resp('スパムとみなされました', resp, **info)
+
     resp('200 OK', [('Content-Type', 'text/html; charset=Shift_JIS')])
     return [success_msg.encode('cp932', 'replace')]
 
