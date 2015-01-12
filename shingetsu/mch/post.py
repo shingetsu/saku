@@ -43,8 +43,10 @@ def post_comment(thread_key, name, mail, body, passwd):
 
 def error_resp(msg, start_response, host, name, mail, body):
     info = {'message': msg, 'host': host, 'name': name, 'mail': mail, 'body': body}
-    msg = template.Template().display('2ch_error', info).encode('sjis')
-    start_response('200 OK', [('Content-Type', 'text/html; charset=shift_jis')])
+    msg = (template.Template()
+        .display('2ch_error', info)
+        .encode('cp932', 'replace'))
+    start_response('200 OK', [('Content-Type', 'text/html; charset=Shift_JIS')])
     return [msg]
 
 success_msg = '''<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html"><title>書きこみました。</title></head>
@@ -53,7 +55,7 @@ success_msg = '''<html lang="ja"><head><meta http-equiv="Content-Type" content="
 
 def _get_comment_data(env):
     fs = cgi.FieldStorage(environ=env, fp=env['wsgi.input'],
-                          encoding='sjis')
+                          encoding='cp932')
     prop = lambda s: fs[s].value if s in fs else ''
     return [prop('subject'), prop('FROM'), prop('mail'), prop('MESSAGE'), prop('key')]
 
@@ -106,6 +108,6 @@ def post_comment_app(env, resp):
         return error_resp('自ノード以外で署名機能は使えません', resp, **info)
 
     post_comment(key, name, mail, body, passwd)
-    resp('200 OK', [('Content-Type', 'text/html; charset=shift_jis')])
-    return [success_msg.encode('sjis')]
+    resp('200 OK', [('Content-Type', 'text/html; charset=Shift_JIS')])
+    return [success_msg.encode('cp932', 'replace')]
 

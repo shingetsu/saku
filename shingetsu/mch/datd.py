@@ -1,4 +1,30 @@
-'2ch like dat interface'
+"""2ch like dat interface
+"""
+#
+# Copyright (c) 2014,2015 shinGETsu Project.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE AUTHORS AND CONTRIBUTORS ``AS IS'' AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGE.
+#
 
 from wsgiref import simple_server
 import threading
@@ -111,7 +137,7 @@ def board_app(env, resp):
         '<h1>%s - %s</h1>' % (message['logo'], message['description']),
         '</body></html>',
     ]
-    return ((c + '\n').encode('sjis', 'ignore') for c in html)
+    return ((c + '\n').encode('cp932', 'replace') for c in html)
 
 
 def thread_app(env, resp):
@@ -139,7 +165,7 @@ def thread_app(env, resp):
     headers['Last-Modified'] = last_m
     resp("200 OK", headers.items())
 
-    return (c.encode('sjis', 'ignore') for c in thread)
+    return (c.encode('cp932', 'replace') for c in thread)
 
 
 
@@ -167,16 +193,16 @@ def subject_app(env, resp):
 
     resp('200 OK', [('Content-Type', 'text/plain; charset=Shift_JIS'),
                     ('Last-Modified', eutils.formatdate(last_stamp))])
-    return (s.encode('sjis', 'ignore') for s in subjects)
+    return (s.encode('cp932', 'replace') for s in subjects)
 
 
 def head_app(env, resp):
     resp('200 OK', [('Content-Type', 'text/plain; charset=Shift_JIS')])
     body = []
-    with open(config.motd, encoding='utf-8', errors='ignore') as f:
+    with open(config.motd, encoding='utf-8', errors='replace') as f:
         for line in f:
             body.append(line.rstrip('\n') + '<br>\n')
-    return [''.join(body).encode('sjis')]
+    return [''.join(body).encode('cp932', 'replace')]
 
 
 class Datd(threading.Thread):
