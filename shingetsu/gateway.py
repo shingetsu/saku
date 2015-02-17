@@ -369,6 +369,23 @@ class CGI(basecgi.CGI):
             return ''
         return '//%s:%d%s' % (host, config.dat_port, path)
 
+    def mch_categories(self):
+        if not config.enable2ch:
+            return []
+
+        mch_url = self.mch_url()
+        categories = []
+
+        # my tags
+        with open(config.run_dir + '/tag.txt', 'r', encoding='utf8') as f:
+            tags =  [t.strip() for t in f]
+
+        for tag in tags:
+            cat_url = mch_url.replace('2ch', file_encode('2ch', tag))
+            categories.append({'url': cat_url, 'text': tag})
+
+        return categories
+
     def print_jump(self, next):
         '''Print jump script.'''
         var = {
