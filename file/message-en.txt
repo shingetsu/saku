@@ -1,6 +1,6 @@
 #
 # Message file for English
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2015 shinGETsu Project.
 #
 
 lang<>en
@@ -33,6 +33,7 @@ agreement<>Agreement
 title<>Title
 recent_changes<>Recent Changes
 all<>All
+mch_categories<>Categories for 2ch user agents
 
 # index
 filter<>Filter

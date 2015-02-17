@@ -1,6 +1,6 @@
 #
 # Message file for Japanese
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2015 shinGETsu Project.
 #
 
 lang<>ja
@@ -24,6 +24,7 @@ agreement<>ネットワーク利用規約
 title<>タイトル
 recent_changes<>最近の更新
 all<>全部
+mch_categories<>専ブラ用カテゴリー
 
 # description
 desc_index<>ディスクに保存され、自動的に更新される掲示板の一覧(文字コード順)

@@ -1,5 +1,5 @@
 {# Saku Gateway Toppage.
- # Copyright (c) 2005-2014 shinGETsu Project.
+ # Copyright (c) 2005-2015 shinGETsu Project.
  #}
 <ul class="topmenu">
 {% for i in ('changes', 'index') %}
@@ -23,15 +23,6 @@
 <li><a href="{{gateway_cgi}}/rss">{{message.rss}}</a></li>
 </ul>
 
-{% if mch_categories %}
-  <ul class="topmenu">
-  <li>専ブラ用カテゴリーはこちら→</li>
-  {% for category in mch_categories %}
-    <li><a href="{{category.url}}">{{category.text}}</a></li>
-  {% endfor %}
-  </ul>
-{% endif %}
-
 {% if (not cachelist) and (isfriend or isadmin) %}
   <p><em style="font-size:x-large">{{gateway_link(gateway_cgi, 'recent')}}</em></p>
 {% endif %}
@@ -47,9 +38,20 @@
 
 {% if taglist %}
   <h2>{{message.tag}}</h2>
+  <ul class="topmenu">
+  {% for t in taglist %}
+    <li><a href="{{gateway_cgi}}/{{target}}?tag={{str_encode(t)}}">{{t}}</a></li>
+  {% endfor %}
+  </ul>
 {% endif %}
-<p class="tags" style="margin-bottom: 2em;">
-{% for t in taglist %}
-  <a href="{{gateway_cgi}}/{{target}}?tag={{str_encode(t)}}" class="tag">{{t}}</a>
-{% endfor %}
-</p>
+
+{% if mch_url %}
+  <h2>{{message.mch_categories}}</h2>
+  <ul class="topmenu">
+    <li><a href="{{mch_url}}">{{message.all}}</a></li>
+  {% for category in mch_categories %}
+    <li><a href="{{category.url}}">{{category.text}}</a></li>
+  {% endfor %}
+  </ul>
+{% endif %}
+

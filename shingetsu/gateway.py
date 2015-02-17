@@ -1,7 +1,7 @@
 """Saku Gateway base module.
 """
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2015 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -377,7 +377,7 @@ class CGI(basecgi.CGI):
         categories = []
 
         # my tags
-        with open(config.run_dir + '/tag.txt', 'r', encoding='utf8') as f:
+        with opentext(config.run_dir + '/tag.txt') as f:
             tags =  [t.strip() for t in f]
 
         for tag in tags:
