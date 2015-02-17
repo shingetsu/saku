@@ -121,17 +121,26 @@ def board_app(env, resp):
     headers = Headers([('Content-Type', 'text/html; charset=Shift_JIS')])
     resp("200 OK", headers.items())
 
-    html = [
-        '<!DOCTYPE html>',
-        '<html><head>',
-        '<meta http-equiv="content-type" content="text/html; charset=Shift_JIS">',
-        '<title>%s - %s</title>' % (message['logo'], message['description']),
-        '<meta name="description" content="%s - %s">' % (message['logo'], message['description']),
-        '</head><body>',
-        '<h1>%s - %s</h1>' % (message['logo'], message['description']),
-        '</body></html>',
-    ]
-    return ((c + '\n').encode('cp932', 'replace') for c in html)
+    board = utils.sanitize(utils.get_board(path))
+
+    if board:
+        fmt = '{logo} - {board} - {desc}'
+    else:
+        fmt = '{logo} - {desc}'
+
+    text = fmt.format(logo=message['logo'], desc=message['description'], board=board)
+
+    html = '''
+        <!DOCTYPE html>
+        <html><head>
+        <meta http-equiv="content-type" content="text/html; charset=Shift_JIS">
+        <title>{text}</title>
+        <meta name="description" content="{text}">
+        </head><body>
+        <h1>{text}</h1>
+        </body></html>
+    '''.format(text=text)
+    return [html.encode('cp932', 'replace')]
 
 
 def thread_app(env, resp):

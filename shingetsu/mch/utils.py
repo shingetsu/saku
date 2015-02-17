@@ -2,6 +2,7 @@
 'utils'
 
 import sys
+import re
 
 from shingetsu import title
 from shingetsu import tag
@@ -30,5 +31,13 @@ def save_tag(cache, user_tag):
     user_tag_list.add([user_tag])
     user_tag_list.sync()
 
-    print('usertags', user_tag_list)
-    print('cache.tags', cache.tags)
+def get_board(url):
+    m = re.search(r'/2ch_([^/]+)/', url)
+    if not m:
+        return ''
+
+    board = title.file_decode('dummy_' + m.group(1))
+    return board
+
+def sanitize(text):
+    return text.replace('<', '&lt;').replace('>', '&gt;').replace('&', '&amp;').replace('"', '&quot;')
