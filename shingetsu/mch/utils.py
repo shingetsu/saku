@@ -4,6 +4,7 @@
 import sys
 
 from shingetsu import title
+from shingetsu import tag
 
 
 def log(s, *args, **kwds):
@@ -20,3 +21,14 @@ def log_request(env):  # same as saku's log format
                      referer=env.get('REFERER', ''),
                      ua=env.get('USER_AGENT', ''))
     log(msg)
+
+
+def save_tag(cache, user_tag):
+    cache.tags.update([user_tag])
+    cache.tags.sync()
+    user_tag_list = tag.UserTagList()
+    user_tag_list.add([user_tag])
+    user_tag_list.sync()
+
+    print('usertags', user_tag_list)
+    print('cache.tags', cache.tags)
