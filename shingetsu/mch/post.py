@@ -48,7 +48,7 @@ class SpamError(RuntimeError):
     pass
 
 
-def post_comment(thread_key, name, mail, body, passwd):
+def post_comment(thread_key, name, mail, body, passwd, tag=None):
     """Post article."""
 
     stamp = int(time.time())
@@ -68,6 +68,10 @@ def post_comment(thread_key, name, mail, body, passwd):
 
     c.add_data(rec)
     c.sync_status()
+
+    if tag:
+        utils.save_tag(c, tag)
+
 
     queue = updatequeue.UpdateQueue()
     queue.append(c.datfile, stamp, id, None)
@@ -96,6 +100,11 @@ def _get_comment_data(env):
     return [prop('subject'), prop('FROM'), mail, prop('MESSAGE'), prop('key')]
 
 def post_comment_app(env, resp):
+    # print('post', env)
+    if env['REQUEST_METHOD'] != 'POST':
+        resp("404 Not Found", [('Content-Type', 'text/plain')])
+        return [b'404 Not Found']
+
     # utils.log('post_comment_app')
     subject, name, mail, body, datkey = _get_comment_data(env)
 
@@ -107,16 +116,25 @@ def post_comment_app(env, resp):
     if body == '':
         return error_resp('本文がありません.', resp, **info)
 
+
     if subject:
         key = title.file_encode('thread', subject)
     else:
         key = keylib.get_filekey(datkey)
 
+
+    has_auth = env.get('shingetsu.isadmin', False) or env.get('shingetsu.isfriend', False)
+
+    referer = env.get('HTTP_REFERER', '')
+    m = re.search(r'/2ch_([^/]+)/', referer)
+    tag = None
+    if m and has_auth:
+        tag = title.file_decode('dummy_' + m.group(1))
+
+
     if cache.Cache(key).exists():
         pass
-    elif env.get('shingetsu.isadmin', False):
-        pass
-    elif env.get('shingetsu.isfriend', False):
+    elif has_auth:
         pass
     elif subject:
         return error_resp('掲示版を作る権限がありません', resp, **info)
@@ -141,8 +159,9 @@ def post_comment_app(env, resp):
     if (passwd and not env['shingetsu.isadmin']):
         return error_resp('自ノード以外で署名機能は使えません', resp, **info)
 
+
     try:
-        post_comment(key, name, mail, body, passwd)
+        post_comment(key, name, mail, body, passwd, tag)
     except SpamError:
         return error_resp('スパムとみなされました', resp, **info)
 

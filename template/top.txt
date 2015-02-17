@@ -23,6 +23,15 @@
 <li><a href="{{gateway_cgi}}/rss">{{message.rss}}</a></li>
 </ul>
 
+{% if mch_categories %}
+  <ul class="topmenu">
+  <li>専ブラ用カテゴリーはこちら→</li>
+  {% for category in mch_categories %}
+    <li><a href="{{category.url}}">{{category.text}}</a></li>
+  {% endfor %}
+  </ul>
+{% endif %}
+
 {% if (not cachelist) and (isfriend or isadmin) %}
   <p><em style="font-size:x-large">{{gateway_link(gateway_cgi, 'recent')}}</em></p>
 {% endif %}
