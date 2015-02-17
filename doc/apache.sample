@@ -47,8 +47,8 @@
             #RewriteRule ^$ http://bbs.shingetsu.info:8000/gateway.cgi [P]
             RewriteRule ^(gateway|thread).cgi(.*) \
                 http://bbs.shingetsu.info:8000/$1.cgi${escape:$2} [P,NE]
-            RewriteRule ^2ch/(.*) \
-                http://bbs.shingetsu.info:8001/2ch/${escape:$1} [P,NE]
+            RewriteRule ^(2ch[_0-9A-Z]*)/(.*) \
+                http://bbs.shingetsu.info:8001/$1/${escape:$2} [P,NE]
             RewriteRule ^test/bbs.cgi$ \
                 http://bbs.shingetsu.info:8001/test/bbs.cgi [P,NE]
         </IfModule>
