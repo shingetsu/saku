@@ -29,18 +29,17 @@
 from wsgiref import simple_server
 import threading
 import re
-import datetime
 from wsgiref.headers import Headers
 from email import utils as eutils
-import threading
 import collections
 import socketserver
-
 
 from shingetsu import cache
 from shingetsu import title
 from shingetsu import config
 from shingetsu import gateway
+from shingetsu import tag
+
 
 from . import post
 from . import middleware
@@ -48,13 +47,11 @@ from . import dat
 from . import utils
 from . import keylib
 
-
 board_re= re.compile(r'/([^/]+)/$')
 thread_re = re.compile(r'/([^/]+)/dat/([^.]+)\.dat')
 subject_re = re.compile(r'/([^/]+)/subject\.txt')
 post_comment_re = re.compile(r'/test/bbs\.cgi')
 head_re = re.compile(r'/([^/]+)/head\.txt$')
-
 
 @middleware.simple_range
 @middleware.last_modified
@@ -74,27 +71,24 @@ def dat_app(env, resp):
         resp('403 Forbidden', [('Content-Type', 'text/plain')])
         return [b'403 Forbidden']
 
+    routes = [
+        (board_re, board_app),
+        (subject_re, subject_app),
+        (thread_re, thread_app),
+        (post_comment_re, post.post_comment_app),
+        (head_re, head_app)
+    ]
     try:
-        if board_re.match(path):
-            return board_app(env, resp)
-
-        if subject_re.match(path):
-            return subject_app(env, resp)
-
-        if thread_re.match(path):
-            return thread_app(env, resp)
-
-        if post_comment_re.match(path) and env['REQUEST_METHOD'] == 'POST':
-            return post.post_comment_app(env, resp)
-
-        if head_re.match(path):
-            return head_app(env, resp)
+        for (route, app) in routes:
+            m = route.match(path)
+            if m:
+                env['mch.path_match'] = m
+                return app(env, resp)
 
     except keylib.DatkeyNotFound:
         pass
     resp("404 Not Found", [('Content-Type', 'text/plain')])
     return [b'404 Not Found']
-
 
 
 def check_get_cache(env):
@@ -174,7 +168,8 @@ def thread_app(env, resp):
     return (c.encode('cp932', 'replace') for c in thread)
 
 
-def make_subject_cachelist():
+
+def make_subject_cachelist(board):
     """Make RecentList&CacheList"""
     recentlist = cache.RecentList()
     cachelist = cache.CacheList()
@@ -191,17 +186,43 @@ def make_subject_cachelist():
 
     # same as order recent page
     result.sort(key=lambda c: c.recent_stamp, reverse=True)
+    if board is not None:
+        sugtags = tag.SuggestedTagTable()
+        result = [c for c in result if has_tag(c, board, sugtags)]
     return result
 
 def subject_app(env, resp):
     # utils.log('subject_app')
     path = env['PATH_INFO']
-    board = subject_re.match(path).group(1)
+    # board is `title.file_encode`ed
+    # example: 2ch_E99B91E8AB87(雑談)
+    board = env['mch.path_match'].group(1)
 
+    m = re.match('2ch_(\S+)', board)
+    if not (board.startswith('2ch') or m):
+        resp("404 Not Found", [('Content-Type', 'text/plain')])
+        return [b'404 Not Found']
+
+    board_encoded = m and title.str_decode(m.group(1))
+
+    if board_encoded:
+        # such as '雑談', 'ニュース', etc...
+        board_name = title.file_decode('dummy_' + board_encoded)
+    else:
+        board_name = None
+
+    subjects, last_stamp = make_subject(env, board_name)
+    resp('200 OK', [('Content-Type', 'text/plain; charset=Shift_JIS'),
+                    ('Last-Modified', eutils.formatdate(last_stamp))])
+    return (s.encode('cp932', 'replace') for s in subjects)
+
+
+
+def make_subject(env, board):
     load_from_net = check_get_cache(env)
 
-    cachelist = make_subject_cachelist()
     subjects = []
+    cachelist = make_subject_cachelist(board)
     last_stamp = 0
     for c in cachelist:
         # for Cache.num and Cache.__len__
@@ -219,10 +240,15 @@ def subject_app(env, resp):
             key=keylib.get_datkey(c.datfile),
             title=title.file_decode(c.datfile),
             num=len(c)))
+    return subjects, last_stamp
 
-    resp('200 OK', [('Content-Type', 'text/plain; charset=Shift_JIS'),
-                    ('Last-Modified', eutils.formatdate(last_stamp))])
-    return (s.encode('cp932', 'replace') for s in subjects)
+
+
+def has_tag(c, board, sugtags):
+    tags = c.tags
+    if c.datfile in sugtags:
+        tags += sugtags[c.datfile]
+    return board in (str(t) for t in tags)
 
 
 def head_app(env, resp):

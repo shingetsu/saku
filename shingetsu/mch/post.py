@@ -96,6 +96,10 @@ def _get_comment_data(env):
     return [prop('subject'), prop('FROM'), mail, prop('MESSAGE'), prop('key')]
 
 def post_comment_app(env, resp):
+    if env['REQUEST_METHOD'] != 'POST':
+        resp("404 Not Found", [('Content-Type', 'text/plain')])
+        return [b'404 Not Found']
+
     # utils.log('post_comment_app')
     subject, name, mail, body, datkey = _get_comment_data(env)
 
