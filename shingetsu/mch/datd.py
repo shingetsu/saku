@@ -47,6 +47,7 @@ from . import dat
 from . import utils
 from . import keylib
 
+
 board_re= re.compile(r'/([^/]+)/$')
 thread_re = re.compile(r'/([^/]+)/dat/([^.]+)\.dat')
 subject_re = re.compile(r'/([^/]+)/subject\.txt')
@@ -245,8 +246,13 @@ def make_subject(env, board):
         if last_stamp < c.stamp:
             last_stamp = c.stamp
 
+        try:
+            key = keylib.get_datkey(c.datfile)
+        except keylib.DatkeyNotFound:
+            continue
+
         subjects.append('{key}.dat<>{title} ({num})\n'.format(
-            key=keylib.get_datkey(c.datfile),
+            key=key,
             title=title.file_decode(c.datfile),
             num=len(c)))
     return subjects, last_stamp
