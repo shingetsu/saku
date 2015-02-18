@@ -282,7 +282,7 @@ class Datd(threading.Thread):
 
     def run(self):
         utils.log('start 2ch interface')
-        keylib.load(config.cache_dir)
+        keylib.load()
         try:
             import waitress
         except ImportError:
