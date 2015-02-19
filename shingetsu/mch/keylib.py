@@ -87,7 +87,7 @@ class _DatkeyTable:
         if datkey in self.datkey2filekey:
             return self.datkey2filekey[datkey]
 
-        raise DatkeyNotFound(datkey + ' not found')
+        raise DatkeyNotFound('%d not found' % datkey)
 
 
 class DatkeyNotFound(Exception):
