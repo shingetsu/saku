@@ -34,7 +34,7 @@ def make_dat(cache, env, board):
         if rec.get('pubkey'):  # 2ch trip
             name += '◆' + rec.get('pubkey')[:10]  # 10 is 2ch trip length
 
-        comment = '{name}<>{mail}<>{date} ID:{id}<>{body}<>'.format(
+        comment = '{name}<>{mail}<>{date}<>{body}<>'.format(
                 name=name,
                 mail=rec.get('mail', ''),
                 date=_datestr_2ch(rec.get('stamp', 0)),
