@@ -1,7 +1,7 @@
 """Cache of Saku BBS.
 """
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2015 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -444,6 +444,7 @@ class Cache(dict):
     stamp = 0       # when the cache is modified
     size = 0        # size of cache file
     count = 0       # records count
+    velocity = 0    # records count per unit time
     loaded = False  # loaded records
     type = ""       # "thread"
 
@@ -465,6 +466,7 @@ class Cache(dict):
                 self.recent_stamp = recent_stamp
         self.size = self._load_status('size')
         self.count = self._load_status('count')
+        self.velocity = self._load_status('velocity')
         self.node = RawNodeList(os.path.join(self.datpath, 'node.txt'))
         self.tags = TagList(self.datfile,
                             os.path.join(self.datpath, 'tag.txt'))
@@ -561,6 +563,7 @@ class Cache(dict):
         self._save_status('validstamp', self.valid_stamp)
         self._save_status('size', self.size)
         self._save_status('count', self.count)
+        self._save_status('velocity', self.velocity)
         if not os.path.exists(self.datpath + '/dat.stat'):
             self._save_status('dat', self.datfile)
 
@@ -664,6 +667,7 @@ class Cache(dict):
             self[rec.idstr] = rec
             self.size += len(str(rec)) + 1
             self.count += 1
+            self.velocity += 1
         if really:
             if self.valid_stamp < rec.stamp:
                 self.valid_stamp = rec.stamp
@@ -833,6 +837,7 @@ class CacheList(list):
 
     def getall(self, timelimit=0):
         """Search nodes and update my cache."""
+        now = int(time())
         random.shuffle(self)
         nodelist = NodeList()
         myself = nodelist.myself()
@@ -847,6 +852,7 @@ class CacheList(list):
                 cache.search(searchlist=searchlist, myself=myself)
                 cache.size = 0
                 cache.count = 0
+                cache.velocity = 0
                 cache.valid_stamp = 0
                 for rec in cache:
                     if not rec.exists():
@@ -859,6 +865,8 @@ class CacheList(list):
                             cache.valid_stamp = rec.stamp
                         cache.size += len(str(rec))
                         cache.count += 1
+                        if now - 7 * 24 * 60 * 60 < rec.stamp:
+                            cache.velocity += 1
                         rec.sync()
                         rec.free()
                     else:

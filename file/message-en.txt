@@ -16,8 +16,8 @@ mch<>2CH-BROWSER
 rss<>RSS
 
 # description
-desc_index<>Index of ached BBS (sorted by character code).
-desc_changes<>Index of ached BBS (sorted by character timestamp).
+desc_index<>Index of ached BBS (sorted by velocity).
+desc_changes<>Index of ached BBS (sorted by timestamp).
 desc_recent<>Recently updated BBS.
 desc_search<>Search from cached BBS.
 desc_error<>To save anonymity. Turn off for consecutive post.

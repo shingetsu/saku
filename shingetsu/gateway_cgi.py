@@ -29,6 +29,7 @@
 import re
 import cgi
 import csv
+from operator import attrgetter
 from time import strftime, time
 
 from . import config
@@ -147,7 +148,7 @@ class CGI(gateway.CGI):
         self.header(title)
         self.print_paragraph(self.message['desc_index'])
         cachelist = CacheList()
-        cachelist.sort(key=lambda x: x.datfile)
+        cachelist.sort(key=attrgetter('velocity', 'count'), reverse=True)
         self.print_index_list(cachelist, "index")
 
     def print_changes(self):
