@@ -27,6 +27,7 @@
 #
 
 import os.path
+import re
 import sys
 
 import jinja2
@@ -82,7 +83,9 @@ class Template:
                 sl.update(eachsl)
 
         if tmpl is not None:
-            return tmpl.render(sl)
+            text = tmpl.render(sl)
+            text = re.sub(r'[\x00-\x08\x0b-\x1f\x7f]', '', text)
+            return text
         else:
             return ''
 
