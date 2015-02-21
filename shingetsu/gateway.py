@@ -606,12 +606,20 @@ class CGI(basecgi.CGI):
             str_opts = '?search_new_file=yes'
         else:
             str_opts = ''
+        if target != 'recent':
+            sugtags = []
+        else:
+            sugtags = []
+            str_tags = [str(t).lower() for t in cache.tags]
+            for st in cache.sugtags:
+                if str(st).lower() not in str_tags:
+                    sugtags.append(st)
         var = {
             'cache': cache,
             'title': x,
             'str_title': y,
             'tags': cache.tags,
-            'sugtags': cache.sugtags if target == 'recent' else [],
+            'sugtags': sugtags,
             'target': target,
             'remove': remove,
             'str_opts': str_opts,
