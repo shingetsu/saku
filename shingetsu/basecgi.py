@@ -49,7 +49,11 @@ class BodyFilter:
         if isinstance(msg, str):
             msg = msg.encode('utf-8', 'replace')
         if not self.ishead:
-            self.output.write(msg)
+            #XXX it does not work on python 3.2.3
+            #self.output.write(msg)
+            bufsize = 1024
+            for offset in range(0, len(msg), bufsize):
+                self.output.write(msg[offset:offset+bufsize])
         elif self.ishead and self.flag_body:
             pass
         else:

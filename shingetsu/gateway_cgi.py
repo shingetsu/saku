@@ -345,12 +345,7 @@ class CGI(gateway.CGI):
         except IndexError as KeyError:
             pass
         self.stdout.write("\n")
-
-        #XXX it does not work on python 3.2.3
-        #self.stdout.write(make_rss1(rss))
-        rss_string = make_rss1(rss)
-        for c in rss_string:
-            self.stdout.write(c)
+        self.stdout.write(make_rss1(rss))
 
     def print_recent_rss(self):
         rss = RSS(encode = 'UTF-8',
