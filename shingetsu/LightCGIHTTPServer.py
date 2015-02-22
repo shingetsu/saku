@@ -257,7 +257,10 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
 
     def copyfile(self, source, outputfile):
         #XXX parent method does not work on some environment
-        for c in source:
+        while True:
+            c = source.read(1024)
+            if c == b'':
+                break
             outputfile.write(c)
 
 
