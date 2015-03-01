@@ -97,6 +97,7 @@ big_file<>ファイルが大きすぎます。
 no_data<>引数が正しくないか、データがありません。
 spam<>スパムとみなされました。
 regexp_error<>正規表現のエラーです。
+empty_list<>まだ掲示板がありません。しばらく待ってから%sをクリックしてください。
 
 # status
 linked_nodes<>隣接ノード

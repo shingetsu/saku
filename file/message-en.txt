@@ -95,6 +95,7 @@ big_file<>Too big file
 no_data<>Bad arguments or No data.
 spam<>Your post looks like a spam.
 regexp_error<>Regular expressions error.
+empty_list<>No BBSes yet. Wait a few minutes and click %s.
 
 # status
 linked_nodes<>Linked Nodes

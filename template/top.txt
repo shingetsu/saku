@@ -23,10 +23,6 @@
 <li><a href="{{gateway_cgi}}/rss">{{message.rss}}</a></li>
 </ul>
 
-{% if (not cachelist) and (isfriend or isadmin) %}
-  <p><em style="font-size:x-large">{{gateway_link(gateway_cgi, 'recent')}}</em></p>
-{% endif %}
-
 <h2>{{message.recent_changes}}</h2>
 <ul id="top_index">
 {% for cache in cachelist %}
@@ -35,6 +31,9 @@
   {% endif %}
 {% endfor %}
 </ul>
+{% if (not cachelist) and (isfriend or isadmin) %}
+  <p>{{message.empty_list % (gateway_link(gateway_cgi, 'recent'))}}</p>
+{% endif %}
 
 {% if taglist %}
   <h2>{{message.tag}}</h2>

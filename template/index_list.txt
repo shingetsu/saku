@@ -37,6 +37,9 @@
   {% endfor %}
   </ul>
 {% endfor %}
+{% if (not cachelist) and (isfriend or isadmin) %}
+  <p>{{message.empty_list % (gateway_link(gateway_cgi, 'recent'))}}</p>
+{% endif %}
 
 {% if isadmin %}
   <p><input type="submit" value="{{message.del_file}}" class="btn" /></p>
