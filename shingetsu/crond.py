@@ -1,7 +1,7 @@
 '''Cron daemon running in another thread for client.cgi.
 '''
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2015 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,7 @@
 #
 
 import gc
+import os.path
 import re
 import sys
 import time
@@ -35,30 +36,14 @@ from urllib.request import urlopen
 
 from . import config
 from . import tiedobj
+from .cache import *
+from .node import *
+from .tag import UserTagList
+from .updatequeue import UpdateQueue
+from .util import opentext
 
-
-class Client(Thread):
-
-    """Access client.cgi."""
-
-    def __init__(self):
-        Thread.__init__(self)
-
-    def run(self):
-        try:
-            con = urlopen("http://localhost:%d%s" %
-                          (config.port, config.client))
-            con.close()
-        except IOError:
-            pass
-        sys.stderr.write('clinet thread finished\n')
-        sys.stdout.flush()
-        sys.stderr.flush()
 
 class Crond(Thread):
-
-    """Cron daemon running in another thread for client.cgi."""
-
     gc_counter = {}
 
     def __init__(self):
@@ -94,3 +79,148 @@ class Crond(Thread):
                 tmp[k] = counter[k] - self.gc_counter.get(k, 0)
                 self.gc_counter[k] = counter[k]
         print('GC', len(objects), len(gc.garbage), collect, tmp)
+
+# End of Crond
+
+
+class Status(dict):
+
+    """Time stamp for client process.
+
+    format:
+        ping
+        init
+        sync
+    """
+
+    statusfile = config.client_log
+
+    def __init__(self):
+        dict.__init__(self)
+        self.update({"ping": 0, "init": 0, "sync": 0})
+        try:
+            if os.path.isfile(self.statusfile):
+                f = open(self.statusfile)
+                for k in ("ping", "init", "sync"):
+                    self[k] = int(f.readline())
+                f.close()
+        except IOError:
+            sys.stderr.write(self.statusfile + ": IOError\n")
+        except ValueError:
+            sys.stderr.write("Wrong format\n")
+
+    def sync(self):
+        try:
+            f = opentext(self.statusfile, 'w')
+            for k in ("ping", "init", "sync"):
+                f.write(str(self[k]) + '\n')
+            f.close()
+        except IOError:
+            sys.stderr.write(self.statusfile + ": IOError\n")
+
+    def check(self, key):
+        """Task is done."""
+        self[key] = str(int(time.time()))
+
+# End of Status
+
+
+class Client(Thread):
+
+    def __init__(self):
+        Thread.__init__(self)
+
+    def run(self):
+        status = Status()
+        self.timelimit = int(time.time()) + config.client_timeout
+
+        if int(time.time()) - status["ping"] >= config.ping_cycle:
+            self.do_ping()
+            status = Status()
+            self.do_update()
+
+        nodelist = NodeList()
+        if len(nodelist) == 0:
+            self.do_init()
+            nodelist = NodeList()
+            if nodelist:
+                self.do_sync()
+            status = Status()
+
+        if (int(time.time()) - status["init"]
+            >= config.init_cycle * len(nodelist)):
+            self.do_init()
+            status = Status()
+        elif len(nodelist) < config.nodes:
+            self.do_rejoin()
+            status = Status()
+
+        if int(time.time()) - status["sync"] >= config.sync_cycle:
+            self.do_sync()
+
+    def check(self, key):
+        status = Status()
+        status.check(key)
+        status.sync()
+
+    def do_ping(self):
+        self.check("ping")
+        nodelist = NodeList()
+        nodelist.pingall()
+        nodelist.sync()
+        sys.stderr.write("shingetsu.node.NodeList.pingall() finished\n")
+
+    def do_update(self):
+        queue = UpdateQueue()
+        queue.start()
+        sys.stderr.write("shingetsu.updatequeue.UpdateQueue.run() started\n")
+
+    def do_init(self):
+        self.check("init")
+        nodelist = NodeList()
+        nodelist.init()
+        nodelist.sync()
+        searchlist = SearchList()
+        searchlist.extend(nodelist)
+        searchlist.sync()
+        sys.stderr.write("shingetsu.node.NodeList.init() finished\n")
+
+    def do_rejoin(self):
+        nodelist = NodeList()
+        searchlist = SearchList()
+        nodelist.rejoin(searchlist)
+        sys.stderr.write("shingetsu.node.NodeList.rejoin() finished\n")
+
+    def do_sync(self):
+        self.check("sync")
+        nodelist = NodeList()
+        for n in nodelist[:]:
+            nodelist.join(n)
+        nodelist.sync()
+        sys.stderr.write("shingetsu.node.NodeList.join() finished\n")
+
+        cachelist = CacheList()
+        cachelist.rehash()
+        sys.stderr.write("shingetsu.cache.CacheList.rehash() finished\n")
+
+        cachelist.clean_records()
+        sys.stderr.write("shingetsu.cache.CacheList.clean_records()" +
+                          " finished\n")
+
+        cachelist.remove_removed()
+        sys.stderr.write("shingetsu.cache.CacheList.remove_removed()" +
+                          " finished\n")
+
+        user_tag_list = UserTagList()
+        user_tag_list.update_all()
+        sys.stderr.write("shingetsu.tag.UserTagList.update_all()" +
+                          " finished\n")
+
+        recentlist = RecentList()
+        recentlist.getall()
+        sys.stderr.write("shingetsu.cache.RecentList.getall() finished\n")
+
+        cachelist.getall(timelimit=self.timelimit)
+        sys.stderr.write("shingetsu.cache.CacheList.getall() finished\n")
+
+# End of Client

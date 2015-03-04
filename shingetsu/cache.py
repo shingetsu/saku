@@ -33,6 +33,7 @@ import os
 import random
 import re
 import shutil
+import socket
 import sys
 from threading import RLock
 from time import time
@@ -1017,7 +1018,11 @@ class RecentList(UpdateList):
         count = 0
         for node in searchlist:
             tag_update = False
-            res = node.talk("/recent/%d-" % begin)
+            try:
+                res = node.talk("/recent/%d-" % begin)
+            except (IOError, socket.error, socket.timeout) as strerror:
+                sys.stderr.write('/recent %s: %s\n' % (node, strerror))
+                continue
             for line in res:
                 r = self.make_record(line)
                 if r is not None:

@@ -37,10 +37,9 @@ import socketserver
 from threading import RLock
 
 from . import config
-from . import admin_cgi, client_cgi, server_cgi, gateway_cgi, thread_cgi
+from . import admin_cgi, server_cgi, gateway_cgi, thread_cgi
 
 cgimodule = {"admin.cgi": admin_cgi,
-             "client.cgi": client_cgi,
              "server.cgi": server_cgi,
              "gateway.cgi": gateway_cgi,
              "thread.cgi": thread_cgi}
