@@ -733,6 +733,8 @@ class Cache(dict):
                     rec = self[r]
                     if rec.stamp + limit < now:
                         rec.remove()
+                        del self[r]
+                        self.count -= 1
 
         # Remove redundant records.
         once = set()
@@ -743,8 +745,12 @@ class Cache(dict):
                 pass
             elif rec.id in once:
                 rec.remove()
+                del self[r]
+                self.count -= 1
             else:
                 once.add(rec.id)
+
+        self.sync_status()
 
     def search(self, searchlist=None, myself=None):
         """Search node from network and get records."""
