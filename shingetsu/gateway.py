@@ -205,6 +205,8 @@ class CGI(basecgi.CGI):
         return file_decode(query)
 
     def escape(self, msg):
+        if msg is None:
+            return ''
         msg = msg.replace("&", "&amp;")
         msg = re.sub(r"&amp;(#\d+|#[Xx][0-9A-Fa-f]+|[A-Za-z0-9]+);",
                      r"&\1;",
