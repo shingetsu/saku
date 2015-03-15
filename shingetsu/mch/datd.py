@@ -235,9 +235,6 @@ def make_subject(env, board):
     cachelist = make_subject_cachelist(board)
     last_stamp = 0
     for c in cachelist:
-        # for Cache.num and Cache.__len__
-        c.load()
-
         if not load_from_net and len(c) == 0:
             # Because you don't have a permission of getting data from network,
             # don't need to look a thread that don't have records.
@@ -251,9 +248,12 @@ def make_subject(env, board):
         except keylib.DatkeyNotFound:
             continue
 
+        title_str = title.file_decode(c.datfile)
+        if title_str is not None:
+            title_str = title_str.replace('\n', '')
         subjects.append('{key}.dat<>{title} ({num})\n'.format(
             key=key,
-            title=title.file_decode(c.datfile),
+            title=title_str,
             num=len(c)))
     return subjects, last_stamp
 

@@ -38,13 +38,13 @@ def make_dat(cache, env, board):
                 name=name,
                 mail=rec.get('mail', ''),
                 date=_datestr_2ch(rec.get('stamp', 0)),
-                id=rec.get('id', '')[:8],  # 8 is saku's id length
                 body=_make_body(rec, env, board, table)
         )
         if i == 0:  # dat title
             comment += title.file_decode(cache.datfile)
         comment += '\n'
         dat.append(comment)
+        rec.free()
 
     return dat
 
@@ -57,7 +57,6 @@ class ResTable(dict):
         cache.load()
         for i, k in enumerate(list(cache.keys()), 1):
             rec = cache[k]
-            rec.load()
             self[i] = rec.id[:8]
             self[rec.id[:8]] = i
 

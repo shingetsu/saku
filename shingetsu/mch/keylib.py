@@ -1,4 +1,5 @@
 import threading
+import time
 
 from shingetsu import cache
 from shingetsu import config
@@ -53,10 +54,11 @@ class _DatkeyTable:
 
         try:
             rec = cache[cache.keys()[0]]  # first record
-            rec.load()
-            first_stamp = int(rec.get('stamp', 0))
+            first_stamp = int(rec.stamp)
         except IndexError:
             first_stamp = cache.recent_stamp  # if don't have recent_stamp, it's 0
+        if not first_stamp:
+            first_stamp = int(time.time() - 24 * 60 * 60)
 
         # avoid duplication
         while first_stamp in self.datkey2filekey:
