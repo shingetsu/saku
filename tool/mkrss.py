@@ -78,7 +78,7 @@ def check_date(date, filename):
         olddate = opentext(rssdate).read().strip()
     except IOError:
         olddate = ""
-    if date == olddate:
+    if date and date == olddate:
         sys.exit()
     else:
         opentext(rssdate, 'w').write(date)
