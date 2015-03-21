@@ -2,7 +2,7 @@
 #
 # start/stop SAKU server.
 #
-# Copyright (C) 2005-2012 shinGETsu Project.
+# Copyright (C) 2005-2015 shinGETsu Project.
 #
 ### BEGIN INIT INFO
 # Provides:          saku
@@ -33,7 +33,7 @@ case "$1" in
             exit 0
         fi
         kill -TERM -`cat $PIDFILE`
-        pkill -KILL -`cat $PIDFILE` > /dev/null 2>&1 || true
+        kill -KILL -`cat $PIDFILE` > /dev/null 2>&1 || true
         rm $PIDFILE
         echo "."
     ;;

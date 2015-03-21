@@ -49,6 +49,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 * Jinja2 (ver.2.6) 朔をインストールする場合
 * markupsafe (ver.0.19以降) 朔をインストールする場合
 * PIL または Pillow (Python Imaging Library) もし必要なら
+* Supervisor もし必要なら
 
 朔をインストールせずに使う場合
 ------------------------------
@@ -95,9 +96,11 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
 5. 設定ファイルは /usr/local/share/doc/saku/sample にインストールされます。
    これを必要に応じて、次のようにインストールしてください。
+   Supervisorを使う場合には init.sample ではなく supervisor.sample を
+   インストールしてください。
 
-        # cp saku.init /usr/local/etc/init.d/saku
-        # cp sample.ini /usr/local/etc/saku/saku.ini
+        # cp init.sample /usr/local/etc/init.d/saku
+        # cp saku.ini /usr/local/etc/saku/saku.ini
 
 6. ほとんどの設定ファイルは saku.ini でパスを指定するようになっており、
    デフォルトでは /usr/local/etc/saku に配置するような設定になっています。

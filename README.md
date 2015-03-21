@@ -55,6 +55,7 @@ Saku requires
 * Jinja2 (ver.2.6) if you install Saku
 * markupsafe (ver.0.19 or later) if you install Saku
 * PIL or Pillow (Python Imaging Libraty) if you need
+* Supervisor if you need
 
 Usage Saku without install
 --------------------------
@@ -81,10 +82,11 @@ Usage Saku with install
 4. Configration files are installed into /usr/local/share/doc/saku/sample.
    You shoud install them:
 
-        # cp saku.init /usr/local/etc/init.d/saku
-        # cp sample.ini /usr/local/etc/saku/saku.ini
+        # cp init.sample /usr/local/etc/init.d/saku
+        # cp saku.ini /usr/local/etc/saku/saku.ini
         
    and so on.
+   If you use Supervisor, install supervisor.sample instead of init.sample.
    The paths of config files are set in saku.ini,
    they are in /usr/local/etc/saku by defaults.
    saku.ini are loaded from following paths and the later settings have a priority.
