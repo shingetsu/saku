@@ -4,7 +4,7 @@
  #}
 {% if target %}
   <form method="get" action="{{gateway_cgi}}/{{target}}" id="filterform" class="form-horizontal"><div>
-    <label>{{message.filter}} ({{message.regexp}})<br />
+    <label>{{message.filter}} ({{message.string}})<br />
     <input name="filter" value="{{filter}}" class="form-control" size="40" /></label>
     <button class="btn"><i class="glyphicon glyphicon-search"></i> {{message.show}}</button>
   </div></form>

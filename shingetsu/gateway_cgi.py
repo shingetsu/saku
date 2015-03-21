@@ -51,7 +51,7 @@ class CGI(gateway.CGI):
             filter = self.form.getfirst('filter', '')
             tag = self.form.getfirst('tag', '')
             if filter:
-                self.filter = re.compile(filter, re.I)
+                self.filter = filter.lower()
                 self.str_filter = cgi.escape(filter, True)
             elif tag:
                 self.tag = tag.lower()

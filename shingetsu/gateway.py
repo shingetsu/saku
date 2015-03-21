@@ -589,7 +589,7 @@ class CGI(basecgi.CGI):
         if not x:
             return ''
         y = self.str_encode(x)
-        if self.filter and (not self.filter.search(x)):
+        if self.filter and self.filter not in x.lower():
             return ''
         elif self.tag:
             matchtag = False
