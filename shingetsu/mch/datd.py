@@ -194,6 +194,8 @@ def make_subject_cachelist(board):
             c.recent_stamp = rec.stamp
             result.append(c)
 
+    result = [c for c in result if c.type == 'thread']
+
     # same as order recent page
     result.sort(key=lambda c: c.recent_stamp, reverse=True)
     if board is not None:
