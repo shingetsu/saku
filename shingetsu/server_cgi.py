@@ -263,6 +263,9 @@ class CGI(basecgi.CGI):
         if not host:
             return
         node = Node(host=host, port=port, path=path)
+        if (not node_allow().check(str(node))) and \
+             node_deny().check(str(node)):
+            return
         searchlist = SearchList()
         searchlist.append(node)
         searchlist.sync()
