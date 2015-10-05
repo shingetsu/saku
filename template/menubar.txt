@@ -6,7 +6,7 @@
 {% else %}
   <aside class="navbar-collapse">
 {% endif %}
-<ul class="nav navbar-nav">
+<ul class="nav nav-pills navbar-nav">
   <li><a href="{{gateway_cgi}}">{{message.top}}</a></li>
   {% for i in ('changes', 'index') %}
     <li>{{gateway_link(gateway_cgi, i)}}</li>
