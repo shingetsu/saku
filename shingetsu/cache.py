@@ -1025,7 +1025,7 @@ class RecentList(UpdateList):
                 continue
             for line in res:
                 r = self.make_record(line)
-                if r is None or not title.is_valid_file(r.datfile):
+                if r is None or not title.is_valid_file(r.datfile, 'thread'):
                     sys.stderr.write('invalid recent: %s\n' % line.strip())
                 else:
                     self.append(r)

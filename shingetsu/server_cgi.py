@@ -1,7 +1,7 @@
 """Server CGI methods.
 """
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2015 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,7 @@ from random import choice
 
 from . import config
 from . import basecgi
+from . import title
 from .cache import *
 from .node import *
 from .updatequeue import UpdateQueue
@@ -259,13 +260,15 @@ class CGI(basecgi.CGI):
         if m is None:
             return False
         (datfile, stamp, id, host, port, path) = m.groups()
+        if not title.is_valid_file(datfile, 'thread'):
+            return False
         host = self.get_remote_hostname(host)
         if not host:
-            return
+            return False
         node = Node(host=host, port=port, path=path)
         if (not node_allow().check(str(node))) and \
              node_deny().check(str(node)):
-            return
+            return False
         searchlist = SearchList()
         searchlist.append(node)
         searchlist.sync()
