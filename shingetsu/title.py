@@ -32,7 +32,8 @@ import sys
 
 from shingetsu import config
 
-__all__ = ['str_encode', 'str_decode', 'file_encode', 'file_decode']
+__all__ = ['str_encode', 'str_decode', 'file_encode', 'file_decode',
+           'is_valid_file']
 
 _allchars_quoter = urllib.parse.Quoter('')
 _allchars_quoter.safe = []
@@ -103,6 +104,32 @@ def file_decode(query, type=None):
             sys.stderr.write(query + ': ValueError/IndexError\n')
             return None
     return str(b''.join(buf), 'utf-8', 'replace')
+
+def is_valid_file(query, type=None):
+    '''Validate filename.
+
+    >>> is_valid_file('thread_7E')
+    True
+    >>> is_valid_file('foo_7Ex')
+    False
+    '''
+    q = query.split('_')
+    if len(q) < 2:
+        return False
+    if type is not None and q[0] != type:
+        return False
+    query = q[1]
+    buf = []
+    for i in range(0, len(query), 2):
+        try:
+            buf.append(int(query[i:i+2], 16).to_bytes(1, 'big'))
+        except (ValueError, IndexError):
+            return False
+    try:
+        str(b''.join(buf), 'utf-8', 'strict')
+        return True
+    except UnicodeError:
+        return False
 
 def file_hash(query):
     """Make hash from filename.
