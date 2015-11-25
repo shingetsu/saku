@@ -1,9 +1,7 @@
 #
 # Initial Node List for Saku.
-# Copyright (c) 2006-2014 shinGETsu Project.
+# Copyright (c) 2006-2015 shinGETsu Project.
 #
 node.shingetsu.info:8000/server.cgi
 rep4649.ddo.jp:8000/server.cgi
-skaphy.dyndns.info:8039/saku/server.cgi
-saku.dpforest.info:8000/server.cgi
-node.sakura.onafox.net:8000/server.cgi
+opptape.iobb.net:8000/server.cgi
