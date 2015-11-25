@@ -27,6 +27,7 @@
 #
 
 import base64
+import binascii
 import hashlib
 import imghdr
 import os
@@ -318,19 +319,30 @@ class Record(dict):
             self._write_file(self.path, str(self)+"\n")
         body = self.body_string()+'\n'
         if 'attach' in self:
-            attach = base64.decodestring(self['attach'].encode('utf-8'))
-            attach_path = self.attach_path(self.get('suffix', 'txt'))
-            thumbnail_path = self.attach_path(self.get('suffix', 'jpg'),
-                                thumbnail_size=config.thumbnail_size)
+            self._sync_attach(force)
             if force or (not fsdiff(self.body_path, body)):
                 self._write_file(self.body_path, body)
+        if 'sign' in self:
+            if force or (not fsdiff(self.body_path, body)):
+                self._write_file(self.body_path, body)
+
+    def _sync_attach(self, force):
+        attach_path = self.attach_path(self.get('suffix', 'txt'))
+        thumbnail_path = self.attach_path(self.get('suffix', 'jpg'),
+                            thumbnail_size=config.thumbnail_size)
+        try:
+            attach = base64.decodestring(self['attach'].encode('utf-8'))
             if force or (not fsdiff(attach_path, attach)):
                 self._write_file(attach_path, attach)
             if force or (not os.path.isfile(thumbnail_path)):
                 self.make_thumbnail()
-        if 'sign' in self:
-            if force or (not fsdiff(self.body_path, body)):
-                self._write_file(self.body_path, body)
+        except binascii.Error as err:
+            sys.stderr.write('binascii.Error: %s\n' % err)
+            for p in (attach_path, thumbnail_path):
+                try:
+                    os.remove(p)
+                except (IOError, OSError) as err:
+                    sys.stderr.write('IOError/OSError: %s: %s\n' % (p, err))
 
     def body_string(self):
         """Remove attach field."""
