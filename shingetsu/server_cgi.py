@@ -262,12 +262,15 @@ class CGI(basecgi.CGI):
         (datfile, stamp, id, host, port, path) = m.groups()
         if not title.is_valid_file(datfile, 'thread'):
             return False
-        host = self.get_remote_hostname(host)
+        if not host:
+            host = self.get_remote_hostname(host)
         if not host:
             return False
         node = Node(host=host, port=port, path=path)
         if (not node_allow().check(str(node))) and \
              node_deny().check(str(node)):
+            return False
+        if not self._seem_valid_relay_node(host, node, datfile):
             return False
         searchlist = SearchList()
         searchlist.append(node)
@@ -289,5 +292,19 @@ class CGI(basecgi.CGI):
             queue.append(datfile, stamp, id, node)
             queue.start()
             return True
+
+    def _seem_valid_relay_node(self, host, node, datfile):
+        remote_addr = self.environ['REMOTE_ADDR']
+        if host == remote_addr:
+            return True
+        ipaddr = socket.gethostbyname(host)
+        if ipaddr == remote_addr:
+            return True
+        cache = Cache(datfile)
+        if not cache.exists():
+            return True
+        if cache.node and node in cache.node:
+            return True
+        return False
 
 # End of CGI
