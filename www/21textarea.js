@@ -1,6 +1,6 @@
 /* -*- coding: utf-8 -*-
  * Text Area Conttoller.
- * Copyright (C) 2006-2014 shinGETsu Project.
+ * Copyright (C) 2006-2015 shinGETsu Project.
  */
 
 shingetsu.initialize(function () {
@@ -111,7 +111,14 @@ shingetsu.initialize(function () {
     PreviewController.prototype._show = function () {
         $.each(this._textAreaFriends, function (i, v) { v.hide() });
         this._textArea.hide();
-        var message = html_format(this._textArea.val());
+        var message = this._textArea.val();
+        if (marked && message.startsWith("@markdown")) {
+            message = marked(message.substring("@markdown".length));
+            this._previewArea.css('white-space', 'normal');
+        } else {
+            message = html_format(this._textArea.val());
+            this._previewArea.css('white-space', 'pre');
+        }
         this._previewArea.html(message);
         shingetsu.plugins.rootResAnchor.parseContent($(this._previewArea));
         this._previewArea.show();
