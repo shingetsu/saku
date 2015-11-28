@@ -40,7 +40,7 @@ shingetsu.initialize(function () {
             $md.addClass('markdown');
             $md.insertAfter($dd);
             $dd.hide();
-            if (text.startsWith("@markdown")) {
+            if (text.indexOf("@markdown") === 0) {
                 $md.html(marked(text.substring("@markdown".length)));
             } else {
                 $md.html(marked(text));
@@ -56,7 +56,7 @@ shingetsu.initialize(function () {
             $ele = $(ele);
             $ele.data('md-element', null);
             var text = $ele.text();
-            if (text.startsWith("@markdown")) {
+            if (text.indexOf("@markdown") === 0) {
                 var $md = $('<dd>');
                 $md.addClass('markdown');
                 $md.insertAfter($ele);
