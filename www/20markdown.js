@@ -35,7 +35,7 @@ shingetsu.initialize(function () {
             $dd.show();
             $dd.data('isMarkdown', false);
         } else {
-            var text = $dd.data('orig-text');
+            var text = $dd.text();
             var $md = $('<dd>');
             $md.addClass('markdown');
             $md.insertAfter($dd);
@@ -54,8 +54,6 @@ shingetsu.initialize(function () {
     function onload() {
         $.each($("dd"),function(i, ele) {
             $ele = $(ele);
-            $ele.data('orig-html', $ele.html());
-            $ele.data('orig-text', $ele.text());
             $ele.data('md-element', null);
             var text = $ele.text();
             if (text.startsWith("@markdown")) {
