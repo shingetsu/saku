@@ -22,34 +22,43 @@ shingetsu.initialize(function () {
         });
     }
 
-    function toggleMarkdown(id) {
-        $dd = $('#b' + id);
-        if ($dd.length == 0) {
-            return;
-        }
-        var $md = null;
-        if ($dd.data('isMarkdown')) {
-            $md = $dd.data('md-element');
-            $md.remove();
-            $dd.data('md-element', null);
-            $dd.show();
-            $dd.data('isMarkdown', false);
-        } else {
+    function showMarkdown($dd)
+    {
+        var $md = $dd.data('md-element');
+        if (! $md) {
             var text = $dd.text();
             var $md = $('<dd>');
             $md.addClass('markdown');
             $md.insertAfter($dd);
-            $dd.hide();
             if (text.indexOf("@markdown") === 0) {
                 $md.html(marked(text.substring("@markdown".length)));
             } else {
                 $md.html(marked(text));
             }
+            var $img = $dd.find('img');
+            if ($img.length > 0) {
+                $md.append($img.clone(true));
+            }
             $dd.data('md-element', $md);
-            $dd.data('isMarkdown', true);
         }
+        $dd.hide();
+        $md.show();
+        $dd.data('isMarkdown', true);
     }
 
+    function toggleMarkdown(id) {
+        $dd = $('#b' + id);
+        if ($dd.length == 0) {
+            return;
+        }
+        if ($dd.data('isMarkdown')) {
+            $dd.data('md-element').hide();
+            $dd.show();
+            $dd.data('isMarkdown', false);
+        } else {
+            showMarkdown($dd);
+        }
+    }
 
     function onload() {
         $.each($("dd"),function(i, ele) {
@@ -57,13 +66,7 @@ shingetsu.initialize(function () {
             $ele.data('md-element', null);
             var text = $ele.text();
             if (text.indexOf("@markdown") === 0) {
-                var $md = $('<dd>');
-                $md.addClass('markdown');
-                $md.insertAfter($ele);
-                $ele.hide();
-                $md.html(marked(text.substring("@markdown".length)));
-                $ele.data('md-element', $md);
-                $ele.data('isMarkdown', true);
+                showMarkdown($ele);
             } else {
                 $ele.data('isMarkdown', false);
             }
