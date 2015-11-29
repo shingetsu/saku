@@ -112,7 +112,7 @@ shingetsu.initialize(function () {
         $.each(this._textAreaFriends, function (i, v) { v.hide() });
         this._textArea.hide();
         var message = this._textArea.val();
-        if (marked && message.startsWith("@markdown")) {
+        if (typeof marked === 'function' && message.startsWith("@markdown")) {
             message = marked(message.substring("@markdown".length));
             this._previewArea.css('white-space', 'normal');
         } else {
