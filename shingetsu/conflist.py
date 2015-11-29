@@ -6,7 +6,7 @@ When the file is updated, the object is updated too.
 Encoding must be UTF-8.
 '''
 #
-# Copyright (c) 2006,2014 shinGETsu Project.
+# Copyright (c) 2006-2015 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -61,8 +61,12 @@ class ConfList:
             f = opentext(self.path)
             for line in f:
                 line = line.strip()
-                if line and not line.startswith('#'):
-                    self.data.append(self.compile(line))
+                if not line or line.startswith('#'):
+                    continue
+                pat = self.compile(line)
+                if not pat:
+                    continue
+                self.data.append(pat)
             f.close()
         except (IOError, OSError) as err:
             sys.stderr.write('IOError/OSError: %s\n' % err)
