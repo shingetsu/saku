@@ -10,6 +10,7 @@ Authors
 * (thumbnail patch) A shinGETsu user.
 * (imghdr patch) A shinGETsu user.
 * (js extensions) shinGETsu users.
+* (markdown extension) WhiteCat6142
 
 Contributers
 ------------
@@ -20,6 +21,7 @@ Contributers
 * (Twitter Bootstrap) Twitter.
 * (jQuery Lazy) Daniel 'Eisbehr' Kern
 * (Spoiler Alert) Joshua Hull, Jared Volpe, Dwayne Charrington
+* (marked) Christopher Jeffrey
 
 WebSite
 -------

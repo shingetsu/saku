@@ -1,5 +1,5 @@
 /* Saku Default CSS
- * Copyright (c) 2005-2012 shinGETsu Project.
+ * Copyright (c) 2005-2015 shinGETsu Project.
  */
 body {
     background-color: #fff;
@@ -32,6 +32,18 @@ a:hover {
 .sign {
     color: red;
 }
+dd.markdown {
+    margin-top: 1ex;
+}
+dd.markdown th {
+    font-weight: bold;
+    text-align: center;
+    background-color: #eee;
+}
+dd.markdown td, dd.markdown th {
+    border: 1px solid #ccc;
+    padding: 5px 5px 5px 1em;
+}
 table.solid td {
     border: 1px solid #ccc; 
     padding: 5px 5px 5px 1em;
@@ -52,7 +64,6 @@ table.solid td {
     border: 1px solid #000;
     padding: 5px;
     margin: 5px;
-    white-space: pre;
 }
 ul.topmenu li { 
     display: inline;
