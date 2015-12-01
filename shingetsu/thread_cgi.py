@@ -1,7 +1,7 @@
 '''Saku Thread CGI methods.
 '''
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2015 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -318,8 +318,9 @@ class CGI(gateway.CGI):
             self.stdout.write(
                 "Content-Type: " + type + "\n" +
                 "Last-Modified: " + self.rfc822_time(stamp) + "\n" +
-                "Content-Length: " + str(size) + "\n")
-            if not attachutil.is_valid_image(type, attach_file):
+                "Content-Length: " + str(size) + "\n" +
+                "X-Content-Type-Options: nosniff\n")
+            if attachutil.seem_html(suffix):
                 self.stdout.write("Content-Disposition: attachment\n")
             self.stdout.write("\n")
             try:

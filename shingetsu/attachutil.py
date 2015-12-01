@@ -1,7 +1,7 @@
 """Attached Files Utilities.
 """
 #
-# Copyright (c) 2009 shinGETsu Project.
+# Copyright (c) 2009,2015 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,18 +25,24 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $Id$
-#
 
 import mimetypes
 import imghdr
 
-__version__ = '$Revision$'
-__all__ = ['is_valid_image']
+__all__ = ['is_valid_image', 'seem_html']
 
 # For Unittest
 _imghdr = imghdr
 
+
+def seem_html(suffix):
+    """Suffix seem to be html or not.
+    """
+    (path_type, null) = mimetypes.guess_type('test.' + suffix)
+    return path_type in (
+        'text/html',
+        'application/xhtml+xml',
+    )
 
 def is_valid_image(mimetype, path):
     """Type of path is same as mimetype or not.

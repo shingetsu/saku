@@ -8,7 +8,7 @@
     RewriteMap escape int:escape
 
     <Directory "/srv/www/bbs.shingetsu.info">
-        Options -Indexes -ExecCGI Multiviews SymLinksIfOwnerMatch
+        Options -Indexes -ExecCGI +Multiviews +SymLinksIfOwnerMatch
         AddType text/xml;charset=UTF-8 .rdf
         AddType text/html;charset=UTF-8 .html
 
@@ -75,11 +75,14 @@
     Alias /CACHE/ /srv/saku/cache/
     <Directory "/srv/saku/cache">
         Options -Indexes -ExecCGI
-        Header add Content-Disposition "attachment"
+        Header add X-Content-Type-Options "nosniff"
         RemoveHandler .php
         <FilesMatch "\.ph(p3?|tml)$">
             SetHandler None
             ForceType text/plain
+        </FilesMatch>
+        <FilesMatch "\.([SsXx]?[Hh][Tt][Mm][Ll]?|[Xx][Hh][Tt])$">
+            Header add Content-Disposition "attachment"
         </FilesMatch>
 
         <IfModule mod_proxy.c>
