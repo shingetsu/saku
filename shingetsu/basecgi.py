@@ -1,7 +1,7 @@
 '''Base CGI module.
 '''
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2015 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -70,6 +70,9 @@ class BodyFilter:
     def close(self):
         if self.buf:
             self.output.write(self.buf.replace(b'\n', b'\r\n'))
+
+    def __getattr__(self, name):
+        return getattr(self.output, name)
 
     def __del__(self):
         self.close()
