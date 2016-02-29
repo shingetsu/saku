@@ -109,11 +109,9 @@ Usage Saku with install
 
 9. Run /usr/local/bin/saku for user application.
 
-How to Insatall Required Packages on Debian GNU/Linux 7.4
+How to Insatall Required Packages on Debian GNU/Linux 8.3
 ---------------------------------------------------------
-1. sudo aptitude install python3 python3-jinja2 python3-pip
-2. sudo aptitude install libjpeg-dev libopenjpeg-dev libtiff-dev libwebp-dev
-3. sudo pip-3.2 install Pillow
+1. sudo aptitude install python3 python3-jinja2 python3-pil
 
 Acknowledge
 -----------
