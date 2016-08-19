@@ -51,6 +51,10 @@ class SpamError(RuntimeError):
 def post_comment(thread_key, name, mail, body, passwd, tag=None):
     """Post article."""
 
+    p = re.compile('https?://.+/test/read.cgi/2ch.*/([0-9]+)/')
+    for x in p.finditer(body):
+        body = body.replace(x.group(0),'[[' + title.file_decode(keylib.get_filekey(x.group(1))) + ']]')
+
     stamp = int(time.time())
     recbody = {}
     if body != '': recbody['body'] = gateway.CGI.escape(None, body)
