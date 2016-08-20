@@ -59,8 +59,11 @@ def post_comment(env, thread_key, name, mail, body, passwd, tag=None):
         dat_host = re.sub(r':\d+', ':' + str(config.dat_port), host)
     p = re.compile(r'https?://' + dat_host + '/test/read.cgi/2ch.*/([0-9]+)/')
     for x in p.finditer(body):
-        file = keylib.get_filekey(x.group(1))
-        if file is not None: body = body.replace(x.group(0),'[[' + title.file_decode(file) + ']]')
+        try:
+            file = keylib.get_filekey(x.group(1))
+            body = body.replace(x.group(0),'[[' + title.file_decode(file) + ']]')
+        except keylib.DatkeyNotFound:
+            pass
 
     stamp = int(time.time())
     recbody = {}
