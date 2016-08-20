@@ -57,7 +57,7 @@ def post_comment(env, thread_key, name, mail, body, passwd, tag=None):
     else:
         host = env['HTTP_HOST']
         dat_host = re.sub(r':\d+', ':' + str(config.dat_port), host)
-    p = re.compile(r'https?://' + dat_host + '/test/read.cgi/2ch.*/([0-9]+)/')
+    p = re.compile(r'https?://' + dat_host + '/test/read.cgi/2ch(?:_[0-9A-Z]+)?/([0-9]+)/')
     for x in p.finditer(body):
         try:
             file = keylib.get_filekey(x.group(1))
