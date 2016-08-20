@@ -38,6 +38,7 @@ from shingetsu import cache
 from shingetsu import spam
 from shingetsu import updatequeue
 from shingetsu import template
+from shingetsu import config
 
 from . import dat
 from . import utils
@@ -48,12 +49,18 @@ class SpamError(RuntimeError):
     pass
 
 
-def post_comment(thread_key, name, mail, body, passwd, tag=None):
+def post_comment(env, thread_key, name, mail, body, passwd, tag=None):
     """Post article."""
 
-    p = re.compile('https?://.+/test/read.cgi/2ch.*/([0-9]+)/')
+    if config.server_name:
+        dat_host = config.server_name
+    else:
+        host = env['HTTP_HOST']
+        dat_host = re.sub(r':\d+', ':' + str(config.dat_port), host)
+    p = re.compile(r'https?://' + dat_host + '/test/read.cgi/2ch.*/([0-9]+)/')
     for x in p.finditer(body):
-        body = body.replace(x.group(0),'[[' + title.file_decode(keylib.get_filekey(x.group(1))) + ']]')
+        file = keylib.get_filekey(x.group(1))
+        if file is not None: body = body.replace(x.group(0),'[[' + title.file_decode(file) + ']]')
 
     stamp = int(time.time())
     recbody = {}
@@ -165,7 +172,7 @@ def post_comment_app(env, resp):
 
 
     try:
-        post_comment(key, name, mail, body, passwd, tag)
+        post_comment(env, key, name, mail, body, passwd, tag)
     except SpamError:
         return error_resp('スパムとみなされました', resp, **info)
 
