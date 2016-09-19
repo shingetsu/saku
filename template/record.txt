@@ -35,7 +35,7 @@
   <br /><img src="/x.gif" data-lazyimg data-src="{{thread_cgi}}/{{cache.datfile}}/{{rec.id}}/{{rec.stamp}}.{{suffix}}" height="210" alt="" /></a>
 {% endif %}
 {% if ('attach' in rec) and (suffix in ('webm', 'mp4', 'ogv')) %}
-  <br /><video src="{{thread_cgi}}/{{cache.datfile}}/{{rec.id}}/{{rec.stamp}}.{{suffix}}" height="320" controls/>
+  <br /><video src="{{thread_cgi}}/{{cache.datfile}}/{{rec.id}}/{{rec.stamp}}.{{suffix}}" height="320" controls>
     <p>動画を再生するにはvideoタグをサポートしたブラウザが必要です</p></video>
 {% endif %}
 </dd>
