@@ -74,6 +74,7 @@ old_page<>old&gt;&gt;
 edit_tag<>Edit tags
 res<>Res
 sync_from_network<>Sync articles from network
+video_err<>Your browser does not support the video tag.
 
 # delete
 del_record_q<>Do you delete following article(s)?
