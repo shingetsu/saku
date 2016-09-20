@@ -76,6 +76,7 @@ new_page<>&lt;&lt;新
 old_page<>古&gt;&gt;
 edit_tag<>タグを編集する
 sync_from_network<>ネットワークからデータを同期する
+video_err<>動画を再生するにはvideoタグをサポートしたブラウザが必要です
 
 # delete
 yes<>はい
