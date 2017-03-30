@@ -13,14 +13,15 @@
     :license: BSD, see LICENSE for more details.
 """
 import operator
-from itertools import chain
+
 from collections import deque
-from jinja2.utils import Markup, MethodType, FunctionType
-import collections
+from jinja2.utils import Markup
+from jinja2._compat import next, izip, with_metaclass, text_type, \
+     method_type, function_type
 
 
 #: the types we support for context functions
-_context_function_types = (FunctionType, MethodType)
+_context_function_types = (function_type, method_type)
 
 
 _binop_to_func = {
@@ -79,7 +80,7 @@ class EvalContext(object):
 
     def __init__(self, environment, template_name=None):
         self.environment = environment
-        if isinstance(environment.autoescape, collections.Callable):
+        if callable(environment.autoescape):
             self.autoescape = environment.autoescape(template_name)
         else:
             self.autoescape = environment.autoescape
@@ -103,9 +104,9 @@ def get_eval_context(node, ctx):
     return ctx
 
 
-class Node(object, metaclass=NodeType):
+class Node(with_metaclass(NodeType, object)):
     """Baseclass for all Jinja2 nodes.  There are a number of nodes available
-    of different types.  There are three major types:
+    of different types.  There are four major types:
 
     -   :class:`Stmt`: statements
     -   :class:`Expr`: expressions
@@ -136,7 +137,7 @@ class Node(object, metaclass=NodeType):
                     len(self.fields),
                     len(self.fields) != 1 and 's' or ''
                 ))
-            for name, arg in zip(self.fields, fields):
+            for name, arg in izip(self.fields, fields):
                 setattr(self, name, arg)
         for attr in self.attributes:
             setattr(self, attr, attributes.pop(attr, None))
@@ -230,6 +231,9 @@ class Node(object, metaclass=NodeType):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    # Restore Python 2 hashing behavior on Python 3
+    __hash__ = object.__hash__
 
     def __repr__(self):
         return '%s(%s)' % (
@@ -687,7 +691,7 @@ class Concat(Expr):
 
     def as_const(self, eval_ctx=None):
         eval_ctx = get_eval_context(self, eval_ctx)
-        return ''.join(str(x.as_const(eval_ctx)) for x in self.nodes)
+        return ''.join(text_type(x.as_const(eval_ctx)) for x in self.nodes)
 
 
 class Compare(Expr):

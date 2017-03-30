@@ -15,11 +15,13 @@
     :license: BSD, see LICENSE for more details.
 """
 import re
+
 from operator import itemgetter
 from collections import deque
 from jinja2.exceptions import TemplateSyntaxError
-from jinja2.utils import LRUCache, next
-import sys
+from jinja2.utils import LRUCache
+from jinja2._compat import next, iteritems, implements_iterator, text_type, \
+     intern
 
 
 # cache for the lexers. Exists in order to be able to have multiple
@@ -47,55 +49,55 @@ float_re = re.compile(r'(?<!\.)\d+\.\d+')
 newline_re = re.compile(r'(\r\n|\r|\n)')
 
 # internal the tokens and keep references to them
-TOKEN_ADD = sys.intern('add')
-TOKEN_ASSIGN = sys.intern('assign')
-TOKEN_COLON = sys.intern('colon')
-TOKEN_COMMA = sys.intern('comma')
-TOKEN_DIV = sys.intern('div')
-TOKEN_DOT = sys.intern('dot')
-TOKEN_EQ = sys.intern('eq')
-TOKEN_FLOORDIV = sys.intern('floordiv')
-TOKEN_GT = sys.intern('gt')
-TOKEN_GTEQ = sys.intern('gteq')
-TOKEN_LBRACE = sys.intern('lbrace')
-TOKEN_LBRACKET = sys.intern('lbracket')
-TOKEN_LPAREN = sys.intern('lparen')
-TOKEN_LT = sys.intern('lt')
-TOKEN_LTEQ = sys.intern('lteq')
-TOKEN_MOD = sys.intern('mod')
-TOKEN_MUL = sys.intern('mul')
-TOKEN_NE = sys.intern('ne')
-TOKEN_PIPE = sys.intern('pipe')
-TOKEN_POW = sys.intern('pow')
-TOKEN_RBRACE = sys.intern('rbrace')
-TOKEN_RBRACKET = sys.intern('rbracket')
-TOKEN_RPAREN = sys.intern('rparen')
-TOKEN_SEMICOLON = sys.intern('semicolon')
-TOKEN_SUB = sys.intern('sub')
-TOKEN_TILDE = sys.intern('tilde')
-TOKEN_WHITESPACE = sys.intern('whitespace')
-TOKEN_FLOAT = sys.intern('float')
-TOKEN_INTEGER = sys.intern('integer')
-TOKEN_NAME = sys.intern('name')
-TOKEN_STRING = sys.intern('string')
-TOKEN_OPERATOR = sys.intern('operator')
-TOKEN_BLOCK_BEGIN = sys.intern('block_begin')
-TOKEN_BLOCK_END = sys.intern('block_end')
-TOKEN_VARIABLE_BEGIN = sys.intern('variable_begin')
-TOKEN_VARIABLE_END = sys.intern('variable_end')
-TOKEN_RAW_BEGIN = sys.intern('raw_begin')
-TOKEN_RAW_END = sys.intern('raw_end')
-TOKEN_COMMENT_BEGIN = sys.intern('comment_begin')
-TOKEN_COMMENT_END = sys.intern('comment_end')
-TOKEN_COMMENT = sys.intern('comment')
-TOKEN_LINESTATEMENT_BEGIN = sys.intern('linestatement_begin')
-TOKEN_LINESTATEMENT_END = sys.intern('linestatement_end')
-TOKEN_LINECOMMENT_BEGIN = sys.intern('linecomment_begin')
-TOKEN_LINECOMMENT_END = sys.intern('linecomment_end')
-TOKEN_LINECOMMENT = sys.intern('linecomment')
-TOKEN_DATA = sys.intern('data')
-TOKEN_INITIAL = sys.intern('initial')
-TOKEN_EOF = sys.intern('eof')
+TOKEN_ADD = intern('add')
+TOKEN_ASSIGN = intern('assign')
+TOKEN_COLON = intern('colon')
+TOKEN_COMMA = intern('comma')
+TOKEN_DIV = intern('div')
+TOKEN_DOT = intern('dot')
+TOKEN_EQ = intern('eq')
+TOKEN_FLOORDIV = intern('floordiv')
+TOKEN_GT = intern('gt')
+TOKEN_GTEQ = intern('gteq')
+TOKEN_LBRACE = intern('lbrace')
+TOKEN_LBRACKET = intern('lbracket')
+TOKEN_LPAREN = intern('lparen')
+TOKEN_LT = intern('lt')
+TOKEN_LTEQ = intern('lteq')
+TOKEN_MOD = intern('mod')
+TOKEN_MUL = intern('mul')
+TOKEN_NE = intern('ne')
+TOKEN_PIPE = intern('pipe')
+TOKEN_POW = intern('pow')
+TOKEN_RBRACE = intern('rbrace')
+TOKEN_RBRACKET = intern('rbracket')
+TOKEN_RPAREN = intern('rparen')
+TOKEN_SEMICOLON = intern('semicolon')
+TOKEN_SUB = intern('sub')
+TOKEN_TILDE = intern('tilde')
+TOKEN_WHITESPACE = intern('whitespace')
+TOKEN_FLOAT = intern('float')
+TOKEN_INTEGER = intern('integer')
+TOKEN_NAME = intern('name')
+TOKEN_STRING = intern('string')
+TOKEN_OPERATOR = intern('operator')
+TOKEN_BLOCK_BEGIN = intern('block_begin')
+TOKEN_BLOCK_END = intern('block_end')
+TOKEN_VARIABLE_BEGIN = intern('variable_begin')
+TOKEN_VARIABLE_END = intern('variable_end')
+TOKEN_RAW_BEGIN = intern('raw_begin')
+TOKEN_RAW_END = intern('raw_end')
+TOKEN_COMMENT_BEGIN = intern('comment_begin')
+TOKEN_COMMENT_END = intern('comment_end')
+TOKEN_COMMENT = intern('comment')
+TOKEN_LINESTATEMENT_BEGIN = intern('linestatement_begin')
+TOKEN_LINESTATEMENT_END = intern('linestatement_end')
+TOKEN_LINECOMMENT_BEGIN = intern('linecomment_begin')
+TOKEN_LINECOMMENT_END = intern('linecomment_end')
+TOKEN_LINECOMMENT = intern('linecomment')
+TOKEN_DATA = intern('data')
+TOKEN_INITIAL = intern('initial')
+TOKEN_EOF = intern('eof')
 
 # bind operators to token types
 operators = {
@@ -127,7 +129,7 @@ operators = {
     ';':            TOKEN_SEMICOLON
 }
 
-reverse_operators = dict([(v, k) for k, v in operators.items()])
+reverse_operators = dict([(v, k) for k, v in iteritems(operators)])
 assert len(operators) == len(reverse_operators), 'operators dropped'
 operator_re = re.compile('(%s)' % '|'.join(re.escape(x) for x in
                          sorted(operators, key=lambda x: -len(x))))
@@ -198,7 +200,7 @@ def compile_rules(environment):
 
     if environment.line_statement_prefix is not None:
         rules.append((len(environment.line_statement_prefix), 'linestatement',
-                      r'^\s*' + e(environment.line_statement_prefix)))
+                      r'^[ \t\v]*' + e(environment.line_statement_prefix)))
     if environment.line_comment_prefix is not None:
         rules.append((len(environment.line_comment_prefix), 'linecomment',
                       r'(?:^|(?<=\S))[^\S\r\n]*' +
@@ -226,7 +228,7 @@ class Token(tuple):
     lineno, type, value = (property(itemgetter(x)) for x in range(3))
 
     def __new__(cls, lineno, type, value):
-        return tuple.__new__(cls, (lineno, sys.intern(str(type)), value))
+        return tuple.__new__(cls, (lineno, intern(str(type)), value))
 
     def __str__(self):
         if self.type in reverse_operators:
@@ -263,6 +265,7 @@ class Token(tuple):
         )
 
 
+@implements_iterator
 class TokenStreamIterator(object):
     """The iterator for tokenstreams.  Iterate over the stream
     until the eof token is reached.
@@ -283,6 +286,7 @@ class TokenStreamIterator(object):
         return token
 
 
+@implements_iterator
 class TokenStream(object):
     """A token stream is an iterable that yields :class:`Token`\s.  The
     parser however does not iterate over it but calls :meth:`next` to go
@@ -290,7 +294,7 @@ class TokenStream(object):
     """
 
     def __init__(self, generator, name, filename):
-        self._next = iter(generator).__next__
+        self._iter = iter(generator)
         self._pushed = deque()
         self.name = name
         self.filename = filename
@@ -303,6 +307,7 @@ class TokenStream(object):
 
     def __bool__(self):
         return bool(self._pushed) or self.current.type is not TOKEN_EOF
+    __nonzero__ = __bool__  # py2
 
     eos = property(lambda x: not x, doc="Are we at the end of the stream?")
 
@@ -341,7 +346,7 @@ class TokenStream(object):
             self.current = self._pushed.popleft()
         elif self.current.type is not TOKEN_EOF:
             try:
-                self.current = self._next()
+                self.current = next(self._iter)
             except StopIteration:
                 self.close()
         return rv
@@ -349,7 +354,7 @@ class TokenStream(object):
     def close(self):
         """Close the stream."""
         self.current = Token(self.current.lineno, TOKEN_EOF, '')
-        self._next = None
+        self._iter = None
         self.closed = True
 
     def expect(self, expr):
@@ -384,7 +389,9 @@ def get_lexer(environment):
            environment.line_statement_prefix,
            environment.line_comment_prefix,
            environment.trim_blocks,
-           environment.newline_sequence)
+           environment.lstrip_blocks,
+           environment.newline_sequence,
+           environment.keep_trailing_newline)
     lexer = _lexer_cache.get(key)
     if lexer is None:
         lexer = Lexer(environment)
@@ -415,7 +422,7 @@ class Lexer(object):
             (operator_re, TOKEN_OPERATOR, None)
         ]
 
-        # assamble the root lexing rule. because "|" is ungreedy
+        # assemble the root lexing rule. because "|" is ungreedy
         # we have to sort by length so that the lexer continues working
         # as expected when we have parsing rules like <% for block and
         # <%= for variables. (if someone wants asp like syntax)
@@ -426,7 +433,44 @@ class Lexer(object):
         # block suffix if trimming is enabled
         block_suffix_re = environment.trim_blocks and '\\n?' or ''
 
+        # strip leading spaces if lstrip_blocks is enabled
+        prefix_re = {}
+        if environment.lstrip_blocks:
+            # use '{%+' to manually disable lstrip_blocks behavior
+            no_lstrip_re = e('+')
+            # detect overlap between block and variable or comment strings
+            block_diff = c(r'^%s(.*)' % e(environment.block_start_string))
+            # make sure we don't mistake a block for a variable or a comment
+            m = block_diff.match(environment.comment_start_string)
+            no_lstrip_re += m and r'|%s' % e(m.group(1)) or ''
+            m = block_diff.match(environment.variable_start_string)
+            no_lstrip_re += m and r'|%s' % e(m.group(1)) or ''
+
+            # detect overlap between comment and variable strings
+            comment_diff = c(r'^%s(.*)' % e(environment.comment_start_string))
+            m = comment_diff.match(environment.variable_start_string)
+            no_variable_re = m and r'(?!%s)' % e(m.group(1)) or ''
+
+            lstrip_re = r'^[ \t]*'
+            block_prefix_re = r'%s%s(?!%s)|%s\+?' % (
+                    lstrip_re,
+                    e(environment.block_start_string),
+                    no_lstrip_re,
+                    e(environment.block_start_string),
+                    )
+            comment_prefix_re = r'%s%s%s|%s\+?' % (
+                    lstrip_re,
+                    e(environment.comment_start_string),
+                    no_variable_re,
+                    e(environment.comment_start_string),
+                    )
+            prefix_re['block'] = block_prefix_re
+            prefix_re['comment'] = comment_prefix_re
+        else:
+            block_prefix_re = '%s' % e(environment.block_start_string)
+
         self.newline_sequence = environment.newline_sequence
+        self.keep_trailing_newline = environment.keep_trailing_newline
 
         # global lexing rules
         self.rules = {
@@ -435,11 +479,11 @@ class Lexer(object):
                 (c('(.*?)(?:%s)' % '|'.join(
                     [r'(?P<raw_begin>(?:\s*%s\-|%s)\s*raw\s*(?:\-%s\s*|%s))' % (
                         e(environment.block_start_string),
-                        e(environment.block_start_string),
+                        block_prefix_re,
                         e(environment.block_end_string),
                         e(environment.block_end_string)
                     )] + [
-                        r'(?P<%s_begin>\s*%s\-|%s)' % (n, r, r)
+                        r'(?P<%s_begin>\s*%s\-|%s)' % (n, r, prefix_re.get(n,r))
                         for n, r in root_tag_rules
                     ])), (TOKEN_DATA, '#bygroup'), '#bygroup'),
                 # data
@@ -473,7 +517,7 @@ class Lexer(object):
             TOKEN_RAW_BEGIN: [
                 (c('(.*?)((?:\s*%s\-|%s)\s*endraw\s*(?:\-%s\s*|%s%s))' % (
                     e(environment.block_start_string),
-                    e(environment.block_start_string),
+                    block_prefix_re,
                     e(environment.block_end_string),
                     e(environment.block_end_string),
                     block_suffix_re
@@ -492,7 +536,7 @@ class Lexer(object):
         }
 
     def _normalize_newlines(self, value):
-        """Called for strings and template data to normlize it to unicode."""
+        """Called for strings and template data to normalize it to unicode."""
         return newline_re.sub(self.newline_sequence, value)
 
     def tokenize(self, source, name=None, filename=None, state=None):
@@ -550,7 +594,14 @@ class Lexer(object):
         """This method tokenizes the text and returns the tokens in a
         generator.  Use this method if you just want to tokenize a template.
         """
-        source = '\n'.join(str(source).splitlines())
+        source = text_type(source)
+        lines = source.splitlines()
+        if self.keep_trailing_newline and source:
+            for newline in ('\r\n', '\r', '\n'):
+                if source.endswith(newline):
+                    lines.append('')
+                    break
+        source = '\n'.join(lines)
         pos = 0
         lineno = 1
         stack = ['root']
@@ -572,7 +623,7 @@ class Lexer(object):
                 if m is None:
                     continue
 
-                # we only match blocks and variables if brances / parentheses
+                # we only match blocks and variables if braces / parentheses
                 # are balanced. continue parsing with the lower rule which
                 # is the operator rule. do this only if the end tags look
                 # like operators
@@ -591,7 +642,7 @@ class Lexer(object):
                         # yield for the current token the first named
                         # group that matched
                         elif token == '#bygroup':
-                            for key, value in m.groupdict().items():
+                            for key, value in iteritems(m.groupdict()):
                                 if value is not None:
                                     yield lineno, key, value
                                     lineno += value.count('\n')
@@ -648,7 +699,7 @@ class Lexer(object):
                         stack.pop()
                     # resolve the new state by group checking
                     elif new_state == '#bygroup':
-                        for key, value in m.groupdict().items():
+                        for key, value in iteritems(m.groupdict()):
                             if value is not None:
                                 stack.append(key)
                                 break
@@ -670,7 +721,7 @@ class Lexer(object):
                 # publish new function and start again
                 pos = pos2
                 break
-            # if loop terminated without break we havn't found a single match
+            # if loop terminated without break we haven't found a single match
             # either we are at the end of the file or we have a problem
             else:
                 # end of text
