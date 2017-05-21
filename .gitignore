@@ -6,3 +6,5 @@ log
 run
 www/__merged.css
 www/__merged.js
+build-exe.log
+dist/
