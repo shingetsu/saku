@@ -136,7 +136,7 @@ class Node:
                 raise NodeError('bad format')
             self.nodestr = nodestr.replace('+', '/')
         else:
-            self.nodestr = host + ":" + str(port) + re.sub(r"\+", "/", path)
+            self.nodestr = socket.getfqdn(host) + ":" + str(port) + re.sub(r"\+", "/", path)
 
     def __str__(self):
         return self.nodestr
