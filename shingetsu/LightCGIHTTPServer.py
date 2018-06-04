@@ -84,14 +84,16 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
     root_index = "/"
 
     def parse_request(self):
-        r = super().parse_request()
+        ok = super().parse_request()
+        if not ok:
+            return False
         found = re.search(r'^/+([?].*)?$', self.path)
         if found:
             if found.group(1):
                 self.path = self.root_index + found.group(1)
             else:
                 self.path = self.root_index
-        return r
+        return True
 
     def is_cgi(self):
         """Test request URI is *.cgi."""
