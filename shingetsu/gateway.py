@@ -1,7 +1,7 @@
 """Saku Gateway base module.
 """
 #
-# Copyright (c) 2005-2015 shinGETsu Project.
+# Copyright (c) 2005-2018 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -539,7 +539,7 @@ class CGI(basecgi.CGI):
             self.header(self.message['big_file'], deny_robot=True)
             self.footer()
             return None
-        elif spam.check(rec.recstr):
+        elif spam.check(rec.recstr) or form.getfirst('homepage', '') != '':
             self.header(self.message['spam'], deny_robot=True)
             self.footer()
             return None
