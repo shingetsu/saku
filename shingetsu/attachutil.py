@@ -1,7 +1,7 @@
 """Attached Files Utilities.
 """
 #
-# Copyright (c) 2009,2015 shinGETsu Project.
+# Copyright (c) 2009-2018 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -58,3 +58,13 @@ def is_valid_image(mimetype, path):
     if (path_type == 'image/jpeg') and (mimetype == 'image/pjpeg'):
         return True
     return False
+
+def is_wellknown_image(path):
+    if not path:
+        return False
+    path_suffix = _imghdr.what(path)
+    return path_suffix in (
+      'gif',
+      'jpeg',
+      'png',
+    )

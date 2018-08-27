@@ -1,7 +1,7 @@
 """Cache of Saku BBS.
 """
 #
-# Copyright (c) 2005-2015 shinGETsu Project.
+# Copyright (c) 2005-2018 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,7 @@ from threading import RLock
 from time import time
 
 from shingetsu import apollo
+from shingetsu import attachutil
 from shingetsu import config
 from shingetsu import spam
 from shingetsu import title
@@ -295,7 +296,7 @@ class Record(dict):
         thumbnail_path = self.attach_path(suffix=suffix, thumbnail_size=thumbnail_size)
         if os.path.isfile(thumbnail_path):
             return
-        if not imghdr.what(attach_path):
+        if not attachutil.is_wellknown_image(attach_path):
             return
         size = thumbnail_size.split("x")
         if len(size) != 2:
