@@ -1,7 +1,7 @@
 """Server CGI methods.
 """
 #
-# Copyright (c) 2005-2015 shinGETsu Project.
+# Copyright (c) 2005-2019 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -150,6 +150,7 @@ class CGI(basecgi.CGI):
             searchlist.sync()
             suggest = nodelist[0]
             nodelist.remove(suggest)
+            nodelist.append(node)
             nodelist.sync()
             suggest.bye()
             self.stdout.write("WELCOME\n%s\n" % suggest)
