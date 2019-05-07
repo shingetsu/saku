@@ -11,8 +11,9 @@
 import re
 import errno
 from collections import deque
+from threading import Lock
 from jinja2._compat import text_type, string_types, implements_iterator, \
-     allocate_lock, url_quote
+     url_quote
 
 
 _word_split_re = re.compile(r'(\s+)')
@@ -34,7 +35,7 @@ missing = type('MissingType', (), {'__repr__': lambda x: 'missing'})()
 # internal code
 internal_code = set()
 
-concat = ''.join
+concat = u''.join
 
 
 def contextfunction(f):
@@ -149,7 +150,7 @@ def open_if_exists(filename, mode='rb'):
     try:
         return open(filename, mode)
     except IOError as e:
-        if e.errno not in (errno.ENOENT, errno.EISDIR):
+        if e.errno not in (errno.ENOENT, errno.EISDIR, errno.EINVAL):
             raise
 
 
@@ -182,7 +183,7 @@ def pformat(obj, verbose=False):
         return pformat(obj)
 
 
-def urlize(text, trim_url_limit=None, nofollow=False):
+def urlize(text, trim_url_limit=None, nofollow=False, target=None):
     """Converts any URLs in text into clickable links. Works on http://,
     https:// and www. links. Links can have trailing punctuation (periods,
     commas, close-parens) and leading punctuation (opening parens) and
@@ -193,12 +194,18 @@ def urlize(text, trim_url_limit=None, nofollow=False):
 
     If nofollow is True, the URLs in link text will get a rel="nofollow"
     attribute.
+
+    If target is not None, a target attribute will be added to the link.
     """
     trim_url = lambda x, limit=trim_url_limit: limit is not None \
                          and (x[:limit] + (len(x) >=limit and '...'
                          or '')) or x
     words = _word_split_re.split(text_type(escape(text)))
     nofollow_attr = nofollow and ' rel="nofollow"' or ''
+    if target is not None and isinstance(target, string_types):
+        target_attr = ' target="%s"' % target
+    else:
+        target_attr = ''
     for i, word in enumerate(words):
         match = _punctuation_re.match(word)
         if match:
@@ -213,22 +220,22 @@ def urlize(text, trim_url_limit=None, nofollow=False):
                     middle.endswith('.net') or
                     middle.endswith('.com')
                 )):
-                middle = '<a href="http://%s"%s>%s</a>' % (middle,
-                    nofollow_attr, trim_url(middle))
+                middle = '<a href="http://%s"%s%s>%s</a>' % (middle,
+                    nofollow_attr, target_attr, trim_url(middle))
             if middle.startswith('http://') or \
                middle.startswith('https://'):
-                middle = '<a href="%s"%s>%s</a>' % (middle,
-                    nofollow_attr, trim_url(middle))
+                middle = '<a href="%s"%s%s>%s</a>' % (middle,
+                    nofollow_attr, target_attr, trim_url(middle))
             if '@' in middle and not middle.startswith('www.') and \
                not ':' in middle and _simple_email_re.match(middle):
                 middle = '<a href="mailto:%s">%s</a>' % (middle, middle)
             if lead + middle + trail != word:
                 words[i] = lead + middle + trail
-    return ''.join(words)
+    return u''.join(words)
 
 
 def generate_lorem_ipsum(n=5, html=True, min=20, max=100):
-    """Generate some lorem impsum for the template."""
+    """Generate some lorem ipsum for the template."""
     from jinja2.constants import LOREM_IPSUM_WORDS
     from random import choice, randrange
     words = LOREM_IPSUM_WORDS.split()
@@ -264,7 +271,7 @@ def generate_lorem_ipsum(n=5, html=True, min=20, max=100):
             p.append(word)
 
         # ensure that the paragraph ends with a dot.
-        p = ' '.join(p)
+        p = u' '.join(p)
         if p.endswith(','):
             p = p[:-1] + '.'
         elif not p.endswith('.'):
@@ -272,11 +279,11 @@ def generate_lorem_ipsum(n=5, html=True, min=20, max=100):
         result.append(p)
 
     if not html:
-        return '\n\n'.join(result)
-    return Markup('\n'.join('<p>%s</p>' % escape(x) for x in result))
+        return u'\n\n'.join(result)
+    return Markup(u'\n'.join(u'<p>%s</p>' % escape(x) for x in result))
 
 
-def unicode_urlencode(obj, charset='utf-8'):
+def unicode_urlencode(obj, charset='utf-8', for_qs=False):
     """URL escapes a single bytestring or unicode string with the
     given charset if applicable to URL safe quoting under all rules
     that need to be considered under all supported Python versions.
@@ -288,7 +295,11 @@ def unicode_urlencode(obj, charset='utf-8'):
         obj = text_type(obj)
     if isinstance(obj, text_type):
         obj = obj.encode(charset)
-    return text_type(url_quote(obj))
+    safe = for_qs and b'' or b'/'
+    rv = text_type(url_quote(obj, safe))
+    if for_qs:
+        rv = rv.replace('%20', '+')
+    return rv
 
 
 class LRUCache(object):
@@ -309,7 +320,7 @@ class LRUCache(object):
         self._popleft = self._queue.popleft
         self._pop = self._queue.pop
         self._remove = self._queue.remove
-        self._wlock = allocate_lock()
+        self._wlock = Lock()
         self._append = self._queue.append
 
     def __getstate__(self):
@@ -505,14 +516,14 @@ class Cycler(object):
 class Joiner(object):
     """A joining helper for templates."""
 
-    def __init__(self, sep=', '):
+    def __init__(self, sep=u', '):
         self.sep = sep
         self.used = False
 
     def __call__(self):
         if not self.used:
             self.used = True
-            return ''
+            return u''
         return self.sep
 
 
