@@ -23,12 +23,11 @@ shingetsu.initialize(function () {
         }
     }
 
-    function setAccess() {
+    function setAccess(access) {
         if (! itemKey) {
             return;
         }
-        var now = Math.floor(Date.now() / 1000);
-        localStorage.setItem(itemKey, now.toString()); 
+        localStorage.setItem(itemKey, access);
     }
 
     function jumpto(id) {
@@ -57,7 +56,7 @@ shingetsu.initialize(function () {
         var newid = "";
         var lastStamp = null;
         $("dt span.stamp[data-stamp]").each(function () {
-            var stamp = $(this).attr('data-stamp');
+            var stamp = $(this).data('stamp');
             if (stamp > read) {
                 var dt = $(this).closest("dt").get(0);
                 if (!newid) {
@@ -67,6 +66,9 @@ shingetsu.initialize(function () {
             }
             lastStamp = this;
         });
+        if (lastStamp) {
+            setAccess($(lastStamp).data('stamp') + 1);
+        }
         if (! access) {
         } else if (newid) {
             jumpto(newid);
@@ -76,5 +78,4 @@ shingetsu.initialize(function () {
     }
 
     newPosts(getAccess());
-    setAccess();
 });

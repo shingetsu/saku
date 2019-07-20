@@ -10,11 +10,11 @@ shingetsu.initialize(function() {
     }
 
     function load(saved) {
-        $('#dopost').attr('checked', (saved.dopost == 'true'));
-        $('#error').attr('checked', (saved.error == 'true'));
+        $('#dopost').prop('checked', saved.dopost);
+        $('#error').prop('checked', saved.error);
         $('#name').val(saved.name);
         $('#mail').val(saved.mail);
-        $('#passwd').val(saved.sign);
+        $('#passwd').val(saved.passwd);
 
         $('#postarticle').find('.post-advanced').each(function (i, element) {
             element = $(element);
@@ -24,7 +24,7 @@ shingetsu.initialize(function() {
             if (saved.mail && element.find('#mail').length > 0) {
                 element.removeClass('post-advanced');
             }
-            if (saved.sign && element.find('#passwd').length > 0) {
+            if (saved.passwd && element.find('#passwd').length > 0) {
                 element.removeClass('post-advanced');
             }
             if (element.find(':checkbox:not(:checked)').length > 0) {
@@ -44,11 +44,12 @@ shingetsu.initialize(function() {
     function save()
     {
         var item = {};
-        item.name = document.forms['postarticle'].elements['name'].value;
-        item.mail = document.forms['postarticle'].elements['mail'].value;
-        item.sign = document.forms['postarticle'].elements['passwd'].value;
-        item.dopost = document.forms['postarticle'].elements['dopost'].checked + '';
-        item.error = document.forms['postarticle'].elements['error'].checked + '';
+        var form = $('#postarticle');
+        item.name = form.find('[name=name]').val();
+        item.mail = form.find('[name=mail]').val();
+        item.passwd = form.find('[name=passwd]').val();
+        item.dopost = form.find('[name=dopost]').prop('checked');
+        item.error = form.find('[name=error]').prop('checked');
         localStorage.setItem('recform', JSON.stringify(item));
     }
 
