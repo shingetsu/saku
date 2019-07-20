@@ -202,8 +202,6 @@ root_index = _get_value(_extconf, 'Gateway', 'root_index', gateway)
 
 application = {"thread": thread_cgi}
 
-use_cookie = True
-save_cookie = 7*24*60*60                # Seconds
 title_limit = 30                        # Charactors
 
 # asis, md5, sha1, sha224, sha256, sha384, or sha512

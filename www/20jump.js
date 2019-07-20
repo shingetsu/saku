@@ -1,26 +1,34 @@
 /*
  * Jump New Posts.
- * Copyright (C) 2006-2014 shinGETsu Project.
+ * Copyright (C) 2006-2019 shinGETsu Project.
  */
 
 shingetsu.initialize(function () {
-    var lastpage = location.pathname.search(/^\/?thread.cgi\/[^\/]+$/) == 0;
-
-    function removeCookie() {
-        var day = new Date();
-        var access = day.getTime();
-        day.setTime(access - 7*24*60*60*1000);
-        document.cookie = 'tmpaccess=0; ' +
-                          'path=/; ' +
-                          'expires=' + day.toGMTString();
+    var itemKey = null;
+    if (location.pathname.search(/^\/?thread.cgi\/([^\/]+)$/) === 0) {
+        try {
+            itemKey = 'access_' + decodeURI(RegExp.$1);
+        } catch {
+        }
     }
 
-    function readCookie() {
-        if (document.cookie.search(/tmpaccess=([0-9]*)/) >= 0) {
-            return RegExp.$1;
-        } else {
-            return null;
+    function getAccess() {
+        if (! itemKey) {
+            return 0;
         }
+        try {
+            return parseInt(localStorage.getItem(itemKey));
+        } catch {
+            return 0;
+        }
+    }
+
+    function setAccess() {
+        if (! itemKey) {
+            return;
+        }
+        var now = Math.floor(Date.now() / 1000);
+        localStorage.setItem(itemKey, now.toString()); 
     }
 
     function jumpto(id) {
@@ -35,7 +43,7 @@ shingetsu.initialize(function () {
     }
 
     function setNewPost(dt) {
-        if (lastpage) {
+        if (itemKey) {
             $(dt).addClass("newpost");
         }
     }
@@ -67,7 +75,6 @@ shingetsu.initialize(function () {
         }
     }
 
-    var access = readCookie();
-    newPosts(access);
-    removeCookie();
+    newPosts(getAccess());
+    setAccess();
 });

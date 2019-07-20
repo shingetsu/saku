@@ -1,7 +1,7 @@
 '''Saku Thread CGI methods.
 '''
 #
-# Copyright (c) 2005-2015 shinGETsu Project.
+# Copyright (c) 2005-2019 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,6 @@ import cgi
 import mimetypes
 import re
 import time
-from http.cookies import SimpleCookie
 
 from . import attachutil
 from . import config
@@ -105,21 +104,6 @@ class CGI(gateway.CGI):
 
         self.print404()
 
-    def setcookie(self, cache, access):
-        now = int(time.time())
-        expires = time.strftime('%a, %d %b %Y %H:%M:%S GMT',
-                                time.gmtime(now + config.save_cookie))
-        path = self.thread_cgi + '/' + \
-                  self.str_encode(self.file_decode(cache.datfile))
-        cookie = SimpleCookie()
-        cookie['access'] = str(now)
-        cookie['access']['path'] = path
-        cookie['access']['expires'] = expires
-        if access:
-            cookie['tmpaccess'] = str(access)
-            cookie['tmpaccess']['path'] = '/'
-        return cookie
-
     def print_page_navi(self, page, cache, path, str_path, id):
         size = config.thread_page_size
         first = len(cache) // size
@@ -166,19 +150,8 @@ class CGI(gateway.CGI):
         else:
             self.print404(id=id)
             return
-        if config.use_cookie and len(cache) and (not id) and (not page):
-            access = None
-            try:
-                cookie = SimpleCookie(self.environ.get('HTTP_COOKIE', ''))
-                if 'access' in cookie:
-                    access = cookie['access'].value
-            except CookieError as err:
-                self.stderr.write('%s\n' % err)
-            newcookie = self.setcookie(cache, access)
-        else:
-            newcookie = ''
         rss = self.gateway_cgi + '/rss'
-        self.header(path, rss=rss, cookie=newcookie)
+        self.header(path, rss=rss)
         tags = form.getfirst('tag', '').strip().split()
         if self.isadmin and tags:
             cache.tags.add(tags)
