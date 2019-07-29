@@ -8,7 +8,7 @@ shingetsu.initialize(function () {
     if (location.pathname.search(/^\/?thread.cgi\/([^\/]+)$/) === 0) {
         try {
             itemKey = 'access_' + decodeURI(RegExp.$1);
-        } catch {
+        } catch (e) {
         }
     }
 
@@ -18,7 +18,7 @@ shingetsu.initialize(function () {
         }
         try {
             return parseInt(localStorage.getItem(itemKey));
-        } catch {
+        } catch (e) {
             return 0;
         }
     }

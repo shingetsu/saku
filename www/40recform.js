@@ -36,7 +36,7 @@ shingetsu.initialize(function() {
     function parse(saved) {
         try {
             return JSON.parse(saved);
-        } catch {
+        } catch (e) {
             return null;
         }
     }
