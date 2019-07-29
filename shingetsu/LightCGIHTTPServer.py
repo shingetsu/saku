@@ -1,7 +1,7 @@
 """Tiny HTTP server supporting threading CGI.
 """
 #
-# Copyright (c) 2005-2015 shinGETsu Project.
+# Copyright (c) 2005-2019 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -266,4 +266,6 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
 
 
 class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
-    pass
+    #XXX ThreadingMixIn of Python 3.7.3 does not release threads from its thread list
+    #XXX https://github.com/python/cpython/pull/13893
+    block_on_close = False
