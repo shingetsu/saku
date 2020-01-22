@@ -1,7 +1,7 @@
 '''Saku Thread CGI methods.
 '''
 #
-# Copyright (c) 2005-2019 shinGETsu Project.
+# Copyright (c) 2005-2020 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,7 @@
 #
 
 import cgi
+import html
 import mimetypes
 import re
 import time
@@ -189,7 +190,7 @@ class CGI(gateway.CGI):
                 printed = True
             rec.free()
         self.stdout.write("</dl>\n")
-        escaped_path = cgi.escape(path)
+        escaped_path = html.escape(path)
         escaped_path = re.sub(r'  ', '&nbsp;&nbsp;', escaped_path)
         var = {
             'cache': cache,

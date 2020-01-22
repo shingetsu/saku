@@ -1,7 +1,7 @@
 """Saku Gateway base module.
 """
 #
-# Copyright (c) 2005-2018 shinGETsu Project.
+# Copyright (c) 2005-2020 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,7 @@
 # SUCH DAMAGE.
 #
 
+import html
 import cgi
 import os
 import re
@@ -165,7 +166,7 @@ class CGI(basecgi.CGI):
             'str_encode': self.str_encode,
             'file_decode': self.file_decode,
             'escape': self.escape,
-            'escape_simple': lambda s: cgi.escape(s, True),
+            'escape_simple': lambda s: html.escape(s, True),
             'escape_space': self.escape_space,
             'escape_js': self.escape_js,
             'make_list_item': self.make_list_item,

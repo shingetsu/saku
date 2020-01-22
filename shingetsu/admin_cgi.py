@@ -1,7 +1,7 @@
 """Saku Admin CGI methods.
 """
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2020 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,7 @@
 # SUCH DAMAGE.
 #
 
+import html
 import os
 import cgi
 import re
@@ -128,7 +129,7 @@ class CGI(gateway.CGI):
         recs = [Record(datfile=datfile, idstr=r) for r in records]
         def getbody(rec):
             rec.load_body()
-            recstr = cgi.escape(rec.recstr)
+            recstr = html.escape(rec.recstr)
             rec.free()
             return recstr
         var = {
@@ -202,7 +203,7 @@ class CGI(gateway.CGI):
             contents = []
             for rec in cache:
                 rec.load_body()
-                contents.append(cgi.escape(rec.recstr))
+                contents.append(html.escape(rec.recstr))
                 rec.free()
                 if (len(contents) > 2):
                     return contents
@@ -230,13 +231,13 @@ class CGI(gateway.CGI):
         self.stdout.write(self.template('search_form', var))
 
     def print_search_result(self, query):
-        str_query = cgi.escape(query, True)
+        str_query = html.escape(query, True)
         title = '%s : %s' % (self.message['search'], str_query)
         self.header(title, deny_robot=True)
         self.print_paragraph(self.message['desc_search'])
         self.print_search_form(str_query)
         try:
-            query = re.compile(cgi.escape(query), re.I)
+            query = re.compile(html.escape(query), re.I)
             cachelist = CacheList()
             result = cachelist.search(query)
             for i in cachelist:
@@ -297,7 +298,7 @@ class CGI(gateway.CGI):
     def print_edittag(self, datfile):
         str_title = self.file_decode(datfile)
         cache = Cache(datfile)
-        datfile = cgi.escape(datfile)
+        datfile = html.escape(datfile)
         if not cache.exists():
             print404()
             return

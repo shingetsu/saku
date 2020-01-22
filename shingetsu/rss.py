@@ -1,7 +1,7 @@
 """Data structure of RSS and useful functions.
 """
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2020 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,7 @@
 # SUCH DAMAGE.
 #
 
+import html
 import re
 import cgi
 
@@ -134,6 +135,6 @@ def make_rss1(rss):
         'rss': rss,
         'feed': [rss[uri] for uri in rss],
         'w3cdate': w3cdate,
-        'escape': cgi.escape,
+        'escape': html.escape,
     }
     return Template().display('rss1', var)

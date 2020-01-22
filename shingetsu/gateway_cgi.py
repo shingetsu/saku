@@ -1,7 +1,7 @@
 """Gateway CGI methods.
 """
 #
-# Copyright (c) 2005-2015 shinGETsu Project.
+# Copyright (c) 2005-2020 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,7 @@
 # SUCH DAMAGE.
 #
 
+import html
 import re
 import cgi
 import csv
@@ -52,10 +53,10 @@ class CGI(gateway.CGI):
             tag = self.form.getfirst('tag', '')
             if filter:
                 self.filter = filter.lower()
-                self.str_filter = cgi.escape(filter, True)
+                self.str_filter = html.escape(filter, True)
             elif tag:
                 self.tag = tag.lower()
-                self.str_tag = cgi.escape(tag, True)
+                self.str_tag = html.escape(tag, True)
         except (re.error, UnicodeDecodeError):
             self.header(self.message['regexp_error'], deny_robot=True)
             self.footer()
@@ -367,7 +368,7 @@ class CGI(gateway.CGI):
                 date = cache.recent_stamp,
                 title = title,
                 subject = tags,
-                content = cgi.escape(title))
+                content = html.escape(title))
 
         self.stdout.write('Content-Type: text/xml; charset=UTF-8\n')
         try:
