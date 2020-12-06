@@ -1,7 +1,7 @@
 """Cache of Saku BBS.
 """
 #
-# Copyright (c) 2005-2018 shinGETsu Project.
+# Copyright (c) 2005-2020 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -332,7 +332,7 @@ class Record(dict):
         thumbnail_path = self.attach_path(self.get('suffix', 'jpg'),
                             thumbnail_size=config.thumbnail_size)
         try:
-            attach = base64.decodestring(self['attach'].encode('utf-8'))
+            attach = base64.decodebytes(self['attach'].encode('utf-8'))
             if force or (not fsdiff(attach_path, attach)):
                 self._write_file(attach_path, attach)
             if force or (not os.path.isfile(thumbnail_path)):

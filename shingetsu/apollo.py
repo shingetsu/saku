@@ -1,7 +1,7 @@
 '''Signature Module.
 '''
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2020 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -337,5 +337,5 @@ def verify(target, sign, pubkey):
 def cut_key(key):
     """Cut KeyStr to 11words."""
     digest = hashlib.md5(strtobin(key)).digest()
-    short_key = base64.encodestring(digest)[:11]
+    short_key = base64.encodebytes(digest)[:11]
     return str(short_key, 'utf-8', 'replace')

@@ -480,7 +480,7 @@ class CGI(basecgi.CGI):
                 attach_value = attach.value.encode('utf-8', 'replace')
             else:
                 attach_value = attach.value
-            b64attach = base64.encodestring(attach_value)
+            b64attach = base64.encodebytes(attach_value)
             str_attach = str(b64attach, 'utf-8', 'replace').replace("\n", "")
         guess_suffix = "txt"
         if (attach is not None) and attach.filename:
