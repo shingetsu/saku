@@ -1,3 +1,8 @@
+2020-12-25      4.9.1
+    cgi.escapeをhtml.escapeに変更。
+    リファラーが全部送られるように設定。
+    base64.encodestring() とbase64.decodestring()をbase64.encodebytes()とbase64.decodebytes()に置き換える。
+
 2019-07-30      4.9.0
     Cookieを使っていた箇所をLocalStorageに変更。
     Python3.7.3でメモリリークするのを回避。
