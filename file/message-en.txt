@@ -107,7 +107,6 @@ cache_size<>Cache Size
 self_node<>Self node
 
 # misc
-google<>GOOGLE
 limit<>limit
 mb<>MB
 kb<>KB

@@ -1,7 +1,7 @@
 """Gateway CGI methods.
 """
 #
-# Copyright (c) 2005-2020 shinGETsu Project.
+# Copyright (c) 2005-2021 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -235,7 +235,7 @@ class CGI(gateway.CGI):
                     row.append(path)
                 elif c == "uri":
                     if self.host and path:
-                        row.append("http://" + self.host + path)
+                        row.append(config.gateway_protocol + "://" + self.host + path)
                     else:
                         row.append("")
                 elif c == "type":
@@ -295,8 +295,8 @@ class CGI(gateway.CGI):
     def print_rss(self):
         rss = RSS(encode = "UTF-8",
                   title = self.message["logo"],
-                  parent = "http://" + self.host,
-                  uri = "http://" + self.host
+                  parent = config.gateway_protocol + "://" + self.host,
+                  uri = config.gateway_protocol + "://" + self.host
                                   + self.gateway_cgi + self.sep + "rss",
                   description = self.message["description"],
                   xsl = config.xsl)
@@ -320,8 +320,9 @@ class CGI(gateway.CGI):
                         if not re.search(r'^[0-9A-Za-z]+$', suffix):
                             suffix = txt
                         content += '\n    <p>' + \
-                            '<a href="http://%s%s%s%s/%s/%d.%s">%d.%s</a></p>'\
-                            % (self.host, self.appli[cache.type], self.sep,
+                            '<a href="%s://%s%s%s%s/%s/%d.%s">%d.%s</a></p>'\
+                            % (config.gateway_protocol, self.host,
+                               self.appli[cache.type], self.sep,
                                cache.datfile,
                                r.id, r.stamp, suffix,
                                r.stamp, suffix)
@@ -352,8 +353,8 @@ class CGI(gateway.CGI):
         rss = RSS(encode = 'UTF-8',
                   title = '%s - %s' % (
                           self.message['recent'], self.message['logo']),
-                  parent = 'http://' + self.host,
-                  uri = 'http://' + self.host
+                  parent = config.gateway_protocol + '://' + self.host,
+                  uri = config.gateway_protocol + '://' + self.host
                                   + self.gateway_cgi + self.sep + 'recent_rss',
                   description = self.message['desc_recent'],
                   xsl = config.xsl)

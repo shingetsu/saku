@@ -5,7 +5,7 @@
 Set server_name, proxy_destination and apache_docroot in saku.ini.
 '''
 #
-# Copyright (c) 2006-2014 shinGETsu Project.
+# Copyright (c) 2006-2021 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -94,13 +94,14 @@ def update_rss(command, filename, datefilename):
     write_rss(rss, filename)
 
 def get_links():
-    yield 'http://%s/' % server
+    yield '%s://%s/' % (shingetsu.config.gateway_protocol, server)
     for cache in CacheList():
         type, basename = str(cache).split('_', 1)
-        link = 'http://%s%s%s%s' % (server,
-                                    shingetsu.config.application[type],
-                                    sep,
-                                    str_encode(file_decode(str(cache))))
+        link = '%s://%s%s%s%s' %  (shingetsu.config.gateway_protocol,
+                                  server,
+                                  shingetsu.config.application[type],
+                                  sep,
+                                  str_encode(file_decode(str(cache))))
         yield link
         for record in cache:
             yield '%s/%s' % (link, record.id[:8])

@@ -1,7 +1,7 @@
 """Saku Configuration.
 """
 #
-# Copyright (c) 2005-2020 shinGETsu Project.
+# Copyright (c) 2005-2021 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -98,6 +98,7 @@ admin = _get_value(_extconf, 'Gateway', 'admin', r'^127')
 friend = _get_value(_extconf, 'Gateway', 'friend', r'^127')
 visitor = _get_value(_extconf, 'Gateway', 'visitor', r'.')
 server_name = _get_value(_extconf, 'Gateway', 'server_name', '')
+gateway_protocol = _get_value(_extconf, 'Gateway', 'protocol', 'http')
 tag_size = _get_value(_extconf, 'Gateway', 'tag_size', 20, 'int')
 rss_range = _get_value(_extconf, 'Gateway', 'rss_range', 3*24*60*60, 'int')
 top_recent_range = _get_value(_extconf, 'Gateway',
@@ -107,7 +108,7 @@ recent_range = _get_value(_extconf, 'Gateway', 'recent_range',
 record_limit = _get_value(_extconf, 'Gateway', 'record_limit', 2048, 'int')
 proxy_destination = _get_value(_extconf, 'Gateway', 'proxy_destination', '')
 archive_uri = _get_value(_extconf, 'Gateway', 'archive_uri',
-                         'http://archive.shingetsu.info/')
+                         'https://archive.shingetsu.info/')
 enable2ch = _get_value(_extconf, 'Gateway', 'enable_2ch', False, 'boolean')
 re_admin = re.compile(admin)
 re_friend = re.compile(friend)
@@ -166,7 +167,6 @@ tiedfile_cache_size = 30
 broadcast = "../tool/broadcast.py"  # Broadcast script path
 
 rss = "1"                                   # RSS version; must be "1"
-google = "http://www.google.co.jp/search"
 language = "en"                             # Language code (see RFC3066)
 
 # regexp

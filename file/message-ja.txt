@@ -112,4 +112,3 @@ self_node<>自分自身のノード
 limit<>最大
 mb<>MB
 kb<>KB
-google<>Google

@@ -1,7 +1,7 @@
 """Saku Gateway base module.
 """
 #
-# Copyright (c) 2005-2020 shinGETsu Project.
+# Copyright (c) 2005-2021 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -284,7 +284,7 @@ class CGI(basecgi.CGI):
     def res_anchor(self, id, appli, title, absuri=False):
         title = self.str_encode(title)
         if absuri:
-            prefix = 'http://' + self.host
+            prefix = config.gateway_protocol + '://' + self.host
             innerlink = ''
         else:
             prefix = ''
@@ -323,7 +323,7 @@ class CGI(basecgi.CGI):
         See WikiWikiWeb.
         """
         if absuri:
-            prefix = 'http://' + self.host
+            prefix = config.gateway_protocol + '://' + self.host
         else:
             prefix = ''
         m = re.search(r"^/(thread)/([^/]+)/([0-9a-f]{8})$", link)
