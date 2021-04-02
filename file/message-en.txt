@@ -90,9 +90,9 @@ bad_title<>Bad Title. You can't use "/[]&lt;&gt;" for a title.
 null_type<>Null Type
 big_file<>Too big file
 403<>Forbidden
-403_body<>You don't have permission to access this URI. Install <a href="http://www.shingetsu.info/">shinGETsu</a>.
+403_body<>You don't have permission to access this URI. Install <a href="https://www.shingetsu.info/">shinGETsu</a>.
 404<>Not Found
-404_body<>The requested URI was not found on this server. Try later or install <a href="http://www.shingetsu.info/">shinGETsu</a>.
+404_body<>The requested URI was not found on this server. Try later or install <a href="https://www.shingetsu.info/">shinGETsu</a>.
 no_data<>Bad arguments or No data.
 spam<>Your post looks like a spam.
 regexp_error<>Regular expressions error.

@@ -25,7 +25,7 @@ Contributers
 
 WebSite
 -------
-* http://www.shingetsu.info/
+* https://www.shingetsu.info/
 
 Saku stands for "Shingetsu Another Keen Utility".
 Both the word "saku" and "shingetsu" mean the new moon in Japanese.

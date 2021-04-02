@@ -170,7 +170,7 @@ def write_html(fp, rec):
         '  <meta http-equiv="content-type"' +
         ' content="text/html; charset=UTF-8" />\n' +
         '  <title>%s</title>\n' % file_decode(rec.datfile) +
-        '  <link rel="author" href="http://www.shingetsu.info/" />\n' +
+        '  <link rel="author" href="https://www.shingetsu.info/" />\n' +
         '  <link rel="contents" href="/" />\n' +
         '  <link rel="stylesheet" type="text/css" href="/default.css" />\n' +
         '</head>\n' +
@@ -181,7 +181,7 @@ def write_html(fp, rec):
     fp.write(
         '</dl>\n' +
         '<address>Powered by' +
-        ' <a href="http://www.shingetsu.info/">shinGETsu</a>.</address>\n')
+        ' <a href="https://www.shingetsu.info/">shinGETsu</a>.</address>\n')
     fp.write(
         '</body>\n' +
         '</html>\n')

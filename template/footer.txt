@@ -8,7 +8,7 @@
 {% endif %}
 
 <div class="address">Powered by 
-  <a href="http://www.shingetsu.info/">shinGETsu</a>.</div>
+  <a href="https://www.shingetsu.info/">shinGETsu</a>.</div>
 
 </body>
 </html>

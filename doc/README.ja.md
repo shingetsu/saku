@@ -23,7 +23,7 @@ Contributers
 
 WebSite
 -------
-  http://www.shingetsu.info/
+  https://www.shingetsu.info/
 
 Sakuは Shingetsu Another Keen Utility の略です。
 また、朔は新月を意味するやや古い表現です。

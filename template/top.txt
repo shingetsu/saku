@@ -15,7 +15,7 @@
     <li>{{gateway_link(admin_cgi, i)}}</li>
   {% endfor %}
 {% endif %}
-<li><a href="http://www.shingetsu.info/">{{message.site}}</a></li>
+<li><a href="https://www.shingetsu.info/">{{message.site}}</a></li>
 <li><a href="{{gateway_cgi}}/motd">{{message.agreement}}</a></li>
 {% if mch_url %}
   <li><a href="{{mch_url}}">{{message.mch}}</a></li>

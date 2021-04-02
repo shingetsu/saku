@@ -92,9 +92,9 @@ bad_title<>タイトルに「/[]&lt;&gt;」のどれかが含まれています�
 null_type<>種類が空です。
 big_file<>ファイルが大きすぎます。
 403<>立入禁止。
-403_body<>ファイルを表示する権限がありません。<a href="http://www.shingetsu.info/">新月</a>をインストールしてください。
+403_body<>ファイルを表示する権限がありません。<a href="https://www.shingetsu.info/">新月</a>をインストールしてください。
 404<>ファイルがみつかりません。
-404_body<>時間をおいて試してみてください。または<a href="http://www.shingetsu.info/">新月</a>をインストールしてください。
+404_body<>時間をおいて試してみてください。または<a href="https://www.shingetsu.info/">新月</a>をインストールしてください。
 no_data<>引数が正しくないか、データがありません。
 spam<>スパムとみなされました。
 regexp_error<>正規表現のエラーです。

@@ -18,7 +18,7 @@ Content-Type: text/html; charset=UTF-8
 {% endif %}
   <meta name="referrer" content="no-referrer-when-downgrade" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="author" href="http://www.shingetsu.info/" />
+  <link rel="author" href="https://www.shingetsu.info/" />
   <link rel="contents" href="/" />
   <link rel="index" href="{{root_path}}gateway.cgi/index" />
   <script type="text/javascript" src="{{root_path}}jquery/jquery.min.js?{{dummyquery}}"></script>
