@@ -3,7 +3,7 @@
 '''Make archive, 1 HTML for 1 record
 '''
 #
-# Copyright (c) 2006-2014 shinGETsu Project.
+# Copyright (c) 2006-2021 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -173,6 +173,7 @@ def write_html(fp, rec):
         '  <link rel="author" href="https://www.shingetsu.info/" />\n' +
         '  <link rel="contents" href="/" />\n' +
         '  <link rel="stylesheet" type="text/css" href="/default.css" />\n' +
+        '  <meta name="viewport" content="width=device-width, initial-scale=1" />\n' +
         '</head>\n' +
         '<body>\n' +
         '<h1><a href="./">%s</a></h1>\n' % file_decode(rec.datfile) +
