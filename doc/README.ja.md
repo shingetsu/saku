@@ -14,8 +14,6 @@ Authors
 Contributers
 ------------
 * (run_cgi) Python Software Foundation.
-* (Jinja2) the Jinja Team.
-* (MarkupSafe) Armin Ronacher and contributors.
 * (jQuery) The jQuery Foundation.
 * (Twitter Bootstrap) Twitter.
 * (jQuery Lazy) Daniel 'Eisbehr' Kern
@@ -46,8 +44,8 @@ Sakuは Shingetsu Another Keen Utility の略です。
 朔に必要なプログラム
 --------------------
 * Python (ver.3.2以降)
+* pipenv パッケージをpipenvでインストールする場合
 * Jinja2 (ver.2.6) 朔をインストールする場合
-* markupsafe (ver.0.19以降) 朔をインストールする場合
 * PIL または Pillow (Python Imaging Library) もし必要なら
 * Supervisor もし必要なら
 
@@ -58,7 +56,8 @@ Sakuは Shingetsu Another Keen Utility の略です。
    詳しくは doc/sample.ini をご覧ください。
 3. 次のコマンドで起動します。
 
-        % python ./saku.py -v
+        % pipenv install
+        % pipenv run python3 ./saku.py -v
 
 4. その後 http://localhost:8000/ を表示してください。
 5. 止めるときは ^C (Ctrl+C)を押下してください。

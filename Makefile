@@ -30,6 +30,7 @@ clean:
 	-find . -type d -name "__pycache__" -print0 | xargs -0 -r rmdir
 
 distclean: clean
+	rm -f Pipfile.lock
 	find . \( -name "*~" -o -name "#*" -o -name ".#*" \) \! -path ".git/*" \
 	    -print0 | \
 	    xargs -0 -r rm -fv

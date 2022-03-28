@@ -15,8 +15,6 @@ Authors
 Contributers
 ------------
 * (run_cgi) Python Software Foundation.
-* (Jinja2) the Jinja Team.
-* (MarkupSafe) Armin Ronacher and contributors.
 * (jQuery) The jQuery Foundation.
 * (Twitter Bootstrap) Twitter.
 * (jQuery Lazy) Daniel 'Eisbehr' Kern
@@ -54,8 +52,8 @@ Description
 Saku requires
 -------------
 * Python (ver.3.4.2 or later)
+* pipenv if you install packages with pipenv
 * Jinja2 (ver.2.7.3 or later) if you install Saku
-* markupsafe (ver.0.23 or later) if you install Saku
 * PIL or Pillow (Python Imaging Libraty) if you need
 * Supervisor if you need
 
@@ -64,7 +62,8 @@ Usage Saku without install
 1. Open port 8000/tcp.
 2. Edit file/saku.ini.
 3. Start with
-        % python ./saku.py -v
+        % pipenv install
+        % pipenv run python3 ./saku.py -v
 4. Browse http://localhost:8000/.
 5. Stop with ^C.
 
