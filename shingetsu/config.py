@@ -1,7 +1,7 @@
 """Saku Configuration.
 """
 #
-# Copyright (c) 2005-2021 shinGETsu Project.
+# Copyright (c) 2005-2022 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ def _get_value(parser, section, key, default, vtype=''):
 def _get_version():
     """Get Saku version for useragent and servername.
     """
-    version = '4.9.1'
+    version = '4.10.0'
     version_file = os.path.join(docroot, file_dir, 'version.txt')
     if os.path.isfile(version_file):
         try:
