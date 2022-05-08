@@ -10,7 +10,7 @@ shingetsu.initialize(function() {
     }
 
     function load(saved) {
-        $('#dopost').prop('checked', saved.dopost);
+        $('#postarticle #dopost').prop('checked', saved.dopost);
         $('#error').prop('checked', saved.error);
         $('#name').val(saved.name);
         $('#mail').val(saved.mail);
