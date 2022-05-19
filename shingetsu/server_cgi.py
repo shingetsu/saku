@@ -188,7 +188,7 @@ class CGI(basecgi.CGI):
         encoding = self.environ.get("HTTP_ACCEPT_ENCODING", "")
         if (encoding.find("gzip") >= 0) or (encoding.find("*") >= 0):
             self.header("text/plain", {"Content-Encoding": "gzip"})
-            fp = gzip.GzipFile(fileobj=self.stdout)
+            fp = gzip.GzipFile(fileobj=self.stdout,mode="wb")
         else:
             self.header("text/plain")
             fp = self.stdout
