@@ -1,7 +1,7 @@
 """Cache of Saku BBS.
 """
 #
-# Copyright (c) 2005-2020 shinGETsu Project.
+# Copyright (c) 2005-2022 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -822,7 +822,6 @@ class CacheList(list):
                 f.close()
                 c = Cache(dat_stat, sugtagtable, recentlist)
                 self.append(c)
-                f.close()
             except IOError:
                 c = Cache(i, sugtagtable, recentlist)
                 self.append(c)
