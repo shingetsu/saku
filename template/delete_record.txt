@@ -1,6 +1,6 @@
 {#
  # Saku Gateway Delete Record Page.
- # Copyright (c) 2005-2014 shinGETsu Project.
+ # Copyright (c) 2005-2022 shinGETsu Project.
  #}
 <form method="post" action="{{admin_cgi}}" class="form-horizontal"><div class="well">
   <input type="hidden" name="cmd" value="xrdel" />
@@ -19,7 +19,7 @@
     </div>
     <div class="control-group">
       <label class="control-label" for="passwd">{{message.signature}}</label>
-      <div class="controls"><input type="password" name="passwd" alue="" id="passwd" /></div>
+      <div class="controls"><input type="password" name="passwd" value="" id="passwd" /></div>
     </div>
     <div class="control-group">
       <label class="control-label" for="body">{{message.comment}}</label>
