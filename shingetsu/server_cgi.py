@@ -50,7 +50,7 @@ class CGI(basecgi.CGI):
         path = self.path_info()
 
         if not self.environ["REQUEST_METHOD"] in ("GET", "HEAD"):
-            self.header("text/plain")
+            self.header("text/plain; charset=UTF-8")
         elif path == "":
             self.do_motd()
         elif path == "ping":
@@ -79,7 +79,7 @@ class CGI(basecgi.CGI):
             path = path[1:]
         return path
 
-    def header(self, content='text/plain', addtional=None):
+    def header(self, content='text/plain; charset=UTF-8', addtional=None):
         self.stdout.write('Content-Type: %s\r\n' % content)
         if addtional:
             for k in addtional:
@@ -87,7 +87,7 @@ class CGI(basecgi.CGI):
         self.stdout.write('\r\n')
 
     def do_motd(self):
-        self.header("text/plain")
+        self.header("text/plain; charset=UTF-8")
         try:
             f = opentext(config.motd)
             for line in f:
@@ -97,12 +97,12 @@ class CGI(basecgi.CGI):
             self.stderr.write(config.motd + ": IOError\n")
 
     def do_ping(self):
-        self.header("text/plain")
+        self.header("text/plain; charset=UTF-8")
         self.stdout.write("PONG\n" + self.environ["REMOTE_ADDR"] + "\n")
 
     def do_node(self):
         nodes = NodeList()
-        self.header("text/plain")
+        self.header("text/plain; charset=UTF-8")
         try:
             self.stdout.write(str(nodes[0]) + "\n")
         except IndexError:
@@ -119,7 +119,7 @@ class CGI(basecgi.CGI):
         return None
 
     def do_join(self, path_info):
-        self.header("text/plain")
+        self.header("text/plain; charset=UTF-8")
         m = re.search(r"^join/([^:]*):(\d+)(.*)", path_info)
         if m is None:
             return
@@ -156,7 +156,7 @@ class CGI(basecgi.CGI):
             self.stdout.write("WELCOME\n%s\n" % suggest)
 
     def do_bye(self, path_info):
-        self.header("text/plain")
+        self.header("text/plain; charset=UTF-8")
         m = re.search(r"^bye/([^:]*):(\d+)(.*)", path_info)
         if m is None:
             return
@@ -174,7 +174,7 @@ class CGI(basecgi.CGI):
         self.stdout.write("BYEBYE\n")
 
     def do_have(self, path):
-        self.header("text/plain")
+        self.header("text/plain; charset=UTF-8")
         m = re.search(r"^have/([0-9A-Za-z_]+)$", path)
         if m is None:
             return
@@ -187,17 +187,17 @@ class CGI(basecgi.CGI):
     def output(self):
         encoding = self.environ.get("HTTP_ACCEPT_ENCODING", "")
         if (encoding.find("gzip") >= 0) or (encoding.find("*") >= 0):
-            self.header("text/plain", {"Content-Encoding": "gzip"})
+            self.header("text/plain; charset=UTF-8", {"Content-Encoding": "gzip"})
             fp = gzip.GzipFile(fileobj=self.stdout,mode="wb")
         else:
-            self.header("text/plain")
+            self.header("text/plain; charset=UTF-8")
             fp = self.stdout
         return TextIOWrapper(fp, 'utf-8', 'replace')
 
     def do_get_head(self, path):
         m = re.search(r"^(get|head)/([0-9A-Za-z_]+)/([-0-9A-Za-z/]*)$", path)
         if m is None:
-            self.header("text/plain")
+            self.header("text/plain; charset=UTF-8")
             return
         (method, datfile, stamp) = m.groups()
         cache = Cache(datfile)
@@ -238,7 +238,7 @@ class CGI(basecgi.CGI):
     def do_recent(self, path):
         m = re.search(r"^recent/?([-0-9A-Za-z/]*)$", path)
         if m is None:
-            self.header("text/plain")
+            self.header("text/plain; charset=UTF-8")
             return
         stamp = m.group(1)
         recent = RecentList()
@@ -256,7 +256,7 @@ class CGI(basecgi.CGI):
                 fp.write(line)
 
     def do_update(self, path_info):
-        self.header("text/plain")
+        self.header("text/plain; charset=UTF-8")
         m = re.search(r"^update/(\w+)/(\d+)/(\w+)/([^:]*):(\d+)(.*)",path_info)
         if m is None:
             return False
