@@ -1,7 +1,7 @@
 '''Cron daemon running in another thread for client.cgi.
 '''
 #
-# Copyright (c) 2005-2015 shinGETsu Project.
+# Copyright (c) 2005-2022 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,6 @@ class Crond(Thread):
         while True:
             self.clear_cache()
             #self.gc_debug()
-            now = int(time.time())
             Client().start()
             time.sleep(config.client_cycle)
 
@@ -94,33 +93,44 @@ class Status(dict):
     """
 
     statusfile = config.client_log
+    use_client_log = config.use_client_log
+    
+    @classmethod
+    def get_instance(cls):
+        if not hasattr(cls, "_instance"):
+            cls._instance = cls()
+        return cls._instance
 
     def __init__(self):
         dict.__init__(self)
         self.update({"ping": 0, "init": 0, "sync": 0})
-        try:
-            if os.path.isfile(self.statusfile):
-                f = open(self.statusfile)
-                for k in ("ping", "init", "sync"):
-                    self[k] = int(f.readline())
-                f.close()
-        except IOError:
-            sys.stderr.write(self.statusfile + ": IOError\n")
-        except ValueError:
-            sys.stderr.write("Wrong format\n")
+        if self.use_client_log:
+            try:
+                if os.path.isfile(self.statusfile):
+                    f = open(self.statusfile)
+                    for k in ("ping", "init", "sync"):
+                        self[k] = int(f.readline())
+                    f.close()
+            except IOError:
+                sys.stderr.write(self.statusfile + ": IOError\n")
+            except ValueError:
+                sys.stderr.write("Wrong format\n")
 
     def sync(self):
-        try:
-            f = opentext(self.statusfile, 'w')
-            for k in ("ping", "init", "sync"):
-                f.write(str(self[k]) + '\n')
-            f.close()
-        except IOError:
-            sys.stderr.write(self.statusfile + ": IOError\n")
+        if self.use_client_log:
+            try:
+                f = opentext(self.statusfile, 'w')
+                for k in ("ping", "init", "sync"):
+                    f.write(str(self[k]) + '\n')
+                f.close()
+            except IOError:
+                sys.stderr.write(self.statusfile + ": IOError\n")
+        else:
+            time.sleep(1)
 
     def check(self, key):
         """Task is done."""
-        self[key] = str(int(time.time()))
+        self[key] = int(time.time())
 
 # End of Status
 
@@ -131,12 +141,12 @@ class Client(Thread):
         Thread.__init__(self)
 
     def run(self):
-        status = Status()
+        status = Status.get_instance()
         self.timelimit = int(time.time()) + config.client_timeout
 
         if int(time.time()) - status["ping"] >= config.ping_cycle:
             self.do_ping()
-            status = Status()
+            status = Status.get_instance()
             self.do_update()
 
         nodelist = NodeList()
@@ -145,21 +155,21 @@ class Client(Thread):
             nodelist = NodeList()
             if nodelist:
                 self.do_sync()
-            status = Status()
+            status = Status.get_instance()
 
         if (int(time.time()) - status["init"]
             >= config.init_cycle * len(nodelist)):
             self.do_init()
-            status = Status()
+            status = Status.get_instance()
         elif len(nodelist) < config.nodes:
             self.do_rejoin()
-            status = Status()
+            status = Status.get_instance()
 
         if int(time.time()) - status["sync"] >= config.sync_cycle:
             self.do_sync()
 
     def check(self, key):
-        status = Status()
+        status = Status.get_instance()
         status.check(key)
         status.sync()
 

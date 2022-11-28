@@ -182,6 +182,8 @@ search = run_dir + "/search.txt"
 update = run_dir + "/update.txt"
 recent = run_dir + "/recent.txt"
 client_log = run_dir + "/client.txt"
+use_client_log = _get_value(_extconf,'Path','use_client_log', True, 'boolean')
+
 lock = run_dir + "/lock.txt"
 search_lock = run_dir + "/touch.txt"
 admin_search = run_dir + "/admintouch.txt"
@@ -209,7 +211,6 @@ cache_hash_method = 'asis'
 
 version = _get_version()
 
-init_node = ['node.shingetsu.info:8000/server.cgi',
-             'pushare.zenno.info:8000/server.cgi']
+init_node = ['node.shingetsu.info:8000/server.cgi']
 
 flags = []          # It is set by script
