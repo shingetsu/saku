@@ -223,9 +223,6 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
         env["HTTP_ACCEPT_ENCODING"] = \
             self.headers.get("Accept-Encoding", "")
         env["HTTP_HOST"] = self.headers.get('host', '')
-        if config.server_name !='' and (config.server_name + ":"+ str(config.port)) != env["HTTP_HOST"] and config.server_name != env["HTTP_HOST"] :
-            self.send_error(400, "No such Host")
-            return
         env["HTTP_REFERER"] = self.headers.get("Referer", "")
         if 'X-Forwarded-For' in self.headers:
             env['HTTP_X_FORWARDED_FOR'] = self.headers['X-Forwarded-For']

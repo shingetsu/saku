@@ -172,7 +172,8 @@ language = "en"                             # Language code (see RFC3066)
 # regexp
 robot = r"Google|bot|Yahoo|archiver|Wget|Crawler|Yeti|Baidu"
 
-dnsname = ""                            # Server name for shinGETsu protocol
+dnsname = _get_value(_extconf, 'Network', 'dnsname', '')
+                                        # Server name for shinGETsu protocol
 query_separator = "/"                   # Must be "/"
 root_path = "/"                         # path of URI for root
 
