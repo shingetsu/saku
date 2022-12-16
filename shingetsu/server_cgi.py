@@ -49,6 +49,12 @@ class CGI(basecgi.CGI):
     def run(self):
         path = self.path_info()
 
+        httphost = self.environ["HTTP_HOST"]
+        if config.dnsname !='' and (config.dnsname + ":"+ str(config.port)) != httphost :
+            self.header("text/plain; charset=UTF-8")
+            self.stdout.write('error: invaild http host')
+            return
+
         if not self.environ["REQUEST_METHOD"] in ("GET", "HEAD"):
             self.header("text/plain; charset=UTF-8")
         elif path == "":
