@@ -118,7 +118,6 @@ class SocketIO:
                 yield str(line, 'utf-8', 'replace')
         except Exception as err:
             sys.stderr.write('%s: %s\n' % (self.msg, err))
-            raise StopIteration
 
 # End of SocketIO
 
