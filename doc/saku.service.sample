@@ -1,0 +1,27 @@
+[Unit]
+Description=Saku - a clone of P2P anonymous BBS ShiGETsu
+After=network.target
+
+[Service]
+Type=simple
+# Please change vars to fit your env.
+Environment=PYTHONPATH=/usr/local/saku/lib/python3.9/site-packages
+ExecStart=/usr/local/saku/bin/saku
+ExecStop=/bin/kill -TERM $MAINPID
+PIDFile=/usr/local/saku/var/run/saku/pid.txt
+Restart=on-failure
+# User=shingetsu
+# Group=shingetsu
+
+[Install]
+WantedBy=multi-user.target
+
+# How to use.
+# 1. change variables and rename to 'saku.service'
+#    check path in Environment, ExecStart and PIDFile carefully.
+# 2. If you need setuid or setgid, define User or Group.
+# 3. copy to '/etc/systemd/system/'.
+# 4. reload systemd : 'systemctl daemon-reload'
+# 5. then, start saku : 'systemctl start saku'
+# 6. to enable auto-run when system boot, type like this,
+#    'systemctl enable saku' 
