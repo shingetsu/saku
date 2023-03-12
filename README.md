@@ -12,7 +12,7 @@ Authors
 * (js extensions) shinGETsu users.
 * (markdown extension) WhiteCat6142
 
-Contributers
+Contributors
 ------------
 * (run_cgi) Python Software Foundation.
 * (jQuery) The jQuery Foundation.
@@ -62,8 +62,10 @@ Usage Saku without install
 1. Open port 8000/tcp.
 2. Edit file/saku.ini.
 3. Start with
+
         % pipenv install
         % pipenv run python3 ./saku.py -v
+
 4. Browse http://localhost:8000/.
 5. Stop with ^C.
 
@@ -74,6 +76,7 @@ Usage Saku with install
 3. Compile and install.
 
         # make install
+
    You can use PREFIX option for make, and use setup.py directly.
    If your system do not read modules in /usr/bin/local, do
 
@@ -110,7 +113,9 @@ Usage Saku with install
 
 How to Insatall Required Packages on Debian GNU/Linux 8.3
 ---------------------------------------------------------
-1. sudo aptitude install python3 python3-jinja2 python3-pil
+1. do
+
+        $ sudo aptitude install python3 python3-jinja2 python3-pil
 
 Acknowledge
 -----------
