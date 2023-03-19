@@ -1,7 +1,7 @@
 '''Tagging.
 '''
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2023 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,9 +27,6 @@
 #
 
 import re
-import sys
-import os.path
-from time import time
 
 from . import config
 from .tiedobj import *

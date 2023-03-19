@@ -1,7 +1,7 @@
 """Data structure of RSS and useful functions.
 """
 #
-# Copyright (c) 2005-2020 shinGETsu Project.
+# Copyright (c) 2005-2023 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,6 @@
 
 import html
 import re
-import cgi
 
 from .template import Template
 

@@ -1,7 +1,7 @@
 '''JavaScript Cache.
 '''
 #
-# Copyright (c) 2014 shinGETsu Project.
+# Copyright (c) 2014-2023 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,6 @@
 
 import os.path
 import sys
-from glob import glob
 
 from .util import opentext
 

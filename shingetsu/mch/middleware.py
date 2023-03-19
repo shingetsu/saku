@@ -2,7 +2,6 @@
 
 from email import utils as eutils
 import gzip
-import operator
 from wsgiref.headers import Headers
 import re
 

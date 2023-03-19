@@ -1,7 +1,7 @@
 '''Saku Thread CGI methods.
 '''
 #
-# Copyright (c) 2005-2020 shinGETsu Project.
+# Copyright (c) 2005-2023 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,6 @@ import cgi
 import html
 import mimetypes
 import re
-import time
 
 from . import attachutil
 from . import config
