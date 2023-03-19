@@ -1,7 +1,7 @@
 '''Tied List and Dictionaly.
 '''
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2023 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,10 @@
 # SUCH DAMAGE.
 #
 
-import re
 import sys
 import os.path
 from threading import RLock
 
-from . import config
 from .util import opentext
 
 __all__ = ['tiedlist', 'tieddict']

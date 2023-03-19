@@ -1,7 +1,7 @@
 '''Cron daemon running in another thread for client.cgi.
 '''
 #
-# Copyright (c) 2005-2022 shinGETsu Project.
+# Copyright (c) 2005-2023 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,6 @@ import re
 import sys
 import time
 from threading import Thread
-from urllib.request import urlopen
 
 from . import config
 from . import tiedobj

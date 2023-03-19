@@ -1,7 +1,7 @@
 """Saku Node and NodeList.
 """
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2023 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,13 +29,10 @@
 import gzip
 import random
 import re
-import os
 import socket
 import sys
 import threading
-import time
-import urllib.request, urllib.error, urllib.parse
-import zlib
+import urllib.request
 from io import BytesIO, StringIO
 
 from . import config

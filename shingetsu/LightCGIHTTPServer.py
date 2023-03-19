@@ -1,7 +1,7 @@
 """Tiny HTTP server supporting threading CGI.
 """
 #
-# Copyright (c) 2005-2019 shinGETsu Project.
+# Copyright (c) 2005-2023 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,7 @@ import copy
 import os
 import re
 import sys
-import urllib.request, urllib.error, urllib.parse
-import http.server
+import urllib.parse
 import http.server
 import socketserver
 from threading import RLock

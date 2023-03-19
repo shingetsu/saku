@@ -2,7 +2,7 @@
 """2ch like post
 """
 #
-# Copyright (c) 2014,2015 shinGETsu Project.
+# Copyright (c) 2014-2023 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,6 @@
 # SUCH DAMAGE.
 #
 
-import base64
 import time
 import cgi
 import re

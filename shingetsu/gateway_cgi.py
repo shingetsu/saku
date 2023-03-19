@@ -1,7 +1,7 @@
 """Gateway CGI methods.
 """
 #
-# Copyright (c) 2005-2021 shinGETsu Project.
+# Copyright (c) 2005-2023 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,7 @@ import re
 import cgi
 import csv
 from operator import attrgetter
-from time import strftime, time
+from time import time
 
 from . import config
 from . import gateway

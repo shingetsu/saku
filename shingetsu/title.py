@@ -1,7 +1,7 @@
 '''Title Utilities.
 '''
 #
-# Copyright (c) 2005-2014 shinGETsu Project.
+# Copyright (c) 2005-2023 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,7 @@
 #
 
 import hashlib
-import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 import sys
 
 from shingetsu import config
