@@ -1,6 +1,6 @@
 #
 # Makefile
-# Copyright (C) 2005-2014 shinGETsu Project.
+# Copyright (C) 2005-2023 shinGETsu Project.
 #
 
 PREFIX = /usr/local
@@ -13,7 +13,7 @@ all:
 	python3 setup.py build
 
 install:
-	python3 setup.py install --prefix=$(PREFIX)
+	pip3 install --break-system-packages --prefix=$(PREFIX) .
 
 version:
 	./tool/git2ver.sh > file/version.txt
