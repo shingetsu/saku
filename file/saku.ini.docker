@@ -1,0 +1,28 @@
+#
+# Sample saku.ini to run saku in distributed directory.
+# Copyright (c) 2005-2011 shinGETsu Project.
+# $Id$
+#
+
+[Network]
+port: 8000
+
+[Gateway]
+# localhost or local network
+admin: ^(127|10|172\.(1[6-9]|2[0-9]|3[01])|192\.168)\.
+
+[Path]
+prefix: /opt/saku
+var: /var/saku
+docroot: %(prefix)s/www
+file_dir: %(prefix)s/file
+template_dir: %(prefix)s/template
+log_dir: %(var)s/log
+run_dir: %(var)s/run
+cache_dir: %(var)s/cache
+spam_list: %(file_dir)s/spam.txt
+initnode_list: %(file_dir)s/initnode.txt
+node_allow: %(file_dir)s/node_allow.txt
+node_deny: %(file_dir)s/node_deny.txt
+apache_docroot: %(var)s/www/shingetsu
+archive_dir: %(var)s/www/archive
