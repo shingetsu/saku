@@ -57,6 +57,18 @@ Saku requires
 * PIL or Pillow (Python Imaging Libraty) if you need
 * Supervisor if you need
 
+Usage Saku with Docker
+--------------------------
+1. Open port 8000/tcp.
+2. Edit file/saku.ini.
+3. Start with
+
+        % docker build -t saku .
+        % docker run -it --rm -p8000:8000 saku
+
+4. Browse http://localhost:8000/.
+5. Stop with ^C.
+
 Usage Saku without install
 --------------------------
 1. Open port 8000/tcp.
