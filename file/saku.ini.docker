@@ -12,8 +12,8 @@ port: 8000
 admin: ^(127|10|172\.(1[6-9]|2[0-9]|3[01])|192\.168)\.
 
 [Path]
-prefix: /opt/saku
-var: /var/saku
+prefix: /saku
+var: /saku-data
 docroot: %(prefix)s/www
 file_dir: %(prefix)s/file
 template_dir: %(prefix)s/template
