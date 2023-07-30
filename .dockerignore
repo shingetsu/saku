@@ -1,6 +1,8 @@
 # Git
 .git
 .gitignore
+.gitattributes
+
 
 # CI
 .codeclimate.yml
@@ -9,17 +11,13 @@
 
 # Docker
 docker-compose.yml
+Dockerfile
 .docker
+.dockerignore
 
 # Byte-compiled / optimized / DLL files
-__pycache__/
-*/__pycache__/
-*/*/__pycache__/
-*/*/*/__pycache__/
-*.py[cod]
-*/*.py[cod]
-*/*/*.py[cod]
-*/*/*/*.py[cod]
+**/__pycache__/
+**/*.py[cod]
 
 # C extensions
 *.so
@@ -73,7 +71,7 @@ docs/_build/
 target/
 
 # Virtual environment
-.env/
+.env
 .venv/
 venv/
 
@@ -82,12 +80,10 @@ venv/
 
 # Python mode for VIM
 .ropeproject
-*/.ropeproject
-*/*/.ropeproject
-*/*/*/.ropeproject
+**/.ropeproject
 
 # Vim swap files
-*.swp
-*/*.swp
-*/*/*.swp
-*/*/*/*.swp
+**/*.swp
+
+# VS Code
+.vscode/
