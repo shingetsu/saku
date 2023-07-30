@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+  saku:
+    build:
+      context: .
+    ports:
+      - 8000:8000
+    volumes:
+      - ./data:/saku-data
+
