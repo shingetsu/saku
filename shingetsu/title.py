@@ -42,10 +42,10 @@ _allchars_quoter.safe = []
 def str_encode(query):
     '''Encode for URI.
 
-    >>> str_encode('~')
-    '%7E'
-    >>> str_encode(b'~')
-    '%7E'
+    >>> str_encode('#')
+    '%23'
+    >>> str_encode(b'#')
+    '%23'
     '''
     if not isinstance(query, bytes):
         query = str(query)
@@ -54,8 +54,8 @@ def str_encode(query):
 def str_decode(query):
     '''Decode URI.
 
-    >>> str_decode('%7E')
-    '~'
+    >>> str_decode('%23')
+    '#'
     '''
     return urllib.parse.unquote(query)
 
@@ -64,8 +64,8 @@ def file_encode(type, query):
 
     >>> file_encode('foo', 'a')
     'foo_61'
-    >>> file_encode('foo', '~')
-    'foo_7E'
+    >>> file_encode('foo', '#')
+    'foo_23'
     '''
     buf = [type, '_']
     if isinstance(query, str):
@@ -87,8 +87,8 @@ def file_decode_type(query, type=None):
 def file_decode(query, type=None):
     '''Decode filename.
 
-    >>> file_decode('foo_7E')
-    '~'
+    >>> file_decode('foo_23')
+    '#'
     '''
     q = query.split('_')
     if len(q) < 2:
@@ -108,9 +108,9 @@ def file_decode(query, type=None):
 def is_valid_file(query, type=None):
     '''Validate filename.
 
-    >>> is_valid_file('thread_7E')
+    >>> is_valid_file('thread_23')
     True
-    >>> is_valid_file('foo_7Ex')
+    >>> is_valid_file('foo_23x')
     False
     '''
     q = query.split('_')
