@@ -1,3 +1,6 @@
+[![Lint and Test](https://github.com/shingetsu/saku/actions/workflows/workflow.yml/badge.svg)](https://github.com/shingetsu/saku/actions/workflows/workflow.yml)
+[![License](https://img.shields.io/badge/License-BSD_2--Clause-orange.svg)](https://opensource.org/licenses/BSD-2-Clause)
+
 Saku - a clone of P2P anonymous BBS shinGETsu
 =============================================
 
