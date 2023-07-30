@@ -2,7 +2,7 @@
 #
 # Run All Automatic Tests.
 #
-# Copyright (c) 2009-2014 shinGETsu Project.
+# Copyright (c) 2009-2023 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without

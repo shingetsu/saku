@@ -3,7 +3,7 @@ FROM python:3.11-slim
 COPY . /saku
 WORKDIR /saku
 RUN mv file/saku.ini.docker file/saku.ini
-RUN python -m pip install -U pip
+RUN python -m pip install --upgrade pip
 RUN python -m pip install pipenv
 RUN pipenv install
 
