@@ -69,6 +69,20 @@ Usage Saku with Docker
 4. Browse http://localhost:8000/.
 5. Stop with ^C.
 
+Usage Saku with Docker Compose
+------------------------------
+
+Data will be persistence with `./data` directory
+
+1. Open port 8000/tcp.
+2. Edit `file/saku.ini.docker`.
+3. Start with
+
+        % docker compose up
+
+4. Browse http://localhost:8000/.
+5. Stop with ^C.
+
 Usage Saku without install
 --------------------------
 1. Open port 8000/tcp.
