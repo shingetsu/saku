@@ -60,7 +60,7 @@ Saku requires
 Usage Saku with Docker
 --------------------------
 1. Open port 8000/tcp.
-2. Edit file/saku.ini.
+2. Edit `file/saku.ini.docker`.
 3. Start with
 
         % docker build -t saku .
