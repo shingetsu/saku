@@ -17,6 +17,7 @@ install:
 
 version:
 	./tool/git2ver.sh > file/version.txt
+	@cat file/version.txt
 
 check:
 	sh tests/runtests.sh
