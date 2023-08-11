@@ -96,6 +96,8 @@ class Status(dict):
     
     @classmethod
     def get_instance(cls):
+        if config.use_client_log:
+            return cls()
         if not hasattr(cls, "_instance"):
             cls._instance = cls()
         return cls._instance
