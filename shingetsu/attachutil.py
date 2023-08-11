@@ -75,4 +75,7 @@ def is_wellknown_image(path):
     )
 
 def image_type(path):
-    return PIL.Image.open(path).format.lower()
+    try:
+        return PIL.Image.open(path).format.lower()
+    except:
+        return None
