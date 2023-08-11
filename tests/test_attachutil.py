@@ -1,7 +1,7 @@
 """Unittest for Attached Files Utilities.
 """
 #
-# Copyright (c) 2023 shinGETsu Project.
+# Copyright (c) 2009,2023 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,55 +26,48 @@
 # SUCH DAMAGE.
 #
 
-import imghdr
+import os.path
 import sys
 import unittest
 
-sys.path.append(".")
+sys.path.insert(0, ".")
 
 import shingetsu.attachutil as attachutil
 
-__version__ = "$Revision$"
 
-
-class ImghdrMock:
-    def __init__(self, type):
-        self.type = type
-        self.path = None
-
-    def what(self, path):
-        self.path = path
-        return self.type
-
+def get_image_type(suffix):
+    def image_type(path):
+        return suffix
+    return image_type
 
 class AttachUtilTest(unittest.TestCase):
+    orig_image_type = None
+
+    def setUp(self):
+        self.orig_image_type = attachutil.image_type
+
     def tearDown(self):
-        attachutil._imghdr = imghdr
+        attachutil.image_type = self.orig_image_type
 
     def test_is_valid_image_true(self):
-        attachutil._imghdr = ImghdrMock("png")
+        attachutil.image_type = get_image_type("png")
         self.assertTrue(attachutil.is_valid_image("image/png", "foo"))
-        self.assertEqual("foo", attachutil._imghdr.path)
 
     def test_is_valid_image_type_isnot_image(self):
-        attachutil._imghdr = ImghdrMock("png")
+        attachutil.image_type = get_image_type("png")
         self.assertFalse(attachutil.is_valid_image("text/html", "foo"))
-        self.assertEqual("foo", attachutil._imghdr.path)
 
     def test_is_valid_image_file_isnot_image(self):
-        attachutil._imghdr = ImghdrMock(None)
+        attachutil.image_type = get_image_type(None)
         self.assertFalse(attachutil.is_valid_image("image/png", "foo"))
-        self.assertEqual("foo", attachutil._imghdr.path)
 
     def test_is_valid_image_not_same_image_type(self):
-        attachutil._imghdr = ImghdrMock("jpeg")
+        attachutil.image_type = get_image_type("jpeg")
         self.assertFalse(attachutil.is_valid_image("image/png", "foo"))
-        self.assertEqual("foo", attachutil._imghdr.path)
 
     def test_is_valid_image_none(self):
-        attachutil._imghdr = ImghdrMock("jpeg")
+        attachutil.image_type = get_image_type("jpeg")
         self.assertFalse(attachutil.is_valid_image("image/png", None))
-        self.assertEqual(None, attachutil._imghdr.path)
 
 
 def _test():

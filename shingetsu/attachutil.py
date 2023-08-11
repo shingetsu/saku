@@ -1,7 +1,7 @@
 """Attached Files Utilities.
 """
 #
-# Copyright (c) 2009-2018 shinGETsu Project.
+# Copyright (c) 2009-2023 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,12 +27,13 @@
 #
 
 import mimetypes
-import imghdr
+
+try:
+    import PIL.Image
+except ImportError:
+    PIL = None
 
 __all__ = ['is_valid_image', 'seem_html']
-
-# For Unittest
-_imghdr = imghdr
 
 
 def seem_html(suffix):
@@ -49,7 +50,9 @@ def is_valid_image(mimetype, path):
     """
     if not path:
         return False
-    path_suffix = _imghdr.what(path)
+    if not PIL:
+        return False
+    path_suffix = image_type(path)
     if not path_suffix:
         return False
     (path_type, null) = mimetypes.guess_type('test.' + path_suffix)
@@ -62,9 +65,14 @@ def is_valid_image(mimetype, path):
 def is_wellknown_image(path):
     if not path:
         return False
-    path_suffix = _imghdr.what(path)
+    if not PIL:
+        return False
+    path_suffix = image_type(path)
     return path_suffix in (
       'gif',
       'jpeg',
       'png',
     )
+
+def image_type(path):
+    return PIL.Image.open(path).format.lower()
