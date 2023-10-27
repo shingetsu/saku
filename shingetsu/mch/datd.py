@@ -210,7 +210,7 @@ def subject_app(env, resp):
     # example: 2ch_E99B91E8AB87(雑談)
     board = env['mch.path_match'].group(1)
 
-    m = re.match('2ch_(\S+)', board)
+    m = re.match(r'2ch_(\S+)', board)
     if not (board.startswith('2ch') or m):
         resp("404 Not Found", [('Content-Type', 'text/plain')])
         return [b'404 Not Found']
