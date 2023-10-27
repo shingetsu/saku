@@ -60,7 +60,7 @@ def _get_version():
 
 
 # External config files.
-_extconf = configparser.SafeConfigParser()
+_extconf = configparser.ConfigParser()
 _extconf.read(['file/saku.ini',
                '/usr/local/etc/saku/saku.ini',
                '/etc/saku/saku.ini',
