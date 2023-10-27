@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 jinja2 = "*"
 pillow = "*"
+ruff = "*"
 
 [dev-packages]
 

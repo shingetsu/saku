@@ -25,7 +25,7 @@ jobs:
           pipenv install ruff pytest
       - name: Lint with ruff
         run: |
-          pipenv run ruff --format=github --select=E9,F63,F7,F82 .
+          pipenv run ruff --select=E9,F63,F7,F82 .
       - name: Test with pytest
         run: |
           pipenv run pytest
