@@ -45,7 +45,7 @@ from .title import *
 from .tag import *
 from .template import Template
 from .updatequeue import UpdateQueue
-from .util import opentext
+from .util import opentext, get_http_remote_addr
 
 
 dummyquery = str(int(time.time()));
@@ -138,7 +138,7 @@ class CGI(basecgi.CGI):
         else:
             al = ""
         self.message = search_message(al)
-        addr = self.environ.get("REMOTE_ADDR", "")
+        addr = get_http_remote_addr(self.environ)
         self.remoteaddr = addr
         self.isadmin = config.re_admin.search(addr)
         self.isfriend = config.re_friend.search(addr)

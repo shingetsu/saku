@@ -48,7 +48,7 @@ class Httpd(threading.Thread):
         HandlerClass = LightCGIHTTPServer.HTTPRequestHandler
 
         ServerClass = LightCGIHTTPServer.HTTPServer
-        server_address = ("", config.port)
+        server_address = (config.bind_addr, config.port)
         HandlerClass.server_version = config.version
         HandlerClass.root_index = config.root_index
         self.httpserv = ServerClass(server_address, HandlerClass)

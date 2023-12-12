@@ -29,6 +29,7 @@
 import hashlib
 import os.path
 import sys
+from . import config
 
 __all__ = ['md5digest', 'fsdiff', 'opentext']
 
@@ -73,3 +74,13 @@ def opentext(path, mode='r'):
     return open(path, mode,
                 encoding='utf-8', errors='replace',
                 newline=newline)
+
+def get_http_remote_addr(env):
+    if not config.use_x_forwarded_for:
+        return env['REMOTE_ADDR']
+    else:
+        if 'HTTP_X_FORWARDED_FOR' in env:
+            return env['HTTP_X_FORWARDED_FOR']
+        elif 'REMOTE_ADDR' in env:
+            return env['REMOTE_ADDR']
+    return None
