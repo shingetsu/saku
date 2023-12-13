@@ -73,6 +73,7 @@ bind_addr = _get_value(_extconf, 'Network', 'bind_addr', '')
 port = _get_value(_extconf, 'Network', 'port', 8000, 'int')
 dat_port = _get_value(_extconf, 'Network', 'dat_port', 8001, 'int')
 max_connection = _get_value(_extconf, 'Network', 'max_connection', 20, 'int')
+use_x_forwarded_for = _get_value(_extconf, 'Network', 'use_x_forwarded_for', False, 'boolean') # set true if behind a reverse proxy.
 
 docroot = _get_value(_extconf, 'Path', 'docroot', './www', 'path')
 log_dir = _get_value(_extconf, 'Path', 'log_dir', './log', 'path')
@@ -110,7 +111,6 @@ proxy_destination = _get_value(_extconf, 'Gateway', 'proxy_destination', '')
 archive_uri = _get_value(_extconf, 'Gateway', 'archive_uri',
                          'https://archive.shingetsu.info/')
 enable2ch = _get_value(_extconf, 'Gateway', 'enable_2ch', False, 'boolean')
-use_x_forwarded_for = _get_value(_extconf, 'Gateway', 'use_x_forwarded_for', False, 'boolean') # set true if behind a reverse proxy.
 re_admin = re.compile(admin)
 re_friend = re.compile(friend)
 re_visitor = re.compile(visitor)
