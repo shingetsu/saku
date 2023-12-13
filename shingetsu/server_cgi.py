@@ -39,7 +39,7 @@ from . import title
 from .cache import *
 from .node import *
 from .updatequeue import UpdateQueue
-from .util import opentext
+from .util import opentext, get_http_remote_addr
 
 
 class CGI(basecgi.CGI):
@@ -52,7 +52,7 @@ class CGI(basecgi.CGI):
         httphost = self.environ["HTTP_HOST"]
         if config.dnsname !='' and (config.dnsname + ":"+ str(config.port)) != httphost :
             self.header("text/plain; charset=UTF-8")
-            self.stdout.write('error: invaild http host')
+            self.stdout.write('error: invalid http host')
             return
 
         if not self.environ["REQUEST_METHOD"] in ("GET", "HEAD"):
@@ -77,6 +77,8 @@ class CGI(basecgi.CGI):
             flag = self.do_update(path)
             if flag:
                 self.stdout.write("OK\n")
+        elif path.startswith("version"):
+            self.do_version()
 
     def path_info(self):
         '''Parse PATH_INFO.'''
@@ -104,7 +106,8 @@ class CGI(basecgi.CGI):
 
     def do_ping(self):
         self.header("text/plain; charset=UTF-8")
-        self.stdout.write("PONG\n" + self.environ["REMOTE_ADDR"] + "\n")
+        remote_addr = get_http_remote_addr(self.environ)
+        self.stdout.write("PONG\n" + remote_addr + "\n")
 
     def do_node(self):
         nodes = NodeList()
@@ -116,7 +119,7 @@ class CGI(basecgi.CGI):
             self.stdout.write("%s\n" % inode)
 
     def get_remote_hostname(self, host):
-        remote_addr = self.environ['REMOTE_ADDR']
+        remote_addr = get_http_remote_addr(self.environ)
         if host == '':
             return remote_addr
         ipaddr = socket.gethostbyname(host)
@@ -299,9 +302,13 @@ class CGI(basecgi.CGI):
             queue.append(datfile, stamp, id, node)
             queue.start()
             return True
+        
+    def do_version(self):
+        self.header("text/plain; charset=UTF-8")
+        self.stdout.write("{}".format(config._get_version()) + "\n")
 
     def _seem_valid_relay_node(self, host, node, datfile):
-        remote_addr = self.environ['REMOTE_ADDR']
+        remote_addr = get_http_remote_addr(self.environ)
         if host == remote_addr:
             return True
         ipaddr = socket.gethostbyname(host)
