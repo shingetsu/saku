@@ -1,7 +1,7 @@
 """Tiny HTTP server supporting threading CGI.
 """
 #
-# Copyright (c) 2005-2023 shinGETsu Project.
+# Copyright (c) 2005-2024 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@
 import copy
 import os
 import re
+import socket
 import sys
 import urllib.parse
 import http.server
@@ -105,6 +106,9 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
 
     def address_string(self):
         host, port = self.client_address[:2]
+        m = re.search(r'^::ffff:([\d.]+)$', host)
+        if m:
+            return m.group(1)
         return host
 
     def log_request(self, code='-', size='-'):
@@ -265,6 +269,4 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
 
 
 class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
-    #XXX ThreadingMixIn of Python 3.7.3 does not release threads from its thread list
-    #XXX https://github.com/python/cpython/pull/13893
-    block_on_close = False
+    address_family = socket.AF_INET6

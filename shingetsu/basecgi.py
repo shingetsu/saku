@@ -1,7 +1,7 @@
 '''Base CGI module.
 '''
 #
-# Copyright (c) 2005-2015 shinGETsu Project.
+# Copyright (c) 2005-2024 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,8 @@
 
 import os
 import sys
+
+from . import util
 
 __all__ = ['CGI']
 
@@ -106,7 +108,7 @@ class CGI:
             self.run()
         except (IOError, socket.error, socket.timeout) as strerror:
             self.stderr.write("%s: %s\n" %
-                              (self.environ['REMOTE_ADDR'], strerror))
+                              (util.get_http_remote_addr(self.environ), strerror))
 
     def run(self):
         """Main routine for CGI."""

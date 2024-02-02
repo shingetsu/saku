@@ -1,7 +1,7 @@
 """Utilities.
 """
 #
-# Copyright (c) 2014 shinGETsu Project.
+# Copyright (c) 2014-2024 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
 
 import hashlib
 import os.path
+import re
 import sys
 from . import config
 
@@ -76,6 +77,15 @@ def opentext(path, mode='r'):
                 newline=newline)
 
 def get_http_remote_addr(env):
+    addr = get_http_remote_addr_from_env(env)
+    if not addr:
+        return addr
+    m = re.search(r'^::ffff:([\d.]+)$', addr)
+    if m:
+        return m.group(1)
+    return addr
+
+def get_http_remote_addr_from_env(env):
     if not config.use_x_forwarded_for:
         return env['REMOTE_ADDR']
     else:

@@ -6,6 +6,7 @@ import re
 
 from shingetsu import title
 from shingetsu import tag
+from shingetsu import util
 
 
 def log(s, *args, **kwds):

@@ -1,7 +1,7 @@
 """Saku Node and NodeList.
 """
 #
-# Copyright (c) 2005-2023 shinGETsu Project.
+# Copyright (c) 2005-2024 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -124,6 +124,7 @@ class Node:
     """One unit for P2P."""
 
     nodestr = None
+    isv6 = False
 
     def __init__(self, nodestr=None, host="", port="", path=""):
         if nodestr is not None:
@@ -131,8 +132,11 @@ class Node:
             if not re.search(r"\d+/[^: ]+$", nodestr):
                 raise NodeError('bad format')
             self.nodestr = nodestr.replace('+', '/')
+        elif ':' in host:
+            self.nodestr = '[%s]:%s%s' % (host, str(port), re.sub(r"\+", "/", path))
         else:
-            self.nodestr = host + ":" + str(port) + re.sub(r"\+", "/", path)
+            self.nodestr = '%s:%s%s' % (host, str(port), re.sub(r"\+", "/", path))
+        self.isv6 = self.nodestr.startswith('[')
 
     def __str__(self):
         return self.nodestr
@@ -250,6 +254,12 @@ class RawNodeList(list):
     def random(self):
         return random.choice(self)
 
+    def filterv4(self):
+        return [i for i in self if not i.isv6]
+
+    def filterv6(self):
+        return [i for i in self if i.isv6]
+
     def append(self, node):
         if node_allow().check(str(node)):
             pass
@@ -295,7 +305,25 @@ class NodeList(RawNodeList):
                 res = n.talk('ping')
                 lines = iter(res)
                 buf = (next(lines), next(lines))
-                if buf[0].strip() == 'PONG':
+                if buf[0].strip() == 'PONG' and ':' not in buf[1]:
+                    return Node(host=buf[1].strip(), port=port, path=path)
+            except StopIteration:
+                sys.stderr.write('/ping %s: error\n' % n)
+                return None
+
+    def myself6(self):
+        """Who am I. (IPv6)"""
+        port = config.port
+        path = config.server
+        dnsname = config.dnsname
+        if dnsname != "":
+            return Node(host=dnsname, port=port, path=path)
+        for n in self:
+            try:
+                res = n.talk('ping')
+                lines = iter(res)
+                buf = (next(lines), next(lines))
+                if buf[0].strip() == 'PONG' and ':' in buf[1]:
                     return Node(host=buf[1].strip(), port=port, path=path)
             except StopIteration:
                 sys.stderr.write('/ping %s: error\n' % n)
@@ -340,6 +368,9 @@ class NodeList(RawNodeList):
         myself = self.myself()
         if myself and (myself in self):
             self.remove(myself)
+        myself6 = self.myself6()
+        if myself6 and (myself6 in self):
+            self.remove(myself6)
         if len(self) == 0:
             return
 
@@ -366,8 +397,12 @@ class NodeList(RawNodeList):
             self.remove(inode)
         elif len(self) <= 1:
             sys.stderr.write("Warning: Few linked nodes.\n")
-        while len(self) > config.nodes:
-            n = self.random()
+        while len(self.filterv4()) > config.nodes:
+            n = random.choice(self.filterv4())
+            n.bye()
+            self.remove(n)
+        while len(self.filterv6()) > config.nodes:
+            n = random.choice(self.filterv6())
             n.bye()
             self.remove(n)
 

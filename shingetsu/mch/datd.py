@@ -1,7 +1,7 @@
 """2ch like dat interface
 """
 #
-# Copyright (c) 2014,2015 shinGETsu Project.
+# Copyright (c) 2014-2024 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ import re
 from wsgiref.headers import Headers
 from email import utils as eutils
 import collections
+import socket
 import socketserver
 
 from shingetsu import cache
@@ -60,6 +61,9 @@ head_re = re.compile(r'/([^/]+)/head\.txt$')
 def dat_app(env, resp):
     # utils.log('dat_app')
     addr = env.get('REMOTE_ADDR', '')
+    m = re.search(r'^::ffff:([\d.]+)$', addr)
+    if m:
+        addr = m.group(1)
     env['shingetsu.isadmin'] = bool(config.re_admin.match(addr))
     env['shingetsu.isfriend'] = bool(config.re_friend.match(addr))
     env['shingetsu.isvisitor'] = bool(config.re_visitor.match(addr))
@@ -291,7 +295,7 @@ class Datd(threading.Thread):
             utils.log('use wsgiref')
             class Server(socketserver.ThreadingMixIn,
                          simple_server.WSGIServer):
-                pass
+                address_family = socket.AF_INET6
             _server = simple_server.make_server('', self._port, dat_app,
                                                 server_class=Server)
             _server.serve_forever()

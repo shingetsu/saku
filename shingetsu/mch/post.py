@@ -2,7 +2,7 @@
 """2ch like post
 """
 #
-# Copyright (c) 2014-2023 shinGETsu Project.
+# Copyright (c) 2014-2024 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -38,6 +38,7 @@ from shingetsu import spam
 from shingetsu import updatequeue
 from shingetsu import template
 from shingetsu import config
+from shingetsu import util
 
 from . import dat
 from . import utils
@@ -121,7 +122,7 @@ def post_comment_app(env, resp):
     # utils.log('post_comment_app')
     subject, name, mail, body, datkey = _get_comment_data(env)
 
-    info = {'host': env.get('REMOTE_ADDR', ''),
+    info = {'host': util.get_http_remote_addr(env),
             'name': name,
             'mail': mail,
             'body': body}
