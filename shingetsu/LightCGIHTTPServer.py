@@ -29,7 +29,6 @@
 import copy
 import os
 import re
-import socket
 import sys
 import urllib.parse
 import http.server
@@ -269,4 +268,4 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
 
 
 class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
-    address_family = socket.AF_INET6
+    pass
