@@ -1,7 +1,7 @@
 """Saku Gateway base module.
 """
 #
-# Copyright (c) 2005-2023 shinGETsu Project.
+# Copyright (c) 2005 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,6 @@
 #
 
 import html
-import cgi
 import os
 import re
 import urllib.parse
@@ -37,6 +36,7 @@ from io import BytesIO
 
 from . import basecgi
 from . import config
+from . import forminput
 from . import spam
 from .cache import *
 from .jscache import JsCache
@@ -250,7 +250,7 @@ class CGI(basecgi.CGI):
         '''
         if rss == '':
             rss = self.gateway_cgi + '/rss'
-        form = cgi.FieldStorage(environ=self.environ, fp=BytesIO())
+        form = forminput.read(self.environ, BytesIO())
         if form.getfirst('__debug_js'):
             js = self.extension('js', False)
         else:
@@ -466,12 +466,12 @@ class CGI(basecgi.CGI):
         """Post article."""
         import base64
         try:
-            attach = form['attach']
+            attach = form.getfile('attach')
         except KeyError:
             attach = None
         str_attach = ''
 
-        if (attach is not None) and attach.file:
+        if attach is not None:
             if len(attach.value) > config.record_limit*1024:
                 self.header(self.message["big_file"], deny_robot=True)
                 self.footer()

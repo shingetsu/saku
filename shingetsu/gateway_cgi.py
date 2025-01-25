@@ -1,7 +1,7 @@
 """Gateway CGI methods.
 """
 #
-# Copyright (c) 2005-2023 shinGETsu Project.
+# Copyright (c) 2005 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,12 +28,12 @@
 
 import html
 import re
-import cgi
 import csv
 from operator import attrgetter
 from time import time
 
 from . import config
+from . import forminput
 from . import gateway
 from .cache import *
 from .tag import UserTagList
@@ -47,7 +47,7 @@ class CGI(gateway.CGI):
 
     def run(self):
         path = self.path_info()
-        self.form = cgi.FieldStorage(environ=self.environ, fp=self.stdin)
+        self.form = forminput.read(self.environ, self.stdin)
         try:
             filter = self.form.getfirst('filter', '')
             tag = self.form.getfirst('tag', '')

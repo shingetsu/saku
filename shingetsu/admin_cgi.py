@@ -1,7 +1,7 @@
 """Saku Admin CGI methods.
 """
 #
-# Copyright (c) 2005-2020 shinGETsu Project.
+# Copyright (c) 2005 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,12 +28,12 @@
 
 import html
 import os
-import cgi
 import re
 from random import random
 
 from . import config
 from . import gateway
+from . import forminput
 from .cache import *
 from .node import *
 from .tag import UserTagList
@@ -46,7 +46,7 @@ class CGI(gateway.CGI):
 
     def run(self):
         path = self.path_info()
-        form = cgi.FieldStorage(environ=self.environ, fp=self.stdin)
+        form = forminput.read(self.environ, self.stdin)
 
         cmd = form.getfirst('cmd', '')
         if not self.isadmin:

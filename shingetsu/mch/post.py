@@ -2,7 +2,7 @@
 """2ch like post
 """
 #
-# Copyright (c) 2014-2024 shinGETsu Project.
+# Copyright (c) 2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@ import re
 from shingetsu import title
 from shingetsu import gateway
 from shingetsu import cache
+from shingetsu import forminput
 from shingetsu import spam
 from shingetsu import updatequeue
 from shingetsu import template
@@ -105,8 +106,7 @@ success_msg = '''<html lang="ja"><head><meta http-equiv="Content-Type" content="
 
 
 def _get_comment_data(env):
-    fs = cgi.FieldStorage(environ=env, fp=env['wsgi.input'],
-                          encoding='cp932')
+    fs = forminput.read(env, env['wsgi.input'], encoding='cp932')
     prop = lambda s: fs[s].value if s in fs else ''
     mail = prop('mail')
     if mail.lower() == 'sage':

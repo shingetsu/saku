@@ -1,7 +1,7 @@
 '''Saku Thread CGI methods.
 '''
 #
-# Copyright (c) 2005-2023 shinGETsu Project.
+# Copyright (c) 2005 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,13 +26,13 @@
 # SUCH DAMAGE.
 #
 
-import cgi
 import html
 import mimetypes
 import re
 
 from . import attachutil
 from . import config
+from . import forminput
 from . import gateway
 from .cache import *
 from .tag import UserTagList
@@ -90,7 +90,7 @@ class CGI(gateway.CGI):
             self.print_attach(datfile, stamp, id, suffix, None)
             return
 
-        form = cgi.FieldStorage(environ=self.environ, fp=self.stdin)
+        form = forminput.read(self.environ, self.stdin)
         if form.getfirst("cmd", "") == "post" and \
            form.getfirst("file", "").startswith("thread_") and \
            self.environ["REQUEST_METHOD"] == "POST":
@@ -134,7 +134,7 @@ class CGI(gateway.CGI):
     def print_thread(self, path, id='', page=0):
         str_path = self.str_encode(path)
         file_path = self.file_encode('thread', path)
-        form = cgi.FieldStorage(environ=self.environ, fp=self.stdin)
+        form = forminput.read(self.environ, self.stdin)
         cache = Cache(file_path)
         if id and form.getfirst('ajax'):
             self.print_thread_ajax(path, id, form)
