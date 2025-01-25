@@ -1,7 +1,7 @@
 '''Title Utilities.
 '''
 #
-# Copyright (c) 2005-2023 shinGETsu Project.
+# Copyright (c) 2005 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -35,9 +35,6 @@ from shingetsu import config
 __all__ = ['str_encode', 'str_decode', 'file_encode', 'file_decode',
            'is_valid_file']
 
-_allchars_quoter = urllib.parse.Quoter('')
-_allchars_quoter.safe = []
-
 
 def str_encode(query):
     '''Encode for URI.
@@ -62,15 +59,13 @@ def str_decode(query):
 def file_encode(type, query):
     '''Encode for filename.
 
-    >>> file_encode('foo', 'a')
-    'foo_61'
-    >>> file_encode('foo', '#')
-    'foo_23'
+    >>> file_encode('foo', 'a#j')
+    'foo_61236A'
     '''
     buf = [type, '_']
     if isinstance(query, str):
         query = query.encode('utf-8', 'replace')
-    quoted = ''.join([_allchars_quoter[char] for char in query])
+    quoted = ''.join(['%02X' % c for c in query])
     return ''.join([type, '_', quoted.replace('%', '')])
                    
 def file_decode_type(query, type=None):
