@@ -1,6 +1,6 @@
 #
 # Makefile
-# Copyright (C) 2005-2023 shinGETsu Project.
+# Copyright (C) 2005 shinGETsu Project.
 #
 
 PREFIX = /usr/local
@@ -10,10 +10,38 @@ PACKAGE = saku-$(shell cat file/version.txt)
 .PHONY: all install exe version check clean distclean package
 
 all:
-	python3 setup.py build
+	@echo nothing to build
 
-install:
-	pip3 install --break-system-packages --prefix=$(PREFIX) .
+install: version
+	install -m 644 -D -t $(PREFIX)/lib/saku/lib/shingetsu shingetsu/*.py
+	install -m 644 -D -t $(PREFIX)/lib/saku/lib/shingetsu/mch shingetsu/mch/*.py
+	install -m 644 -D -t $(PREFIX)/share/saku/file file/*.txt
+	install -m 644 -D -t $(PREFIX)/share/saku/template template/*.txt
+	install -m 644 -D -t $(PREFIX)/share/saku/www www/*.css www/*.js
+	install -m 644 -D -t $(PREFIX)/share/saku/www www/*.gif www/*.ico www/*.xsl
+	install -m 644 -D -t $(PREFIX)/share/saku/www/bootstrap/css www/bootstrap/css/*
+	install -m 644 -D -t $(PREFIX)/share/saku/www/bootstrap/fonts www/bootstrap/fonts/*
+	install -m 644 -D -t $(PREFIX)/share/saku/www/bootstrap/js www/bootstrap/js/*
+	install -m 644 -D -t $(PREFIX)/share/saku/www/contrib www/contrib/*
+	install -m 644 -D -t $(PREFIX)/share/saku/www/jquery www/jquery/*.js
+	install -m 644 -D -t $(PREFIX)/share/saku/www/jquery www/jquery/*.txt
+	install -m 644 -D -t $(PREFIX)/share/saku/www/jquery/spoiler www/jquery/spoiler/*
+	install -m 644 -D -t $(PREFIX)/share/doc/saku README*
+	install -m 644 -D -t $(PREFIX)/share/doc/saku doc/README*
+	install -m 644 -D -t $(PREFIX)/share/doc/saku/sample file/*node*.txt
+	install -m 644 -D -t $(PREFIX)/share/doc/saku/sample file/spam.txt
+	install -m 644 -D -t $(PREFIX)/share/doc/saku/sample doc/*.sample
+
+	install -m 755 -d $(PREFIX)/bin
+	install -m 755 -T saku.py $(PREFIX)/bin/saku
+	install -m 755 -T tool/mkrss.py $(PREFIX)/lib/saku/mkrss
+	install -m 755 -T tool/mkarchive.py $(PREFIX)/lib/saku/mkarchive
+	install -m 644 -T doc/sample.ini $(PREFIX)/share/doc/saku/sample/saku.ini
+
+	rm -f $(PREFIX)/share/saku/www/__merged.css
+	rm -f $(PREFIX)/share/saku/www/__merged.js
+	cat www/*.css > $(PREFIX)/share/saku/www/__merged.css
+	cat www/*.js > $(PREFIX)/share/saku/www/__merged.js
 
 version:
 	./tool/git2ver.sh > file/version.txt

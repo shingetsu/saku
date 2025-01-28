@@ -2,7 +2,7 @@
 #
 # start/stop SAKU server.
 #
-# Copyright (C) 2005-2015 shinGETsu Project.
+# Copyright (C) 2005 shinGETsu Project.
 #
 ### BEGIN INIT INFO
 # Provides:          saku
@@ -15,6 +15,7 @@
 
 USER=shingetsu
 COMMAND=/usr/local/bin/saku
+LIBDIR=/usr/local/lib/saku/lib
 PIDFILE=/var/local/run/saku/pid.txt
 
 test -x $COMMAND || exit 0
@@ -23,7 +24,7 @@ case "$1" in
     start)
         echo -n "Starting p2p bbs: saku"
         cd /
-        sudo -u $USER setsid $COMMAND < /dev/null > /dev/null 2>&1 &
+        sudo -u $USER setsid env PYTHONPATH=$LIBDIR $COMMAND < /dev/null > /dev/null 2>&1 &
         echo "."
     ;;
     stop)
