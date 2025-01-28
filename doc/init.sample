@@ -15,7 +15,7 @@
 
 USER=shingetsu
 COMMAND=/usr/local/bin/saku
-LIBDIR=/usr/local/lib/saku/lib
+LIBDIR=/usr/local/lib/saku
 PIDFILE=/var/local/run/saku/pid.txt
 
 test -x $COMMAND || exit 0

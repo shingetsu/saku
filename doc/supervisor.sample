@@ -4,7 +4,7 @@ command = /usr/local/bin/saku
 directory = /var/local/run/saku
 user = shingetsu
 
-environment = PYTHONPATH="/usr/local/lib/saku/lib"
+environment = PYTHONPATH="/usr/local/lib/saku"
 
 autorestart = true
 stdout_logfile = NONE

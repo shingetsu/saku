@@ -13,8 +13,8 @@ all:
 	@echo nothing to build
 
 install: version
-	install -m 644 -D -t $(PREFIX)/lib/saku/lib/shingetsu shingetsu/*.py
-	install -m 644 -D -t $(PREFIX)/lib/saku/lib/shingetsu/mch shingetsu/mch/*.py
+	install -m 644 -D -t $(PREFIX)/lib/saku/shingetsu shingetsu/*.py
+	install -m 644 -D -t $(PREFIX)/lib/saku/shingetsu/mch shingetsu/mch/*.py
 	install -m 644 -D -t $(PREFIX)/share/saku/file file/*.txt
 	install -m 644 -D -t $(PREFIX)/share/saku/template template/*.txt
 	install -m 644 -D -t $(PREFIX)/share/saku/www www/*.css www/*.js

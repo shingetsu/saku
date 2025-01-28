@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 # Please change vars to fit your env.
-Environment=PYTHONPATH=/usr/local/saku/lib/python3.9/site-packages
+Environment=PYTHONPATH=/usr/local/saku/lib/saku
 ExecStart=/usr/local/saku/bin/saku
 ExecStop=/bin/kill -TERM $MAINPID
 PIDFile=/usr/local/saku/var/run/saku/pid.txt
