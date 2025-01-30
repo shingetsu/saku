@@ -82,16 +82,16 @@ Sakuは Shingetsu Another Keen Utility の略です。
 2. ポート 8000/tcp が開いていることを確認します。
 3. 次のコマンドを実行します。
 
+   gitから取得した場合にはバージョンファイルを生成してください。
+
+        % make version
+
+   インストールしてください。
+
         # make install
 
 4. デフォルトでは /usr/local 以下にインストールされます
    PREFIXオプションでインストールする場所を変更することができます。
-   setup.pyを直接利用することもできます。
-   環境によっては /usr/bin/local 以下のPythonモジュールは読み込みません。
-   その場合は次のようにしてリンクを張ってください。
-
-        # ln -s /usr/local/lib/python3.2/site-packages/shingetsu \
-                /usr/lib/python3.2/site-packages
 
 5. 設定ファイルは /usr/local/share/doc/saku/sample にインストールされます。
    これを必要に応じて、次のようにインストールしてください。
@@ -105,9 +105,9 @@ Sakuは Shingetsu Another Keen Utility の略です。
    デフォルトでは /usr/local/etc/saku に配置するような設定になっています。
    saku.ini は次の順で読み込まれ、後で設定したものが優先されます。
 
-        * /usr/local/etc/saku/saku.ini
-        * /etc/saku/saku.ini
-        * ~/.saku/saku.ini
+   * /usr/local/etc/saku/saku.ini
+   * /etc/saku/saku.ini
+   * ~/.saku/saku.ini
 
 7. 設定ファイルと連動するようにユーザとディレクトリを準備してください。
 8. 次のコマンドで起動します。
@@ -119,7 +119,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
         # /usr/local/etc/init.d/saku stop
 
-11. /usr/local/bin/saku でも起動できます。
+11. PYTHONPATH=/usr/local/lib/saku /usr/local/bin/saku でも起動できます。
     この場合はユーザアプリケーションとしての動作です。
 
 Debian GNU/Linux 8.3 で依存パッケージをインストールする方法

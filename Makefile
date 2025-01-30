@@ -9,9 +9,9 @@ PACKAGE = saku-$(shell cat file/version.txt)
 
 .PHONY: all install exe version check clean distclean package
 
-all: version
+all:
 
-install: all
+install:
 	install -m 644 -D -t $(PREFIX)/lib/saku/shingetsu shingetsu/*.py
 	install -m 644 -D -t $(PREFIX)/lib/saku/shingetsu/mch shingetsu/mch/*.py
 	install -m 644 -D -t $(PREFIX)/share/saku/file file/*.txt

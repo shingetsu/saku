@@ -92,29 +92,31 @@ Usage Saku with install
 2. Open port 8000/tcp.
 3. Compile and install.
 
+   If you got saku with git, build version file.
+
+        % make version
+
+   Install to system.
+
         # make install
 
-   You can use PREFIX option for make, and use setup.py directly.
-   If your system do not read modules in /usr/bin/local, do
-
-        # ln -s /usr/local/lib/python3.2/site-packages/shingetsu \
-                /usr/lib/python3.2/site-packages
+   You can use PREFIX option for make.
 
 4. Configration files are installed into /usr/local/share/doc/saku/sample.
    You shoud install them:
 
         # cp init.sample /usr/local/etc/init.d/saku
         # cp saku.ini /usr/local/etc/saku/saku.ini
-        
+
    and so on.
    If you use Supervisor, install supervisor.sample instead of init.sample.
    The paths of config files are set in saku.ini,
    they are in /usr/local/etc/saku by defaults.
    saku.ini are loaded from following paths and the later settings have a priority.
 
-        * /usr/local/etc/saku/saku.ini
-        * /etc/saku/saku.ini
-        * ~/.saku/saku.ini
+   * /usr/local/etc/saku/saku.ini
+   * /etc/saku/saku.ini
+   * ~/.saku/saku.ini
 
 5. Setup user and directories refering config files.
 6. Start with
@@ -126,7 +128,7 @@ Usage Saku with install
 
         # /usr/local/etc/init.d/saku stop
 
-9. Run /usr/local/bin/saku for user application.
+9. Run PYTHONPATH=/usr/local/lib/saku /usr/local/bin/saku for user application.
 
 How to Insatall Required Packages on Debian GNU/Linux 8.3
 ---------------------------------------------------------
