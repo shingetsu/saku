@@ -28,7 +28,6 @@
 #
 
 import time
-import cgi
 import re
 
 from shingetsu import title
