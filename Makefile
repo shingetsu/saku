@@ -32,7 +32,8 @@ install:
 	install -m 644 -D -t $(PREFIX)/share/doc/saku/sample doc/*.sample
 
 	install -m 755 -d $(PREFIX)/bin
-	install -m 755 -T saku.py $(PREFIX)/bin/saku
+	install -m 755 -T doc/saku.sh $(PREFIX)/bin/saku
+	install -m 755 -T saku.py $(PREFIX)/lib/saku/saku
 	install -m 755 -T tool/mkrss.py $(PREFIX)/lib/saku/mkrss
 	install -m 755 -T tool/mkarchive.py $(PREFIX)/lib/saku/mkarchive
 	install -m 644 -T doc/sample.ini $(PREFIX)/share/doc/saku/sample/saku.ini

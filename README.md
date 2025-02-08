@@ -128,7 +128,7 @@ Usage Saku with install
 
         # /usr/local/etc/init.d/saku stop
 
-9. Run PYTHONPATH=/usr/local/lib/saku /usr/local/bin/saku for user application.
+9. Run /usr/local/bin/saku for user application.
 
 How to Insatall Required Packages on Debian GNU/Linux 8.3
 ---------------------------------------------------------

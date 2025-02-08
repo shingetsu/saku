@@ -14,8 +14,7 @@
 ### END INIT INFO
 
 USER=shingetsu
-COMMAND=/usr/local/bin/saku
-LIBDIR=/usr/local/lib/saku
+COMMAND=/usr/local/lib/saku/saku
 PIDFILE=/var/local/run/saku/pid.txt
 
 test -x $COMMAND || exit 0
@@ -24,7 +23,7 @@ case "$1" in
     start)
         echo -n "Starting p2p bbs: saku"
         cd /
-        sudo -u $USER setsid env PYTHONPATH=$LIBDIR $COMMAND < /dev/null > /dev/null 2>&1 &
+        sudo -u $USER setsid env $COMMAND < /dev/null > /dev/null 2>&1 &
         echo "."
     ;;
     stop)

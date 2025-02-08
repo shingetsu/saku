@@ -9,6 +9,28 @@
 
     <Directory "/srv/www/bbs.shingetsu.info">
         Options -Indexes -ExecCGI +Multiviews +SymLinksIfOwnerMatch
+
+        RewriteEngine on
+        RewriteRule ^(2ch[_0-9A-Z]*)/(.*) \
+            http://bbs.shingetsu.info:8001/$1/${escape:$2} [P,NE]
+        RewriteRule ^test/bbs.cgi$ \
+            http://bbs.shingetsu.info:8001/test/bbs.cgi [P,NE]
+        RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+    </Directory>
+</VirtualHost>
+
+<IfModule mod_ssl.c>
+<VirtualHost *:443>
+    ServerAdmin webmaster@shingetsu.info
+    DocumentRoot /srv/www/bbs.shingetsu.info
+    ServerName bbs.shingetsu.info
+    ServerAlias bbs.shingetsu.info
+    ErrorLog /var/log/apache2/bbs.shingetsu.info.error.log
+    CustomLog /var/log/apache2/bbs.shingetsu.info.access.log combined
+    RewriteMap escape int:escape
+
+    <Directory "/srv/www/bbs.shingetsu.info">
+        Options -Indexes -ExecCGI +Multiviews +SymLinksIfOwnerMatch
         AddType text/xml;charset=UTF-8 .rdf
         AddType text/html;charset=UTF-8 .html
 
@@ -52,14 +74,15 @@
             RewriteRule ^test/bbs.cgi$ \
                 http://bbs.shingetsu.info:8001/test/bbs.cgi [P,NE]
         </IfModule>
-        RewriteRule ^archive/(.*) http://archive.shingetsu.info/$1 [L]
+        RewriteRule ^archive/(.*) https://archive.shingetsu.info/$1 [L]
     </Directory>
 
     Alias /cgi-bin/ /srv/www/bbs.shingetsu.info/cgi-bin/
     <Directory "/srv/www/bbs.shingetsu.info/cgi-bin">
         Options +ExecCGI
-        AddHandler php5-script .php
+        AddHandler php7-script .php
         AddHandler cgi-script .cgi
+        SetEnv PYTHONPATH /usr/local/lib/saku
     </Directory>
 
     Alias /STATIC/ /usr/local/share/saku/www/
@@ -93,13 +116,8 @@
                             http://bbs.shingetsu.info:8000/thread.cgi/$1/$3/$2.$4 [P]
         </IfModule>
     </Directory>
-</VirtualHost>
 
-<VirtualHost *:80>
-    ServerAdmin webmaster@shingetsu.info
-    DocumentRoot /srv/www/bbs.shingetsu.info
-    ServerName node.shingetsu.info
-    <Directory />
-         RedirectMatch ^/$ http://shingetsu.info/
-    </Directory>
+    SSLCertificateFile /etc/letsencrypt/live/shingetsu.info/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/shingetsu.info/privkey.pem
 </VirtualHost>
+</IfModule>

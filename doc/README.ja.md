@@ -119,7 +119,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
         # /usr/local/etc/init.d/saku stop
 
-11. PYTHONPATH=/usr/local/lib/saku /usr/local/bin/saku でも起動できます。
+11. /usr/local/bin/saku でも起動できます。
     この場合はユーザアプリケーションとしての動作です。
 
 Debian GNU/Linux 8.3 で依存パッケージをインストールする方法

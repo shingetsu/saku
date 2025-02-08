@@ -1,10 +1,8 @@
 [program:saku]
 
-command = /usr/local/bin/saku
+command = /usr/local/lib/saku/saku
 directory = /var/local/run/saku
 user = shingetsu
-
-environment = PYTHONPATH="/usr/local/lib/saku"
 
 autorestart = true
 stdout_logfile = NONE
