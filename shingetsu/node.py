@@ -27,11 +27,13 @@
 #
 
 import gzip
+import ipaddress
 import random
 import re
 import socket
 import sys
 import threading
+import urllib.parse
 import urllib.request
 from io import BytesIO, StringIO
 
@@ -137,6 +139,17 @@ class Node:
         else:
             self.nodestr = '%s:%s%s' % (host, str(port), re.sub(r"\+", "/", path))
         self.isv6 = self.nodestr.startswith('[')
+        try:
+            parsed = urllib.parse.urlparse('//' + self.nodestr)
+            addr = ipaddress.ip_address(parsed.hostname)  # raise error for dnsname
+            if addr.version == 6:
+                self.isv6 = True
+                self.nodestr = '[%s]:%d%s' % (addr.compressed, parsed.port, parsed.path)
+            else:
+                self.isv6 = False
+                self.nodestr = '%s:%d%s' % (addr.compressed, parsed.port, parsed.path)
+        except Exception as err:
+            pass
 
     def __str__(self):
         return self.nodestr
