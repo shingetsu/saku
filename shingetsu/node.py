@@ -130,26 +130,28 @@ class Node:
 
     def __init__(self, nodestr=None, host="", port="", path=""):
         if nodestr is not None:
-            nodestr = nodestr.strip()
-            if not re.search(r"\d+/[^: ]+$", nodestr):
-                raise NodeError('bad format')
-            self.nodestr = nodestr.replace('+', '/')
-        elif ':' in host:
-            self.nodestr = '[%s]:%s%s' % (host, str(port), re.sub(r"\+", "/", path))
+            nodestr = nodestr.strip().replace('+', '/')
+            parsed = urllib.parse.urlparse('//' + nodestr)
+            host = parsed.hostname
+            port = parsed.port
+            path = parsed.path
+        if not host or not port:
+            raise NodeError('bad format')
+        port = int(port)
+        path = path.replace('+', '/')
+
+        self.isv6 = False
+        if re.search(r'[-A-Za-z]', host):
+            self.nodestr = '%s:%d%s' % (host, port, path)
         else:
-            self.nodestr = '%s:%s%s' % (host, str(port), re.sub(r"\+", "/", path))
-        self.isv6 = self.nodestr.startswith('[')
-        try:
-            parsed = urllib.parse.urlparse('//' + self.nodestr)
-            addr = ipaddress.ip_address(parsed.hostname)  # raise error for dnsname
+            addr = ipaddress.ip_address(host)
+            if hasattr(addr, 'ipv4_mapped') and addr.ipv4_mapped:
+                addr = addr.ipv4_mapped
             if addr.version == 6:
                 self.isv6 = True
-                self.nodestr = '[%s]:%d%s' % (addr.compressed, parsed.port, parsed.path)
+                self.nodestr = '[%s]:%d%s' % (addr.compressed, port, path)
             else:
-                self.isv6 = False
-                self.nodestr = '%s:%d%s' % (addr.compressed, parsed.port, parsed.path)
-        except Exception as err:
-            pass
+                self.nodestr = '%s:%d%s' % (addr.compressed, port, path)
 
     def __str__(self):
         return self.nodestr
