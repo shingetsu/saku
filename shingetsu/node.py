@@ -335,7 +335,7 @@ class NodeList(RawNodeList):
         node4 = None
         node6 = None
         if addr4:
-            addr = sorted(addr4.keys(), key=addr4.get)[0]
+            addr = sorted(addr4.keys(), key=addr4.get, reverse=True)[0]
             node4 = Node(host=addr, port=port, path=path)
         if addr6:
             addr = sorted(addr6.keys(), key=addr6.get)[0]
