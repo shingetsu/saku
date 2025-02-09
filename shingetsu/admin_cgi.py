@@ -277,14 +277,15 @@ class CGI(gateway.CGI):
         for cache in cachelist:
             records += len(cache)
             size += cache.size
-        myself = nodelist.myself()
+        myself4, myself6 = nodelist.myself()
         status = (('linked_nodes', len(nodelist)),
                   ('known_nodes', len(searchlist)),
                   ('files', len(cachelist)),
                   ('records', records),
                   ('cache_size', '%.1f%s' % (size/1024/1024,
                                              self.message['mb'])),
-                  ('self_node', myself))
+                  ('self_node_ipv4', myself4),
+                  ('self_node_ipv6', myself6))
         node_status = (('linked_nodes', nodelist),
                        ('known_nodes', searchlist))
         var = {

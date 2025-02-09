@@ -1,7 +1,7 @@
 """Saku Configuration.
 """
 #
-# Copyright (c) 2005-2024 shinGETsu Project.
+# Copyright (c) 2005 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -164,8 +164,6 @@ nodes = 5                   # Nodes keeping in node list
 share_nodes = 5             # Nodes having the file
 search_depth = 30           # Search node size
 tiedfile_cache_size = 30
-
-broadcast = "../tool/broadcast.py"  # Broadcast script path
 
 rss = "1"                                   # RSS version; must be "1"
 language = "en"                             # Language code (see RFC3066)

@@ -1,7 +1,7 @@
 """Cache of Saku BBS.
 """
 #
-# Copyright (c) 2005-2023 shinGETsu Project.
+# Copyright (c) 2005 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -764,18 +764,17 @@ class Cache(dict):
 
         self.sync_status()
 
-    def search(self, searchlist=None, myself=None):
+    def search(self, searchlist=None, myself4=None, myself6=None):
         """Search node from network and get records."""
         self.standby_directories()
         if searchlist is None:
             searchlist = SearchList()
-        if not myself:
+        if not myself4 or not myself6:
             nodelist = NodeList()
-            myself = nodelist.myself()
+            myself4, myself6 = nodelist.myself()
         lookuptable = LookupTable()
-        node = searchlist.search(self,
-                                 myself = myself,
-                                 nodes = lookuptable.get(self.datfile, []))
+        nodes = lookuptable.get(self.datfile, [])
+        node = searchlist.search(self, myself4=myself4, myself6=myself6, nodes=nodes)
         if node is not None:
             nodelist = NodeList()
             if node not in nodelist:
@@ -857,7 +856,7 @@ class CacheList(list):
         now = int(time())
         random.shuffle(self)
         nodelist = NodeList()
-        myself = nodelist.myself()
+        myself4, myself6 = nodelist.myself()
         searchlist = SearchList()
         for cache in self:
             if int(time()) > timelimit:
@@ -866,7 +865,7 @@ class CacheList(list):
             elif not cache.exists():
                 pass
             else:
-                cache.search(searchlist=searchlist, myself=myself)
+                cache.search(searchlist=searchlist, myself4=myself4, myself6=myself6)
                 cache.size = 0
                 cache.count = 0
                 cache.velocity = 0

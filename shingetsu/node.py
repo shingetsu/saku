@@ -1,7 +1,7 @@
 """Saku Node and NodeList.
 """
 #
-# Copyright (c) 2005-2024 shinGETsu Project.
+# Copyright (c) 2005 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -80,21 +80,29 @@ def node_deny():
 
 
 class Broadcast(threading.Thread):
-    def __init__(self, msg, cache):
+    def __init__(self, msg4, msg6, cache):
         threading.Thread.__init__(self)
-        self.msg = msg
+        self.msg4 = msg4
+        self.msg6 = msg6
         self.cache = cache
 
     def run(self):
         nodelist = NodeList()
         for node in self.cache.node:
             if (node in nodelist) or node.ping():
-                node.talk(self.msg)
+                if self.msg6 and node.isv6:
+                    node.talk(self.msg6)
+                elif self.msg4:
+                    node.talk(self.msg4)
             else:
                 self.cache.node.remove(node)
                 self.cache.node.sync()
         for node in nodelist:
             if node not in self.cache.node:
+                if self.msg6 and node.isv6:
+                    node.talk(self.msg6)
+                elif self.msg4:
+                    node.talk(self.msg4)
                 node.talk(self.msg)
 
 
@@ -299,35 +307,33 @@ class NodeList(RawNodeList):
         path = config.server
         dnsname = config.dnsname
         if dnsname != "":
-            return Node(host=dnsname, port=port, path=path)
+            n = Node(host=dnsname, port=port, path=path)
+            return n, n
+        addr4 = {}
+        addr6 = {}
         for n in self:
             try:
                 res = n.talk('ping')
                 lines = iter(res)
                 buf = (next(lines), next(lines))
-                if buf[0].strip() == 'PONG' and ':' not in buf[1]:
-                    return Node(host=buf[1].strip(), port=port, path=path)
-            except StopIteration:
-                sys.stderr.write('/ping %s: error\n' % n)
-                return None
-
-    def myself6(self):
-        """Who am I. (IPv6)"""
-        port = config.port
-        path = config.server
-        dnsname = config.dnsname
-        if dnsname != "":
-            return Node(host=dnsname, port=port, path=path)
-        for n in self:
-            try:
-                res = n.talk('ping')
-                lines = iter(res)
-                buf = (next(lines), next(lines))
-                if buf[0].strip() == 'PONG' and ':' in buf[1]:
-                    return Node(host=buf[1].strip(), port=port, path=path)
-            except StopIteration:
-                sys.stderr.write('/ping %s: error\n' % n)
-                return None
+                if buf[0].strip() != 'PONG':
+                    continue
+                addr = buf[1].strip()
+                if ':' in buf[1]:
+                    addr6[addr] = addr6.get(addr, 0) + 1
+                else:
+                    addr4[addr] = addr4.get(addr, 0) + 1
+            except Exception as err:
+                sys.stderr.write('/ping %s: error: %s\n' % (n, err))
+        node4 = None
+        node6 = None
+        if addr4:
+            addr = sorted(addr4.keys(), key=addr4.get)[0]
+            node4 = Node(host=addr, port=port, path=path)
+        if addr6:
+            addr = sorted(addr6.keys(), key=addr6.get)[0]
+            node6 = Node(host=addr, port=port, path=path)
+        return node4, node6
 
     def pingall(self):
         """Ping all nodes."""
@@ -365,10 +371,9 @@ class NodeList(RawNodeList):
             if inode.ping():
                 self.join(inode)
                 break
-        myself = self.myself()
-        if myself and (myself in self):
-            self.remove(myself)
-        myself6 = self.myself6()
+        myself4, myself6 = self.myself()
+        if myself4 and (myself4 in self):
+            self.remove(myself4)
         if myself6 and (myself6 in self):
             self.remove(myself6)
         if len(self) == 0:
@@ -408,7 +413,6 @@ class NodeList(RawNodeList):
 
     def rejoin(self, searchlist):
         """Copy node from searchlist to nodelist."""
-        myself = self.myself()
         do_join = False
         for n in searchlist:
             if n in self:
@@ -433,17 +437,28 @@ class NodeList(RawNodeList):
         If node is None, node is myself.
         """
         if node:
-            tellstr = node.toxstring()
+            tellstr4 = node.toxstring()
+            tellstr6 = tellstr4
         elif config.dnsname:
-            tellstr = self.myself().toxstring()
+            myself4, myself6 = self.myself()
+            tellstr4 = None
+            tellstr6 = None
+            if myself4:
+                tellstr4 = myself4.toxstring()
+            if myself6:
+                tellstr6 = myself6.toxstring()
         else:
-            tellstr = ":" + \
-                      str(config.port) + \
-                      config.server.replace("/", "+")
+            tellstr4 = ":" + str(config.port) + config.server.replace("/", "+")
+            tellstr6 = tellstr4
 
-        arg = "/".join(("", "update", cache.datfile, str(stamp), id, tellstr))
+        tellstr4 = None
+        tellstr6 = None
+        if tellstr4:
+            msg4 = "/".join(("", "update", cache.datfile, str(stamp), id, tellstr4))
+        if tellstr6:
+            msg6 = "/".join(("", "update", cache.datfile, str(stamp), id, tellstr6))
 
-        broadcast = Broadcast(arg, cache)
+        broadcast = Broadcast(msg4, msg6, cache)
         broadcast.start()
 
 # End of NodeList
@@ -462,7 +477,7 @@ class SearchList(RawNodeList):
         if node not in self:
             self.append(node)
 
-    def search(self, cache=None, myself=None, nodes=None):
+    def search(self, cache=None, myself4=None, myself6=None, nodes=None):
         """Search node which has the file."""
         nodelist = NodeList()
         random.shuffle(self)
@@ -476,7 +491,9 @@ class SearchList(RawNodeList):
         else:
             target = self
         for n in target:
-            if myself and (n == myself):
+            if myself4 and (n == myself4):
+                continue
+            elif myself6 and (n == myself6):
                 continue
             elif (not node_allow().check(str(n))) and \
                  node_deny().check(str(n)):

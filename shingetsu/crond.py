@@ -1,7 +1,7 @@
 '''Cron daemon running in another thread for client.cgi.
 '''
 #
-# Copyright (c) 2005-2023 shinGETsu Project.
+# Copyright (c) 2005 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,10 @@ from .node import *
 from .tag import UserTagList
 from .updatequeue import UpdateQueue
 from .util import opentext
+
+
+_myself4 = None
+_myself6 = None
 
 
 class Crond(Thread):
@@ -150,15 +154,28 @@ class Client(Thread):
             status = Status.get_instance()
             self.do_update()
 
+        global _myself4, _myself6
         nodelist = NodeList()
+        myself4, myself6 = nodelist.myself()
+        print("myself: %s, %s" % (myself4, myself6))
+        if not _myself4 and not _myself6:
+            _myself4 = myself4
+            _myself6 = myself6
+
         if len(nodelist) == 0:
             self.do_init()
             nodelist = NodeList()
             if nodelist:
                 self.do_sync()
             status = Status.get_instance()
-
-        if (int(time.time()) - status["init"]
+        elif myself4 != _myself4 or myself6 != _myself6:
+            print("changed myself: %s -> %s, %s -> %s" % (_myself4, myself4, _myself6, myself6))
+            _myself4 = myself4
+            _myself6 = myself6
+            self.do_init()
+            nodelist = NodeList()
+            status = Status.get_instance()
+        elif (int(time.time()) - status["init"]
             >= config.init_cycle * len(nodelist)):
             self.do_init()
             status = Status.get_instance()

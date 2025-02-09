@@ -1,6 +1,6 @@
 #
 # Message file for English
-# Copyright (c) 2005-2015 shinGETsu Project.
+# Copyright (c) 2005 shinGETsu Project.
 #
 
 lang<>en
@@ -104,7 +104,8 @@ known_nodes<>Known Nodes
 files<>BBSes
 records<>Articles
 cache_size<>Cache Size
-self_node<>Self node
+self_node_ipv4<>Self node (IPv4)
+self_node_ipv6<>Self node (IPv6)
 
 # misc
 limit<>limit
