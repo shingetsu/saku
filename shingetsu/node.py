@@ -80,29 +80,21 @@ def node_deny():
 
 
 class Broadcast(threading.Thread):
-    def __init__(self, msg4, msg6, cache):
+    def __init__(self, msg, cache):
         threading.Thread.__init__(self)
-        self.msg4 = msg4
-        self.msg6 = msg6
+        self.msg = msg
         self.cache = cache
 
     def run(self):
         nodelist = NodeList()
         for node in self.cache.node:
             if (node in nodelist) or node.ping():
-                if self.msg6 and node.isv6:
-                    node.talk(self.msg6)
-                elif self.msg4:
-                    node.talk(self.msg4)
+                node.talk(self.msg)
             else:
                 self.cache.node.remove(node)
                 self.cache.node.sync()
         for node in nodelist:
             if node not in self.cache.node:
-                if self.msg6 and node.isv6:
-                    node.talk(self.msg6)
-                elif self.msg4:
-                    node.talk(self.msg4)
                 node.talk(self.msg)
 
 
@@ -437,28 +429,16 @@ class NodeList(RawNodeList):
         If node is None, node is myself.
         """
         if node:
-            tellstr4 = node.toxstring()
-            tellstr6 = tellstr4
+            tellstr = node.toxstring()
         elif config.dnsname:
-            myself4, myself6 = self.myself()
-            tellstr4 = None
-            tellstr6 = None
-            if myself4:
-                tellstr4 = myself4.toxstring()
-            if myself6:
-                tellstr6 = myself6.toxstring()
+            myself, _ = self.myself()
+            tellstr = myself.toxstring()
         else:
-            tellstr4 = ":" + str(config.port) + config.server.replace("/", "+")
-            tellstr6 = tellstr4
+            tellstr = ":" + str(config.port) + config.server.replace("/", "+")
 
-        tellstr4 = None
-        tellstr6 = None
-        if tellstr4:
-            msg4 = "/".join(("", "update", cache.datfile, str(stamp), id, tellstr4))
-        if tellstr6:
-            msg6 = "/".join(("", "update", cache.datfile, str(stamp), id, tellstr6))
+        arg = "/".join(("", "update", cache.datfile, str(stamp), id, tellstr))
 
-        broadcast = Broadcast(msg4, msg6, cache)
+        broadcast = Broadcast(arg, cache)
         broadcast.start()
 
 # End of NodeList
