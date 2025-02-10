@@ -1,8 +1,16 @@
 #
 # Initial Node List for Saku.
-# Copyright (c) 2006-2024 shinGETsu Project.
 #
-node.shingetsu.info:8000/server.cgi
+
+# IPv4
+node-ipv4.shingetsu.info:8000/server.cgi
 rep4649.ddo.jp:8000/server.cgi
+
+# IPv6
+node-ipv6.shingetsu.info:8000/server.cgi
+
+# IPv4 and IPv6
+# node.shingetsu.info:8000/server.cgi
+bbs.rep4649.freemyip.com:8001/server.cgi
 saku.loneb.net:8000/server.cgi
 july.kot.jp:8000/server.cgi
