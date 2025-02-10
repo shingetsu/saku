@@ -140,18 +140,24 @@ class Node:
         port = int(port)
         path = path.replace('+', '/')
 
-        self.isv6 = False
-        if re.search(r'[-A-Za-z]', host):
-            self.nodestr = '%s:%d%s' % (host, port, path)
+        self.nodestr, self.isv6 = Node._create_nodestr(host, port, path)
+
+    @classmethod
+    def _create_nodestr(cls, host, port, path):
+        try:
+            h = host.replace('[', '').replace(']', '')
+            addr = ipaddress.ip_address(h)
+        except ValueError:
+            nodestr = '%s:%d%s' % (host, port, path)
+            return nodestr, False
+        if hasattr(addr, 'ipv4_mapped') and addr.ipv4_mapped:
+            addr = addr.ipv4_mapped
+        if addr.version == 6:
+            nodestr = '[%s]:%d%s' % (addr.compressed, port, path)
+            return nodestr, True
         else:
-            addr = ipaddress.ip_address(host)
-            if hasattr(addr, 'ipv4_mapped') and addr.ipv4_mapped:
-                addr = addr.ipv4_mapped
-            if addr.version == 6:
-                self.isv6 = True
-                self.nodestr = '[%s]:%d%s' % (addr.compressed, port, path)
-            else:
-                self.nodestr = '%s:%d%s' % (addr.compressed, port, path)
+            nodestr = '%s:%d%s' % (addr.compressed, port, path)
+            return nodestr, False
 
     def __str__(self):
         return self.nodestr
