@@ -137,7 +137,7 @@ class Node:
         port = int(port)
         path = path.replace('+', '/')
 
-        self.nodestr, self.host, self._is_ipv6 = Node._create_nodestr(host, port, path)
+        self.nodestr, self.host = Node._create_nodestr(host, port, path)
 
     @classmethod
     def _create_nodestr(cls, host, port, path):
@@ -146,15 +146,15 @@ class Node:
             addr = ipaddress.ip_address(h)
         except ValueError:
             nodestr = '%s:%d%s' % (host, port, path)
-            return nodestr, host, None
+            return nodestr, host
         if hasattr(addr, 'ipv4_mapped') and addr.ipv4_mapped:
             addr = addr.ipv4_mapped
         if addr.version == 6:
             nodestr = '[%s]:%d%s' % (addr.compressed, port, path)
-            return nodestr, addr.compressed, True
+            return nodestr, addr.compressed
         else:
             nodestr = '%s:%d%s' % (addr.compressed, port, path)
-            return nodestr, addr.compressed, False
+            return nodestr, addr.compressed
 
     def __str__(self):
         return self.nodestr
