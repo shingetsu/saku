@@ -47,7 +47,7 @@ def _get_value(parser, section, key, default, vtype=''):
 def _get_version():
     """Get Saku version for useragent and servername.
     """
-    version = '5.0.0'
+    version = '5.1.0'
     version_file = os.path.join(docroot, file_dir, 'version.txt')
     if os.path.isfile(version_file):
         try:
@@ -56,7 +56,7 @@ def _get_version():
             f.close()
         except (IOError, OSError):
             pass
-    return 'shinGETsu/0.7 (Saku/%s)' % version
+    return 'shinGETsu/0.8 (Saku/%s)' % version
 
 
 # External config files.
