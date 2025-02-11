@@ -106,7 +106,7 @@ class FormInputTest(unittest.TestCase):
 
 def _test():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(FormInputTest))
+    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(FormInputTest))
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     if result.errors or result.failures:
         sys.exit(1)

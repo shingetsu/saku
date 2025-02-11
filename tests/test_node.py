@@ -36,25 +36,45 @@ import shingetsu.node as node
 
 
 class NodeTest(unittest.TestCase):
-    def test_node_init_dnsname(self):
-        n = node.Node('example.com:8000/server.cgi')
-        self.assertEqual(n.nodestr, 'example.com:8000/server.cgi')
+    def test_node_init_dnsname_ipv4(self):
+        n = node.Node('node-ipv4.shingetsu.info:8000/server.cgi')
+        self.assertEqual(n.nodestr, 'node-ipv4.shingetsu.info:8000/server.cgi')
         self.assertFalse(n.isv6)
 
-    def test_node_init_dnsname_nodestr_xstring(self):
-        n = node.Node('example.com:8000+server.cgi')
-        self.assertEqual(n.nodestr, 'example.com:8000/server.cgi')
+    def test_node_init_dnsname_ipv4_nodestr_xstring(self):
+        n = node.Node('node-ipv4.shingetsu.info:8000+server.cgi')
+        self.assertEqual(n.nodestr, 'node-ipv4.shingetsu.info:8000/server.cgi')
         self.assertFalse(n.isv6)
 
-    def test_node_init_dnsname(self):
-        n = node.Node(host='example.com', port=8000, path='/server.cgi')
-        self.assertEqual(n.nodestr, 'example.com:8000/server.cgi')
+    def test_node_init_dnsname_ipv4(self):
+        n = node.Node(host='node-ipv4.shingetsu.info', port=8000, path='/server.cgi')
+        self.assertEqual(n.nodestr, 'node-ipv4.shingetsu.info:8000/server.cgi')
         self.assertFalse(n.isv6)
 
-    def test_node_init_dnsname_xstring(self):
-        n = node.Node(host='example.com', port=8000, path='+server.cgi')
-        self.assertEqual(n.nodestr, 'example.com:8000/server.cgi')
+    def test_node_init_dnsname_ipv4_xstring(self):
+        n = node.Node(host='node-ipv4.shingetsu.info', port=8000, path='+server.cgi')
+        self.assertEqual(n.nodestr, 'node-ipv4.shingetsu.info:8000/server.cgi')
         self.assertFalse(n.isv6)
+
+    def test_node_init_dnsname_ipv6(self):
+        n = node.Node('node.shingetsu.info:8000/server.cgi')
+        self.assertEqual(n.nodestr, 'node.shingetsu.info:8000/server.cgi')
+        self.assertTrue(n.isv6)
+
+    def test_node_init_dnsname_ipv6_nodestr_xstring(self):
+        n = node.Node('node.shingetsu.info:8000+server.cgi')
+        self.assertEqual(n.nodestr, 'node.shingetsu.info:8000/server.cgi')
+        self.assertTrue(n.isv6)
+
+    def test_node_init_dnsname_ipv6(self):
+        n = node.Node(host='node.shingetsu.info', port=8000, path='/server.cgi')
+        self.assertEqual(n.nodestr, 'node.shingetsu.info:8000/server.cgi')
+        self.assertTrue(n.isv6)
+
+    def test_node_init_dnsname_ipv6_xstring(self):
+        n = node.Node(host='node.shingetsu.info', port=8000, path='+server.cgi')
+        self.assertEqual(n.nodestr, 'node.shingetsu.info:8000/server.cgi')
+        self.assertTrue(n.isv6)
 
     def test_node_init_ipv4(self):
         n = node.Node('192.0.2.1:8000/server.cgi')
@@ -109,7 +129,7 @@ class NodeTest(unittest.TestCase):
 
 def _test():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(NodeTest))
+    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(NodeTest))
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     if result.errors or result.failures:
         sys.exit(1)

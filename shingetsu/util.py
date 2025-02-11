@@ -1,7 +1,7 @@
 """Utilities.
 """
 #
-# Copyright (c) 2014-2024 shinGETsu Project.
+# Copyright (c) 2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@
 import hashlib
 import os.path
 import re
+import socket
 import sys
 from . import config
 
@@ -94,3 +95,19 @@ def get_http_remote_addr_from_env(env):
         elif 'REMOTE_ADDR' in env:
             return env['REMOTE_ADDR']
     return None
+
+def host_has_addr(host, addr):
+    if host == addr:
+        return True
+    try:
+        info = socket.getaddrinfo(host, 80, proto=socket.IPPROTO_TCP)
+    except socket.gaierror:
+        return False
+    for i in info:
+        try:
+            ipaddr = i[4][0]
+        except IndexError:
+            continue
+        if addr == ipaddr:
+            return True
+    return False

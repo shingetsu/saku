@@ -149,7 +149,7 @@ class Node:
             addr = ipaddress.ip_address(h)
         except ValueError:
             nodestr = '%s:%d%s' % (host, port, path)
-            return nodestr, False
+            return nodestr, Node._host_has_ipv6(host)
         if hasattr(addr, 'ipv4_mapped') and addr.ipv4_mapped:
             addr = addr.ipv4_mapped
         if addr.version == 6:
@@ -158,6 +158,23 @@ class Node:
         else:
             nodestr = '%s:%d%s' % (addr.compressed, port, path)
             return nodestr, False
+
+    @classmethod
+    def _host_has_ipv6(cls, host):
+        try:
+            info = socket.getaddrinfo(host, 80, proto=socket.IPPROTO_TCP)
+        except socket.gaierror:
+            return False
+        for i in info:
+            try:
+                addr = ipaddress.ip_address(i[4][0])
+            except (IndexError, ValueError):
+                continue
+            if hasattr(addr, 'ipv4_mapped') and addr.ipv4_mapped:
+                addr = addr.ipv4_mapped
+            if addr.version == 6:
+                return True
+        return False
 
     def __str__(self):
         return self.nodestr

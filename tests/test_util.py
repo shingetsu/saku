@@ -1,7 +1,7 @@
-"""Unittest for Attached Files Utilities.
+"""Unittest for utilities.
 """
 #
-# Copyright (c) 2009 shinGETsu Project.
+# Copyright (c) 2025 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -32,47 +32,26 @@ import unittest
 
 sys.path.insert(0, ".")
 
-import shingetsu.attachutil as attachutil
+import shingetsu.util as util
 
 
-def get_image_type(suffix):
-    def image_type(path):
-        return suffix
-    return image_type
+class UtilTest(unittest.TestCase):
+    def test_host_has_addr(self):
+        self.assertTrue(util.host_has_addr('192.0.2.1', '192.0.2.1'))
+        self.assertFalse(util.host_has_addr('192.0.2.1', '192.0.2.2'))
 
-class AttachUtilTest(unittest.TestCase):
-    orig_image_type = None
+        self.assertTrue(util.host_has_addr('node.shingetsu.info', '133.125.52.31'))
+        self.assertFalse(util.host_has_addr('node.shingetsu.info', '192.0.2.1'))
 
-    def setUp(self):
-        self.orig_image_type = attachutil.image_type
+        self.assertTrue(util.host_has_addr('node.shingetsu.info', '2401:2500:204:1150:133:125:52:31'))
+        self.assertFalse(util.host_has_addr('node.shingetsu.info', '2002:db8::1'))
 
-    def tearDown(self):
-        attachutil.image_type = self.orig_image_type
-
-    def test_is_valid_image_true(self):
-        attachutil.image_type = get_image_type("png")
-        self.assertTrue(attachutil.is_valid_image("image/png", "foo"))
-
-    def test_is_valid_image_type_isnot_image(self):
-        attachutil.image_type = get_image_type("png")
-        self.assertFalse(attachutil.is_valid_image("text/html", "foo"))
-
-    def test_is_valid_image_file_isnot_image(self):
-        attachutil.image_type = get_image_type(None)
-        self.assertFalse(attachutil.is_valid_image("image/png", "foo"))
-
-    def test_is_valid_image_not_same_image_type(self):
-        attachutil.image_type = get_image_type("jpeg")
-        self.assertFalse(attachutil.is_valid_image("image/png", "foo"))
-
-    def test_is_valid_image_none(self):
-        attachutil.image_type = get_image_type("jpeg")
-        self.assertFalse(attachutil.is_valid_image("image/png", None))
+        self.assertFalse(util.host_has_addr('not.found.example.com', '192.0.2.1'))
 
 
 def _test():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(AttachUtilTest))
+    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(UtilTest))
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     if result.errors or result.failures:
         sys.exit(1)

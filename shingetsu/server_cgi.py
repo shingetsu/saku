@@ -1,7 +1,7 @@
 """Server CGI methods.
 """
 #
-# Copyright (c) 2005-2022 shinGETsu Project.
+# Copyright (c) 2005 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,6 @@
 
 import gzip
 import re
-import socket
 from io import TextIOWrapper
 from time import time
 from random import choice
@@ -39,7 +38,7 @@ from . import title
 from .cache import *
 from .node import *
 from .updatequeue import UpdateQueue
-from .util import opentext, get_http_remote_addr
+from .util import opentext, get_http_remote_addr, host_has_addr
 
 
 class CGI(basecgi.CGI):
@@ -122,8 +121,7 @@ class CGI(basecgi.CGI):
         remote_addr = get_http_remote_addr(self.environ)
         if host == '':
             return remote_addr
-        ipaddr = socket.gethostbyname(host)
-        if ipaddr == remote_addr:
+        if host_has_addr(host, remote_addr):
             return host
         return None
 
@@ -309,10 +307,7 @@ class CGI(basecgi.CGI):
 
     def _seem_valid_relay_node(self, host, node, datfile):
         remote_addr = get_http_remote_addr(self.environ)
-        if host == remote_addr:
-            return True
-        ipaddr = socket.gethostbyname(host)
-        if ipaddr == remote_addr:
+        if host_has_addr(host, remote_addr):
             return True
         cache = Cache(datfile)
         if not cache.exists():
