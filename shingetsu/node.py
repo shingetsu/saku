@@ -100,10 +100,6 @@ class Broadcast(threading.Thread):
                 node.talk(self.msg)
 
 
-class NodeError(Exception):
-    pass
-
-
 class SocketIO:
     '''Wrapper for SimpleGzipFile and URLopener.
     '''
@@ -137,7 +133,7 @@ class Node:
             port = parsed.port
             path = parsed.path
         if not host or not port:
-            raise NodeError('bad format')
+            raise ValueError('node is bad format')
         port = int(port)
         path = path.replace('+', '/')
 
@@ -248,7 +244,10 @@ class Node:
             res = self.talk('/join/%s:%d%s' % (name, port, path))
             lines = iter(res)
             welcome = (next(lines).strip() == 'WELCOME')
-            extnode = Node(next(lines))
+            try:
+                extnode = Node(next(lines))
+            except ValueError as err:
+                sys.stderr.write('/join %s: %s\n' % (self, err))
             return (welcome, extnode)
         except StopIteration:
             return (welcome, extnode)
@@ -258,6 +257,9 @@ class Node:
             res = self.talk('/node')
             first = next(iter(res))
             return Node(first)
+        except ValueError as err:
+            sys.stderr.write('/node %s: %s\n' % (self, err))
+            return None
         except StopIteration:
             sys.stderr.write('/node %s: error\n' % self)
             return None
@@ -362,12 +364,18 @@ class NodeList(RawNodeList):
                 sys.stderr.write('/ping %s: error: %s\n' % (n, err))
         node4 = None
         node6 = None
-        if addr4:
-            addr = sorted(addr4.keys(), key=addr4.get, reverse=True)[0]
-            node4 = Node(host=addr, port=port, path=path)
-        if addr6:
-            addr = sorted(addr6.keys(), key=addr6.get)[0]
-            node6 = Node(host=addr, port=port, path=path)
+        for addr in sorted(addr4.keys(), key=addr4.get, reverse=True):
+            try:
+                node4 = Node(host=addr, port=port, path=path)
+                break
+            except ValueError as err:
+                sys.stderr.write('/ping %s: error: %s\n' % (n, err))
+        for addr in sorted(addr6.keys(), key=addr6.get, reverse=True):
+            try:
+                node6 = Node(host=addr, port=port, path=path)
+                break
+            except ValueError as err:
+                sys.stderr.write('/ping %s: error: %s\n' % (n, err))
         return node4, node6
 
     def pingall(self):

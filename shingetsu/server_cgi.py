@@ -134,7 +134,10 @@ class CGI(basecgi.CGI):
         host = self.get_remote_hostname(host)
         if not host:
             return
-        node = Node(host=host, port=port, path=path)
+        try:
+            node = Node(host=host, port=port, path=path)
+        except ValueError:
+            return
         nodelist = NodeList()
         searchlist = SearchList()
         if (not node_allow().check(str(node))) and \
@@ -171,7 +174,10 @@ class CGI(basecgi.CGI):
         host = self.get_remote_hostname(host)
         if not host:
             return
-        node = Node(host=host, port=port, path=path)
+        try:
+            node = Node(host=host, port=port, path=path)
+        except ValueError:
+            return
         nodelist = NodeList()
         try:
             nodelist.remove(node)
@@ -274,7 +280,10 @@ class CGI(basecgi.CGI):
             host = self.get_remote_hostname(host)
         if not host:
             return False
-        node = Node(host=host, port=port, path=path)
+        try:
+            node = Node(host=host, port=port, path=path)
+        except ValueError:
+            return False
         if (not node_allow().check(str(node))) and \
              node_deny().check(str(node)):
             return False
