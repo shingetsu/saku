@@ -125,8 +125,9 @@ class Node:
 
     """One unit for P2P."""
 
-    nodestr = None
-    isv6 = False
+    nodestr = ''
+    host = ''
+    _is_ipv6 = None
 
     def __init__(self, nodestr=None, host="", port="", path=""):
         if nodestr is not None:
@@ -140,7 +141,7 @@ class Node:
         port = int(port)
         path = path.replace('+', '/')
 
-        self.nodestr, self.isv6 = Node._create_nodestr(host, port, path)
+        self.nodestr, self.host, self._is_ipv6 = Node._create_nodestr(host, port, path)
 
     @classmethod
     def _create_nodestr(cls, host, port, path):
@@ -149,32 +150,15 @@ class Node:
             addr = ipaddress.ip_address(h)
         except ValueError:
             nodestr = '%s:%d%s' % (host, port, path)
-            return nodestr, Node._host_has_ipv6(host)
+            return nodestr, host, None
         if hasattr(addr, 'ipv4_mapped') and addr.ipv4_mapped:
             addr = addr.ipv4_mapped
         if addr.version == 6:
             nodestr = '[%s]:%d%s' % (addr.compressed, port, path)
-            return nodestr, True
+            return nodestr, addr.compressed, True
         else:
             nodestr = '%s:%d%s' % (addr.compressed, port, path)
-            return nodestr, False
-
-    @classmethod
-    def _host_has_ipv6(cls, host):
-        try:
-            info = socket.getaddrinfo(host, 80, proto=socket.IPPROTO_TCP)
-        except socket.gaierror:
-            return False
-        for i in info:
-            try:
-                addr = ipaddress.ip_address(i[4][0])
-            except (IndexError, ValueError):
-                continue
-            if hasattr(addr, 'ipv4_mapped') and addr.ipv4_mapped:
-                addr = addr.ipv4_mapped
-            if addr.version == 6:
-                return True
-        return False
+            return nodestr, addr.compressed, False
 
     def __str__(self):
         return self.nodestr
@@ -194,6 +178,27 @@ class Node:
     def toxstring(self):
         """Return string, ``/'' is replaced with ``+''."""
         return self.nodestr.replace("/", "+")
+
+    def is_ipv6(self):
+        if self._is_ipv6 is not None:
+            return self._is_ipv6
+        try:
+            info = socket.getaddrinfo(self.host, 80, proto=socket.IPPROTO_TCP)
+        except socket.gaierror:
+            self._is_ipv6 = False
+            return False
+        for i in info:
+            try:
+                addr = ipaddress.ip_address(i[4][0])
+            except (IndexError, ValueError):
+                continue
+            if hasattr(addr, 'ipv4_mapped') and addr.ipv4_mapped:
+                addr = addr.ipv4_mapped
+            if addr.version == 6:
+                self._is_ipv6 = True
+                return True
+        self._is_ipv6 = False
+        return False
 
     def talk(self, message):
         """Connect other node."""
@@ -293,10 +298,10 @@ class RawNodeList(list):
         return random.choice(self)
 
     def filterv4(self):
-        return [i for i in self if not i.isv6]
+        return [i for i in self if not i.is_ipv6()]
 
     def filterv6(self):
-        return [i for i in self if i.isv6]
+        return [i for i in self if i.is_ipv6()]
 
     def append(self, node):
         if node_allow().check(str(node)):
