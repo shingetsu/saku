@@ -66,7 +66,7 @@ def urlopen_ipv4(url):
         addr = info[0][4][0]
         netloc = '%s:%d' % (addr, parsed.port)
         req = urllib.request.Request(parsed._replace(netloc=netloc).geturl())
-        req.add_header('Host', host)
+        req.add_header('Host', '%s:%d' % (host, parsed.port))
     except Exception as err:
         sys.stderr.write('resolve ipv4 error: %s: %s\n' % (url, err))
         req = urllib.request.Request(url)
