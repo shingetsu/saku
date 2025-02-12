@@ -49,7 +49,27 @@ _node_allow = None
 _node_deny = None
 
 def urlopen(url):
+    if config.disable_client_ipv6:
+        return urlopen_ipv4(url)
     req = urllib.request.Request(url)
+    req.add_header('Accept-Encoding', 'gzip')
+    req.add_header('User-Agent', config.version)
+    return urllib.request.urlopen(req)
+
+def urlopen_ipv4(url):
+    try:
+        parsed = urllib.parse.urlparse(url)
+        if parsed.scheme != 'http':
+            raise ValueError('url is not http')
+        host = parsed.hostname
+        info = socket.getaddrinfo(host, 80, family=socket.AF_INET, proto=socket.IPPROTO_TCP)
+        addr = info[0][4][0]
+        netloc = '%s:%d' % (addr, parsed.port)
+        req = urllib.request.Request(parsed._replace(netloc=netloc).geturl())
+        req.add_header('Host', host)
+    except Exception as err:
+        sys.stderr.write('resolve ipv4 error: %s: %s\n' % (url, err))
+        req = urllib.request.Request(url)
     req.add_header('Accept-Encoding', 'gzip')
     req.add_header('User-Agent', config.version)
     return urllib.request.urlopen(req)

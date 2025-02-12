@@ -72,6 +72,7 @@ types = ("thread",)
 bind_addr = _get_value(_extconf, 'Network', 'bind_addr', '')
 port = _get_value(_extconf, 'Network', 'port', 8000, 'int')
 dat_port = _get_value(_extconf, 'Network', 'dat_port', 8001, 'int')
+disable_client_ipv6 = _get_value(_extconf, 'Network', 'disable_client_ipv6', False, 'boolean')
 max_connection = _get_value(_extconf, 'Network', 'max_connection', 20, 'int')
 use_x_forwarded_for = _get_value(_extconf, 'Network', 'use_x_forwarded_for', False, 'boolean') # set true if behind a reverse proxy.
 
