@@ -49,7 +49,7 @@ _node_allow = None
 _node_deny = None
 
 def urlopen(url):
-    if config.disable_client_ipv6:
+    if config.prefer_ipv4:
         return urlopen_ipv4(url)
     req = urllib.request.Request(url)
     req.add_header('Accept-Encoding', 'gzip')
