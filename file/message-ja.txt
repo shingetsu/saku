@@ -108,6 +108,7 @@ records<>書き込みの数
 cache_size<>キャッシュサイズ
 self_node_ipv4<>自分自身のノード(IPv4)
 self_node_ipv6<>自分自身のノード(IPv6)
+node_version<>実行中のバージョン
 
 # misc
 limit<>最大

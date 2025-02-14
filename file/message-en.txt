@@ -106,6 +106,7 @@ records<>Articles
 cache_size<>Cache Size
 self_node_ipv4<>Self node (IPv4)
 self_node_ipv6<>Self node (IPv6)
+node_version<>Running version
 
 # misc
 limit<>limit

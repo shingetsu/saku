@@ -284,6 +284,7 @@ class CGI(gateway.CGI):
                   ('records', records),
                   ('cache_size', '%.1f%s' % (size/1024/1024,
                                              self.message['mb'])),
+                  ('node_version', config.version),
                   ('self_node_ipv4', myself4),
                   ('self_node_ipv6', myself6))
         node_status = (('linked_nodes', nodelist),
