@@ -43,9 +43,9 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
 朔に必要なプログラム
 --------------------
-* Python (ver.3.2以降)
+* Python (ver.3.8以降)
 * pipenv パッケージをpipenvでインストールする場合
-* Jinja2 (ver.2.6) 朔をインストールする場合
+* Jinja2 (ver.3 以降)
 * PIL または Pillow (Python Imaging Library) もし必要なら
 * Supervisor もし必要なら
 
@@ -122,9 +122,9 @@ Sakuは Shingetsu Another Keen Utility の略です。
 11. /usr/local/bin/saku でも起動できます。
     この場合はユーザアプリケーションとしての動作です。
 
-Debian GNU/Linux 8.3 で依存パッケージをインストールする方法
------------------------------------------------------------
-1. sudo aptitude install python3 python3-jinja2 python3-pil
+Debian GNU/Linux 12 で依存パッケージをインストールする方法
+----------------------------------------------------------
+1. sudo apt install python3 python3-jinja2 python3-pil
 
 謝辞
 ----

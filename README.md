@@ -44,7 +44,7 @@ Agree following terms and join shinGETsu network.
 Description
 -----------
 * Saku is a P2P anonymous BBS works on Python.
-* We confirm that Saku works on CPython 3.4 on GNU/Linux.
+* We confirm that Saku works on CPython 3.8 on GNU/Linux.
     Saku may not work on MacOS(ver.9 or before).
 * The features of shinGETsu are...
     * 2ch.net style interface
@@ -54,9 +54,9 @@ Description
 
 Saku requires
 -------------
-* Python (ver.3.4.2 or later)
+* Python (ver.3.8 or later)
 * pipenv if you install packages with pipenv
-* Jinja2 (ver.2.7.3 or later) if you install Saku
+* Jinja2 (ver.3.1 or later)
 * PIL or Pillow (Python Imaging Libraty) if you need
 * Supervisor if you need
 
@@ -130,11 +130,11 @@ Usage Saku with install
 
 9. Run /usr/local/bin/saku for user application.
 
-How to Insatall Required Packages on Debian GNU/Linux 8.3
----------------------------------------------------------
+How to Insatall Required Packages on Debian GNU/Linux 12
+--------------------------------------------------------
 1. do
 
-        $ sudo aptitude install python3 python3-jinja2 python3-pil
+        $ sudo apt install python3 python3-jinja2 python3-pil
 
 Acknowledge
 -----------
