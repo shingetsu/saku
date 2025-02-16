@@ -96,8 +96,8 @@ apache_docroot = _get_value(_extconf, 'Path', 'apache_docroot',
 archive_dir = _get_value(_extconf, 'Path', 'archive_dir',
                        '/var/local/www/archive', 'path')
 
-admin = _get_value(_extconf, 'Gateway', 'admin', r'^127')
-friend = _get_value(_extconf, 'Gateway', 'friend', r'^127')
+admin = _get_value(_extconf, 'Gateway', 'admin', r'^127|^::1$')
+friend = _get_value(_extconf, 'Gateway', 'friend', r'^127|^::1$')
 visitor = _get_value(_extconf, 'Gateway', 'visitor', r'.')
 server_name = _get_value(_extconf, 'Gateway', 'server_name', '')
 gateway_protocol = _get_value(_extconf, 'Gateway', 'protocol', 'http')
