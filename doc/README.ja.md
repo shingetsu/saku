@@ -43,7 +43,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
 朔に必要なプログラム
 --------------------
-* Python (ver.3.8以降)
+* Python (ver.3.9以降)
 * pipenv パッケージをpipenvでインストールする場合
 * Jinja2 (ver.3 以降)
 * PIL または Pillow (Python Imaging Library) もし必要なら
