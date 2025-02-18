@@ -14,6 +14,7 @@ Authors
 * (imghdr patch) A shinGETsu user.
 * (js extensions) shinGETsu users.
 * (markdown extension) WhiteCat6142
+* (Pipfile, Dockefile, GitHub Actions) takano32
 
 Contributors
 ------------
@@ -26,7 +27,7 @@ Contributors
 
 WebSite
 -------
-* https://www.shingetsu.info/
+* https://shingetsu.info/
 
 Saku stands for "Shingetsu Another Keen Utility".
 Both the word "saku" and "shingetsu" mean the new moon in Japanese.
@@ -60,88 +61,67 @@ Saku requires
 * PIL or Pillow (Python Imaging Libraty) if you need
 * Supervisor if you need
 
-Usage Saku with Docker Compose
-------------------------------
-
-Data will be persistence with `./data` directory
-
-1. Open port 8000/tcp.
-2. Edit `docker/saku.ini`.
-3. Start with
-
-        % docker compose up
-
-4. Browse http://localhost:8000/.
-5. Stop with ^C.
-
-Usage Saku without install
---------------------------
-1. Open port 8000/tcp.
-2. Edit file/saku.ini.
-3. Start with
-
-        % pipenv install
-        % pipenv run python3 ./saku.py -v
-
-4. Browse http://localhost:8000/.
-5. Stop with ^C.
-
-Usage Saku with install
------------------------
-1. Install [Jinja2](http://jinja.pocoo.org/).
+Usage Saku
+----------
+1. Install Python3.9 or lator.
 2. Open port 8000/tcp.
-3. Compile and install.
+3. Install libraries.
+    * When use pipenv
 
-   If you got saku with git, build version file.
+        pip install pipenv
+        pipenv install
 
-        % make version
+    * When use Debian packages (pil is not required, to generate thumbnails)
 
-   Install to system.
+        apt install python3-jinja2 python3-pil
 
-        # make install
+    * When use Docker, do nothing.
+4. When install saku to system
+    * When install to /usr/local
 
-   You can use PREFIX option for make.
+        make install
 
-4. Configration files are installed into /usr/local/share/doc/saku/sample.
-   You shoud install them:
+    * when install to other place
 
-        # cp init.sample /usr/local/etc/init.d/saku
-        # cp saku.ini /usr/local/etc/saku/saku.ini
+        make install PREFIX=/path/to/insall/dir
+5. Set up config files when install saku to system.
+    * Sample files are in /usr/local/share/doc/saku/sample.
+    * saku.ini are loaded from following paths and the later settings have a priority.
+        * /usr/local/etc/saku/saku.ini
+        * /etc/saku/saku.ini
+        * ~/.saku/saku.ini
+    * Other config file paths are in saku.ini.
+    * Create `shingetsu` user for auto start.
+    * Allow write access for cache, log and run directories in saku.ini.
+    * When use SysV Init, copy saku.init to /etc/init.d/saku.
+    * When use Systemd, copy saku.service.sample to /etc/systemd/system/saku.service and run `systemctl daemon-reload`.
+    * When use Supervisor, copy supervisor.sample to /etc/supervisor/conf.d/saku.conf and run `systemctl reload supervisor`.
+6. Start saku
+    * When use pipenv
 
-   and so on.
-   If you use Supervisor, install supervisor.sample instead of init.sample.
-   The paths of config files are set in saku.ini,
-   they are in /usr/local/etc/saku by defaults.
-   saku.ini are loaded from following paths and the later settings have a priority.
+        pipenv run python3 saku.py -v
 
-   * /usr/local/etc/saku/saku.ini
-   * /etc/saku/saku.ini
-   * ~/.saku/saku.ini
+    * When use Docker
 
-5. Setup user and directories refering config files.
-6. Start with
+        docker compose up
 
-        # /usr/local/etc/init.d/saku start
+    * When install to system and need to run it directly
 
-7. Browse http://localhost:8000/.
-8. Stop with
+        /usr/local/bin/saku -v
 
-        # /usr/local/etc/init.d/saku stop
+    * When use Sysv Init
 
-9. Run /usr/local/bin/saku for user application.
+        /etc/init.d/saku start
 
-How to Insatall Required Packages on Debian GNU/Linux 12
---------------------------------------------------------
-1. do
-
-        $ sudo apt install python3 python3-jinja2 python3-pil
+    * When use Supervisor or any auto start, it starts automatically.
+7. Open http://localhost:8000/
 
 Acknowledge
 -----------
 * The design is made referring to Vojta and Winny.
-* I learned how to handle file name from [YukiWiki](http://www.hyuki.com/yukiwiki/)
+* I learned how to handle file name from [YukiWiki](https://www.hyuki.com/yukiwiki/)
   written by Hiroshi Yuki.
 * Module apollo.py is was made referring to apollo.c
   written by replaceable anonymous.
 * Popup JavaScript was made referring to [Kindan-no Tubo](http://tubo.80.kg/) by Zero corp.
-* XLST was made reffring to [Landscape](http://sonic64.com/2005-03-16.html).
+* XLST was made reffring to [Landscape](https://sonic64.com/2005-03-16.html).

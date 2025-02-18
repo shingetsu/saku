@@ -10,6 +10,7 @@ Authors
 * (thumbnail patch) A shinGETsu user.
 * (imghdr patch) A shinGETsu user.
 * (js extensions) shinGETsu users.
+* (Pipfile, Dockefile, GitHub Actions) takano32
 
 Contributers
 ------------
@@ -21,7 +22,7 @@ Contributers
 
 WebSite
 -------
-  https://www.shingetsu.info/
+  https://shingetsu.info/
 
 Sakuは Shingetsu Another Keen Utility の略です。
 また、朔は新月を意味するやや古い表現です。
@@ -49,18 +50,58 @@ Sakuは Shingetsu Another Keen Utility の略です。
 * PIL または Pillow (Python Imaging Library) もし必要なら
 * Supervisor もし必要なら
 
-朔をインストールせずに使う場合
-------------------------------
-1. ポート 8000/tcp を開けてください。
-2. file/saku.ini ファイルでポート番号などを設定できます。
-   詳しくは doc/sample.ini をご覧ください。
-3. 次のコマンドで起動します。
+朔の使い方
+----------
+1. Python3.9以降をインストールする
+2. モデム、ルータまたはファイアウォールを設定して8000/tcpをポート開放する。
+   環境次第なのでここでは説明しきれません
+   IPv6対応環境では最初からポート開放されている場合があるようです
+3. ライブラリをインストールする
+    * 例: pipenvを使う場合
 
-        % pipenv install
-        % pipenv run python3 ./saku.py -v
+        pip install pipenv
+        pipenv install
 
-4. その後 http://localhost:8000/ を表示してください。
-5. 止めるときは ^C (Ctrl+C)を押下してください。
+    * 例: Debianのパッケージを使う場合 (pilはサムネイル画像生成用で必須ではありません)
+
+        apt install python3-jinja2 python3-pil
+
+    * 例: Dockerを利用する場合は作業不要
+4. 朔をシステムにインストールする(そうしたい人のみ)
+    * 例: /usr/local にインストールする場合
+
+        make install
+
+    * 例: インストール先を指定する場合
+
+        make install PREFIX=/path/to/insall/dir
+5. 朔をシステムにインストールした場合は設定ファイルを配置する
+    * 設定ファイルの雛型は /usr/local/share/doc/saku/sample にインストールされています
+    * saku.ini は /usr/local/etc/saku/saku.ini, /etc/saku/saku.ini, ~/.saku/saku.ini の順に読み込まれ、後のものが優先されます
+    * それ以外の設定ファイル(初期ノード一覧等)は saku.ini 内で指定します
+    * 自動起動するときは shingetsu ユーザーを作成してください(起動スクリプトのデフォルトがこの名前です)。また設定ファイルをみて cache, log, run の3つのフォルダに書き込み権限をつけてください
+    * 例: SysV Init 互換形式の方法で起動したい場合は saku.init を /etc/init.d/saku にコピーして自動起動するように設定する(ディストリビューションごとに異なっていた記憶)
+    * 例: Systemdで起動したい場合は saku.service.sample を /etc/systemd/system/saku.service にコピーして systemctl daemon-reload を実行
+    * 例: Supervisorで起動したい場合は supervisor.sample を /etc/supervisor/conf.d/saku.conf にコピーして systemctl reload supervisor を実行
+6. 朔を起動する
+    * 例: pipenvを使う場合
+
+        pipenv run python3 saku.py -v
+
+    * 例: Dockerを使う場合
+
+        docker compose up
+
+    * 例: システムにインストールしており直に実行したい場合
+
+        /usr/local/bin/saku -v
+
+    * 例: Sysv Init 形式の場合
+
+        /etc/init.d/saku start
+
+    * そのほか自動起動の設定(Supervisorなど)をしていれば自動で起動するでしょうし、停止や再起動の手順はそのシステムの方式に従ってください
+7. http://localhost:8000/をブラウザで表示
 
 2ch専用ブラウザから使う場合
 ---------------------------
@@ -76,60 +117,10 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
 [2chインターフェイスについて詳細](./2ch-interface.README.md)
 
-朔をインストールする場合
-------------------------
-1. [Jinja2](http://jinja.pocoo.org/) をインストールします。
-2. ポート 8000/tcp が開いていることを確認します。
-3. 次のコマンドを実行します。
-
-   gitから取得した場合にはバージョンファイルを生成してください。
-
-        % make version
-
-   インストールしてください。
-
-        # make install
-
-4. デフォルトでは /usr/local 以下にインストールされます
-   PREFIXオプションでインストールする場所を変更することができます。
-
-5. 設定ファイルは /usr/local/share/doc/saku/sample にインストールされます。
-   これを必要に応じて、次のようにインストールしてください。
-   Supervisorを使う場合には init.sample ではなく supervisor.sample を
-   インストールしてください。
-
-        # cp init.sample /usr/local/etc/init.d/saku
-        # cp saku.ini /usr/local/etc/saku/saku.ini
-
-6. ほとんどの設定ファイルは saku.ini でパスを指定するようになっており、
-   デフォルトでは /usr/local/etc/saku に配置するような設定になっています。
-   saku.ini は次の順で読み込まれ、後で設定したものが優先されます。
-
-   * /usr/local/etc/saku/saku.ini
-   * /etc/saku/saku.ini
-   * ~/.saku/saku.ini
-
-7. 設定ファイルと連動するようにユーザとディレクトリを準備してください。
-8. 次のコマンドで起動します。
-
-        # /usr/local/etc/init.d/saku start
-
-9. その後 http://localhost:8000/ を表示してください。
-10. 次のコマンドで終了します。
-
-        # /usr/local/etc/init.d/saku stop
-
-11. /usr/local/bin/saku でも起動できます。
-    この場合はユーザアプリケーションとしての動作です。
-
-Debian GNU/Linux 12 で依存パッケージをインストールする方法
-----------------------------------------------------------
-1. sudo apt install python3 python3-jinja2 python3-pil
-
 謝辞
 ----
 * 設計についてVojtaとWinnyを参考にしました。
-* ファイル名の扱いについてはHiroshi Yuki氏の[YukiWiki](http://www.hyuki.com/yukiwiki/)を参考にしました。
+* ファイル名の扱いについてはHiroshi Yuki氏の[YukiWiki](https://www.hyuki.com/yukiwiki/)を参考にしました。
 * 署名モジュール apollo.py は replaceable anonymous 氏のC言語版Apolloを基にしました。
 * ポップアップのためのJavaScriptは  Zero corp. の[禁断の壷](http://tubo.80.kg/)を参考にしました。
-* XLSTは[Landscape](http://sonic64.com/2005-03-16.html)を参考にしました。
+* XLSTは[Landscape](https://sonic64.com/2005-03-16.html)を参考にしました。
