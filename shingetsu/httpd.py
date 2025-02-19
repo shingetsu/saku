@@ -31,7 +31,7 @@ import socket
 import threading
 
 from . import config
-from . import LightCGIHTTPServer
+from . import cgiserver
 
 
 class Httpd(threading.Thread):
@@ -42,9 +42,9 @@ class Httpd(threading.Thread):
 
     def __init__(self):
         threading.Thread.__init__(self)
-        HandlerClass = LightCGIHTTPServer.HTTPRequestHandler
+        HandlerClass = cgiserver.HTTPRequestHandler
 
-        ServerClass = LightCGIHTTPServer.HTTPServer
+        ServerClass = cgiserver.HTTPServer
         if not config.bind_addr or ':' in config.bind_addr:
             ServerClass.address_family = socket.AF_INET6
         server_address = (config.bind_addr, config.port)

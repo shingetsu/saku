@@ -1,138 +1,72 @@
-"""Tiny HTTP server supporting threading CGI.
+"""Tiny HTTP request handler supporting threading CGI.
+
+This code is from CGIHTTPServer.py module.
 """
 #
-# Copyright (c) 2005-2024 shinGETsu Project.
-# All rights reserved.
+# Copyright (c) 2001-2014 Python Software Foundation; All Rights Reserved
 #
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-# 1. Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the above copyright
-#    notice, this list of conditions and the following disclaimer in the
-#    documentation and/or other materials provided with the distribution.
+# PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
 #
-# THIS SOFTWARE IS PROVIDED BY THE AUTHORS AND CONTRIBUTORS ``AS IS'' AND
-# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-# ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE
-# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-# SUCH DAMAGE.
+# 1. This LICENSE AGREEMENT is between the Python Software Foundation
+# ("PSF"), and the Individual or Organization ("Licensee") accessing and
+# otherwise using this software ("Python") in source or binary form and
+# its associated documentation.
+#
+# 2. Subject to the terms and conditions of this License Agreement, PSF
+# hereby grants Licensee a nonexclusive, royalty-free, world-wide
+# license to reproduce, analyze, test, perform and/or display publicly,
+# prepare derivative works, distribute, and otherwise use Python alone
+# or in any derivative version, provided, however, that PSF's License
+# Agreement and PSF's notice of copyright, i.e., "Copyright (c) 2001,
+# 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012,
+# 2013, 2014 Python Software Foundation; All Rights Reserved" are
+# retained in Python alone or in any derivative version prepared by
+# Licensee.
+#
+# 3. In the event Licensee prepares a derivative work that is based on
+# or incorporates Python or any part thereof, and wants to make
+# the derivative work available to others as provided herein, then
+# Licensee hereby agrees to include in any such work a brief summary of
+# the changes made to Python.
+#
+# 4. PSF is making Python available to Licensee on an "AS IS"
+# basis.  PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+# IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND
+# DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
+# FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON WILL NOT
+# INFRINGE ANY THIRD PARTY RIGHTS.
+#
+# 5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
+# FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS
+# A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON,
+# OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+#
+# 6. This License Agreement will automatically terminate upon a material
+# breach of its terms and conditions.
+#
+# 7. Nothing in this License Agreement shall be deemed to create any
+# relationship of agency, partnership, or joint venture between PSF and
+# Licensee.  This License Agreement does not grant permission to use PSF
+# trademarks or trade name in a trademark sense to endorse or promote
+# products or services of Licensee, or any third party.
+#
+# 8. By copying, installing or otherwise using Python, Licensee
+# agrees to be bound by the terms and conditions of this License
+# Agreement.
 #
 
 import copy
 import os
-import re
 import sys
 import urllib.parse
-import http.server
-import socketserver
-from threading import RLock
 
 from . import config
-from . import admin_cgi, server_cgi, gateway_cgi, thread_cgi
 
-cgimodule = {"admin.cgi": admin_cgi,
-             "server.cgi": server_cgi,
-             "gateway.cgi": gateway_cgi,
-             "thread.cgi": thread_cgi}
-
-
-class ConnectionCounter:
-    '''Connection Counter.
-    '''
-    def __init__(self):
-        self.counter = 0
-        self.lock = RLock()
-
-    def inclement(self):
-        try:
-            self.lock.acquire(True)
-            self.counter += 1
-        finally:
-            self.lock.release()
-
-    def declement(self):
-        try:
-            self.lock.acquire(True)
-            self.counter -= 1
-        finally:
-            self.lock.release()
-
-    def __int__(self):
-        return self.counter
-
-# End of ConnectionCounter
-
-_counter = ConnectionCounter()
-
-
-class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
-
-    """Tiny HTTP Server.
-
-    Exec CGI if script name ends with .cgi.
-    The CGI script runs in same process.
-    """
-    root_index = "/"
-
-    def parse_request(self):
-        ok = super().parse_request()
-        if not ok:
-            return False
-        found = re.search(r'^/+([?].*)?$', self.path)
-        if found:
-            if found.group(1):
-                self.path = self.root_index + found.group(1)
-            else:
-                self.path = self.root_index
-        return True
-
-    def is_cgi(self):
-        """Test request URI is *.cgi."""
-        found = re.search(r"^(.*?)/([^/]+\.cgi.*)", self.path)
-        if found:
-            self.cgi_info = found.groups()
-            return True
-        else:
-            return False
-
-    def address_string(self):
-        host, port = self.client_address[:2]
-        m = re.search(r'^::ffff:([\d.]+)$', host)
-        if m:
-            return m.group(1)
-        return host
-
-    def log_request(self, code='-', size='-'):
-        buf = [self.requestline]
-        if hasattr(self, "headers"):
-            buf.extend((self.headers.get("Referer", ""),
-                        self.headers.get("User-Agent", "")))
-        self.log_message("%s", "<>".join(buf))
-
-    def log_message(self, format, *args):
-        if hasattr(self, 'headers'):
-            proxy_client = self.headers.get('X-Forwarded-For', 'direct')
-        else:
-            proxy_client = '?'
-        sys.stderr.write('%s<>%s<>%s\n' %
-                         (self.address_string(),
-                          proxy_client,
-                          format % args))
-
+class CGIRunnerMixin:
     def run_cgi(self):
         """Execute a CGI script in this process.
-
-        This code is from CGIHTTPServer.py module.
         """
-        if config.max_connection < int(_counter):
+        if config.max_connection < int(self.counter):
             self.send_error(503, "Service Unavailable")
             return
         path = self.path
@@ -164,7 +98,6 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
         else:
             script, rest = rest, ''
         scriptname = dir + '/' + script
-        scriptfile = self.translate_path(scriptname)
 
         # Reference: http://hoohoo.ncsa.uiuc.edu/cgi/env.html
         # XXX Much of the following could be prepared ahead of time!
@@ -233,7 +166,7 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
 
         # import CGI module
         try:
-            cgiclass = cgimodule[script].CGI
+            cgiclass = self.cgimodule[script].CGI
         except KeyError:
             self.send_error(404, "No such CGI script (%s)" % repr(scriptname))
             return
@@ -246,7 +179,7 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
 
         # execute script in this process
         try:
-            _counter.inclement()
+            self.counter.inclement()
             try:
                 cgiobj = cgiclass(stdin=self.rfile,
                                   stdout=self.wfile,
@@ -256,16 +189,4 @@ class HTTPRequestHandler(http.server.CGIHTTPRequestHandler):
             except SystemExit as sts:
                 self.log_error("CGI script exit status %s", str(sts))
         finally:
-            _counter.declement()
-
-    def copyfile(self, source, outputfile):
-        #XXX parent method does not work on some environment
-        while True:
-            c = source.read(1024)
-            if c == b'':
-                break
-            outputfile.write(c)
-
-
-class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
-    pass
+            self.counter.declement()
