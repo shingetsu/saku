@@ -51,7 +51,6 @@
         RewriteRule ^([0-9_][^/]*).css$ /STATIC/$1.css
         RewriteRule ^(bootstrap|contrib|jquery)/(.*) /STATIC/$1/$2
         RewriteRule ^favicon.ico$ /STATIC/favicon.ico
-        RewriteRule ^x.gif$ /STATIC/x.gif
         RewriteRule rss1.xsl /STATIC/rss1.xsl
         RewriteRule ^gateway.cgi/mergedjs /STATIC/__merged.js
         RewriteRule ^mobile.cgi / [R]
