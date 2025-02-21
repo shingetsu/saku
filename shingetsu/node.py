@@ -269,6 +269,9 @@ class Node:
             except ValueError as err:
                 sys.stderr.write('/join %s: %s\n' % (self, err))
             return (welcome, extnode)
+        except TimeoutError as err:
+            sys.stderr.write('/join %s: %s\n' % (self, err))
+            return (welcome, extnode)
         except StopIteration:
             return (welcome, extnode)
 
@@ -431,8 +434,7 @@ class NodeList(RawNodeList):
         random.shuffle(inodes)
         for i in inodes:
             inode = Node(i)
-            if inode.ping():
-                self.join(inode)
+            if inode.ping() and self.join(inode):
                 break
         myself4, myself6 = self.myself()
         if myself4 and (myself4 in self):
