@@ -427,6 +427,18 @@ class NodeList(RawNodeList):
                 return flag
         return flag
 
+    def clean(self, nodelist):
+        changed = False
+        myself4, myself6 = self.myself()
+        if myself4 and (myself4 in nodelist):
+            nodelist.remove(myself4)
+            changed = True
+        if myself6 and (myself6 in nodelist):
+            nodelist.remove(myself6)
+            changed = True
+        if changed:
+            nodelist.sync()
+
     def init(self):
         """Connect initial node."""
         port = config.port
@@ -436,11 +448,7 @@ class NodeList(RawNodeList):
             inode = Node(i)
             if inode.ping() and self.join(inode):
                 break
-        myself4, myself6 = self.myself()
-        if myself4 and (myself4 in self):
-            self.remove(myself4)
-        if myself6 and (myself6 in self):
-            self.remove(myself6)
+        self.clean(self)
         if len(self) == 0:
             return
 
@@ -489,6 +497,7 @@ class NodeList(RawNodeList):
                 flag = self.join(n)
                 if (not flag) and (not n.ping()):
                     searchlist.remove(n)
+        self.clean(self)
         if do_join:
             searchlist.extend(self)
             self.sync()

@@ -209,6 +209,7 @@ class Client(Thread):
         nodelist.init()
         nodelist.sync()
         searchlist = SearchList()
+        nodelist.clean(searchlist)
         searchlist.extend(nodelist)
         searchlist.sync()
         sys.stderr.write("shingetsu.node.NodeList.init() finished\n")
@@ -217,6 +218,7 @@ class Client(Thread):
         nodelist = NodeList()
         searchlist = SearchList()
         nodelist.rejoin(searchlist)
+        nodelist.clean(searchlist)
         sys.stderr.write("shingetsu.node.NodeList.rejoin() finished\n")
 
     def do_sync(self):
