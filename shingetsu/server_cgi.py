@@ -46,7 +46,7 @@ class CGI(basecgi.CGI):
     """
 
     def run(self, environ, start_response):
-        start_response('200 OK', [('Content-Type', 'text/plain')])
+        self.header()
         return [b'xxx']
 
 
@@ -92,11 +92,11 @@ class CGI(basecgi.CGI):
         return path
 
     def header(self, content='text/plain; charset=UTF-8', addtional=None):
-        self.stdout.write('Content-Type: %s\r\n' % content)
+        headers = [('Content-Type', content)]
         if addtional:
             for k in addtional:
-                self.stdout.write('%s: %s\r\n' % (k, addtional[k]))
-        self.stdout.write('\r\n')
+                headers.append((k, addtional[k]))
+        self.start_response('200 OK', headers)
 
     def do_motd(self):
         self.header("text/plain; charset=UTF-8")

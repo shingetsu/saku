@@ -172,10 +172,14 @@ def head(app):
     def newapp(environ, start_response):
         body = app(environ, capture)
         status = resp['status']
+
+        if environ['REQUEST_METHOD'].upper() != 'HEAD':
+            start_response(status, resp['headers'])
+            return body
+
         headers = Headers(resp['headers'])
-        if environ['REQUEST_METHOD'].upper() == 'HEAD':
-            headers['Content-Length'] = str(sum([len(b) for b in body]))
-            start_response(status, list(headers.items()))
-            return []
+        headers['Content-Length'] = str(sum([len(b) for b in body]))
+        start_response(status, list(headers.items()))
+        return []
 
     return newapp
