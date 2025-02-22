@@ -50,14 +50,34 @@ class CGI:
         self.stderr = sys.stderr
         self.environ = environ
         self.start_response = start_response
-        
+
+    def bytes(self, data):
+        if isinstance(data, bytes):
+            return data
+        if isinstance(data, str):
+            return data.encode('utf-8', 'replace')
+        try:
+            iter(data)
+        except TypeError:
+            return str(data).encode('utf-8', 'replace')
+
+        try:
+            for d in data:
+                if isinstance(d, bytes):
+                    yield d
+                else:
+                    yield str(d).encode('utf-8', 'replace')
+        finally:
+            if hasattr(data, 'close'):
+                data.close()
+
     def send_error(self, status, message=''):
         status_str = f'{status.value} {status.phrase}'
         if not message:
             message = status_str
         self.start_response(status_str, [
             ('Content-Type', 'text/plain;charset=UTF-8')])
-        return [message.encode('utf-8', 'replace')]
+        return self.bytes([message])
         
     def start(self, environ, start_response):
         """Start the CGI.

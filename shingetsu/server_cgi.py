@@ -97,8 +97,7 @@ class CGI(basecgi.CGI):
     def do_motd(self):
         self.header("text/plain; charset=UTF-8")
         try:
-            with opentext(config.motd) as f:
-                return [line.encode('utf-8') for line in f]
+            return self.bytes(opentext(config.motd))
         except IOError:
             self.stderr.write(config.motd + ": IOError\n")
             return []
