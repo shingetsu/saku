@@ -47,7 +47,7 @@ def _get_value(parser, section, key, default, vtype=''):
 def _get_version():
     """Get Saku version for useragent and servername.
     """
-    version = '5.2.1'
+    version = '5.2.2'
     version_file = os.path.join(docroot, file_dir, 'version.txt')
     if os.path.isfile(version_file):
         try:
