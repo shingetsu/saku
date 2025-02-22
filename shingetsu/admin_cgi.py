@@ -138,9 +138,9 @@ class CGI(gateway.CGI):
             'sid': sid,
             'getbody': getbody,
         }
-        self.header(self.message['del_record'], deny_robot=True)
-        self.stdout.write(self.template('delete_record', var))
-        self.footer()
+        yield self.header(self.message['del_record'], deny_robot=True)
+        yield self.bytes(self.template('delete_record', var))
+        yield self.footer()
 
     def do_delete_record(self, datfile, records, dopost="", form=None):
         for type in config.types:
@@ -214,9 +214,9 @@ class CGI(gateway.CGI):
             'gettitle': gettitle,
             'getcontents': getcontents,
         }
-        self.header(self.message['del_file'], deny_robot=True)
-        self.stdout.write(self.template('delete_file', var))
-        self.footer()
+        yield self.header(self.message['del_file'], deny_robot=True)
+        yield self.bytes(self.template('delete_file', var))
+        yield self.footer()
 
     def do_delete_file(self, files):
         for c in files:
@@ -228,7 +228,7 @@ class CGI(gateway.CGI):
         var = {
             'query': query,
         }
-        self.stdout.write(self.template('search_form', var))
+        return self.bytes(self.template('search_form', var))
 
     def print_search_result(self, query):
         str_query = html.escape(query, True)
@@ -293,9 +293,9 @@ class CGI(gateway.CGI):
             'status': status,
             'node_status': node_status,
         }
-        self.header(self.message['status'], deny_robot=True)
-        self.stdout.write(self.template('status', var))
-        self.footer()
+        yield self.header(self.message['status'], deny_robot=True)
+        yield self.bytes(self.template('status', var))
+        yield self.footer()
 
     def print_edittag(self, datfile):
         str_title = self.file_decode(datfile)
@@ -310,11 +310,11 @@ class CGI(gateway.CGI):
             'sugtags': cache.sugtags,
             'usertags': UserTagList(),
         }
-        self.header('%s: %s' %
-                        (self.message['edit_tag'], str_title),
-                    deny_robot=True)
-        self.stdout.write(self.template('edit_tag', var))
-        self.footer()
+        yield self.header('%s: %s' %
+                          (self.message['edit_tag'], str_title),
+                          deny_robot=True)
+        yield self.bytes(self.template('edit_tag', var))
+        yield self.footer()
 
     def save_tag(self, datfile, tags):
         cache = Cache(datfile)
