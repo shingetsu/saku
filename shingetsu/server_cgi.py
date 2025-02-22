@@ -28,6 +28,7 @@
 
 import gzip
 import re
+from http import HTTPStatus
 from io import TextIOWrapper
 from time import time
 from random import choice
@@ -46,43 +47,38 @@ class CGI(basecgi.CGI):
     """
 
     def run(self, environ, start_response):
-        self.header()
-        return [b'xxx']
-
-
-    def run2(self):
         path = self.path_info()
 
         httphost = self.environ["HTTP_HOST"]
-        if config.dnsname !='' and (config.dnsname + ":"+ str(config.port)) != httphost :
-            self.header("text/plain; charset=UTF-8")
-            self.stdout.write('error: invalid http host')
-            return
+        if (config.dnsname and
+            (config.dnsname + ":"+ str(config.port)) != httphost):
+            return self.send_error(HTTPStatus.FORBIDDEN,
+                                   'error: invalid http host')
 
         if not self.environ["REQUEST_METHOD"] in ("GET", "HEAD"):
-            self.header("text/plain; charset=UTF-8")
+            return self.send_error(HTTPStatus.METHOD_NOT_ALLOWED)
         elif path == "":
-            self.do_motd()
+            return self.do_motd()
         elif path == "ping":
-            self.do_ping()
+            return self.do_ping()
         elif path == "node":
-            self.do_node()
+            return self.do_node()
         elif path.startswith("join"):
-            self.do_join(path)
+            return self.do_join(path)
         elif path.startswith("bye"):
-            self.do_bye(path)
+            return self.do_bye(path)
         elif path.startswith("have"):
-            self.do_have(path)
+            return self.do_have(path)
         elif path.startswith("head") or path.startswith("get"):
-            self.do_get_head(path)
+            return self.do_get_head(path)
         elif path.startswith("recent"):
-            self.do_recent(path)
+            return self.do_recent(path)
         elif path.startswith("update"):
             flag = self.do_update(path)
             if flag:
-                self.stdout.write("OK\n")
+                return ["OK\n"]
         elif path.startswith("version"):
-            self.do_version()
+            return self.do_version()
 
     def path_info(self):
         '''Parse PATH_INFO.'''
@@ -101,17 +97,16 @@ class CGI(basecgi.CGI):
     def do_motd(self):
         self.header("text/plain; charset=UTF-8")
         try:
-            f = opentext(config.motd)
-            for line in f:
-                self.stdout.write(line)
-            f.close()
+            with opentext(config.motd) as f:
+                return [line.encode('utf-8') for line in f]
         except IOError:
             self.stderr.write(config.motd + ": IOError\n")
+            return []
 
     def do_ping(self):
         self.header("text/plain; charset=UTF-8")
         remote_addr = get_http_remote_addr(self.environ)
-        self.stdout.write("PONG\n" + remote_addr + "\n")
+        return ["PONG\n" + remote_addr + "\n"]
 
     def do_node(self):
         nodes = NodeList()

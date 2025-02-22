@@ -87,11 +87,13 @@ def root_app(environ, start_response):
     ]
     for (route, cgiclass) in routes:
         if path.startswith(route):
+            env = environ.copy()
+            env['PATH_INFO'] = environ['PATH_INFO'][len(route):]
             try:
                 _counter.inclement()
                 try:
-                    cgiobj = cgiclass(environ, start_response)
-                    return cgiobj.start(environ, start_response)
+                    cgiobj = cgiclass(env, start_response)
+                    return cgiobj.start(env, start_response)
                 except SystemExit as sts:
                     sys.stderr.write("CGI script exit status %s\n", str(sts))
             finally:
@@ -109,7 +111,7 @@ def root_app(environ, start_response):
 def send_error(environ, start_response, status):
     msg = f'{status.value} {status.phrase}'
     start_response(msg, [('Content-Type', 'text/plain')])
-    return [msg.encode('utf-8', 'replace')]
+    return [msg.encode('utf-8')]
     
 
 class Httpd(threading.Thread):

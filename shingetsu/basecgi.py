@@ -27,6 +27,7 @@
 #
 
 import os
+import socket
 import sys
 from http import HTTPStatus
 
@@ -45,26 +46,27 @@ class CGI:
     """
 
     def __init__(self, environ, start_response):
-        self.stdin = sys.stdin #TODO remove
-        self.stdout = sys.stdout #TODO remove
-        self.stderr = sys.stderr #TODO remove
+        self.stdin = environ['wsgi.input']
+        self.stderr = sys.stderr
         self.environ = environ
         self.start_response = start_response
         
-    def send_error(self, status):
-        msg = f'{status.value} {status.phrase}'
-        self.start_response(msg, [('Content-Type', 'text/plain')])
-        return [msg.encode('utf-8', 'replace')]
+    def send_error(self, status, message=''):
+        status_str = f'{status.value} {status.phrase}'
+        if not message:
+            message = status_str
+        self.start_response(status_str, [
+            ('Content-Type', 'text/plain;charset=UTF-8')])
+        return [message.encode('utf-8', 'replace')]
         
     def start(self, environ, start_response):
         """Start the CGI.
         """
-        import socket
         try:
             return self.run(environ, start_response)
-        except (IOError, socket.error, socket.timeout) as strerror:
+        except (IOError, socket.error, socket.timeout) as err:
             self.stderr.write("%s: %s\n" %
-                              (util.get_http_remote_addr(self.environ), strerror))
+                              (util.get_http_remote_addr(self.environ), err))
             return self.send_error(HTTPStatus.INTERNAL_SERVER_ERROR)
 
     def run(self, environ, start_response):
