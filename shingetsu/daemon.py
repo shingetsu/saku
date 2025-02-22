@@ -110,7 +110,7 @@ def start_daemon():
 
     crondaemon = crond.Crond()
     crondaemon.setDaemon(True)
-    #crondaemon.start()
+    crondaemon.start()
 
     httpdaemon = httpd.Httpd()
     httpdaemon.setDaemon(True)

@@ -54,7 +54,8 @@ class OutputBuffer:
             elif not self.writing_headers:
                 self.body.append(line)
             elif not self.headers and b':' not in line:
-                self.status = line.strip()
+                line_str = line.decode('utf-8', 'replace')
+                self.status = line_str.strip()
             elif line == b'\n' or line == b'\r\n':
                 self.writing_headers = False
             else:
