@@ -21,7 +21,7 @@ def log_request(env):  # same as saku's log format
                      path=env['PATH_INFO'],
                      protocol=env['SERVER_PROTOCOL'],
                      referer=env.get('REFERER', ''),
-                     ua=env.get('USER_AGENT', ''))
+                     ua=env.get('HTTP_USER_AGENT', ''))
     log(msg)
 
 
