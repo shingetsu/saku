@@ -95,7 +95,7 @@ class CGI(basecgi.CGI):
         self.start_response('200 OK', headers)
 
     def do_motd(self):
-        self.header("text/plain; charset=UTF-8")
+        self.header()
         try:
             return self.bytes(opentext(config.motd))
         except IOError:
@@ -103,13 +103,13 @@ class CGI(basecgi.CGI):
             return []
 
     def do_ping(self):
-        self.header("text/plain; charset=UTF-8")
+        self.header()
         remote_addr = get_http_remote_addr(self.environ)
-        return ["PONG\n" + remote_addr + "\n"]
+        return self.bytes(["PONG\n" + remote_addr + "\n"])
 
     def do_node(self):
         nodes = NodeList()
-        self.header("text/plain; charset=UTF-8")
+        self.header()
         try:
             self.stdout.write(str(nodes[0]) + "\n")
         except IndexError:
@@ -125,7 +125,7 @@ class CGI(basecgi.CGI):
         return None
 
     def do_join(self, path_info):
-        self.header("text/plain; charset=UTF-8")
+        self.header()
         m = re.search(r"^join/([^:]*):(\d+)(.*)", path_info)
         if m is None:
             return
@@ -165,7 +165,7 @@ class CGI(basecgi.CGI):
             self.stdout.write("WELCOME\n%s\n" % suggest)
 
     def do_bye(self, path_info):
-        self.header("text/plain; charset=UTF-8")
+        self.header()
         m = re.search(r"^bye/([^:]*):(\d+)(.*)", path_info)
         if m is None:
             return
@@ -186,7 +186,7 @@ class CGI(basecgi.CGI):
         self.stdout.write("BYEBYE\n")
 
     def do_have(self, path):
-        self.header("text/plain; charset=UTF-8")
+        self.header()
         m = re.search(r"^have/([0-9A-Za-z_]+)$", path)
         if m is None:
             return
@@ -202,14 +202,14 @@ class CGI(basecgi.CGI):
             self.header("text/plain; charset=UTF-8", {"Content-Encoding": "gzip"})
             fp = gzip.GzipFile(fileobj=self.stdout,mode="wb")
         else:
-            self.header("text/plain; charset=UTF-8")
+            self.header()
             fp = self.stdout
         return TextIOWrapper(fp, 'utf-8', 'replace')
 
     def do_get_head(self, path):
         m = re.search(r"^(get|head)/([0-9A-Za-z_]+)/([-0-9A-Za-z/]*)$", path)
         if m is None:
-            self.header("text/plain; charset=UTF-8")
+            self.header()
             return
         (method, datfile, stamp) = m.groups()
         cache = Cache(datfile)
@@ -250,7 +250,7 @@ class CGI(basecgi.CGI):
     def do_recent(self, path):
         m = re.search(r"^recent/?([-0-9A-Za-z/]*)$", path)
         if m is None:
-            self.header("text/plain; charset=UTF-8")
+            self.header()
             return
         stamp = m.group(1)
         recent = RecentList()
@@ -268,7 +268,7 @@ class CGI(basecgi.CGI):
                 fp.write(line)
 
     def do_update(self, path_info):
-        self.header("text/plain; charset=UTF-8")
+        self.header()
         m = re.search(r"^update/(\w+)/(\d+)/(\w+)/([^:]*):(\d+)(.*)",path_info)
         if m is None:
             return False
@@ -310,7 +310,7 @@ class CGI(basecgi.CGI):
             return True
         
     def do_version(self):
-        self.header("text/plain; charset=UTF-8")
+        self.header()
         self.stdout.write("{}".format(config._get_version()) + "\n")
 
     def _seem_valid_relay_node(self, host, node, datfile):
