@@ -46,7 +46,7 @@ class CGI(gateway.CGI):
 
     def run(self, environ, start_response):
         path = self.path_info()
-        form = forminput.read(self.environ, self.stdin)
+        form = forminput.read(environ, environ['wsgi.input'])
 
         cmd = form.getfirst('cmd', '')
         if not self.isadmin:
@@ -62,7 +62,7 @@ class CGI(gateway.CGI):
             else:
                 self.print_delete_record(rm_files[0], rm_records)
         elif ((cmd == 'xrdel') or (cmd == 'xfdel')) and \
-             self.environ["REQUEST_METHOD"] == "POST" and \
+             environ["REQUEST_METHOD"] == "POST" and \
              self.check_sid(form.getfirst("sid", "")):
             rm_files = form.getlist('file')
             rm_records = form.getlist('record')

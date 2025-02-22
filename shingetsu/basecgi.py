@@ -46,7 +46,6 @@ class CGI:
     """
 
     def __init__(self, environ, start_response):
-        self.stdin = environ['wsgi.input']
         self.stderr = sys.stderr
         self.environ = environ
         self.start_response = start_response

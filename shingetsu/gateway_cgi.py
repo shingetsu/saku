@@ -68,7 +68,7 @@ class CGI(gateway.CGI):
         if config.server_name:
             self.host = config.server_name
         else:
-            self.host = self.environ.get('HTTP_HOST', 'localhost')
+            self.host = environ.get('HTTP_HOST', 'localhost')
 
         if not self.check_visitor():
             return self.print403()
@@ -108,9 +108,9 @@ class CGI(gateway.CGI):
             elif m.group(2) != "":
                 uri = self.appli[m.group(1)] + self.sep + \
                       self.str_encode(m.group(2))
-            elif self.environ.get("QUERY_STRING", "") != "":
+            elif environ.get("QUERY_STRING", "") != "":
                 uri = self.appli[m.group(1)] + self.sep + \
-                      self.environ["QUERY_STRING"]
+                      environ["QUERY_STRING"]
             else:
                 return self.print_title()
 

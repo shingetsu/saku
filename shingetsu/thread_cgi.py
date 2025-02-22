@@ -51,7 +51,7 @@ class CGI(gateway.CGI):
         if config.server_name:
             self.host = config.server_name
         else:
-            self.host = self.environ.get('HTTP_HOST', 'localhost')
+            self.host = environ.get('HTTP_HOST', 'localhost')
 
         if not self.check_visitor():
             self.print403()
@@ -90,10 +90,10 @@ class CGI(gateway.CGI):
             self.print_attach(datfile, stamp, id, suffix, None)
             return
 
-        form = forminput.read(self.environ, self.stdin)
+        form = forminput.read(environ, environ['wsgi.input'])
         if form.getfirst("cmd", "") == "post" and \
            form.getfirst("file", "").startswith("thread_") and \
-           self.environ["REQUEST_METHOD"] == "POST":
+           environ["REQUEST_METHOD"] == "POST":
             id = self.do_post(path, form)
             if not id:
                 return

@@ -49,13 +49,13 @@ class CGI(basecgi.CGI):
     def run(self, environ, start_response):
         path = self.path_info()
 
-        httphost = self.environ["HTTP_HOST"]
+        httphost = environ["HTTP_HOST"]
         if (config.dnsname and
             (config.dnsname + ":"+ str(config.port)) != httphost):
             return self.send_error(HTTPStatus.FORBIDDEN,
                                    'error: invalid http host')
 
-        if not self.environ["REQUEST_METHOD"] in ("GET", "HEAD"):
+        if not environ["REQUEST_METHOD"] in ("GET", "HEAD"):
             return self.send_error(HTTPStatus.METHOD_NOT_ALLOWED)
         elif path == "":
             return self.do_motd()
