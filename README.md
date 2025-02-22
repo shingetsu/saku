@@ -18,7 +18,6 @@ Authors
 
 Contributors
 ------------
-* (run_cgi) Python Software Foundation.
 * (jQuery) The jQuery Foundation.
 * (Twitter Bootstrap) Twitter.
 * (jQuery Lazy) Daniel 'Eisbehr' Kern

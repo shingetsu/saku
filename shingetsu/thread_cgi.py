@@ -117,7 +117,7 @@ class CGI(gateway.CGI):
             'id': id,
             'first': first,
         }
-        self.stdout.write(self.template('page_navi', var))
+        return self.bytes(self.template('page_navi', var))
 
     def print_tags(self, cache):
         for tags, classname, target in ((cache.tags, 'tags', 'changes'),):
@@ -129,7 +129,7 @@ class CGI(gateway.CGI):
                 'classname': classname,
                 'target': target,
             }
-            self.stdout.write(self.template('thread_tags', var))
+            return self.bytes(self.template('thread_tags', var))
 
     def print_thread(self, path, id='', page=0):
         str_path = self.str_encode(path)
@@ -171,9 +171,9 @@ class CGI(gateway.CGI):
             'lastrec': lastrec,
             'res_anchor': self.res_anchor,
         }
-        self.stdout.write(self.template('thread_top', var))
-        self.print_page_navi(page, cache, path, str_path, id)
-        self.stdout.write('</p>\n<dl id="records">\n')
+        yield self.bytes(self.template('thread_top', var))
+        yield self.print_page_navi(page, cache, path, str_path, id)
+        yield self.bytes('</p>\n<dl id="records">\n')
         page_size = config.thread_page_size
         if id:
             inrange = ids
@@ -188,35 +188,37 @@ class CGI(gateway.CGI):
                 self.print_record(cache, rec, path, str_path)
                 printed = True
             rec.free()
-        self.stdout.write("</dl>\n")
+        yield self.bytes("</dl>\n")
         escaped_path = html.escape(path)
         escaped_path = re.sub(r'  ', '&nbsp;&nbsp;', escaped_path)
         var = {
             'cache': cache,
         }
-        self.stdout.write(self.template('thread_bottom', var))
+        yield self.bytes(self.template('thread_bottom', var))
         if len(cache):
-            self.print_page_navi(page, cache, path, str_path, id)
-            self.stdout.write('</p>\n')
-        self.print_post_form(cache)
-        self.print_tags(cache)
-        self.remove_file_form(cache, escaped_path)
-        self.footer(menubar=self.menubar('bottom', rss))
+            yield self.print_page_navi(page, cache, path, str_path, id)
+            yield self.bytes('</p>\n')
+        yield self.print_post_form(cache)
+        yield self.print_tags(cache)
+        yield self.remove_file_form(cache, escaped_path)
+        yield self.footer(menubar=self.menubar('bottom', rss))
 
     def print_thread_ajax(self, path, id, form):
-        self.stdout.write('Content-Type: text/html; charset=UTF-8\n\n')
+        self.start_response('200 OK', [
+            ('Content-Type', 'text/html; charset=UTF-8')
+        ])
         str_path = self.str_encode(path)
         file_path = self.file_encode('thread', path)
         cache = Cache(file_path)
         if not cache.has_record():
             return
-        self.stdout.write('<dl>\n')
+        yield self.bytes('<dl>\n')
         for k in list(cache.keys()):
             rec = cache[k]
             if ((not id) or (rec.id[:8] == id)) and rec.load_body():
-                self.print_record(cache, rec, path, str_path)
+                yield self.print_record(cache, rec, path, str_path)
             rec.free()
-        self.stdout.write('</dl>\n')
+        yield self.bytes('</dl>\n')
 
     def print_record(self, cache, rec, path, str_path):
         thumbnail_size = None
@@ -253,7 +255,7 @@ class CGI(gateway.CGI):
             'res_anchor': self.res_anchor,
             'thumbnail': thumbnail_size,
         }
-        self.stdout.write(self.template('record', var))
+        return self.bytes(self.template('record', var))
 
     def print_post_form(self, cache):
         suffixes = list(mimetypes.types_map.keys())
@@ -263,7 +265,7 @@ class CGI(gateway.CGI):
             'suffixes': suffixes,
             'limit': config.record_limit * 3 // 4,
         }
-        self.stdout.write(self.template('post_form', var))
+        return self.bytes(self.template('post_form', var))
 
     def print_attach(self, datfile, id, stamp, suffix, thumbnail_size=None):
         """Print attachment."""
@@ -288,20 +290,16 @@ class CGI(gateway.CGI):
                 rec.make_thumbnail(suffix=suffix, thumbnail_size=thumbnail_size)
         if attach_file is not None:
             size = rec.attach_size(suffix=suffix, thumbnail_size=thumbnail_size)
-            self.stdout.write(
-                "Content-Type: " + type + "\n" +
-                "Last-Modified: " + self.rfc822_time(stamp) + "\n" +
-                "Content-Length: " + str(size) + "\n" +
-                "X-Content-Type-Options: nosniff\n")
+            headers = [
+                ("Content-Type", type),
+                ("Last-Modified", self.rfc822_time(stamp)),
+                ("Content-Length", str(size)),
+                ("X-Content-Type-Options", "nosniff"),
+            ]
             if attachutil.seem_html(suffix):
-                self.stdout.write("Content-Disposition: attachment\n")
-            self.stdout.write("\n")
+                headers.append(("Content-Disposition", "attachment"))
+            self.start_response('200 OK', headers)
             try:
-                f = open(attach_file, "rb")
-                buf = f.read(1024)
-                while (buf != b''):
-                    self.stdout.write(buf)
-                    buf = f.read(1024)
-                f.close()
+                return environ['wsgi.file_wrapper'](f, 1024)
             except IOError:
-                self.print404(cache)
+                return self.print404(cache)
