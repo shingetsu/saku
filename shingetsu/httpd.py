@@ -104,9 +104,11 @@ def root_app(environ, start_response):
                 _counter.declement()
 
     docroot = os.path.abspath('.')
-    filepath = os.path.join(docroot, path.lstrip('/'))
+    filepath = os.path.abspath(os.path.join(docroot, path.lstrip('/')))
     if filepath.startswith(docroot) and os.path.isfile(filepath):
         filetype, _ = mimetypes.guess_type(filepath)
+        if not filetype:
+            filetype = 'text/plain'
         start_response('200 OK', [('Content-Type', filetype)])
         return environ['wsgi.file_wrapper'](open(filepath, 'rb'), 1024)
 
