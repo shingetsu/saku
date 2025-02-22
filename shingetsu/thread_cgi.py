@@ -129,7 +129,9 @@ class CGI(gateway.CGI):
         form = forminput.read(self.environ, self.environ['wsgi.input'])
         cache = Cache(file_path)
         if id and form.getfirst('ajax'):
-            return self.print_thread_ajax(path, id, form)
+            for b in self.print_thread_ajax(path, id, form):
+                yield b
+            return
         if cache.has_record():
             pass
         elif self.check_get_cache():
@@ -139,7 +141,9 @@ class CGI(gateway.CGI):
             else:
                 self.get_cache(cache)
         else:
-            return self.print404(id=id)
+            for b in self.print404(id=id):
+                yield b
+            return
         rss = self.gateway_cgi + '/rss'
         yield self.header(path, rss=rss)
         tags = form.getfirst('tag', '').strip().split()

@@ -398,6 +398,7 @@ class CGI(basecgi.CGI):
     def print302(self, next):
         """Print CGI header (302 moved temporarily)."""
         self.start_response('302 moved temporarily', [('Location', next)])
+        return []
 
     def print403(self):
         '''Print CGI header (403 forbidden).'''
