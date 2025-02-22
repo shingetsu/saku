@@ -54,41 +54,34 @@ class CGI(gateway.CGI):
             self.host = environ.get('HTTP_HOST', 'localhost')
 
         if not self.check_visitor():
-            self.print403()
-            return
+            return self.print403()
         found = re.search(r'^([^/]+)/?$', path)
         if found:
             path = found.group(1)
-            self.print_thread(path)
-            return
+            return self.print_thread(path)
         found = re.search(r'^([^/]+)/([0-9a-f]{8})$', path)
         if found:
             path, id = found.groups()
-            self.print_thread(path, id=id)
-            return
+            return self.print_thread(path, id=id)
         found = re.search(r'^([^/]+)/p([0-9]+)$', path)
         if found:
             path, page = found.groups()
             try:
-                self.print_thread(path, page=int(page))
+                return self.print_thread(path, page=int(page))
             except ValueError:
-                self.print_thread(path)
-            return
+                return self.print_thread(path)
 
-        #found = re.search(r"^(thread_[0-9A-F]+)/([0-9a-f]{32})/(\d+)\.(\d+)x(\d+)\.(.*)",
         found = re.search(r"^(thread_[0-9A-F]+)/([0-9a-f]{32})/s(\d+)\.(\d+x\d+)\.(.*)",
                           path)
         if found:
             (datfile, stamp, id, thumbnail_size, suffix) = found.groups()
-            self.print_attach(datfile, stamp, id, suffix, thumbnail_size)
-            return
+            return self.print_attach(datfile, stamp, id, suffix, thumbnail_size)
 
         found = re.search(r"^(thread_[0-9A-F]+)/([0-9a-f]{32})/(\d+)\.(.*)",
                           path)
         if found:
             (datfile, stamp, id, suffix) = found.groups()
-            self.print_attach(datfile, stamp, id, suffix, None)
-            return
+            return self.print_attach(datfile, stamp, id, suffix, None)
 
         form = forminput.read(environ, environ['wsgi.input'])
         if form.getfirst("cmd", "") == "post" and \
@@ -96,11 +89,10 @@ class CGI(gateway.CGI):
            environ["REQUEST_METHOD"] == "POST":
             id = self.do_post(path, form)
             if not id:
-                return
+                return self.print404()
             datfile = form.getfirst("file", "")
             title = self.str_encode(self.file_decode(datfile))
-            self.print302(self.thread_cgi + self.sep + title + "#r" + id)
-            return
+            return self.print302(self.thread_cgi + self.sep + title + "#r" + id)
 
         self.print404()
 
@@ -137,8 +129,7 @@ class CGI(gateway.CGI):
         form = forminput.read(self.environ, self.environ['wsgi.input'])
         cache = Cache(file_path)
         if id and form.getfirst('ajax'):
-            self.print_thread_ajax(path, id, form)
-            return
+            return self.print_thread_ajax(path, id, form)
         if cache.has_record():
             pass
         elif self.check_get_cache():
@@ -148,8 +139,7 @@ class CGI(gateway.CGI):
             else:
                 self.get_cache(cache)
         else:
-            self.print404(id=id)
-            return
+            return self.print404(id=id)
         rss = self.gateway_cgi + '/rss'
         self.header(path, rss=rss)
         tags = form.getfirst('tag', '').strip().split()
@@ -278,12 +268,10 @@ class CGI(gateway.CGI):
         elif self.check_get_cache():
             self.get_cache(cache)
         else:
-            self.print404(cache)
-            return
+            return self.print404(cache)
         rec = Record(datfile=cache.datfile, idstr=stamp+'_'+id)
         if not rec.exists():
-            self.print404(cache)
-            return
+            return self.print404(cache)
         attach_file = rec.attach_path(suffix=suffix, thumbnail_size=thumbnail_size)
         if config.thumbnail_size is not None and not os.path.isfile(attach_file):
             if config.force_thumbnail or thumbnail_size == config.thumbnail_size:
@@ -300,6 +288,6 @@ class CGI(gateway.CGI):
                 headers.append(("Content-Disposition", "attachment"))
             self.start_response('200 OK', headers)
             try:
-                return environ['wsgi.file_wrapper'](f, 1024)
+                return self.environ['wsgi.file_wrapper'](f, 1024)
             except IOError:
                 return self.print404(cache)

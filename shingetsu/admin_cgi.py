@@ -50,13 +50,12 @@ class CGI(gateway.CGI):
 
         cmd = form.getfirst('cmd', '')
         if not self.isadmin:
-            self.print403()
-            return
+            return self.print403()
         elif (cmd == 'rdel') or (cmd == 'fdel'):
             rm_files = form.getlist('file')
             rm_records = form.getlist('record')
             if (not rm_files) or ((cmd == 'rdel') and (not rm_records)):
-                self.print404()
+                return self.print404()
             elif cmd == 'fdel':
                 self.print_delete_file(rm_files)
             else:
@@ -82,18 +81,18 @@ class CGI(gateway.CGI):
             if datfile:
                 self.print_edittag(datfile)
             else:
-                print404()
+                return print404()
         elif path == 'savetag':
             datfile = form.getfirst('file', '')
             tags = form.getfirst('tag', '')
             if datfile:
                 self.save_tag(datfile, tags)
             else:
-                print404()
+                return print404()
         elif path.startswith("search"):
-            self.print_search(path, form)
+            return self.print_search(path, form)
         else:
-            self.print404()
+            return self.print404()
 
     def make_sid(self):
         """Make admin sid for security."""
@@ -302,8 +301,7 @@ class CGI(gateway.CGI):
         cache = Cache(datfile)
         datfile = html.escape(datfile)
         if not cache.exists():
-            print404()
-            return
+            return self.print404()
         var = {
             'datfile': datfile,
             'tags': str(cache.tags),
@@ -319,8 +317,7 @@ class CGI(gateway.CGI):
     def save_tag(self, datfile, tags):
         cache = Cache(datfile)
         if not cache.exists():
-            print404()
-            return
+            return self.print404()
         taglist = tags.split()
         cache.tags.update(taglist)
         cache.tags.sync()
