@@ -148,11 +148,11 @@ class CGI(gateway.CGI):
             title = '%s : %s' % (self.message['index'], self.str_filter)
         else:
             title = self.message['index']
-        self.header(title)
-        self.print_paragraph(self.message['desc_index'])
+        yield self.header(title)
+        yield self.print_paragraph(self.message['desc_index'])
         cachelist = CacheList()
         cachelist.sort(key=attrgetter('velocity', 'count'), reverse=True)
-        self.print_index_list(cachelist, "index")
+        yield self.print_index_list(cachelist, "index")
 
     def print_changes(self):
         """Print changes page."""
@@ -160,11 +160,11 @@ class CGI(gateway.CGI):
             title = '%s : %s' % (self.message['changes'], self.str_filter)
         else:
             title = self.message['changes']
-        self.header(title)
-        self.print_paragraph(self.message['desc_changes'])
+        yield self.header(title)
+        yield self.print_paragraph(self.message['desc_changes'])
         cachelist = CacheList()
         cachelist.sort(key=lambda x: x.valid_stamp, reverse=True)
-        self.print_index_list(cachelist, "changes")
+        yield self.print_index_list(cachelist, "changes")
 
     def make_recent_cachelist(self):
         """Make dummy cachelist from recentlist."""
@@ -186,10 +186,10 @@ class CGI(gateway.CGI):
             title = '%s : %s' % (self.message['recent'], self.str_filter)
         else:
             title = self.message['recent']
-        self.header(title)
-        self.print_paragraph(self.message['desc_recent'])
+        yield self.header(title)
+        yield self.print_paragraph(self.message['desc_recent'])
         cachelist = self.make_recent_cachelist()
-        self.print_index_list(cachelist, "recent", search_new_file=True)
+        yield self.print_index_list(cachelist, "recent", search_new_file=True)
 
     def print_csv(self, path):
         """CSV output as API."""
@@ -257,25 +257,27 @@ class CGI(gateway.CGI):
         return self.body([str(buf)])
 
     def jump_new_file(self):
+        def errpage(msg):
+            yield self.header(self.message[msg], deny_robot=True)
+            yield self.footer()
+
         if self.form.getfirst("link", "") == "":
-            self.header(self.message["null_title"], deny_robot=True)
-            self.footer()
+            return errpage("null_title")
         elif re.search(r"[/\[\]<>]", self.form.getfirst("link", "")):
-            self.header(self.message["bad_title"], deny_robot=True)
-            self.footer()
+            return errpage("bad_title")
         elif self.form.getfirst("type", "") == "":
-            self.header(self.message["null_type"], deny_robot=True)
-            self.footer()
+            return errpage("bad_type")
         elif self.form.getfirst("type", "") in config.types:
             tag = self.str_encode(self.form.getfirst('tag', ''))
             search = self.str_encode(self.form.getfirst('search_new_file', ''))
-            self.print302(self.appli[self.form.getfirst("type", "")] +
-                          self.sep +
-                          self.str_encode(self.form.getfirst("link", "")) +
-                          '?tag=' + tag +
-                          '&search_new_file=' + search)
+            return self.print302(
+                self.appli[self.form.getfirst("type", "")] +
+                self.sep +
+                self.str_encode(self.form.getfirst("link", "")) +
+                '?tag=' + tag +
+                '&search_new_file=' + search)
         else:
-            self.print404()
+            return self.print404()
 
     def rss_text_format(self, plain):
         buf = plain.replace("<br>", " ")
