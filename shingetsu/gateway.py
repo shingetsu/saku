@@ -269,7 +269,7 @@ class CGI(basecgi.CGI):
         return self.bytes(self.template('header', var))
 
     def footer(self, menubar=None):
-        self.stdout.write(self.template('footer', {'menubar': menubar}))
+        return self.bytes(self.template('footer', {'menubar': menubar}))
 
     def localtime(self, stamp=0):
         """Return YYYY-mm-dd HH:MM."""
@@ -358,7 +358,7 @@ class CGI(basecgi.CGI):
             'cache': cache,
             'title': title,
         }
-        self.stdout.write(self.template('remove_file_form', var))
+        return self.bytes(self.template('remove_file_form', var))
 
     def mch_url(self):
         path = '/2ch/subject.txt'
@@ -393,7 +393,7 @@ class CGI(basecgi.CGI):
         var = {
             'next': next,
         }
-        self.stdout.write(self.template('jump', var))
+        return self.bytes(self.template('jump', var))
 
     def print302(self, next):
         """Print CGI header (302 moved temporarily)."""
@@ -455,7 +455,7 @@ class CGI(basecgi.CGI):
             'datfile': '',
             'cginame': self.gateway_cgi,
         }
-        self.stdout.write(self.template('new_element_form', var))
+        return self.bytes(self.template('new_element_form', var))
 
     def error_time(self):
         from random import gauss
@@ -626,7 +626,7 @@ class CGI(basecgi.CGI):
             'remove': remove,
             'str_opts': str_opts,
         }
-        return self.template('list_item', var)
+        return self.bytes(self.template('list_item', var))
 
     def print_index_list(self, cachelist,
                          target='', footer=True, search_new_file=False):
@@ -638,13 +638,14 @@ class CGI(basecgi.CGI):
             'cachelist': cachelist,
             'search_new_file': search_new_file,
         }
-        self.stdout.write(self.template('index_list', var))
+        ret = self.bytes(self.template('index_list', var))
         if footer:
-            self.print_new_element_form();
-            self.footer()
+            ret += self.print_new_element_form()
+            ret += self.footer()
+        return ret
 
     def print_paragraph(self, contents):
         var = {'contents': contents}
-        yield self.bytes(self.template('paragraph', var))
+        return self.bytes(self.template('paragraph', var))
 
 # End of CGI
