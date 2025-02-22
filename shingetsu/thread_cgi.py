@@ -134,7 +134,7 @@ class CGI(gateway.CGI):
     def print_thread(self, path, id='', page=0):
         str_path = self.str_encode(path)
         file_path = self.file_encode('thread', path)
-        form = forminput.read(self.environ, self.stdin)
+        form = forminput.read(self.environ, self.environ['wsgi.input'])
         cache = Cache(file_path)
         if id and form.getfirst('ajax'):
             self.print_thread_ajax(path, id, form)
