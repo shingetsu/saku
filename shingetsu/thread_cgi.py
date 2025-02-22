@@ -94,7 +94,7 @@ class CGI(gateway.CGI):
             title = self.str_encode(self.file_decode(datfile))
             return self.print302(self.thread_cgi + self.sep + title + "#r" + id)
 
-        self.print404()
+        return self.print404()
 
     def print_page_navi(self, page, cache, path, str_path, id):
         size = config.thread_page_size

@@ -33,6 +33,7 @@ import socket
 import socketserver
 import sys
 import threading
+import urllib.parse
 from http import HTTPStatus
 from wsgiref import simple_server
 
@@ -66,7 +67,7 @@ class ConnectionCounter:
 _counter = ConnectionCounter()
 
 
-#TODO remove
+#TODO enable
 #@middleware.head
 #@middleware.simple_range
 #@middleware.last_modified
@@ -168,3 +169,11 @@ class RequestHandler(simple_server.WSGIRequestHandler):
                          (self.address_string(),
                           proxy_client,
                           format % args))
+
+    def get_environ(self):
+        path = self.path
+        if '?' in path:
+            path = self.path.split('?',1)[0]
+        env = super().get_environ()
+        env['PATH_INFO'] = urllib.parse.unquote(path, 'utf-8')
+        return env
