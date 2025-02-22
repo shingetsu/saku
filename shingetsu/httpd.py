@@ -28,6 +28,7 @@
 
 import mimetypes
 import os
+import re
 import socket
 import socketserver
 import sys
@@ -141,6 +142,13 @@ class Server(socketserver.ThreadingMixIn, simple_server.WSGIServer):
 
 
 class RequestHandler(simple_server.WSGIRequestHandler):
+    def address_string(self):
+        host, port = self.client_address[:2]
+        m = re.search(r'^::ffff:([\d.]+)$', host)
+        if m:
+            return m.group(1)
+        return host
+
     def log_request(self, code='-', size='-'):
         buf = [self.requestline]
         if hasattr(self, "headers"):
