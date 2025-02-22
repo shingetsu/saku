@@ -93,8 +93,11 @@ def root_app(environ, start_response):
             try:
                 _counter.inclement()
                 try:
-                    cgiobj = cgiclass(env, start_response)
-                    return cgiobj.start(env, start_response)
+                    cgiobj = cgiclass(env)
+                    cgiobj.start()
+                    res = cgiobj.stdout
+                    start_response(res.status, res.headers)
+                    return res.body
                 except SystemExit as sts:
                     sys.stderr.write("CGI script exit status %s\n", str(sts))
             finally:
@@ -172,7 +175,7 @@ class RequestHandler(simple_server.WSGIRequestHandler):
     def get_environ(self):
         path = self.path
         if '?' in path:
-            path = self.path.split('?',1)[0]
+            path = self.path.split('?', 1)[0]
         env = super().get_environ()
         env['PATH_INFO'] = urllib.parse.unquote(path, 'utf-8')
         return env

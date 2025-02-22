@@ -1,7 +1,7 @@
 '''Base CGI module.
 '''
 #
-# Copyright (c) 2005-2024 shinGETsu Project.
+# Copyright (c) 2005 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -34,52 +34,33 @@ from . import util
 __all__ = ['CGI']
 
 
-class BodyFilter:
-    '''Filtered output stream.
-
-    When HEAD method is used, output HTTP header only.
-    '''
-    mode = 'wb'     # Writable stream
-
-    def __init__(self, env, output):
-        self.output = output
-        self.ishead = (env['REQUEST_METHOD'] == 'HEAD')
-        self.flag_body = False
-        self.buf = b''
+class OutputBuffer:
+    def __init__(self):
+        self.writing_headers = True
+        self.status = '200 OK'
+        self.headers = []
+        self.body = []
 
     def write(self, msg):
         if isinstance(msg, str):
             msg = msg.encode('utf-8', 'replace')
-        if not self.ishead:
-            #XXX it does not work on python 3.2.3
-            #self.output.write(msg)
-            bufsize = 1024
-            for offset in range(0, len(msg), bufsize):
-                self.output.write(msg[offset:offset+bufsize])
-        elif self.ishead and self.flag_body:
-            pass
-        else:
-            self.buf += msg.replace(b'\r\n', b'\n')
-            i = self.buf.find(b'\n\n')
-            if i >= 0:
-                self.output.write(self.buf[:i+2].replace(b'\n', b'\r\n'))
-                self.buf = b''
-                self.flag_body = True
+        if not self.writing_headers:
+            self.body.append(msg)
+            return
 
-    def flush(self):
-        return self.output.flush()
+        for line in msg.splitlines(True):
+            if not self.writing_headers:
+                self.body.append(line)
+            elif not self.headers and b':' not in line:
+                self.status = line.strip()
+            elif line == '\n' or line == '\r\n':
+                self.writing_headers = False
+            else:
+                line_str = line.decode('utf-8', 'replace')
+                k, v = line_str.strip().split(':', 1)
+                self.headers.append((k, v))
 
-    def close(self):
-        if self.buf:
-            self.output.write(self.buf.replace(b'\n', b'\r\n'))
-
-    def __getattr__(self, name):
-        return getattr(self.output, name)
-
-    def __del__(self):
-        self.close()
-
-# End of BodyFilter
+# End of OutputBuffer
 
 
 class CGI:
@@ -91,14 +72,10 @@ class CGI:
 
     """
 
-    def __init__(self,
-                 stdin=sys.stdin,
-                 stdout=sys.stdout,
-                 stderr=sys.stderr,
-                 environ=os.environ):
-        self.stdin = stdin
-        self.stdout = BodyFilter(environ, stdout)
-        self.stderr = stderr
+    def __init__(self, environ):
+        self.stdin = environ['wsgi.input']
+        self.stdout = OutputBuffer()
+        self.stderr = sys.stderr
         self.environ = environ
 
     def start(self):
