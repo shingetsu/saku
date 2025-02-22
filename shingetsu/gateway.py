@@ -626,7 +626,7 @@ class CGI(basecgi.CGI):
             'remove': remove,
             'str_opts': str_opts,
         }
-        return self.bytes(self.template('list_item', var))
+        return self.template('list_item', var)
 
     def print_index_list(self, cachelist,
                          target='', footer=True, search_new_file=False):
