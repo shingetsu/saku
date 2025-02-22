@@ -111,10 +111,10 @@ class CGI(basecgi.CGI):
         nodes = NodeList()
         self.header()
         try:
-            self.stdout.write(str(nodes[0]) + "\n")
+            return self.bytes([str(nodes[0]) + "\n"])
         except IndexError:
             inode = choice(init_node())
-            self.stdout.write("%s\n" % inode)
+            return self.bytes(["%s\n" % inode])
 
     def get_remote_hostname(self, host):
         remote_addr = get_http_remote_addr(self.environ)
