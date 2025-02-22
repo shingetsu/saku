@@ -74,9 +74,7 @@ class CGI(basecgi.CGI):
         elif path.startswith("recent"):
             return self.do_recent(path)
         elif path.startswith("update"):
-            flag = self.do_update(path)
-            if flag:
-                return ["OK\n"]
+            return self.do_update(path)
         elif path.startswith("version"):
             return self.do_version()
 
@@ -128,7 +126,7 @@ class CGI(basecgi.CGI):
         self.header()
         m = re.search(r"^join/([^:]*):(\d+)(.*)", path_info)
         if m is None:
-            return
+            return []
         (host, port, path) = m.groups()
         host = self.get_remote_hostname(host)
         if not host:
@@ -189,41 +187,30 @@ class CGI(basecgi.CGI):
         self.header()
         m = re.search(r"^have/([0-9A-Za-z_]+)$", path)
         if m is None:
-            return
+            return []
         cache = Cache(m.group(1))
         if (len(cache) > 0):
-            self.stdout.write("YES\n")
+            return self.bytes([("YES\n")])
         else:
-            self.stdout.write("NO\n")
-
-    def output(self):
-        encoding = self.environ.get("HTTP_ACCEPT_ENCODING", "")
-        if (encoding.find("gzip") >= 0) or (encoding.find("*") >= 0):
-            self.header("text/plain; charset=UTF-8", {"Content-Encoding": "gzip"})
-            fp = gzip.GzipFile(fileobj=self.stdout,mode="wb")
-        else:
-            self.header()
-            fp = self.stdout
-        return TextIOWrapper(fp, 'utf-8', 'replace')
+            return self.bytes(["NO\n"])
 
     def do_get_head(self, path):
         m = re.search(r"^(get|head)/([0-9A-Za-z_]+)/([-0-9A-Za-z/]*)$", path)
         if m is None:
             self.header()
-            return
+            return []
         (method, datfile, stamp) = m.groups()
         cache = Cache(datfile)
         begin, end, id = self.parse_stamp(stamp, cache.stamp)
-        fp = self.output()
         for r in cache:
             if (begin <= r.stamp) and (r.stamp <= end) \
                     and ((id is None) or r.idstr.endswith(id)):
                 if method == "get":
                     r.load()
-                    fp.write(str(r) + '\n')
+                    yield self.bytes(str(r) + '\n')
                     r.free()
                 else:
-                    fp.write(r.idstr.replace('_', '<>') + '\n')
+                    yield self.bytes(r.idstr.replace('_', '<>') + '\n')
 
     def parse_stamp(self, stamp, last):
         buf = stamp.split("/")
@@ -251,12 +238,11 @@ class CGI(basecgi.CGI):
         m = re.search(r"^recent/?([-0-9A-Za-z/]*)$", path)
         if m is None:
             self.header()
-            return
+            return []
         stamp = m.group(1)
         recent = RecentList()
         last = int(time()) + config.recent_range
         begin, end, id = self.parse_stamp(stamp, last)
-        fp = self.output()
         for i in recent:
             if (begin <= i.stamp) and (i.stamp <= end):
                 cache = Cache(i.datfile)
@@ -265,29 +251,29 @@ class CGI(basecgi.CGI):
                 else:
                     tagstr = ''
                 line = '%s<>%s<>%s%s\n' % (i.stamp, i.id, i.datfile, tagstr)
-                fp.write(line)
+                yield self.bytes(line)
 
     def do_update(self, path_info):
         self.header()
         m = re.search(r"^update/(\w+)/(\d+)/(\w+)/([^:]*):(\d+)(.*)",path_info)
         if m is None:
-            return False
+            return []
         (datfile, stamp, id, host, port, path) = m.groups()
         if not title.is_valid_file(datfile, 'thread'):
-            return False
+            return []
         if not host:
             host = self.get_remote_hostname(host)
         if not host:
-            return False
+            return []
         try:
             node = Node(host=host, port=port, path=path)
         except ValueError:
-            return False
+            return []
         if (not node_allow().check(str(node))) and \
              node_deny().check(str(node)):
-            return False
+            return []
         if not self._seem_valid_relay_node(host, node, datfile):
-            return False
+            return []
         searchlist = SearchList()
         searchlist.append(node)
         searchlist.sync()
@@ -298,20 +284,20 @@ class CGI(basecgi.CGI):
         now = int(time())
         if (int(stamp) < now - config.update_range) or \
            (int(stamp) > now + config.update_range):
-            return False
+            return []
         rec = Record(datfile=datfile, idstr=stamp+"_"+id)
         updatelist = UpdateList()
         if rec in updatelist:
-            return True
+            return self.bytes(["OK\n"])
         else:
             queue = UpdateQueue()
             queue.append(datfile, stamp, id, node)
             queue.start()
-            return True
+            return self.bytes(["OK\n"])
         
     def do_version(self):
         self.header()
-        self.stdout.write("{}".format(config._get_version()) + "\n")
+        return self.bytes(["{}".format(config._get_version()) + "\n"])
 
     def _seem_valid_relay_node(self, host, node, datfile):
         remote_addr = get_http_remote_addr(self.environ)
