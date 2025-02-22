@@ -57,29 +57,30 @@ class CGI(gateway.CGI):
             if (not rm_files) or ((cmd == 'rdel') and (not rm_records)):
                 return self.print404()
             elif cmd == 'fdel':
-                self.print_delete_file(rm_files)
+                return self.print_delete_file(rm_files)
             else:
-                self.print_delete_record(rm_files[0], rm_records)
+                return self.print_delete_record(rm_files[0], rm_records)
         elif ((cmd == 'xrdel') or (cmd == 'xfdel')) and \
              environ["REQUEST_METHOD"] == "POST" and \
              self.check_sid(form.getfirst("sid", "")):
             rm_files = form.getlist('file')
             rm_records = form.getlist('record')
             if (not rm_files) or ((cmd == 'xrdel') and (not rm_records)):
-                self.print404()
+                return self.print404()
             elif cmd == 'xfdel':
-                self.do_delete_file(rm_files)
+                return self.do_delete_file(rm_files)
             else:
-                self.do_delete_record(rm_files[0],
-                                      rm_records,
-                                      form.getfirst("dopost", ""),
-                                      form)
+                return self.do_delete_record(
+                    rm_files[0],
+                    rm_records,
+                    form.getfirst("dopost", ""),
+                    form)
         elif path == "status":
-            self.print_status()
+            return self.print_status()
         elif path == 'edittag':
             datfile = form.getfirst('file', '')
             if datfile:
-                self.print_edittag(datfile)
+                return self.print_edittag(datfile)
             else:
                 return print404()
         elif path == 'savetag':
@@ -162,7 +163,7 @@ class CGI(gateway.CGI):
                     break
         if not dopost:
             cache.sync_status()
-        self.print302(next)
+        return self.print302(next)
 
     def post_delete_message(self, cache, rec, form):
         """Post delete message to other nodes."""
@@ -221,7 +222,7 @@ class CGI(gateway.CGI):
         for c in files:
             cache = Cache(c)
             cache.remove()
-        self.print302(self.gateway_cgi + self.sep + "changes")
+        return self.print302(self.gateway_cgi + self.sep + "changes")
 
     def print_search_form(self, query=''):
         var = {
@@ -233,8 +234,8 @@ class CGI(gateway.CGI):
         str_query = html.escape(query, True)
         title = '%s : %s' % (self.message['search'], str_query)
         self.header(title, deny_robot=True)
-        self.print_paragraph(self.message['desc_search'])
-        self.print_search_form(str_query)
+        yield self.print_paragraph(self.message['desc_search'])
+        yield self.print_search_form(str_query)
         try:
             query = re.compile(html.escape(query), re.I)
             cachelist = CacheList()
@@ -246,10 +247,10 @@ class CGI(gateway.CGI):
                 if query.search(datfile):
                     result.append(i)
             result.sort(key=lambda x: x.stamp, reverse=True)
-            self.print_index_list(result, footer=False)
+            yield self.print_index_list(result, footer=False)
         except (re.error, UnicodeDecodeError):
-            self.print_paragraph(self.message['regexp_error'])
-        self.footer()
+            yield self.print_paragraph(self.message['regexp_error'])
+        yield self.footer()
 
     def print_search(self, path, form):
         query = form.getfirst('query', '')
@@ -260,12 +261,12 @@ class CGI(gateway.CGI):
             query = self.str_decode(query)
 
         if query == '':
-            self.header(self.message['search'], deny_robot=True)
-            self.print_paragraph(self.message['desc_search'])
-            self.print_search_form()
-            self.footer()
+            yield self.header(self.message['search'], deny_robot=True)
+            yield self.print_paragraph(self.message['desc_search'])
+            yield self.print_search_form()
+            yield self.footer()
         else:
-            self.print_search_result(query)
+            yield self.print_search_result(query)
 
     def print_status(self):
         nodelist = NodeList()
@@ -331,6 +332,6 @@ class CGI(gateway.CGI):
                 break
         else:
             next = self.root
-        self.print302(next)
+        return self.print302(next)
 
 # End of CGI

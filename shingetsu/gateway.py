@@ -548,7 +548,6 @@ class CGI(basecgi.CGI):
             cache.add_data(rec)
             cache.sync_status()
         else:
-            self.print404()
             return None
 
         if form.getfirst("dopost", "") != "":

@@ -175,7 +175,7 @@ class CGI(gateway.CGI):
         for k in inrange:
             rec = cache[k]
             if ((not id) or (rec.id[:8] == id)) and rec.load_body():
-                self.print_record(cache, rec, path, str_path)
+                yield self.print_record(cache, rec, path, str_path)
                 printed = True
             rec.free()
         yield self.bytes("</dl>\n")
