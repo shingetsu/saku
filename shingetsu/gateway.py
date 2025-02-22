@@ -244,8 +244,7 @@ class CGI(basecgi.CGI):
         }
         return self.template('menubar', var)
 
-    def header(self, title='', rss='',
-               cookie=None, deny_robot=False):
+    def header(self, title='', rss='', deny_robot=False):
         '''Print CGI and HTTP header.
         '''
         if rss == '':
@@ -260,7 +259,6 @@ class CGI(basecgi.CGI):
             'title': title,
             'str_title': self.str_encode(title),
             'rss': rss,
-            'cookie': cookie,
             'deny_robot': deny_robot,
             'mergedjs': self.jscache,
             'js': js,

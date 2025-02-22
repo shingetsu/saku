@@ -3,9 +3,6 @@
  # Copyright (c) 2005-2020 shinGETsu Project.
  -#}
 Content-Type: text/html; charset=UTF-8
-{%-if cookie %}
-{{cookie}}
-{%- endif %}
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
