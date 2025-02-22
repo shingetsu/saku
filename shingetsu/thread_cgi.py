@@ -141,7 +141,7 @@ class CGI(gateway.CGI):
         else:
             return self.print404(id=id)
         rss = self.gateway_cgi + '/rss'
-        self.header(path, rss=rss)
+        yield self.header(path, rss=rss)
         tags = form.getfirst('tag', '').strip().split()
         if self.isadmin and tags:
             cache.tags.add(tags)
@@ -149,7 +149,7 @@ class CGI(gateway.CGI):
             user_tag_list = UserTagList()
             user_tag_list.add(tags)
             user_tag_list.sync()
-        self.print_tags(cache)
+        yield self.print_tags(cache)
         lastrec = None
         ids = list(cache.keys())
         if len(cache) and (not page) and (not id) and (not ids):
