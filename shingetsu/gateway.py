@@ -123,16 +123,8 @@ class CGI(basecgi.CGI):
     tag = None
     str_tag = ''
 
-    def __init__(self,
-                 stdin=sys.stdin,
-                 stdout=sys.stdout,
-                 stderr=sys.stderr,
-                 environ=os.environ):
-        basecgi.CGI.__init__(self,
-                             stdin=stdin,
-                             stdout=stdout,
-                             stderr=stderr,
-                             environ=environ)
+    def __init__(self, environ):
+        basecgi.CGI.__init__(self, environ)
         if "HTTP_ACCEPT_LANGUAGE" in self.environ:
             al = self.environ["HTTP_ACCEPT_LANGUAGE"]
         else:
