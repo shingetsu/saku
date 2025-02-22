@@ -58,8 +58,11 @@ class CGI(gateway.CGI):
                 self.tag = tag.lower()
                 self.str_tag = html.escape(tag, True)
         except (re.error, UnicodeDecodeError):
-            #yield self.header(self.message['regexp_error'], deny_robot=True)
-            return self.footer()
+            def errpage():
+                    yield self.header(self.message['regexp_error'],
+                                      deny_robot=True)
+                    yield self.footer()
+            return errpage()
 
         if config.server_name:
             self.host = config.server_name
@@ -86,9 +89,11 @@ class CGI(gateway.CGI):
             elif path == "recent":
                 return self.print_recent()
             elif path == "new":
-                #yield self.header(self.message["new"], deny_robot=True)
-                #yield self.print_new_element_form()
-                return self.footer()
+                def newpage():
+                    yield self.header(self.message["new"], deny_robot=True)
+                    yield self.print_new_element_form()
+                    yield self.footer()
+                return newpage()
             else:
                 return self.print404()
         elif self.form.getfirst("cmd", "") == "new":
@@ -132,9 +137,9 @@ class CGI(gateway.CGI):
             'mch_categories': self.mch_categories()
         }
 
-        self.stdout.write(self.template('top', var))
-        self.print_new_element_form()
-        self.footer()
+        yield self.bytes(self.template('top', var))
+        yield self.print_new_element_form()
+        yield self.footer()
 
     def print_index(self):
         """Print index page."""

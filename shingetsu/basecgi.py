@@ -61,15 +61,17 @@ class CGI:
         except TypeError:
             return str(data).encode('utf-8', 'replace')
 
-        try:
-            for d in data:
-                if isinstance(d, bytes):
-                    yield d
-                else:
-                    yield str(d).encode('utf-8', 'replace')
-        finally:
-            if hasattr(data, 'close'):
-                data.close()
+        def gen():
+            try:
+                for d in data:
+                    if isinstance(d, bytes):
+                        yield d
+                    else:
+                        yield str(d).encode('utf-8', 'replace')
+            finally:
+                if hasattr(data, 'close'):
+                    data.close()
+        return gen()
 
     def send_error(self, status, message=''):
         status_str = f'{status.value} {status.phrase}'

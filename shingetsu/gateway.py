@@ -266,7 +266,7 @@ class CGI(basecgi.CGI):
         if status and isinstance(status, HTTPStatus):
             status_str = f'{status.value} {status.phrase}'
         self.start_response(status_str, headers)
-        return self.bytes([self.template('header', var)])
+        return self.bytes(self.template('header', var))
 
     def footer(self, menubar=None):
         self.stdout.write(self.template('footer', {'menubar': menubar}))
@@ -645,6 +645,6 @@ class CGI(basecgi.CGI):
 
     def print_paragraph(self, contents):
         var = {'contents': contents}
-        self.stdout.write(self.template('paragraph', var))
+        yield self.bytes(self.template('paragraph', var))
 
 # End of CGI
