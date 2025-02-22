@@ -29,6 +29,7 @@
 import html
 import re
 import csv
+from io import StringIO
 from operator import attrgetter
 from time import time
 
@@ -47,7 +48,7 @@ class CGI(gateway.CGI):
 
     def run(self, environ, start_response):
         path = self.path_info()
-        self.form = forminput.read(self.environ, self.stdin)
+        self.form = forminput.read(environ, environ['wsgi.input'])
         try:
             filter = self.form.getfirst('filter', '')
             tag = self.form.getfirst('tag', '')
@@ -59,9 +60,9 @@ class CGI(gateway.CGI):
                 self.str_tag = html.escape(tag, True)
         except (re.error, UnicodeDecodeError):
             def errpage():
-                    yield self.header(self.message['regexp_error'],
-                                      deny_robot=True)
-                    yield self.footer()
+                yield self.header(self.message['regexp_error'],
+                                  deny_robot=True)
+                yield self.footer()
             return errpage()
 
         if config.server_name:
@@ -196,8 +197,7 @@ class CGI(gateway.CGI):
         if found:
             target, cols = found.groups()
         else:
-            self.print404()
-            return
+            return self.print404()
         cols = cols.split(",")
         if target == "index":
             cachelist = CacheList()
@@ -206,15 +206,15 @@ class CGI(gateway.CGI):
             cachelist.sort(key=lambda x: x.valid_stamp, reverse=True)
         elif target == "recent":
             if (not self.isfriend) and (not self.isadmin):
-                self.print403()
-                return
+                return self.print403()
             cachelist = self.make_recent_cachelist()
         else:
-            self.print404()
-            return
-        self.stdout.write("Content-Type: text/comma-separated-values;" +
-                          " charset=UTF-8\n\n")
-        writer = csv.writer(self.stdout)
+            return self.print404()
+        self.start_response('200 OK', [
+            ('Content-Type', 'text/comma-separated-values; charset=UTF-8')
+        ])
+        buf = StringIO()
+        writer = csv.writer(buf)
         for cache in cachelist:
             title = self.file_decode(cache.datfile)
             if cache.type in config.types:
@@ -254,6 +254,7 @@ class CGI(gateway.CGI):
                 else:
                     row.append("")
             writer.writerow(row)
+        return self.body([str(buf)])
 
     def jump_new_file(self):
         if self.form.getfirst("link", "") == "":
@@ -341,14 +342,14 @@ class CGI(gateway.CGI):
                         content = content)
                     r.free()
 
-        self.stdout.write("Content-Type: text/xml; charset=UTF-8\n")
+        headers = [('Content-Type', 'text/xml; charset=UTF-8')]
         try:
-            self.stdout.write("Last-Modified: %s\n" %
-                              self.rfc822_time(rss[list(rss.keys())[0]].date))
-        except IndexError as KeyError:
+            headers.append(('Last-Modified',
+                            self.rfc822_time(rss[list(rss.keys())[0]].date)))
+        except (IndexError, KeyError):
             pass
-        self.stdout.write("\n")
-        self.stdout.write(make_rss1(rss))
+        self.start_response('200 OK', headers)
+        return self.body([make_rss1(rss)])
 
     def print_recent_rss(self):
         rss = RSS(encode = 'UTF-8',
@@ -372,22 +373,21 @@ class CGI(gateway.CGI):
                 subject = tags,
                 content = html.escape(title))
 
-        self.stdout.write('Content-Type: text/xml; charset=UTF-8\n')
+        headers = [('Content-Type', 'text/xml; charset=UTF-8')]
         try:
-            self.stdout.write('Last-Modified: %s\n' %
-                              self.rfc822_time(rss[list(rss.keys())[0]].date))
-        except IndexError as KeyError:
+            headers.append(('Last-Modified',
+                            self.rfc822_time(rss[list(rss.keys())[0]].date)))
+        except (IndexError, KeyError):
             pass
-        self.stdout.write('\n')
-        self.stdout.write(make_rss1(rss))
+        self.start_response('200 OK', headers)
+        return self.body([make_rss1(rss)])
 
     def print_mergedjs(self):
-        self.stdout.write('Content-Type: application/javascript;'
-            + ' charset=UTF-8')
-        self.stdout.write('Last-Modified: '
-            + self.rfc822_time(self.jscache.mtime) + '\n')
-        self.stdout.write('\n')
-        self.stdout.write(self.jscache.script)
+        self.start_response('200 OK', [
+            ('Content-Type', 'application/javascript; charset=UTF-8'),
+            ('Last-Modified', self.rfc822_time(self.jscache.mtime)),
+        ])
+        return self.body([self.jscache.script])
 
     def print_motd(self):
         self.start_response('200 OK', [
