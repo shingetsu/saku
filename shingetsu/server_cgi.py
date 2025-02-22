@@ -77,6 +77,9 @@ class CGI(basecgi.CGI):
             return self.do_update(path)
         elif path.startswith("version"):
             return self.do_version()
+        else:
+            self.header()
+            return []
 
     def path_info(self):
         '''Parse PATH_INFO.'''

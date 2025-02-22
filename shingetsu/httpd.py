@@ -66,10 +66,11 @@ class ConnectionCounter:
 _counter = ConnectionCounter()
 
 
-@middleware.head
-@middleware.simple_range
-@middleware.last_modified
-@middleware.gzipped
+#TODO remove
+#@middleware.head
+#@middleware.simple_range
+#@middleware.last_modified
+#@middleware.gzipped
 def root_app(environ, start_response):
     path = environ.get('PATH_INFO', '')
     if not path or path == '/':

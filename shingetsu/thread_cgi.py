@@ -46,7 +46,7 @@ class CGI(gateway.CGI):
 
     appli_type = "thread"
 
-    def run(self):
+    def run(self, environ, start_response):
         path = self.path_info()
         if config.server_name:
             self.host = config.server_name

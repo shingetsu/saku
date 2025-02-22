@@ -45,7 +45,7 @@ class CGI(gateway.CGI):
 
     """Class for /gateway.cgi."""
 
-    def run(self):
+    def run(self, environ, start_response):
         path = self.path_info()
         self.form = forminput.read(self.environ, self.stdin)
         try:
@@ -58,9 +58,8 @@ class CGI(gateway.CGI):
                 self.tag = tag.lower()
                 self.str_tag = html.escape(tag, True)
         except (re.error, UnicodeDecodeError):
-            self.header(self.message['regexp_error'], deny_robot=True)
-            self.footer()
-            return
+            #yield self.header(self.message['regexp_error'], deny_robot=True)
+            return self.footer()
 
         if config.server_name:
             self.host = config.server_name
@@ -68,40 +67,38 @@ class CGI(gateway.CGI):
             self.host = self.environ.get('HTTP_HOST', 'localhost')
 
         if not self.check_visitor():
-            self.print403()
-            return
+            return self.print403()
         elif path == "motd":
-            self.print_motd()
+            return self.print_motd()
         elif path == "mergedjs":
-            self.print_mergedjs()
+            return self.print_mergedjs()
         elif path == "rss":
-            self.print_rss()
+            return self.print_rss()
         elif path == 'recent_rss':
-            self.print_recent_rss()
+            return self.print_recent_rss()
         elif path == "index":
-            self.print_index()
+            return self.print_index()
         elif path == "changes":
-            self.print_changes()
+            return self.print_changes()
         elif path in ("recent", "new"):
             if (not self.isfriend) and (not self.isadmin):
-                self.print403()
+                return self.print403()
             elif path == "recent":
-                self.print_recent()
+                return self.print_recent()
             elif path == "new":
-                self.header(self.message["new"], deny_robot=True)
-                self.print_new_element_form()
-                self.footer()
+                #yield self.header(self.message["new"], deny_robot=True)
+                #yield self.print_new_element_form()
+                return self.footer()
             else:
-                self.print404()
+                return self.print404()
         elif self.form.getfirst("cmd", "") == "new":
-            self.jump_new_file()
+            return self.jump_new_file()
         elif path.startswith("csv"):
-            self.print_csv(path)
+            return self.print_csv(path)
         elif re.search(r"^(thread)", path):
             m = re.search(r"^(thread)/?([^/]*)$", path)
             if m is None:
-                self.print_title()
-                return
+                return self.print_title()
             elif m.group(2) != "":
                 uri = self.appli[m.group(1)] + self.sep + \
                       self.str_encode(m.group(2))
@@ -109,14 +106,13 @@ class CGI(gateway.CGI):
                 uri = self.appli[m.group(1)] + self.sep + \
                       self.environ["QUERY_STRING"]
             else:
-                self.print_title()
-                return
+                return self.print_title()
 
-            self.print302(uri)
+            return self.print302(uri)
         elif path == '':
-            self.print_title()
+            return self.print_title()
         else:
-            self.print404()
+            return self.print404()
 
     def print_title(self):
         message = self.message
@@ -127,7 +123,7 @@ class CGI(gateway.CGI):
         for cache in cachelist:
             if now <= cache.valid_stamp + config.top_recent_range:
                 output_cachelist.append(cache)
-        self.header(message['logo'] + ' - ' + message['description'])
+        yield self.header(message['logo'] + ' - ' + message['description'])
         var = {
             'cachelist': output_cachelist,
             'target': 'changes',
@@ -389,10 +385,12 @@ class CGI(gateway.CGI):
         self.stdout.write(self.jscache.script)
 
     def print_motd(self):
-        self.stdout.write("Content-Type: text/plain; charset=UTF-8\n\n")
+        self.start_response('200 OK', [
+            ('Content-Type', 'text/plain;charset=UTF-8')])
         try:
-            self.stdout.write(opentext(config.motd).read())
+            return self.bytes(opentext(config.motd))
         except IOError:
             self.stderr.write(config.motd + ": IOError\n")
+            return []
 
 # End of CGI

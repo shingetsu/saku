@@ -32,6 +32,7 @@ import re
 import urllib.parse
 import sys
 import time
+from http import HTTPStatus
 from io import BytesIO
 
 from . import basecgi
@@ -123,16 +124,8 @@ class CGI(basecgi.CGI):
     tag = None
     str_tag = ''
 
-    def __init__(self,
-                 stdin=sys.stdin,
-                 stdout=sys.stdout,
-                 stderr=sys.stderr,
-                 environ=os.environ):
-        basecgi.CGI.__init__(self,
-                             stdin=stdin,
-                             stdout=stdout,
-                             stderr=stderr,
-                             environ=environ)
+    def __init__(self, environ, start_response):
+        basecgi.CGI.__init__(self, environ, start_response)
         if "HTTP_ACCEPT_LANGUAGE" in self.environ:
             al = self.environ["HTTP_ACCEPT_LANGUAGE"]
         else:
@@ -245,7 +238,7 @@ class CGI(basecgi.CGI):
         return self.template('menubar', var)
 
     def header(self, title='', rss='',
-               cookie=None, deny_robot=False):
+               cookie=None, deny_robot=False, status=None):
         '''Print CGI and HTTP header.
         '''
         if rss == '':
@@ -260,14 +253,20 @@ class CGI(basecgi.CGI):
             'title': title,
             'str_title': self.str_encode(title),
             'rss': rss,
-            'cookie': cookie,
             'deny_robot': deny_robot,
             'mergedjs': self.jscache,
             'js': js,
             'css': self.extension('css'),
             'menubar': self.menubar('top', rss)
         }
-        self.stdout.write(self.template('header', var))
+        headers = [('Content-Type', 'text/html; charset=UTF-8')]
+        if cookie:
+            headers['Cookie'] = cookie
+        status_str = '200 OK'
+        if status and isinstance(status, HTTPStatus):
+            status_str = f'{status.value} {status.phrase}'
+        self.start_response(status_str, headers)
+        return self.bytes([self.template('header', var)])
 
     def footer(self, menubar=None):
         self.stdout.write(self.template('footer', {'menubar': menubar}))
@@ -398,23 +397,23 @@ class CGI(basecgi.CGI):
 
     def print302(self, next):
         """Print CGI header (302 moved temporarily)."""
-        self.header("Loading...")
-        self.print_jump(next)
-        self.footer()
+        self.start_response('302 moved temporarily', [('Location', next)])
 
     def print403(self):
         '''Print CGI header (403 forbidden).'''
-        self.header(self.message['403'], deny_robot=True)
-        self.print_paragraph(self.message['403_body'])
-        self.footer()
+        yield self.header(self.message['403'], deny_robot=True,
+                          status=HTTPStatus.FORBIDDEN)
+        yield self.print_paragraph(self.message['403_body'])
+        yield self.footer()
 
     def print404(self, cache=None, id=None):
         '''Print CGI header (404 not found).'''
-        self.header(self.message['404'], deny_robot=True)
-        self.print_paragraph(self.message['404_body'])
+        yield self.header(self.message['404'], deny_robot=True,
+                    status=HTTPStatus.NOT_FOUND)
+        yield self.print_paragraph(self.message['404_body'])
         if cache is not None:
-            self.remove_file_form(cache)
-        self.footer()
+            yield self.remove_file_form(cache)
+        yield self.footer()
 
     def lock(self):
         if self.isadmin:

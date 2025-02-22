@@ -44,7 +44,7 @@ class CGI(gateway.CGI):
 
     """Class for /admin.cgi."""
 
-    def run(self):
+    def run(self, environ, start_response):
         path = self.path_info()
         form = forminput.read(self.environ, self.stdin)
 
