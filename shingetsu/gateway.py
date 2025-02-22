@@ -237,9 +237,15 @@ class CGI(basecgi.CGI):
         }
         return self.template('menubar', var)
 
-    def header(self, title='', rss='',
-               cookie=None, deny_robot=False, status=None):
-        '''Print CGI and HTTP header.
+    def http_header(self, status=None):
+        headers = [('Content-Type', 'text/html; charset=UTF-8')]
+        status_str = '200 OK'
+        if status and isinstance(status, HTTPStatus):
+            status_str = f'{status.value} {status.phrase}'
+        return self.start_response(status_str, headers)
+
+    def header(self, title='', rss='', deny_robot=False):
+        '''Print HTTP header.
         '''
         if rss == '':
             rss = self.gateway_cgi + '/rss'
@@ -259,13 +265,6 @@ class CGI(basecgi.CGI):
             'css': self.extension('css'),
             'menubar': self.menubar('top', rss)
         }
-        headers = [('Content-Type', 'text/html; charset=UTF-8')]
-        if cookie:
-            headers['Cookie'] = cookie
-        status_str = '200 OK'
-        if status and isinstance(status, HTTPStatus):
-            status_str = f'{status.value} {status.phrase}'
-        self.start_response(status_str, headers)
         return self.bytes(self.template('header', var))
 
     def footer(self, menubar=None):
@@ -402,19 +401,25 @@ class CGI(basecgi.CGI):
 
     def print403(self):
         '''Print CGI header (403 forbidden).'''
-        yield self.header(self.message['403'], deny_robot=True,
-                          status=HTTPStatus.FORBIDDEN)
-        yield self.print_paragraph(self.message['403_body'])
-        yield self.footer()
+        return print_error(HTTPStatus.FORBIDDEN, '403', '403_body')
 
     def print404(self, cache=None, id=None):
         '''Print CGI header (404 not found).'''
-        yield self.header(self.message['404'], deny_robot=True,
-                    status=HTTPStatus.NOT_FOUND)
+        self.http_header(HTTPStatus.NOT_FOUND)
+        yield self.header(self.message['404'], deny_robot=True)
         yield self.print_paragraph(self.message['404_body'])
         if cache is not None:
             yield self.remove_file_form(cache)
         yield self.footer()
+
+    def print_error(self, status, title, body=''):
+        self.http_header(status)
+        def errpage():
+            yield self.header(self.message[title], deny_robot=True)
+            if body:
+                yield self.print_paragraph(self.message[body])
+            yield self.footer()
+        return errpage()
 
     def lock(self):
         if self.isadmin:
@@ -473,9 +478,7 @@ class CGI(basecgi.CGI):
 
         if attach is not None:
             if len(attach.value) > config.record_limit*1024:
-                self.header(self.message["big_file"], deny_robot=True)
-                self.footer()
-                return None
+                return print_error(HTTPStatus.BAD_REQUEST, 'big_file')
             if isinstance(attach.value, str):
                 attach_value = attach.value.encode('utf-8', 'replace')
             else:
@@ -512,9 +515,7 @@ class CGI(basecgi.CGI):
             body["suffix"] = re.sub(r"[\r\n]", "", suffix)
 
         if not body:
-            self.header(self.message["null_article"], deny_robot=True)
-            self.footer()
-            return None
+            return print_error(HTTPStatus.BAD_REQUEST, 'null_article')
 
         for key in ("base_stamp", "base_id", "name", "mail"):
             value = form.getfirst(key, "")
@@ -522,9 +523,7 @@ class CGI(basecgi.CGI):
                 body[key] = self.escape(value)
 
         if not body:
-            self.header(self.message["null_article"], deny_robot=True)
-            self.footer()
-            return None
+            return print_error(HTTPStatus.BAD_REQUEST, 'null_article')
 
         cache = Cache(form.getfirst("file"))
         rec = Record(datfile=cache.datfile)
@@ -537,26 +536,28 @@ class CGI(basecgi.CGI):
                            self.remoteaddr, proxy_client))
 
         if len(rec.recstr) > config.record_limit*1024:
-            self.header(self.message['big_file'], deny_robot=True)
-            self.footer()
-            return None
+            return print_error(HTTPStatus.BAD_REQUEST, 'big_file')
         elif spam.check(rec.recstr) or form.getfirst('homepage', '') != '':
-            self.header(self.message['spam'], deny_robot=True)
-            self.footer()
-            return None
+            return print_error(HTTPStatus.BAD_REQUEST, 'spam')
 
         if cache.exists():
             cache.add_data(rec)
             cache.sync_status()
         else:
-            return None
+            return self.print404()
 
         if form.getfirst("dopost", "") != "":
             queue = UpdateQueue()
             queue.append(cache.datfile, stamp, id, None)
             queue.start()
 
-        return id[:8]
+        if not id:
+            return self.print404()
+
+        datfile = form.getfirst("file", "")
+        title = self.str_encode(self.file_decode(datfile))
+        return self.print302(
+            self.thread_cgi + self.sep + title + "#r" + id[:8])
 
     def check_get_cache(self):
         agent = self.environ.get("HTTP_USER_AGENT", "")

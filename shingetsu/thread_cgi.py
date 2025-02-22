@@ -58,14 +58,17 @@ class CGI(gateway.CGI):
         found = re.search(r'^([^/]+)/?$', path)
         if found:
             path = found.group(1)
+            self.http_header()
             return self.print_thread(path)
         found = re.search(r'^([^/]+)/([0-9a-f]{8})$', path)
         if found:
             path, id = found.groups()
+            self.http_header()
             return self.print_thread(path, id=id)
         found = re.search(r'^([^/]+)/p([0-9]+)$', path)
         if found:
             path, page = found.groups()
+            self.http_header()
             try:
                 return self.print_thread(path, page=int(page))
             except ValueError:
@@ -87,12 +90,7 @@ class CGI(gateway.CGI):
         if form.getfirst("cmd", "") == "post" and \
            form.getfirst("file", "").startswith("thread_") and \
            environ["REQUEST_METHOD"] == "POST":
-            id = self.do_post(path, form)
-            if not id:
-                return self.print404()
-            datfile = form.getfirst("file", "")
-            title = self.str_encode(self.file_decode(datfile))
-            return self.print302(self.thread_cgi + self.sep + title + "#r" + id)
+            return self.do_post(path, form)
 
         return self.print404()
 

@@ -129,7 +129,7 @@ class CGI(gateway.CGI):
         for cache in cachelist:
             if now <= cache.valid_stamp + config.top_recent_range:
                 output_cachelist.append(cache)
-        yield self.header(message['logo'] + ' - ' + message['description'])
+        self.http_header()
         var = {
             'cachelist': output_cachelist,
             'target': 'changes',
@@ -137,10 +137,12 @@ class CGI(gateway.CGI):
             'mch_url': self.mch_url(),
             'mch_categories': self.mch_categories()
         }
-
-        yield self.bytes(self.template('top', var))
-        yield self.print_new_element_form()
-        yield self.footer()
+        def page():
+            yield self.header(message['logo'] + ' - ' + message['description'])
+            yield self.bytes(self.template('top', var))
+            yield self.print_new_element_form()
+            yield self.footer()
+        return page()
 
     def print_index(self):
         """Print index page."""
@@ -148,11 +150,14 @@ class CGI(gateway.CGI):
             title = '%s : %s' % (self.message['index'], self.str_filter)
         else:
             title = self.message['index']
-        yield self.header(title)
-        yield self.print_paragraph(self.message['desc_index'])
         cachelist = CacheList()
         cachelist.sort(key=attrgetter('velocity', 'count'), reverse=True)
-        yield self.print_index_list(cachelist, "index")
+        self.http_header()
+        def page():
+            yield self.header(title)
+            yield self.print_paragraph(self.message['desc_index'])
+            yield self.print_index_list(cachelist, "index")
+        return page()
 
     def print_changes(self):
         """Print changes page."""
@@ -160,11 +165,14 @@ class CGI(gateway.CGI):
             title = '%s : %s' % (self.message['changes'], self.str_filter)
         else:
             title = self.message['changes']
-        yield self.header(title)
-        yield self.print_paragraph(self.message['desc_changes'])
         cachelist = CacheList()
         cachelist.sort(key=lambda x: x.valid_stamp, reverse=True)
-        yield self.print_index_list(cachelist, "changes")
+        self.http_header()
+        def page():
+            yield self.header(title)
+            yield self.print_paragraph(self.message['desc_changes'])
+            yield self.print_index_list(cachelist, "changes")
+        return page()
 
     def make_recent_cachelist(self):
         """Make dummy cachelist from recentlist."""
@@ -186,10 +194,14 @@ class CGI(gateway.CGI):
             title = '%s : %s' % (self.message['recent'], self.str_filter)
         else:
             title = self.message['recent']
-        yield self.header(title)
-        yield self.print_paragraph(self.message['desc_recent'])
         cachelist = self.make_recent_cachelist()
-        yield self.print_index_list(cachelist, "recent", search_new_file=True)
+        this.http_header()
+        def page():
+            yield self.header(title)
+            yield self.print_paragraph(self.message['desc_recent'])
+            yield self.print_index_list(cachelist, "recent",
+                                        search_new_file=True)
+        return page()
 
     def print_csv(self, path):
         """CSV output as API."""

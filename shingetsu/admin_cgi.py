@@ -57,8 +57,10 @@ class CGI(gateway.CGI):
             if (not rm_files) or ((cmd == 'rdel') and (not rm_records)):
                 return self.print404()
             elif cmd == 'fdel':
+                self.http_header()
                 return self.print_delete_file(rm_files)
             else:
+                self.http_header()
                 return self.print_delete_record(rm_files[0], rm_records)
         elif ((cmd == 'xrdel') or (cmd == 'xfdel')) and \
              environ["REQUEST_METHOD"] == "POST" and \
@@ -66,6 +68,7 @@ class CGI(gateway.CGI):
             rm_files = form.getlist('file')
             rm_records = form.getlist('record')
             if (not rm_files) or ((cmd == 'xrdel') and (not rm_records)):
+                self.http_header()
                 return self.print404()
             elif cmd == 'xfdel':
                 return self.do_delete_file(rm_files)
@@ -76,10 +79,12 @@ class CGI(gateway.CGI):
                     form.getfirst("dopost", ""),
                     form)
         elif path == "status":
+            self.http_header()
             return self.print_status()
         elif path == 'edittag':
             datfile = form.getfirst('file', '')
             if datfile:
+                self.http_header()
                 return self.print_edittag(datfile)
             else:
                 return print404()
@@ -91,6 +96,7 @@ class CGI(gateway.CGI):
             else:
                 return print404()
         elif path.startswith("search"):
+            self.http_header()
             return self.print_search(path, form)
         else:
             return self.print404()
@@ -233,7 +239,7 @@ class CGI(gateway.CGI):
     def print_search_result(self, query):
         str_query = html.escape(query, True)
         title = '%s : %s' % (self.message['search'], str_query)
-        self.header(title, deny_robot=True)
+        yield self.header(title, deny_robot=True)
         yield self.print_paragraph(self.message['desc_search'])
         yield self.print_search_form(str_query)
         try:
