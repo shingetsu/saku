@@ -1,7 +1,7 @@
 """2ch like dat interface
 """
 #
-# Copyright (c) 2014-2024 shinGETsu Project.
+# Copyright (c) 2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -39,11 +39,10 @@ from shingetsu import cache
 from shingetsu import title
 from shingetsu import config
 from shingetsu import gateway
+from shingetsu import middleware
 from shingetsu import tag
 
-
 from . import post
-from . import middleware
 from . import dat
 from . import utils
 from . import keylib
