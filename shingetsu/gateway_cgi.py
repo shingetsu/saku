@@ -393,7 +393,7 @@ class CGI(gateway.CGI):
         self.start_response('200 OK', [
             ('Content-Type', 'text/plain;charset=UTF-8')])
         try:
-            return self.bytes(opentext(config.motd))
+            return self.body(opentext(config.motd))
         except IOError:
             self.stderr.write(config.motd + ": IOError\n")
             return []

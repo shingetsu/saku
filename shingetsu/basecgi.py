@@ -56,22 +56,22 @@ class CGI:
             return data
         if isinstance(data, str):
             return data.encode('utf-8', 'replace')
+        return str(data).encode('utf-8', 'replace')
+
+    def body(self, data):
         try:
             iter(data)
         except TypeError:
-            return str(data).encode('utf-8', 'replace')
-
-        def gen():
-            try:
-                for d in data:
-                    if isinstance(d, bytes):
-                        yield d
-                    else:
-                        yield str(d).encode('utf-8', 'replace')
-            finally:
-                if hasattr(data, 'close'):
-                    data.close()
-        return gen()
+            yield str(data).encode('utf-8', 'replace')
+        try:
+            for d in data:
+                if isinstance(d, bytes):
+                    yield d
+                else:
+                    yield str(d).encode('utf-8', 'replace')
+        finally:
+            if hasattr(data, 'close'):
+                data.close()
 
     def send_error(self, status, message=''):
         status_str = f'{status.value} {status.phrase}'

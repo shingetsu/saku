@@ -98,7 +98,7 @@ class CGI(basecgi.CGI):
     def do_motd(self):
         self.header()
         try:
-            return self.bytes(opentext(config.motd))
+            return self.body(opentext(config.motd))
         except IOError:
             self.stderr.write(config.motd + ": IOError\n")
             return []
@@ -106,16 +106,16 @@ class CGI(basecgi.CGI):
     def do_ping(self):
         self.header()
         remote_addr = get_http_remote_addr(self.environ)
-        return self.bytes(["PONG\n" + remote_addr + "\n"])
+        return self.body(["PONG\n" + remote_addr + "\n"])
 
     def do_node(self):
         nodes = NodeList()
         self.header()
         try:
-            return self.bytes([str(nodes[0]) + "\n"])
+            return self.body([str(nodes[0]) + "\n"])
         except IndexError:
             inode = choice(init_node())
-            return self.bytes(["%s\n" % inode])
+            return self.body(["%s\n" % inode])
 
     def get_remote_hostname(self, host):
         remote_addr = get_http_remote_addr(self.environ)
@@ -148,13 +148,13 @@ class CGI(basecgi.CGI):
         elif node in nodelist:
             searchlist.append(node)
             searchlist.sync()
-            return self.bytes(["WELCOME\n"])
+            return self.body(["WELCOME\n"])
         elif len(nodelist) < config.nodes:
             nodelist.append(node)
             nodelist.sync()
             searchlist.append(node)
             searchlist.sync()
-            return self.bytes(["WELCOME\n"])
+            return self.body(["WELCOME\n"])
         else:
             searchlist.append(node)
             searchlist.sync()
@@ -163,7 +163,7 @@ class CGI(basecgi.CGI):
             nodelist.append(node)
             nodelist.sync()
             suggest.bye()
-            return self.bytes(["WELCOME\n%s\n" % suggest])
+            return self.body(["WELCOME\n%s\n" % suggest])
 
     def do_bye(self, path_info):
         self.header()
@@ -184,7 +184,7 @@ class CGI(basecgi.CGI):
             nodelist.sync()
         except ValueError:
             pass
-        return self.bytes(["BYEBYE\n"])
+        return self.body(["BYEBYE\n"])
 
     def do_have(self, path):
         self.header()
@@ -193,9 +193,9 @@ class CGI(basecgi.CGI):
             return []
         cache = Cache(m.group(1))
         if (len(cache) > 0):
-            return self.bytes([("YES\n")])
+            return self.body([("YES\n")])
         else:
-            return self.bytes(["NO\n"])
+            return self.body(["NO\n"])
 
     def do_get_head(self, path):
         m = re.search(r"^(get|head)/([0-9A-Za-z_]+)/([-0-9A-Za-z/]*)$", path)
@@ -210,10 +210,10 @@ class CGI(basecgi.CGI):
                     and ((id is None) or r.idstr.endswith(id)):
                 if method == "get":
                     r.load()
-                    yield self.bytes(str(r) + '\n')
+                    yield self.body(str(r) + '\n')
                     r.free()
                 else:
-                    yield self.bytes(r.idstr.replace('_', '<>') + '\n')
+                    yield self.body(r.idstr.replace('_', '<>') + '\n')
 
     def parse_stamp(self, stamp, last):
         buf = stamp.split("/")
@@ -254,7 +254,7 @@ class CGI(basecgi.CGI):
                 else:
                     tagstr = ''
                 line = '%s<>%s<>%s%s\n' % (i.stamp, i.id, i.datfile, tagstr)
-                yield self.bytes(line)
+                yield self.body(line)
 
     def do_update(self, path_info):
         self.header()
@@ -291,16 +291,16 @@ class CGI(basecgi.CGI):
         rec = Record(datfile=datfile, idstr=stamp+"_"+id)
         updatelist = UpdateList()
         if rec in updatelist:
-            return self.bytes(["OK\n"])
+            return self.body(["OK\n"])
         else:
             queue = UpdateQueue()
             queue.append(datfile, stamp, id, node)
             queue.start()
-            return self.bytes(["OK\n"])
+            return self.body(["OK\n"])
         
     def do_version(self):
         self.header()
-        return self.bytes(["{}".format(config._get_version()) + "\n"])
+        return self.body(["{}".format(config._get_version()) + "\n"])
 
     def _seem_valid_relay_node(self, host, node, datfile):
         remote_addr = get_http_remote_addr(self.environ)
