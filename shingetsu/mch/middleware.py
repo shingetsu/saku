@@ -8,12 +8,12 @@ import re
 
 # use as decorator.
 def gzipped(app):
-    resp = {}
-    def capture(s, h):
-        resp['status'] = s
-        resp['headers'] = h
-
     def newapp(environ, start_response):
+        resp = {}
+        def capture(s, h):
+            resp['status'] = s
+            resp['headers'] = h
+
         body = app(environ, capture)
         status = resp['status']
         headers = Headers(resp['headers'])
@@ -36,12 +36,12 @@ def gzipped(app):
 
 
 def last_modified(app):
-    resp = {}
-    def capture(s, h):
-        resp['status'] = s
-        resp['headers'] = h
-
     def newapp(environ, start_response):
+        resp = {}
+        def capture(s, h):
+            resp['status'] = s
+            resp['headers'] = h
+
         raw = app(environ, capture)
         status = resp['status']
         headers = Headers(resp['headers'])
@@ -66,12 +66,12 @@ def last_modified(app):
 
 
 def simple_range(app):
-    resp = {}
-    def capture(s, h):
-        resp['status'] = s
-        resp['headers'] = h
-
     def newapp(environ, start_response):
+        resp = {}
+        def capture(s, h):
+            resp['status'] = s
+            resp['headers'] = h
+
         raw = app(environ, capture)
         status = resp['status']
         headers = Headers(resp['headers'])
