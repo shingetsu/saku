@@ -132,11 +132,11 @@ class CGI(basecgi.CGI):
         (host, port, path) = m.groups()
         host = self.get_remote_hostname(host)
         if not host:
-            return
+            return []
         try:
             node = Node(host=host, port=port, path=path)
         except ValueError:
-            return
+            return []
         nodelist = NodeList()
         searchlist = SearchList()
         if (not node_allow().check(str(node))) and \
@@ -147,13 +147,13 @@ class CGI(basecgi.CGI):
         elif node in nodelist:
             searchlist.append(node)
             searchlist.sync()
-            self.stdout.write("WELCOME\n")
+            return self.bytes(["WELCOME\n"])
         elif len(nodelist) < config.nodes:
             nodelist.append(node)
             nodelist.sync()
             searchlist.append(node)
             searchlist.sync()
-            self.stdout.write("WELCOME\n")
+            return self.bytes(["WELCOME\n"])
         else:
             searchlist.append(node)
             searchlist.sync()
@@ -162,28 +162,28 @@ class CGI(basecgi.CGI):
             nodelist.append(node)
             nodelist.sync()
             suggest.bye()
-            self.stdout.write("WELCOME\n%s\n" % suggest)
+            return self.bytes(["WELCOME\n%s\n" % suggest])
 
     def do_bye(self, path_info):
         self.header()
         m = re.search(r"^bye/([^:]*):(\d+)(.*)", path_info)
         if m is None:
-            return
+            return []
         (host, port, path) = m.groups()
         host = self.get_remote_hostname(host)
         if not host:
-            return
+            return []
         try:
             node = Node(host=host, port=port, path=path)
         except ValueError:
-            return
+            return []
         nodelist = NodeList()
         try:
             nodelist.remove(node)
             nodelist.sync()
         except ValueError:
             pass
-        self.stdout.write("BYEBYE\n")
+        return self.bytes(["BYEBYE\n"])
 
     def do_have(self, path):
         self.header()
