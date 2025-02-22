@@ -49,16 +49,18 @@ class OutputBuffer:
             return
 
         for line in msg.splitlines(True):
-            if not self.writing_headers:
+            if not line:
+                continue
+            elif not self.writing_headers:
                 self.body.append(line)
             elif not self.headers and b':' not in line:
                 self.status = line.strip()
-            elif line == '\n' or line == '\r\n':
+            elif line == b'\n' or line == b'\r\n':
                 self.writing_headers = False
             else:
                 line_str = line.decode('utf-8', 'replace')
                 k, v = line_str.strip().split(':', 1)
-                self.headers.append((k, v))
+                self.headers.append((k.strip(), v.strip()))
 
 # End of OutputBuffer
 
