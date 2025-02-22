@@ -42,10 +42,15 @@ from .util import opentext, get_http_remote_addr, host_has_addr
 
 
 class CGI(basecgi.CGI):
+    """Class for /server.cgi.
+    """
 
-    """Class for /server.cgi."""
+    def run(self, environ, start_response):
+        start_response('200 OK', [('Content-Type', 'text/plain')])
+        return [b'xxx']
 
-    def run(self):
+
+    def run2(self):
         path = self.path_info()
 
         httphost = self.environ["HTTP_HOST"]

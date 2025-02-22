@@ -26,18 +26,43 @@
 # SUCH DAMAGE.
 #
 
-import http
 import mimetypes
 import os
 import socket
 import socketserver
 import sys
 import threading
+from http import HTTPStatus
 from wsgiref import simple_server
-from wsgiref.headers import Headers
 
 from . import config
 from . import middleware
+from . import admin_cgi, server_cgi, gateway_cgi, thread_cgi
+
+
+class ConnectionCounter:
+    def __init__(self):
+        self.counter = 0
+        self.lock = threading.RLock()
+
+    def inclement(self):
+        try:
+            self.lock.acquire(True)
+            self.counter += 1
+        finally:
+            self.lock.release()
+
+    def declement(self):
+        try:
+            self.lock.acquire(True)
+            self.counter -= 1
+        finally:
+            self.lock.release()
+
+    def __int__(self):
+        return self.counter
+
+_counter = ConnectionCounter()
 
 
 @middleware.simple_range
@@ -45,9 +70,30 @@ from . import middleware
 @middleware.gzipped
 def root_app(environ, start_response):
     path = environ.get('PATH_INFO', '')
-
     if not path or path == '/':
         path = config.root_index
+
+    if config.max_connection < int(_counter):
+        return send_error(environ, start_response,
+                          HTTPStatus.SERVICE_UNAVAILABLE)
+
+    routes = [
+        ('/admin.cgi', admin_cgi.CGI),
+        ('/server.cgi', server_cgi.CGI),
+        ('/gateway.cgi', gateway_cgi.CGI),
+        ('/thread.cgi', thread_cgi.CGI),
+    ]
+    for (route, cgiclass) in routes:
+        if path.startswith(route):
+            try:
+                _counter.inclement()
+                try:
+                    cgiobj = cgiclass(environ, start_response)
+                    return cgiobj.start(environ, start_response)
+                except SystemExit as sts:
+                    sys.stderr.write("CGI script exit status %s\n", str(sts))
+            finally:
+                _counter.declement()
 
     #routes = [
     #    (board_re, board_app),
@@ -70,8 +116,13 @@ def root_app(environ, start_response):
         start_response('200 OK', [('Content-Type', filetype)])
         return environ['wsgi.file_wrapper'](open(filepath, 'rb'), 1024)
 
-    start_response('404 Not Found', [('Content-Type', 'text/plain')])
-    return [b'404 Not Found']
+    return send_error(environ, start_response, HTTPStatus.NOT_FOUND)
+
+def send_error(environ, start_response, status):
+    msg = f'{status.value} {status.phrase}'
+    start_response(msg, [('Content-Type', 'text/plain')])
+    return [msg.encode('utf-8', 'replace')]
+    
 
 class Httpd(threading.Thread):
     """Tiny HTTP server running in another thread.
