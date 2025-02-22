@@ -65,6 +65,7 @@ class ConnectionCounter:
 _counter = ConnectionCounter()
 
 
+@middleware.head
 @middleware.simple_range
 @middleware.last_modified
 @middleware.gzipped
@@ -94,20 +95,6 @@ def root_app(environ, start_response):
                     sys.stderr.write("CGI script exit status %s\n", str(sts))
             finally:
                 _counter.declement()
-
-    #routes = [
-    #    (board_re, board_app),
-    #    (subject_re, subject_app),
-    #    (thread_re, thread_app),
-    #    (post_comment_re, post.post_comment_app),
-    #    (head_re, head_app)
-    #]
-    #try:
-    #    for (route, app) in routes:
-    #        m = route.match(path)
-    #        if m:
-    #            env['mch.path_match'] = m
-    #            return app(env, resp)
 
     docroot = os.path.abspath('.')
     filepath = os.path.join(docroot, path.lstrip('/'))

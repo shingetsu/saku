@@ -161,3 +161,21 @@ def simple_range(app):
         return [body]
 
     return newapp
+
+
+def head(app):
+    resp = {}
+    def capture(s, h):
+        resp['status'] = s
+        resp['headers'] = h
+
+    def newapp(environ, start_response):
+        body = app(environ, capture)
+        status = resp['status']
+        headers = Headers(resp['headers'])
+        if environ['REQUEST_METHOD'].upper() == 'HEAD':
+            headers['Content-Length'] = str(sum([len(b) for b in body]))
+            start_response(status, list(headers.items()))
+            return []
+
+    return newapp
