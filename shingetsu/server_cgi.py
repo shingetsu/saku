@@ -49,7 +49,9 @@ class CGI(basecgi.CGI):
         path = self.path_info()
 
         httphost = self.environ["HTTP_HOST"]
-        if config.dnsname !='' and (config.dnsname + ":"+ str(config.port)) != httphost :
+        if (config.dnsname and
+            config.dnsname_should_match and
+            f'{config.dnsname}:{config.port}' != httphost):
             self.header("text/plain; charset=UTF-8")
             self.stdout.write('error: invalid http host')
             return

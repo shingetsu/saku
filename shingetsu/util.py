@@ -87,14 +87,9 @@ def get_http_remote_addr(env):
     return addr
 
 def get_http_remote_addr_from_env(env):
-    if not config.use_x_forwarded_for:
-        return env['REMOTE_ADDR']
-    else:
-        if 'HTTP_X_FORWARDED_FOR' in env:
-            return env['HTTP_X_FORWARDED_FOR']
-        elif 'REMOTE_ADDR' in env:
-            return env['REMOTE_ADDR']
-    return None
+    if config.use_x_forwarded_for and 'HTTP_X_FORWARDED_FOR' in env:
+        return env['HTTP_X_FORWARDED_FOR'].split(',')[-1].strip()
+    return env['REMOTE_ADDR']
 
 def host_has_addr(host, addr):
     if host == addr:

@@ -74,7 +74,9 @@ port = _get_value(_extconf, 'Network', 'port', 8000, 'int')
 dat_port = _get_value(_extconf, 'Network', 'dat_port', 8001, 'int')
 prefer_ipv4 = _get_value(_extconf, 'Network', 'prefer_ipv4', False, 'boolean')
 max_connection = _get_value(_extconf, 'Network', 'max_connection', 20, 'int')
-use_x_forwarded_for = _get_value(_extconf, 'Network', 'use_x_forwarded_for', False, 'boolean') # set true if behind a reverse proxy.
+dnsname_should_match = _get_value(_extconf, 'Network', 'dnsname_should_match', True, 'boolean')
+bind_port = _get_value(_extconf, 'Network', 'bind_port', port, 'int')
+use_x_forwarded_for = _get_value(_extconf, 'Network', 'use_x_forwarded_for', False, 'boolean')
 
 docroot = _get_value(_extconf, 'Path', 'docroot', './www', 'path')
 log_dir = _get_value(_extconf, 'Path', 'log_dir', './log', 'path')

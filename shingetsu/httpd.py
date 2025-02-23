@@ -47,7 +47,7 @@ class Httpd(threading.Thread):
         ServerClass = cgiserver.HTTPServer
         if not config.bind_addr or ':' in config.bind_addr:
             ServerClass.address_family = socket.AF_INET6
-        server_address = (config.bind_addr, config.port)
+        server_address = (config.bind_addr, config.bind_port)
         HandlerClass.server_version = config.version
         HandlerClass.root_index = config.root_index
         self.httpserv = ServerClass(server_address, HandlerClass)
