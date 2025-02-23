@@ -284,6 +284,7 @@ def head_app(env, resp):
 class Datd(threading.Thread):
     def __init__(self, *args, **kwds):
         super(Datd, self).__init__(*args, **kwds)
+        self._addr = config.bind_addr
         self._port = config.dat_port
 
     def run(self):
@@ -296,9 +297,9 @@ class Datd(threading.Thread):
             class Server(socketserver.ThreadingMixIn,
                          simple_server.WSGIServer):
                 address_family = socket.AF_INET6
-            _server = simple_server.make_server('', self._port, dat_app,
+            _server = simple_server.make_server(self._addr, self._port, dat_app,
                                                 server_class=Server)
             _server.serve_forever()
         else:
             utils.log('use waitress')
-            waitress.serve(dat_app, host='', port=self._port)
+            waitress.serve(dat_app, host=self._addr, port=self._port)

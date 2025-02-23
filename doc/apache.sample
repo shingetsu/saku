@@ -1,3 +1,34 @@
+Listen 8000
+<VirtualHost *:8000>
+    ServerAdmin webmaster@example.com
+    DocumentRoot /srv/www/bbs.shingetsu.info/empty
+    ServerName default8000.shingetsu.info
+    ErrorLog /var/log/apache2/node.shingetsu.info.error.log
+    CustomLog /var/log/apache2/node.shingetsu.info.access.log combined
+
+    <Directory "/srv/www/bbs.shingetsu.info/empty">
+        Options -Indexes -ExecCGI
+    </Directory>
+</VirtualHost>
+
+<VirtualHost *:8000>
+    ServerAdmin webmaster@shingetsu.info
+    DocumentRoot /srv/www/bbs.shingetsu.info/empty
+    ServerName node.shingetsu.info
+    ServerAlias node-ipv4.shingetsu.info node-ipv6.shingetsu.info
+    ErrorLog /var/log/apache2/node.shingetsu.info.error.log
+    CustomLog /var/log/apache2/node.shingetsu.info.access.log combined
+    RewriteMap escape int:escape
+
+    <Directory "/srv/www/bbs.shingetsu.info/empty">
+        Options -Indexes -ExecCGI
+
+        RewriteEngine on
+        RewriteRule ^server.cgi(.*) \
+            http://[::1]:8002/server.cgi${escape:$1} [P,NE]
+    </Directory>
+</VirtualHost>
+
 <VirtualHost *:80>
     ServerAdmin webmaster@shingetsu.info
     DocumentRoot /srv/www/bbs.shingetsu.info
@@ -12,9 +43,9 @@
 
         RewriteEngine on
         RewriteRule ^(2ch[_0-9A-Z]*)/(.*) \
-            http://bbs.shingetsu.info:8001/$1/${escape:$2} [P,NE]
+            http://[::1]:8001/$1/${escape:$2} [P,NE]
         RewriteRule ^test/bbs.cgi$ \
-            http://bbs.shingetsu.info:8001/test/bbs.cgi [P,NE]
+            http://[::1]:8001/test/bbs.cgi [P,NE]
         RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
     </Directory>
 </VirtualHost>
@@ -65,13 +96,13 @@
         RewriteRule ^thread.cgi/(thread_[0-9A-F]*)/([0-9a-f]*)/(s?[0-9]*).(.*) \
                     /CACHE/$1/attach/$3_$2.$4
         <IfModule mod_proxy.c>
-            #RewriteRule ^$ http://bbs.shingetsu.info:8000/gateway.cgi [P]
+            #RewriteRule ^$ http://[::1]:8002/gateway.cgi [P]
             RewriteRule ^(gateway|thread).cgi(.*) \
-                http://bbs.shingetsu.info:8000/$1.cgi${escape:$2} [P,NE]
+                http://[::1]:8002/$1.cgi${escape:$2} [P,NE]
             RewriteRule ^(2ch[_0-9A-Z]*)/(.*) \
-                http://bbs.shingetsu.info:8001/$1/${escape:$2} [P,NE]
+                http://[::1]:8001/$1/${escape:$2} [P,NE]
             RewriteRule ^test/bbs.cgi$ \
-                http://bbs.shingetsu.info:8001/test/bbs.cgi [P,NE]
+                http://[::1]:8001/test/bbs.cgi [P,NE]
         </IfModule>
         RewriteRule ^archive/(.*) https://archive.shingetsu.info/$1 [L]
     </Directory>
@@ -112,8 +143,19 @@
             RewriteCond %{REQUEST_FILENAME} !-f
                 RewriteCond %{REQUEST_FILENAME} !-d
                 RewriteRule ^(thread_[0-9A-F]*)/attach/(s?[0-9]*)_([0-9a-f]*).(.*) \
-                            http://bbs.shingetsu.info:8000/thread.cgi/$1/$3/$2.$4 [P]
+                            http://[::1]:8002/thread.cgi/$1/$3/$2.$4 [P]
         </IfModule>
+
+        # admin user sample
+        #<IfModule mod_proxy.c>
+        #    ProxyAddHeaders Off
+        #    RewriteCond %{REMOTE_ADDR} ^(.*)$
+        #    RewriteRule . - [env=remoteaddr:%1]
+        #    RequestHeader set X-Forwarded-For "%{remoteaddr}e, PRIVATE"
+        #
+        #    RewriteRule ^(admin|gateway|thread).cgi(.*) \
+        #        http://[::1]:8002/$1.cgi${escape:$2} [P,NE]
+        #</IfModule>
     </Directory>
 
     SSLCertificateFile /etc/letsencrypt/live/shingetsu.info/fullchain.pem
