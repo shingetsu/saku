@@ -34,6 +34,7 @@ from . import attachutil
 from . import config
 from . import forminput
 from . import gateway
+from . import util
 from .cache import *
 from .tag import UserTagList
 
@@ -204,7 +205,8 @@ class CGI(gateway.CGI):
         self.footer(menubar=self.menubar('bottom', rss))
 
     def print_thread_ajax(self, path, id, form):
-        self.stdout.write('Content-Type: text/html; charset=UTF-8\n\n')
+        self.stdout.headers.append(
+            ('Content-Type', 'text/html; charset=UTF-8'))
         str_path = self.str_encode(path)
         file_path = self.file_encode('thread', path)
         cache = Cache(file_path)
@@ -288,14 +290,15 @@ class CGI(gateway.CGI):
                 rec.make_thumbnail(suffix=suffix, thumbnail_size=thumbnail_size)
         if attach_file is not None:
             size = rec.attach_size(suffix=suffix, thumbnail_size=thumbnail_size)
-            self.stdout.write(
-                "Content-Type: " + type + "\n" +
-                "Last-Modified: " + self.rfc822_time(stamp) + "\n" +
-                "Content-Length: " + str(size) + "\n" +
-                "X-Content-Type-Options: nosniff\n")
+            self.stdout.headers.extend([
+                ('Content-Type', type),
+                ('Last-Modified', util.rfc822_time(int(stamp))),
+                ('Content-Length', str(size)),
+                ('X-Content-Type-Options', 'nosniff'),
+            ])
             if attachutil.seem_html(suffix):
-                self.stdout.write("Content-Disposition: attachment\n")
-            self.stdout.write("\n")
+                self.stdout.headers.append(
+                    ('Content-Disposition', 'attachment'))
             try:
                 f = open(attach_file, "rb")
                 buf = f.read(1024)

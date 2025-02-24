@@ -35,10 +35,10 @@ from time import time
 from . import config
 from . import forminput
 from . import gateway
+from . import util
 from .cache import *
 from .tag import UserTagList
 from .rss import RSS, make_rss1
-from .util import opentext
 
 
 class CGI(gateway.CGI):
@@ -211,8 +211,8 @@ class CGI(gateway.CGI):
         else:
             self.print404()
             return
-        self.stdout.write("Content-Type: text/comma-separated-values;" +
-                          " charset=UTF-8\n\n")
+        self.stdout.headers.append(
+            ('Content-Type', 'text/comma-separated-values; charset=UTF-8'))
         writer = csv.writer(self.stdout)
         for cache in cachelist:
             title = self.file_decode(cache.datfile)
@@ -340,13 +340,13 @@ class CGI(gateway.CGI):
                         content = content)
                     r.free()
 
-        self.stdout.write("Content-Type: text/xml; charset=UTF-8\n")
+        self.stdout.headers.append(('Content-Type', 'text/xml; charset=UTF-8'))
         try:
-            self.stdout.write("Last-Modified: %s\n" %
-                              self.rfc822_time(rss[list(rss.keys())[0]].date))
+            self.stdout.headers.append(
+                ('Last-Modified',
+                 util.rfc822_time(rss[list(rss.keys())[0]].date)))
         except IndexError as KeyError:
             pass
-        self.stdout.write("\n")
         self.stdout.write(make_rss1(rss))
 
     def print_recent_rss(self):
@@ -371,27 +371,27 @@ class CGI(gateway.CGI):
                 subject = tags,
                 content = html.escape(title))
 
-        self.stdout.write('Content-Type: text/xml; charset=UTF-8\n')
+        self.stdout.headers.append(('Content-Type', 'text/xml; charset=UTF-8'))
         try:
-            self.stdout.write('Last-Modified: %s\n' %
-                              self.rfc822_time(rss[list(rss.keys())[0]].date))
+            self.stdout.headers.append(
+                ('Last-Modified',
+                 util.rfc822_time(rss[list(rss.keys())[0]].date)))
         except IndexError as KeyError:
             pass
-        self.stdout.write('\n')
         self.stdout.write(make_rss1(rss))
 
     def print_mergedjs(self):
-        self.stdout.write('Content-Type: application/javascript;'
-            + ' charset=UTF-8')
-        self.stdout.write('Last-Modified: '
-            + self.rfc822_time(self.jscache.mtime) + '\n')
-        self.stdout.write('\n')
+        self.stdout.headers.extend([
+            ('Content-Type', 'application/javascript; charset=UTF-8'),
+            ('Last-Modified', util.rfc822_time(self.jscache.mtime)),
+        ])
         self.stdout.write(self.jscache.script)
 
     def print_motd(self):
-        self.stdout.write("Content-Type: text/plain; charset=UTF-8\n\n")
+        self.stdout.headers.append(
+            ('Content-Type', 'text/plain; charset=UTF-8'))
         try:
-            self.stdout.write(opentext(config.motd).read())
+            self.stdout.write(util.opentext(config.motd).read())
         except IOError:
             self.stderr.write(config.motd + ": IOError\n")
 

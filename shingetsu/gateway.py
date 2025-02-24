@@ -123,16 +123,8 @@ class CGI(basecgi.CGI):
     tag = None
     str_tag = ''
 
-    def __init__(self,
-                 stdin=sys.stdin,
-                 stdout=sys.stdout,
-                 stderr=sys.stderr,
-                 environ=os.environ):
-        basecgi.CGI.__init__(self,
-                             stdin=stdin,
-                             stdout=stdout,
-                             stderr=stderr,
-                             environ=environ)
+    def __init__(self, environ, start_response):
+        basecgi.CGI.__init__(self, environ, start_response)
         if "HTTP_ACCEPT_LANGUAGE" in self.environ:
             al = self.environ["HTTP_ACCEPT_LANGUAGE"]
         else:
@@ -265,6 +257,8 @@ class CGI(basecgi.CGI):
             'css': self.extension('css'),
             'menubar': self.menubar('top', rss)
         }
+        self.stdout.headers.append(
+            ('Content-Type', 'text/html; charset=UTF-8'))
         self.stdout.write(self.template('header', var))
 
     def footer(self, menubar=None):
@@ -273,11 +267,6 @@ class CGI(basecgi.CGI):
     def localtime(self, stamp=0):
         """Return YYYY-mm-dd HH:MM."""
         return time.strftime('%Y-%m-%d %H:%M', time.localtime(int(stamp)))
-
-    def rfc822_time(self, stamp=0):
-        """Return date and time in RFC822 format."""
-        return time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                             time.gmtime(int(stamp)))
 
     def res_anchor(self, id, appli, title, absuri=False):
         title = self.str_encode(title)

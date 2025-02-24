@@ -26,11 +26,15 @@
 # SUCH DAMAGE.
 #
 
+import gzip
 import hashlib
+import io
 import os.path
 import re
 import socket
 import sys
+import time
+
 from . import config
 
 __all__ = ['md5digest', 'fsdiff', 'opentext']
@@ -106,3 +110,22 @@ def host_has_addr(host, addr):
         if addr == ipaddr:
             return True
     return False
+
+def rfc822_time(t):
+    """Return date and time in RFC822 format.
+    """
+    return time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime(t))
+
+def gzip_compress(content):
+        buf = io.BytesIO()
+        comp = gzip.GzipFile(fileobj=buf, mode='wb')
+        for chunk in content:
+            comp.write(chunk)
+            comp.flush()
+            yield buf.getvalue()
+            buf.seek(0)
+            buf.truncate(0)
+        comp.close()
+        yield buf.getvalue()
+        if hasattr(content, 'close'):
+            content.close()

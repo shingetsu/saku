@@ -1,7 +1,7 @@
 '''Base CGI module.
 '''
 #
-# Copyright (c) 2005-2024 shinGETsu Project.
+# Copyright (c) 2005 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -34,52 +34,16 @@ from . import util
 __all__ = ['CGI']
 
 
-class BodyFilter:
-    '''Filtered output stream.
-
-    When HEAD method is used, output HTTP header only.
-    '''
-    mode = 'wb'     # Writable stream
-
-    def __init__(self, env, output):
-        self.output = output
-        self.ishead = (env['REQUEST_METHOD'] == 'HEAD')
-        self.flag_body = False
-        self.buf = b''
+class OutputBuffer:
+    def __init__(self):
+        self.status = '200 OK'
+        self.headers = []
+        self.body = []
 
     def write(self, msg):
         if isinstance(msg, str):
             msg = msg.encode('utf-8', 'replace')
-        if not self.ishead:
-            #XXX it does not work on python 3.2.3
-            #self.output.write(msg)
-            bufsize = 1024
-            for offset in range(0, len(msg), bufsize):
-                self.output.write(msg[offset:offset+bufsize])
-        elif self.ishead and self.flag_body:
-            pass
-        else:
-            self.buf += msg.replace(b'\r\n', b'\n')
-            i = self.buf.find(b'\n\n')
-            if i >= 0:
-                self.output.write(self.buf[:i+2].replace(b'\n', b'\r\n'))
-                self.buf = b''
-                self.flag_body = True
-
-    def flush(self):
-        return self.output.flush()
-
-    def close(self):
-        if self.buf:
-            self.output.write(self.buf.replace(b'\n', b'\r\n'))
-
-    def __getattr__(self, name):
-        return getattr(self.output, name)
-
-    def __del__(self):
-        self.close()
-
-# End of BodyFilter
+        self.body.append(msg)
 
 
 class CGI:
@@ -91,24 +55,61 @@ class CGI:
 
     """
 
-    def __init__(self,
-                 stdin=sys.stdin,
-                 stdout=sys.stdout,
-                 stderr=sys.stderr,
-                 environ=os.environ):
-        self.stdin = stdin
-        self.stdout = BodyFilter(environ, stdout)
-        self.stderr = stderr
+    def __init__(self, environ, start_response):
+        self.stdin = environ['wsgi.input']
+        self.stdout = OutputBuffer() # write to this or return iter
+        self.stderr = sys.stderr
         self.environ = environ
+        self.start_response = start_response
+
+    def bytes(self, data):
+        if isinstance(data, bytes):
+            return data
+        if isinstance(data, str):
+            return data.encode('utf-8', 'replace')
+        return str(data).encode('utf-8', 'replace')
+
+    def body(self, data):
+        try:
+            iter(data)
+        except TypeError:
+            yield str(data).encode('utf-8', 'replace')
+        try:
+            for d in data:
+                if isinstance(d, bytes):
+                    yield d
+                else:
+                    yield str(d).encode('utf-8', 'replace')
+        finally:
+            if hasattr(data, 'close'):
+                data.close()
+
+    def send_error(self, status, message=''):
+        status_str = f'{status.value} {status.phrase}'
+        if not message:
+            message = status_str
+        self.start_response(status_str, [
+            ('Content-Type', 'text/plain;charset=UTF-8')])
+        return self.bytes([message])
+
+    def gzipped(self, content):
+        if 'gzip' not in self.environ.get('HTTP_ACCEPT_ENCODING', ''):
+            self.header()
+            return content
+        else:
+            self.header(additional={'Content-Encoding': 'gzip'})
+            return util.gzip_compress(content)
 
     def start(self):
         """Start the CGI."""
         import socket
         try:
-            self.run()
+            return self.run()
         except (IOError, socket.error, socket.timeout) as strerror:
-            self.stderr.write("%s: %s\n" %
-                              (util.get_http_remote_addr(self.environ), strerror))
+            self.stderr.write(
+                "%s: %s\n" %
+                (util.get_http_remote_addr(self.environ), strerror))
+            return None
 
     def run(self):
         """Main routine for CGI."""
