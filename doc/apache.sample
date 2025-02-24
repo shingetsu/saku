@@ -24,6 +24,8 @@ Listen 8000
         Options -Indexes -ExecCGI
 
         RewriteEngine on
+        RewriteCond %{REQUEST_METHOD} GET [OR]
+        RewriteCond %{REQUEST_METHOD} HEAD
         RewriteRule ^server.cgi(.*) \
             http://[::1]:8002/server.cgi${escape:$1} [P,NE]
     </Directory>
