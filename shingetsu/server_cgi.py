@@ -255,7 +255,7 @@ class CGI(basecgi.CGI):
         def gen():
             for i in recent:
                 if i.stamp < begin or end < i.stamp:
-                    contine
+                    continue
                 cache = Cache(i.datfile)
                 if cache.tags:
                     tagstr = '<>tag:%s' % cache.tags
