@@ -153,7 +153,7 @@ Listen 8000
         #    ProxyAddHeaders Off
         #    RewriteCond %{REMOTE_ADDR} ^(.*)$
         #    RewriteRule . - [env=remoteaddr:%1]
-        #    RequestHeader set X-Forwarded-For "%{remoteaddr}e, PRIVATE"
+        #    RequestHeader set X-Forwarded-For "%{remoteaddr}e, 127.0.0.1"
         #
         #    RewriteRule ^(admin|gateway|thread).cgi(.*) \
         #        http://[::1]:8002/$1.cgi${escape:$2} [P,NE]
