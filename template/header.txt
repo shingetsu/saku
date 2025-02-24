@@ -16,6 +16,9 @@
   <link rel="author" href="https://www.shingetsu.info/" />
   <link rel="contents" href="/" />
   <link rel="index" href="{{root_path}}gateway.cgi/index" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" href="/android-chrome.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
   <script type="text/javascript" src="{{root_path}}jquery/jquery.min.js?{{dummyquery}}"></script>
   <script type="text/javascript" src="{{root_path}}bootstrap/js/bootstrap.min.js?{{dummyquery}}"></script>
   <link rel="alternate" type="application/rss+xml" title="RSS" href="{{rss}}" />

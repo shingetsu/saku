@@ -84,9 +84,10 @@ Listen 8000
         RewriteRule ^([0-9_][^/]*).css$ /STATIC/$1.css
         RewriteRule ^(bootstrap|contrib|jquery)/(.*) /STATIC/$1/$2
         RewriteRule ^favicon.ico$ /STATIC/favicon.ico
-        RewriteRule rss1.xsl /STATIC/rss1.xsl
+        RewriteRule ^android-chrome.png$ /STATIC/android-chrome.png
+        RewriteRule ^apple-touch-icon.png$ /STATIC/apple-touch-icon.png
+        RewriteRule ^rss1.xsl$ /STATIC/rss1.xsl
         RewriteRule ^gateway.cgi/mergedjs /STATIC/__merged.js
-        RewriteRule ^mobile.cgi / [R]
         RewriteCond %{QUERY_STRING} cmd=post
             RewriteRule . /cgi-bin/dummy.php?
         RewriteCond %{REQUEST_METHOD} POST

@@ -16,7 +16,8 @@ install:
 	install -m 644 -D -t $(PREFIX)/lib/saku/shingetsu/mch shingetsu/mch/*.py
 	install -m 644 -D -t $(PREFIX)/share/saku/file file/*.txt
 	install -m 644 -D -t $(PREFIX)/share/saku/template template/*.txt
-	install -m 644 -D -t $(PREFIX)/share/saku/www www/*.css www/*.js www/*.ico www/*.xsl
+	install -m 644 -D -t $(PREFIX)/share/saku/www www/*.css www/*.js
+	install -m 644 -D -t $(PREFIX)/share/saku/www www/*.ico www/*.png www/*.xsl
 	install -m 644 -D -t $(PREFIX)/share/saku/www/bootstrap/css www/bootstrap/css/*
 	install -m 644 -D -t $(PREFIX)/share/saku/www/bootstrap/fonts www/bootstrap/fonts/*
 	install -m 644 -D -t $(PREFIX)/share/saku/www/bootstrap/js www/bootstrap/js/*
