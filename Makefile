@@ -22,7 +22,6 @@ install:
 	install -m 644 -D -t $(PREFIX)/share/saku/www/bootstrap/js www/bootstrap/js/*
 	install -m 644 -D -t $(PREFIX)/share/saku/www/contrib www/contrib/*
 	install -m 644 -D -t $(PREFIX)/share/saku/www/jquery www/jquery/*.js
-	install -m 644 -D -t $(PREFIX)/share/saku/www/jquery www/jquery/*.txt
 	install -m 644 -D -t $(PREFIX)/share/saku/www/jquery/spoiler www/jquery/spoiler/*
 	install -m 644 -D -t $(PREFIX)/share/doc/saku README*
 	install -m 644 -D -t $(PREFIX)/share/doc/saku doc/README*
