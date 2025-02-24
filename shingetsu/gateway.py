@@ -170,21 +170,12 @@ class CGI(basecgi.CGI):
 
     def path_info(self):
         """Parse PATH_INFO.
-
-        If PATH_INFO is not defined, use QUERY_STRING.
-        x.cgi?foo&bar=y -> path="foo".
         """
-        m = re.search(r"^([^&;=]*)(&|$)", self.environ.get("QUERY_STRING", ""))
-        if self.environ.get("PATH_INFO", "") != "":
-            path = self.environ["PATH_INFO"]
-            if path.startswith("/"):
-                path = path[1:]
-        elif m is not None:
-            path = m.group(1)
+        if 'PATH_INFO' in self.environ:
+            path = self.environ['PATH_INFO']
         else:
             path = ""
-        path = self.escape(self.str_decode(path))
-        return path
+        return self.escape(path.lstrip('/'))
 
     def str_encode(self, query):
         return str_encode(query)

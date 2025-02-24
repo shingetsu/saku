@@ -54,8 +54,8 @@ class MatchPattern:
         return False
 
 _admin = MatchPattern(config.admin_net, config.admin_old)
-_friend = MatchPattern(config.friend, config.friend_old)
-_visitor = MatchPattern(config.visitor, config.visitor_old)
+_friend = MatchPattern(config.friend_net, config.friend_old)
+_visitor = MatchPattern(config.visitor_net, config.visitor_old)
 
 
 class RemoteAddress:
