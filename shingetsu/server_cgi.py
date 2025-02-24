@@ -313,7 +313,7 @@ class CGI(basecgi.CGI):
 
     def _seem_valid_relay_node(self, host, node, datfile):
         remote_addr = address.remote_addr(self.environ)
-        if host_has_addr(host, str(remote_addr)):
+        if address.host_has_addr(host, str(remote_addr)):
             return True
         cache = Cache(datfile)
         if not cache.exists():
