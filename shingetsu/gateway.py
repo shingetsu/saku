@@ -368,27 +368,24 @@ class CGI(basecgi.CGI):
 
         return categories
 
-    def print_jump(self, next):
-        '''Print jump script.'''
-        var = {
-            'next': next,
-        }
-        self.stdout.write(self.template('jump', var))
-
-    def print302(self, next):
-        """Print CGI header (302 moved temporarily)."""
-        self.header("Loading...")
-        self.print_jump(next)
-        self.footer()
+    def print302(self, url):
+        """Print CGI header (302 moved temporarily).
+        """
+        self.stdout.status = '302 Moved Temporarily'
+        self.stdout.headers.append(('Location', url))
 
     def print403(self):
-        '''Print CGI header (403 forbidden).'''
+        """Print CGI header (403 forbidden).
+        """
+        self.stdout.status = '403 Forbidden'
         self.header(self.message['403'], deny_robot=True)
         self.print_paragraph(self.message['403_body'])
         self.footer()
 
     def print404(self, cache=None, id=None):
-        '''Print CGI header (404 not found).'''
+        """Print CGI header (404 not found).
+        """
+        self.stdout.status = '404 Not Found'
         self.header(self.message['404'], deny_robot=True)
         self.print_paragraph(self.message['404_body'])
         if cache is not None:
