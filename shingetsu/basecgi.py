@@ -29,6 +29,7 @@
 import os
 import sys
 
+from . import address
 from . import util
 
 __all__ = ['CGI']
@@ -108,7 +109,7 @@ class CGI:
         except (IOError, socket.error, socket.timeout) as strerror:
             self.stderr.write(
                 "%s: %s\n" %
-                (util.get_http_remote_addr(self.environ), strerror))
+                (address.remote_addr(self.environ), strerror))
             return None
 
     def run(self):

@@ -33,13 +33,14 @@ from io import TextIOWrapper
 from time import time
 from random import choice
 
+from . import address
 from . import config
 from . import basecgi
 from . import title
 from .cache import *
 from .node import *
 from .updatequeue import UpdateQueue
-from .util import opentext, get_http_remote_addr, host_has_addr
+from .util import opentext
 
 
 class CGI(basecgi.CGI):
@@ -106,8 +107,8 @@ class CGI(basecgi.CGI):
 
     def do_ping(self):
         self.header()
-        remote_addr = get_http_remote_addr(self.environ)
-        return self.body(["PONG\n" + remote_addr + "\n"])
+        remote_addr = address.remote_addr(self.environ)
+        return self.body(["PONG\n" + str(remote_addr) + "\n"])
 
     def do_node(self):
         nodes = NodeList()
@@ -119,10 +120,10 @@ class CGI(basecgi.CGI):
             return self.body(["%s\n" % inode])
 
     def get_remote_hostname(self, host):
-        remote_addr = get_http_remote_addr(self.environ)
+        remote_addr = address.remote_addr(self.environ)
         if host == '':
-            return remote_addr
-        if host_has_addr(host, remote_addr):
+            return str(remote_addr)
+        if address.host_has_addr(host, str(remote_addr)):
             return host
         return None
 
@@ -311,8 +312,8 @@ class CGI(basecgi.CGI):
         return self.body(["{}".format(config._get_version()) + "\n"])
 
     def _seem_valid_relay_node(self, host, node, datfile):
-        remote_addr = get_http_remote_addr(self.environ)
-        if host_has_addr(host, remote_addr):
+        remote_addr = address.remote_addr(self.environ)
+        if host_has_addr(host, str(remote_addr)):
             return True
         cache = Cache(datfile)
         if not cache.exists():

@@ -98,9 +98,12 @@ apache_docroot = _get_value(_extconf, 'Path', 'apache_docroot',
 archive_dir = _get_value(_extconf, 'Path', 'archive_dir',
                        '/var/local/www/archive', 'path')
 
-admin = _get_value(_extconf, 'Gateway', 'admin', r'^127|^::1$')
-friend = _get_value(_extconf, 'Gateway', 'friend', r'^127|^::1$')
-visitor = _get_value(_extconf, 'Gateway', 'visitor', r'.')
+admin_net = _get_value(_extconf, 'Gateway', 'admin_net', '::1, 127.0.0.1')
+friend_net = _get_value(_extconf, 'Gateway', 'friend_net', '::1, 127.0.0.1')
+visitor_net = _get_value(_extconf, 'Gateway', 'visitor_net', '::/0, 0.0.0.0/0')
+admin_old = _get_value(_extconf, 'Gateway', 'admin', '')
+friend_old = _get_value(_extconf, 'Gateway', 'friend', '')
+visitor_old = _get_value(_extconf, 'Gateway', 'visitor', '')
 server_name = _get_value(_extconf, 'Gateway', 'server_name', '')
 gateway_protocol = _get_value(_extconf, 'Gateway', 'protocol', 'http')
 tag_size = _get_value(_extconf, 'Gateway', 'tag_size', 20, 'int')
@@ -114,9 +117,6 @@ proxy_destination = _get_value(_extconf, 'Gateway', 'proxy_destination', '')
 archive_uri = _get_value(_extconf, 'Gateway', 'archive_uri',
                          'https://archive.shingetsu.info/')
 enable2ch = _get_value(_extconf, 'Gateway', 'enable_2ch', False, 'boolean')
-re_admin = re.compile(admin)
-re_friend = re.compile(friend)
-re_visitor = re.compile(visitor)
 template_suffix = '.txt'
 
 

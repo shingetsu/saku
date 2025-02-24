@@ -31,7 +31,6 @@ import hashlib
 import io
 import os.path
 import re
-import socket
 import sys
 import time
 
@@ -80,36 +79,6 @@ def opentext(path, mode='r'):
     return open(path, mode,
                 encoding='utf-8', errors='replace',
                 newline=newline)
-
-def get_http_remote_addr(env):
-    addr = get_http_remote_addr_from_env(env)
-    if not addr:
-        return addr
-    m = re.search(r'^::ffff:([\d.]+)$', addr)
-    if m:
-        return m.group(1)
-    return addr
-
-def get_http_remote_addr_from_env(env):
-    if config.use_x_forwarded_for and 'HTTP_X_FORWARDED_FOR' in env:
-        return env['HTTP_X_FORWARDED_FOR'].split(',')[-1].strip()
-    return env['REMOTE_ADDR']
-
-def host_has_addr(host, addr):
-    if host == addr:
-        return True
-    try:
-        info = socket.getaddrinfo(host, 80, proto=socket.IPPROTO_TCP)
-    except socket.gaierror:
-        return False
-    for i in info:
-        try:
-            ipaddr = i[4][0]
-        except IndexError:
-            continue
-        if addr == ipaddr:
-            return True
-    return False
 
 def rfc822_time(t):
     """Return date and time in RFC822 format.
