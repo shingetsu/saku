@@ -35,6 +35,7 @@ import collections
 import socket
 import socketserver
 
+from shingetsu import address
 from shingetsu import cache
 from shingetsu import title
 from shingetsu import config
@@ -58,14 +59,10 @@ head_re = re.compile(r'/([^/]+)/head\.txt$')
 @middleware.last_modified
 @middleware.gzipped
 def dat_app(env, resp):
-    # utils.log('dat_app')
-    addr = env.get('REMOTE_ADDR', '')
-    m = re.search(r'^::ffff:([\d.]+)$', addr)
-    if m:
-        addr = m.group(1)
-    env['shingetsu.isadmin'] = bool(config.re_admin.match(addr))
-    env['shingetsu.isfriend'] = bool(config.re_friend.match(addr))
-    env['shingetsu.isvisitor'] = bool(config.re_visitor.match(addr))
+    addr = address.remote_addr(env)
+    env['shingetsu.isadmin'] = addr.is_admin()
+    env['shingetsu.isfriend'] = addr.is_friend()
+    env['shingetsu.isvisitor'] = addr.is_visitor()
     isopen = (env['shingetsu.isadmin'] or env['shingetsu.isfriend']
               or env['shingetsu.isvisitor'])
 
