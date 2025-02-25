@@ -2,7 +2,7 @@
 #
 # Run All Automatic Tests.
 #
-# Copyright (c) 2009-2023 shinGETsu Project.
+# Copyright (c) 2009 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,15 +27,14 @@
 # SUCH DAMAGE.
 #
 
-export PYTHONPATH="`dirname $0`/../:${PYTHONPATH}"
+cd "$(dirname $0)/.." || exit 1
 
 code=0
-for t in tests/test_*.py; do
-    python3 $t || code=1
-done
+python3 -B -m unittest -v tests/test_*.py || code=1
 
-python3 shingetsu/cache.py -v || code=1
-python3 shingetsu/title.py -v || code=1
+#python3 -B -m doctest -v shingetsu/*.py || code=1
+python3 -B -m doctest -v shingetsu/cache.py || code=1
+python3 -B -m doctest -v shingetsu/title.py || code=1
 
 if [ "$code" != 0 ]; then
     echo FAILED

@@ -27,11 +27,7 @@
 #
 
 import ipaddress
-import os.path
-import sys
 import unittest
-
-sys.path.insert(0, ".")
 
 import shingetsu.address as address
 
@@ -79,15 +75,3 @@ class AddressTest(unittest.TestCase):
         self.assertFalse(address.host_has_addr('node.shingetsu.info', '2002:db8::1'))
 
         self.assertFalse(address.host_has_addr('not.found.example.com', '192.0.2.1'))
-
-
-def _test():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(AddressTest))
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
-    if result.errors or result.failures:
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    _test()

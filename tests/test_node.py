@@ -26,11 +26,7 @@
 # SUCH DAMAGE.
 #
 
-import os.path
-import sys
 import unittest
-
-sys.path.insert(0, ".")
 
 import shingetsu.node as node
 
@@ -127,15 +123,3 @@ class NodeTest(unittest.TestCase):
         n = node.Node(host='2001:db8::1', port=8000, path='+server.cgi')
         self.assertEqual(n.nodestr, '[2001:db8::1]:8000/server.cgi')
         self.assertTrue(n.is_ipv6())
-
-
-def _test():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(NodeTest))
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
-    if result.errors or result.failures:
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    _test()

@@ -149,12 +149,3 @@ def file_hash(query):
     hash = getattr(hashlib, config.cache_hash_method)()
     hash.update(title.encode('utf-8', 'replace'))
     return type + '_' + hash.hexdigest()
-
-
-def _test(*args, **kwargs):
-    import doctest
-    doctest.testmod()
-
-
-if __name__ == '__main__':
-    _test()

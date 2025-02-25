@@ -27,10 +27,7 @@
 #
 
 import io
-import sys
 import unittest
-
-sys.path.insert(0, ".")
 
 import shingetsu.forminput as forminput
 
@@ -102,15 +99,3 @@ class FormInputTest(unittest.TestCase):
         self.assertEqual(file.filename, 'test.txt')
         self.assertEqual(file.value, b'1234\n')
         self.assertIsNone(form.getfile('not_found'))
-
-
-def _test():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(FormInputTest))
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
-    if result.errors or result.failures:
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    _test()

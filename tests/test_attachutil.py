@@ -26,11 +26,7 @@
 # SUCH DAMAGE.
 #
 
-import os.path
-import sys
 import unittest
-
-sys.path.insert(0, ".")
 
 import shingetsu.attachutil as attachutil
 
@@ -68,15 +64,3 @@ class AttachUtilTest(unittest.TestCase):
     def test_is_valid_image_none(self):
         attachutil.image_type = get_image_type("jpeg")
         self.assertFalse(attachutil.is_valid_image("image/png", None))
-
-
-def _test():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(AttachUtilTest))
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
-    if result.errors or result.failures:
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    _test()

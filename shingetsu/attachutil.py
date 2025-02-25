@@ -1,7 +1,7 @@
 """Attached Files Utilities.
 """
 #
-# Copyright (c) 2009-2023 shinGETsu Project.
+# Copyright (c) 2009 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -48,10 +48,6 @@ def seem_html(suffix):
 def is_valid_image(mimetype, path):
     """Type of path is same as mimetype or not.
     """
-    if not path:
-        return False
-    if not PIL:
-        return False
     path_suffix = image_type(path)
     if not path_suffix:
         return False
@@ -63,10 +59,6 @@ def is_valid_image(mimetype, path):
     return False
 
 def is_wellknown_image(path):
-    if not path:
-        return False
-    if not PIL:
-        return False
     path_suffix = image_type(path)
     return path_suffix in (
       'gif',
@@ -75,6 +67,10 @@ def is_wellknown_image(path):
     )
 
 def image_type(path):
+    if not path:
+        return None
+    if not PIL:
+        return None
     try:
         return PIL.Image.open(path).format.lower()
     except:
