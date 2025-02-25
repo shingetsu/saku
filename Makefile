@@ -47,7 +47,7 @@ version:
 	@cat file/version.txt
 
 check:
-	sh tests/runtests.sh
+	python3 -B -m unittest -v tests/test_*.py
 
 clean:
 	rm -f saku

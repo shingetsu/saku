@@ -38,11 +38,6 @@ __all__ = ['str_encode', 'str_decode', 'file_encode', 'file_decode',
 
 def str_encode(query):
     '''Encode for URI.
-
-    >>> str_encode('#')
-    '%23'
-    >>> str_encode(b'#')
-    '%23'
     '''
     if not isinstance(query, bytes):
         query = str(query)
@@ -50,17 +45,11 @@ def str_encode(query):
 
 def str_decode(query):
     '''Decode URI.
-
-    >>> str_decode('%23')
-    '#'
     '''
     return urllib.parse.unquote(query)
 
 def file_encode(type, query):
     '''Encode for filename.
-
-    >>> file_encode('foo', 'a#j')
-    'foo_61236A'
     '''
     buf = [type, '_']
     if isinstance(query, str):
@@ -70,9 +59,6 @@ def file_encode(type, query):
                    
 def file_decode_type(query, type=None):
     """Decode file type.
-
-    >>> file_decode_type('thread_41')
-    'thread'
     """
     q = query.split('_')
     if len(q) < 2:
@@ -81,9 +67,6 @@ def file_decode_type(query, type=None):
 
 def file_decode(query, type=None):
     '''Decode filename.
-
-    >>> file_decode('foo_23')
-    '#'
     '''
     q = query.split('_')
     if len(q) < 2:
@@ -102,11 +85,6 @@ def file_decode(query, type=None):
 
 def is_valid_file(query, type=None):
     '''Validate filename.
-
-    >>> is_valid_file('thread_23')
-    True
-    >>> is_valid_file('foo_23x')
-    False
     '''
     q = query.split('_')
     if len(q) < 2:
@@ -128,14 +106,6 @@ def is_valid_file(query, type=None):
 
 def file_hash(query):
     """Make hash from filename.
-
-    >>> import shingetsu.config
-    >>> config.cache_hash_method = 'asis'
-    >>> file_hash('thread_41')
-    'thread_41'
-    >>> config.cache_hash_method = 'md5'
-    >>> file_hash('thread_41')
-    'thread_7fc56270e7a70fa81a5935b72eacbe29'
     """
     methods = ('md5', 'sha1', 'sha224', 'sha256', 'sha384', 'sha512')
     if config.cache_hash_method not in methods:
