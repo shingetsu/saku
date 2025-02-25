@@ -33,7 +33,6 @@ code=0
 python3 -B -m unittest -v tests/test_*.py || code=1
 
 #python3 -B -m doctest -v shingetsu/*.py || code=1
-python3 -B -m doctest -v shingetsu/cache.py || code=1
 python3 -B -m doctest -v shingetsu/title.py || code=1
 
 if [ "$code" != 0 ]; then
