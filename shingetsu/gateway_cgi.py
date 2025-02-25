@@ -48,6 +48,9 @@ class CGI(gateway.CGI):
     def run(self):
         path = self.path_info()
         self.form = forminput.read(self.environ, self.stdin)
+        if self.form.is_error:
+            self.print400()
+            return
         try:
             filter = self.form.getfirst('filter', '')
             tag = self.form.getfirst('tag', '')

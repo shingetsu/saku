@@ -374,6 +374,16 @@ class CGI(basecgi.CGI):
         self.stdout.status = '302 Moved Temporarily'
         self.stdout.headers.append(('Location', url))
 
+    def print400(self, message=''):
+        """Print CGI header (400 bad request).
+        """
+        if not message:
+            message = self.message['no_data']
+        self.stdout.status = '400 Bad Request'
+        self.header(self.message['no_data'], deny_robot=True)
+        self.print_paragraph(message)
+        self.footer()
+
     def print403(self):
         """Print CGI header (403 forbidden).
         """

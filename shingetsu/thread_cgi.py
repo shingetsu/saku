@@ -92,6 +92,10 @@ class CGI(gateway.CGI):
             return
 
         form = forminput.read(self.environ, self.stdin)
+        if form.is_error:
+            self.print400()
+            return
+
         if form.getfirst("cmd", "") == "post" and \
            form.getfirst("file", "").startswith("thread_") and \
            self.environ["REQUEST_METHOD"] == "POST":
@@ -138,7 +142,7 @@ class CGI(gateway.CGI):
         form = forminput.read(self.environ, self.stdin)
         cache = Cache(file_path)
         if id and form.getfirst('ajax'):
-            self.print_thread_ajax(path, id, form)
+            self.print_thread_ajax(path, id)
             return
         if cache.has_record():
             pass
@@ -204,7 +208,7 @@ class CGI(gateway.CGI):
         self.remove_file_form(cache, escaped_path)
         self.footer(menubar=self.menubar('bottom', rss))
 
-    def print_thread_ajax(self, path, id, form):
+    def print_thread_ajax(self, path, id):
         self.stdout.headers.append(
             ('Content-Type', 'text/html; charset=UTF-8'))
         str_path = self.str_encode(path)

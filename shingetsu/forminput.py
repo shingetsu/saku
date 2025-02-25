@@ -36,6 +36,7 @@ class Form:
     def __init__(self):
         self.fields = {}
         self.files = {}
+        self.is_error = False
 
     def getfirst(self, name, default=None):
         if name in self.fields and self.fields[name]:
@@ -78,12 +79,13 @@ def read_get(form, env, encoding):
 
 def read_post(form, env, input, encoding):
     form_data = input.read(int(env['CONTENT_LENGTH']))
-    read_from_qsl(form, form_data, encoding)
+    read_from_qsl(form, decode(form_data, encoding), encoding)
 
 def read_from_qsl(form, data, encoding):
     try:
         qs = urllib.parse.parse_qsl(data)
     except:
+        form.is_error = True
         return form
     for name, value in qs:
         name = decode(name, encoding)
