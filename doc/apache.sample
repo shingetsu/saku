@@ -28,6 +28,8 @@ Listen 8000
         RewriteCond %{REQUEST_METHOD} HEAD
         RewriteRule ^server.cgi(.*) \
             http://[::1]:8002/server.cgi${escape:$1} [P,NE]
+
+        RewriteRule ^$ https://bbs.shingetsu.info/ [R,L]
     </Directory>
 </VirtualHost>
 
