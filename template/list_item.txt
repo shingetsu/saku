@@ -7,9 +7,9 @@
   <input type="checkbox" name="file" value="{{cache.datfile}}" style="display:inline-block" />
 {% endif %}
 {% if target == 'recent' %}
-  <span class="stamp" id="s{{cache.recent_stamp}}">{{localtime(cache.recent_stamp)}}</span>
+  <span class="stamp" id="s{{cache.recent_stamp}}" data-stamp="{{cache.recent_stamp}}">{{localtime(cache.recent_stamp)}}</span>
 {% else %}
-  <span class="stamp" id="s{{cache.valid_stamp}}">{{localtime(cache.valid_stamp)}}</span>
+  <span class="stamp" id="s{{cache.valid_stamp}}" data-stamp="{{cache.valid_stamp}}">{{localtime(cache.valid_stamp)}}</span>
 {% endif %}
 {% if isadmin and remove %}
   </label>

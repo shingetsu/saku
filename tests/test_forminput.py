@@ -81,7 +81,7 @@ class FormInputTest(unittest.TestCase):
         self.assertEqual(form.getfirst('qux'), 'QUX1')
         self.assertEqual(form.getlist('qux'), ['QUX1', 'QUX2'])
 
-    def test_read_from_utf8(self):
+    def test_read_from_body_utf8(self):
         body = b'q=%E3%83%86%E3%82%B9%E3%83%88'
         env = {
             'REQUEST_METHOD': 'POST',
@@ -91,7 +91,7 @@ class FormInputTest(unittest.TestCase):
         form = forminput.read(env, io.BytesIO(body))
         self.assertEqual(form.getfirst('q'), 'テスト')
 
-    def test_read_from_cp932(self):
+    def test_read_from_body_cp932(self):
         body = b'q=%83e%83X%83g'
         env = {
             'REQUEST_METHOD': 'POST',
