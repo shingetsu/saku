@@ -7,9 +7,9 @@ PREFIX = /usr/local
 PACKAGE_DIR = ..
 PACKAGE = saku-$(shell cat file/version.txt)
 
-.PHONY: all install exe version check clean distclean package
+.PHONY: all install version check clean distclean package
 
-all:
+all: version
 
 install:
 	install -m 644 -D -t $(PREFIX)/lib/saku/shingetsu shingetsu/*.py
@@ -43,7 +43,7 @@ install:
 	cat www/*.js > $(PREFIX)/share/saku/www/__merged.js
 
 version:
-	./tool/git2ver.sh > file/version.txt
+	python3 tool/git2ver.py
 	@cat file/version.txt
 
 check:
@@ -59,6 +59,7 @@ clean:
 
 distclean: clean
 	rm -f Pipfile.lock
+	rm -f file/version.txt
 	find . \( -name "*~" -o -name "#*" -o -name ".#*" \) \! -path ".git/*" \
 	    -print0 | \
 	    xargs -0 -r rm -fv
