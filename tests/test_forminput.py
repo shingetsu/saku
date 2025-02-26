@@ -67,14 +67,14 @@ class FormInputTest(unittest.TestCase):
         self.assertEqual(form.getlist('not_found'), []) 
 
     def test_read_from_body(self):
-        body = 'baz=BAZ&qux=QUX1&qux=QUX2'
+        body = b'baz=BAZ&qux=QUX1&qux=QUX2'
         env = {
             'REQUEST_METHOD': 'POST',
             'QUERY_STRING': 'foo=FOO&bar=BAR1&bar=BAR2',
             'CONTENT_TYPE': 'application/x-www-form-urlencoded',
             'CONTENT_LENGTH': str(len(body))
         }
-        form = forminput.read(env, io.StringIO(body))
+        form = forminput.read(env, io.BytesIO(body))
         self.assertEqual(form.getfirst('foo'), 'FOO')
         self.assertEqual(form.getfirst('bar'), 'BAR1')
         self.assertEqual(form.getfirst('baz'), 'BAZ')
