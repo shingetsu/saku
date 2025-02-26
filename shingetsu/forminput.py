@@ -75,18 +75,27 @@ def read(env, input, encoding='utf-8'):
     return form
 
 def read_get(form, env, encoding):
-    read_from_qsl(form, env['QUERY_STRING'], encoding)
+    read_from_qsl(form, env.get('QUERY_STRING', ''), encoding)
 
 def read_post(form, env, input, encoding):
     form_data = input.read(int(env['CONTENT_LENGTH']))
-    read_from_qsl(form, decode(form_data, encoding), encoding)
+    read_from_qsl(form, form_data, encoding)
 
 def read_from_qsl(form, data, encoding):
+    if hasattr(urllib.parse, '_encode_result'):
+        orig = urllib.parse._encode_result
+        def tmp(obj, encoding=encoding, errors='strict'):
+            return obj.encode(encoding, errors)
+        urllib.parse._encode_result = tmp
     try:
-        qs = urllib.parse.parse_qsl(data)
+        qs = urllib.parse.parse_qsl(data, encoding=encoding)
     except:
         form.is_error = True
         return form
+    finally:
+        if orig:
+            urllib.parse._encode_result = orig
+
     for name, value in qs:
         name = decode(name, encoding)
         value = decode(value, encoding)

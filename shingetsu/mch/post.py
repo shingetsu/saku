@@ -38,7 +38,7 @@ from shingetsu import spam
 from shingetsu import updatequeue
 from shingetsu import template
 from shingetsu import config
-from shingetsu import util
+from shingetsu import address
 
 from . import dat
 from . import utils
@@ -106,7 +106,7 @@ success_msg = '''<html lang="ja"><head><meta http-equiv="Content-Type" content="
 
 def _get_comment_data(env):
     fs = forminput.read(env, env['wsgi.input'], encoding='cp932')
-    prop = lambda s: fs[s].value if s in fs else ''
+    prop = lambda s: fs.getfirst(s, '')
     mail = prop('mail')
     if mail.lower() == 'sage':
         mail = ''
@@ -121,7 +121,7 @@ def post_comment_app(env, resp):
     # utils.log('post_comment_app')
     subject, name, mail, body, datkey = _get_comment_data(env)
 
-    info = {'host': util.get_http_remote_addr(env),
+    info = {'host': address.remote_addr(env),
             'name': name,
             'mail': mail,
             'body': body}
