@@ -70,11 +70,14 @@ Sakuは Shingetsu Another Keen Utility の略です。
 4. 朔をシステムにインストールする(そうしたい人のみ)
     * 例: /usr/local にインストールする場合
 
-        make install
+        make
+        sudo make install
 
     * 例: インストール先を指定する場合
 
+        make
         make install PREFIX=/path/to/insall/dir
+
 5. 朔をシステムにインストールした場合は設定ファイルを配置する
     * 設定ファイルの雛型は /usr/local/share/doc/saku/sample にインストールされています
     * saku.ini は /usr/local/etc/saku/saku.ini, /etc/saku/saku.ini, ~/.saku/saku.ini の順に読み込まれ、後のものが優先されます
