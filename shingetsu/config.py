@@ -30,6 +30,8 @@ import re
 import os.path
 import configparser
 
+saku_version = '5.3.0'
+
 def _get_value(parser, section, key, default, vtype=''):
     """Get config value or default value."""
     try:
@@ -47,7 +49,7 @@ def _get_value(parser, section, key, default, vtype=''):
 def _get_version():
     """Get Saku version for useragent and servername.
     """
-    version = '5.2.3'
+    version = saku_version
     version_file = os.path.join(docroot, file_dir, 'version.txt')
     if os.path.isfile(version_file):
         try:
