@@ -46,7 +46,7 @@ install:
 
 version:
 	python3 tool/git2ver.py
-	@cat file/version.txt
+	-cat file/version.txt
 
 check:
 	python3 -B -m unittest -v tests/test_*.py
