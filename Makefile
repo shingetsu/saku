@@ -4,12 +4,13 @@
 #
 
 PREFIX = /usr/local
-package_dir = ..
-stable_package = saku-$(shell python3 -c 'import shingetsu.config; \
-    print(shingetsu.config.saku_version)')
-unstable_package = saku-$(shell python3 tool/git2ver.py)
 
-.PHONY: all install version check clean distclean package
+packdir = ..
+stable = saku-$(shell python3 -c 'import shingetsu.config; \
+    print(shingetsu.config.saku_version)')
+unstable = saku-$(shell python3 tool/git2ver.py)
+
+.PHONY: all install version check clean distclean package stable unstable
 
 all: version
 
@@ -65,19 +66,18 @@ distclean: clean
 	    -print0 | \
 	    xargs -0 -r rm -fv
 
-package: distclean version
-	rm -f file/version.txt
-	rm -Rf $(package_dir)/$(stable_package).tar.gz
-	rm -Rf $(package_dir)/$(stable_package)
-	rsync -a --exclude=".git*" . $(package_dir)/$(stable_package)
-	tar -zcf $(package_dir)/$(stable_package).tar.gz \
-	    -C $(package_dir) $(stable_package)
-	rm -Rf $(package_dir)/$(stable_package)
+package: stable unstable
 
-	python3 tool/git2ver.py
-	rm -Rf $(package_dir)/$(unstable_package).tar.gz
-	rm -Rf $(package_dir)/$(unstable_package)
-	rsync -a --exclude=".git*" . $(package_dir)/$(unstable_package)
-	tar -zcf $(package_dir)/$(unstable_package).tar.gz \
-	    -C $(package_dir) $(unstable_package)
-	rm -Rf $(package_dir)/$(unstable_package)
+stable: distclean
+	rm -f $(packdir)/$(stable).tar.gz
+	rm -Rf $(packdir)/$(stable)
+	rsync -a --exclude=".git*" . $(packdir)/$(stable)
+	tar -zcf $(packdir)/$(stable).tar.gz -C $(packdir) $(stable)
+	rm -Rf $(packdir)/$(stable)
+
+unstable: distclean version
+	rm -f $(packdir)/$(unstable).tar.gz
+	rm -Rf $(packdir)/$(unstable)
+	rsync -a --exclude=".git*" . $(packdir)/$(unstable)
+	tar -zcf $(packdir)/$(unstable).tar.gz -C $(packdir) $(unstable)
+	rm -Rf $(packdir)/$(unstable)
