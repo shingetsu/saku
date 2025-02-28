@@ -30,14 +30,14 @@ import os
 import subprocess
 import sys
 
-def save_version():
+def main():
     version_file = 'file/version.txt'
     os.chdir(os.path.dirname(__file__) + '/..')
     if os.path.exists(version_file):
         os.remove(version_file)
     if not os.path.isdir('.git'):
-        print('not a git repository', file=sys.stderr)
-        return 'unstable'
+        print('not a git repository')
+        return
 
     ret = subprocess.run(['git', 'log', '-n', '1', '--pretty=format:%aI'],
                          stdout=subprocess.PIPE, encoding='utf-8')
@@ -47,11 +47,6 @@ def save_version():
 
     with open(version_file, 'w') as f:
         print(v, file=f)
-    return v
-
-def main():
-    v = save_version()
-    print(v)
 
 if __name__ == '__main__':
     main()
