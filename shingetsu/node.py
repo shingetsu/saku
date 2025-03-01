@@ -328,6 +328,18 @@ class RawNodeList(list):
     def filterv6(self):
         return [i for i in self if i.is_ipv6()]
 
+    def is_within_limit(self, node=None):
+        limit = config.nodes
+        if None is None:
+            return (len(self.filterv4()) <= limit and
+                    len(self.filterv6()) <= limit)
+        if node in self:
+            limit += 1
+        if node.is_ipv6():
+            return len(self.filterv6()) < limit
+        else:
+            return len(self.filterv4()) < limit
+
     def append(self, node):
         if node_allow().check(str(node)):
             pass

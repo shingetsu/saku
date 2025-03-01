@@ -140,18 +140,19 @@ class CGI(basecgi.CGI):
             node = Node(host=host, port=port, path=path)
         except ValueError:
             return []
+        if (not node_allow().check(str(node)) and
+            node_deny().check(str(node))):
+            return []
+        if not node.ping():
+            return []
+
         nodelist = NodeList()
         searchlist = SearchList()
-        if (not node_allow().check(str(node))) and \
-             node_deny().check(str(node)):
-            pass
-        elif not node.ping():
-            pass
-        elif node in nodelist:
+        if node in nodelist:
             searchlist.append(node)
             searchlist.sync()
             return self.body(["WELCOME\n"])
-        elif len(nodelist) < config.nodes:
+        elif nodelist.is_within_limit(node):
             nodelist.append(node)
             nodelist.sync()
             searchlist.append(node)

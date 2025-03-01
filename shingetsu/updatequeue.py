@@ -1,7 +1,7 @@
 '''Update Manager.
 '''
 #
-# Copyright (c) 2005-2023 shinGETsu Project.
+# Copyright (c) 2005 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -122,7 +122,7 @@ class _UpdateQueue:
         elif flag_got:
             if not flag_spam:
                 nodelist.tell_update(cache, stamp=stamp, id=id)
-            if (node not in nodelist) and (len(nodelist) < config.nodes):
+            if node not in nodelist and nodelist.is_within_limit(node):
                 nodelist.join(node)
                 nodelist.sync()
             searchlist = SearchList()
