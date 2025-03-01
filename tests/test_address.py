@@ -30,6 +30,7 @@ import ipaddress
 import unittest
 
 import shingetsu.address as address
+import shingetsu.config as config
 
 
 class AddressTest(unittest.TestCase):
@@ -64,6 +65,30 @@ class AddressTest(unittest.TestCase):
         addr = address.RemoteAddress('::ffff:127.0.0.1')
         self.assertEqual(str(addr), '127.0.0.1')
 
+    def test_remote_addr(self):
+        orig = config.use_x_forwarded_for
+        try:
+            config.use_x_forwarded_for = False
+            self.assertEqual(
+                str(address.remote_addr({
+                    'REMOTE_ADDR': '127.0.0.1',
+                    'HTTP_X_FORWARDED_FOR': '::1'})),
+                '127.0.0.1')
+
+            config.use_x_forwarded_for = True
+            self.assertEqual(
+                str(address.remote_addr({
+                    'REMOTE_ADDR': '127.0.0.1',
+                    'HTTP_X_FORWARDED_FOR': '::1'})),
+                '::1')
+            self.assertEqual(
+                str(address.remote_addr({
+                    'REMOTE_ADDR': '127.0.0.1',
+                    'HTTP_X_FORWARDED_FOR': '127.0.0.1, ::1'})),
+                '::1')
+        finally:
+            config.use_x_forwarded_for = orig
+
     def test_host_has_addr(self):
         self.assertTrue(address.host_has_addr('192.0.2.1', '192.0.2.1'))
         self.assertFalse(address.host_has_addr('192.0.2.1', '192.0.2.2'))
@@ -71,7 +96,8 @@ class AddressTest(unittest.TestCase):
         self.assertTrue(address.host_has_addr('node.shingetsu.info', '133.125.52.31'))
         self.assertFalse(address.host_has_addr('node.shingetsu.info', '192.0.2.1'))
 
-        self.assertTrue(address.host_has_addr('node.shingetsu.info', '2401:2500:204:1150:133:125:52:31'))
+        self.assertTrue(address.host_has_addr(
+            'node.shingetsu.info', '2401:2500:204:1150:133:125:52:31'))
         self.assertFalse(address.host_has_addr('node.shingetsu.info', '2002:db8::1'))
 
         self.assertFalse(address.host_has_addr('not.found.example.com', '192.0.2.1'))
