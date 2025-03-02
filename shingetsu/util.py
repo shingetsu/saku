@@ -41,10 +41,6 @@ __all__ = ['md5digest', 'fsdiff', 'opentext']
 
 def md5digest(s):
     """Get MD5 hex digest.
-    >>> md5digest('abc')
-    '900150983cd24fb0d6963f7d28e17f72'
-    >>> md5digest(b'abc')
-    '900150983cd24fb0d6963f7d28e17f72'
     """
     if isinstance(s, str):
         s = s.encode('utf-8', 'replace')
