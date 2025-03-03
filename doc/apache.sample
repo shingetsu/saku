@@ -15,7 +15,6 @@ Listen 8000
     ServerAdmin webmaster@shingetsu.info
     DocumentRoot /srv/www/bbs.shingetsu.info/empty
     ServerName node.shingetsu.info
-    ServerAlias node-ipv4.shingetsu.info node-ipv6.shingetsu.info
     ErrorLog /var/log/apache2/node.shingetsu.info.error.log
     CustomLog /var/log/apache2/node.shingetsu.info.access.log combined
     RewriteMap escape int:escape
