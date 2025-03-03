@@ -1,24 +1,6 @@
 朔 - P2P匿名掲示板「新月」のクローン
 ====================================
 
-Authors
--------
-* (main) Satoshi Fukutomi <fuktommy@shingetsu.info>
-* sbwhitecap
-* (apollo) replaceable anonymous.
-* (2ch interface) kkka
-* (thumbnail patch) A shinGETsu user.
-* (imghdr patch) A shinGETsu user.
-* (js extensions) shinGETsu users.
-* (Pipfile, Dockefile, GitHub Actions) takano32
-
-Contributers
-------------
-* (jQuery) The jQuery Foundation.
-* (Twitter Bootstrap) Twitter.
-* (jQuery Lazy) Daniel 'Eisbehr' Kern
-* (Spoiler Alert) Joshua Hull, Jared Volpe, Dwayne Charrington
-
 WebSite
 -------
   https://shingetsu.info/
@@ -33,8 +15,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 * HTTPのGETメソッドのみを用いて記事を配信する
   peer to peer 電子掲示板システムです。
 * 朔は Python 上で動きます。
-  動作確認は主に GNU/Linux 上の CPython 3.2 で行っています。
-    MacOS(9以前)では動かないと思います。
+  動作確認は主に GNU/Linux 上の CPython 3.11 で行っています。
 * 次のような特徴を備えた掲示板が利用できます。
     * 2ちゃんねる型掲示板のインタフェース
     * Wikiを参考にしたハイパーリンク

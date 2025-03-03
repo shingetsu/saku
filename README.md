@@ -4,26 +4,6 @@
 Saku - a clone of P2P anonymous BBS shinGETsu
 =============================================
 
-Authors
--------
-* (main) Satoshi Fukutomi <fuktommy@shingetsu.info>
-* sbwhitecap
-* (apollo) replaceable anonymous.
-* (2ch interface) kkka
-* (thumbnail patch) A shinGETsu user.
-* (imghdr patch) A shinGETsu user.
-* (js extensions) shinGETsu users.
-* (markdown extension) WhiteCat6142
-* (Pipfile, Dockefile, GitHub Actions) takano32
-
-Contributors
-------------
-* (jQuery) The jQuery Foundation.
-* (Twitter Bootstrap) Twitter.
-* (jQuery Lazy) Daniel 'Eisbehr' Kern
-* (Spoiler Alert) Joshua Hull, Jared Volpe, Dwayne Charrington
-* (marked) Christopher Jeffrey
-
 WebSite
 -------
 * https://shingetsu.info/
@@ -45,7 +25,6 @@ Description
 -----------
 * Saku is a P2P anonymous BBS works on Python.
 * We confirm that Saku works on CPython 3.11 on GNU/Linux.
-    Saku may not work on MacOS(ver.9 or before).
 * The features of shinGETsu are...
     * 2ch.net style interface
     * Wiki style hyperlink
