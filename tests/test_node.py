@@ -33,24 +33,24 @@ import shingetsu.node as node
 
 class NodeTest(unittest.TestCase):
     def test_node_init_dnsname_ipv4(self):
-        n = node.Node('node-ipv4.shingetsu.info:8000/server.cgi')
-        self.assertEqual(n.nodestr, 'node-ipv4.shingetsu.info:8000/server.cgi')
+        n = node.Node('ddo.jp:8000/server.cgi')
+        self.assertEqual(n.nodestr, 'ddo.jp:8000/server.cgi')
         self.assertFalse(n.is_ipv6())
         self.assertFalse(n.is_ipv6())
 
     def test_node_init_dnsname_ipv4_nodestr_xstring(self):
-        n = node.Node('node-ipv4.shingetsu.info:8000+server.cgi')
-        self.assertEqual(n.nodestr, 'node-ipv4.shingetsu.info:8000/server.cgi')
+        n = node.Node('ddo.jp:8000+server.cgi')
+        self.assertEqual(n.nodestr, 'ddo.jp:8000/server.cgi')
         self.assertFalse(n.is_ipv6())
 
     def test_node_init_dnsname_ipv4(self):
-        n = node.Node(host='node-ipv4.shingetsu.info', port=8000, path='/server.cgi')
-        self.assertEqual(n.nodestr, 'node-ipv4.shingetsu.info:8000/server.cgi')
+        n = node.Node(host='ddo.jp', port=8000, path='/server.cgi')
+        self.assertEqual(n.nodestr, 'ddo.jp:8000/server.cgi')
         self.assertFalse(n.is_ipv6())
 
     def test_node_init_dnsname_ipv4_xstring(self):
-        n = node.Node(host='node-ipv4.shingetsu.info', port=8000, path='+server.cgi')
-        self.assertEqual(n.nodestr, 'node-ipv4.shingetsu.info:8000/server.cgi')
+        n = node.Node(host='ddo.jp', port=8000, path='+server.cgi')
+        self.assertEqual(n.nodestr, 'ddo.jp:8000/server.cgi')
         self.assertFalse(n.is_ipv6())
 
     def test_node_init_dnsname_ipv6(self):
