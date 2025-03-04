@@ -1,13 +1,14 @@
 FROM python:3.13-slim
 
-COPY . /saku
+COPY Pipfile /saku/Pipfile
 WORKDIR /saku
-RUN cp docker/saku.ini file/saku.ini
 RUN python -m pip install --upgrade pip
 RUN python -m pip install pipenv
 RUN pipenv install
 
-COPY ./docker/entrypoint.sh /
+COPY . /saku
+COPY docker/saku.ini /saku/file/saku.ini
+COPY docker/entrypoint.sh /
 RUN chmod 755 /entrypoint.sh
 
 EXPOSE 8000
