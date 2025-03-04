@@ -1,4 +1,4 @@
-// Post button conttoller.
+// Post button contoller.
 // Copyright (C) 2025 shinGETsu Project.
 
 shingetsu.initialize(function() {

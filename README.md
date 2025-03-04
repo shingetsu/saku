@@ -86,7 +86,7 @@ Usage Saku
 
     * When use Docker
 
-        docker compose up
+        docker compose up --build
 
     * When install to system and need to run it directly
 

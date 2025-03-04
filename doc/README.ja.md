@@ -75,7 +75,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
     * 例: Dockerを使う場合
 
-        docker compose up
+        docker compose up --build
 
     * 例: システムにインストールしており直に実行したい場合
 
