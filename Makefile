@@ -26,10 +26,8 @@ install:
 	install -m 644 -D -t $(PREFIX)/share/saku/www/contrib www/contrib/*
 	install -m 644 -D -t $(PREFIX)/share/saku/www/jquery www/jquery/*.js
 	install -m 644 -D -t $(PREFIX)/share/saku/www/jquery/spoiler www/jquery/spoiler/*
-	install -m 644 -D -t $(PREFIX)/share/doc/saku README*
-	install -m 644 -D -t $(PREFIX)/share/doc/saku doc/README*
-	install -m 644 -D -t $(PREFIX)/share/doc/saku/sample file/*node*.txt
-	install -m 644 -D -t $(PREFIX)/share/doc/saku/sample file/spam.txt
+	install -m 644 -D -t $(PREFIX)/share/doc/saku README* LICENSE doc/AUTHORS*
+	install -m 644 -D -t $(PREFIX)/share/doc/saku doc/README* doc/changelog*
 	install -m 644 -D -t $(PREFIX)/share/doc/saku/sample doc/*.sample
 
 	install -m 755 -d $(PREFIX)/bin
@@ -38,6 +36,8 @@ install:
 	install -m 755 -T tool/mkrss.py $(PREFIX)/lib/saku/mkrss
 	install -m 755 -T tool/mkarchive.py $(PREFIX)/lib/saku/mkarchive
 	install -m 644 -T doc/sample.ini $(PREFIX)/share/doc/saku/sample/saku.ini
+	install -m 644 -T doc/sample.reverse_proxy.ini \
+        $(PREFIX)/share/doc/saku/sample/saku.reverse_proxy.ini
 
 	rm -f $(PREFIX)/share/saku/www/__merged.css
 	rm -f $(PREFIX)/share/saku/www/__merged.js

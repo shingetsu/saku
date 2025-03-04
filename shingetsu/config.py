@@ -30,7 +30,7 @@ import re
 import os.path
 import configparser
 
-saku_version = '5.3.0'
+saku_version = '5.4.0'
 
 def _get_value(parser, section, key, default, vtype=''):
     """Get config value or default value."""

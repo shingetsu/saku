@@ -1,4 +1,4 @@
-// Post button contoller.
+// Post button controller.
 // Copyright (C) 2025 shinGETsu Project.
 
 shingetsu.initialize(function() {
