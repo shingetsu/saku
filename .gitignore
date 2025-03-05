@@ -1,9 +1,12 @@
 *.pyc
 *.pyo
 Pipfile.lock
-cache
+
+/cache
+/log
+/run
+/data
+
 file/version.txt
-log
-run
 www/__merged.css
 www/__merged.js
