@@ -373,12 +373,13 @@ class NodeList(RawNodeList):
     def __init__(self):
         RawNodeList.__init__(self, config.node, True)
 
-    def myself(self):
-        """Who am I."""
+    def myself(self, need_ip=False):
+        """Who am I.
+        """
         port = config.port
         path = config.server
         dnsname = config.dnsname
-        if dnsname != "":
+        if not need_ip and dnsname != '':
             n = Node(host=dnsname, port=port, path=path)
             return n, n
         addr4 = {}

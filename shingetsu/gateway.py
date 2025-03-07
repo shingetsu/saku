@@ -517,10 +517,11 @@ class CGI(basecgi.CGI):
         passwd = form.getfirst("passwd", "")
         id = rec.build(stamp, body, passwd=passwd)
 
+        remote_addr = self.environ['REMOTE_ADDR']
         proxy_client = self.environ.get('HTTP_X_FORWARDED_FOR', 'direct')
         self.stderr.write('post %s/%d_%s from %s/%s\n' %
                           (cache.datfile, stamp, id,
-                           self.remoteaddr, proxy_client))
+                           remote_addr, proxy_client))
 
         if len(rec.recstr) > config.record_limit*1024:
             self.header(self.message['big_file'], deny_robot=True)

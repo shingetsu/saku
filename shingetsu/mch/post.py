@@ -78,14 +78,16 @@ def post_comment(env, thread_key, name, mail, body, passwd, tag=None):
     if spam.check(rec.recstr):
         raise SpamError()
 
-    # utils.log('post %s/%d_%s' % (c.datfile, stamp, id))
+    remote_addr = env['REMOTE_ADDR']
+    proxy_client = env.get('HTTP_X_FORWARDED_FOR', 'direct')
+    utils.log('post %s/%d_%s from %s/%s' %
+              (c.datfile, stamp, id, remote_addr, proxy_client))
 
     c.add_data(rec)
     c.sync_status()
 
     if tag:
         utils.save_tag(c, tag)
-
 
     queue = updatequeue.UpdateQueue()
     queue.append(c.datfile, stamp, id, None)
