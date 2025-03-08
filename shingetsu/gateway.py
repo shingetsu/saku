@@ -257,7 +257,10 @@ class CGI(basecgi.CGI):
         self.stdout.write(self.template('footer', {'menubar': menubar}))
 
     def localtime(self, stamp=0):
-        """Return YYYY-mm-dd HH:MM."""
+        """Return YYYY-mm-dd HH:MM.
+        """
+        if not stamp:
+            return '0000-00-00 00:00'
         return time.strftime('%Y-%m-%d %H:%M', time.localtime(int(stamp)))
 
     def res_anchor(self, id, appli, title, absuri=False):

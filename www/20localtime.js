@@ -1,6 +1,5 @@
-/* Localtime of User Agent.
- * Copyright (C) 2006-2014 shinGETsu Project.
- */
+// Localtime of User Agent.
+// Copyright (C) 2006 shinGETsu Project.
 
 shingetsu.initialize(function () {
     function format(n) {
@@ -20,9 +19,14 @@ shingetsu.initialize(function () {
     function overrideDatetime($container) {
         $container.find('span.stamp[data-stamp]').each(function() {
             var container = $(this);
-            var date = new Date();
-            date.setTime(container.attr('data-stamp') * 1000);
-            container.html(myLocaltime(date));
+            var stamp = container.attr('data-stamp');
+            if (stamp == 0) {
+                container.html('0000-00-00 00:00');
+            } else {
+                var date = new Date();
+                date.setTime(container.attr('data-stamp') * 1000);
+                container.html(myLocaltime(date));
+            }
         });
     }
 
