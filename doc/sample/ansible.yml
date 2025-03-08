@@ -5,7 +5,6 @@
   apt:
       pkg:
         - make
-        - patch
         - python3-pil
         - supervisor
         # installed for ansible
