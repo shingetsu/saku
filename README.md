@@ -56,17 +56,19 @@ Usage Saku
         apt install python3-jinja2 python3-pil
 
     * When use Docker, do nothing.
+    * When use ansible-playbook, see doc/sample/ansible.yml
 4. When install saku to system
     * When install to /usr/local
 
         make
         sudo make install
 
-    * when install to other place
+    * When install to other place
 
         make
         make install PREFIX=/path/to/insall/dir
 
+    * When use ansible-playbook, see doc/sample/ansible.yml
 5. Set up config files when install saku to system.
     * Sample files are in /usr/local/share/doc/saku/sample.
     * saku.ini are loaded from following paths and the later settings have a priority.

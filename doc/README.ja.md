@@ -49,6 +49,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
         apt install python3-jinja2 python3-pil
 
     * 例: Dockerを利用する場合は作業不要
+    * 例: ansible-playbook を利用する場合は doc/sample/ansible.yml を見てください
 4. 朔をシステムにインストールする(そうしたい人のみ)
     * 例: /usr/local にインストールする場合
 
@@ -60,6 +61,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
         make
         make install PREFIX=/path/to/insall/dir
 
+    * 例: ansible-playbook を利用する場合は doc/sample/ansible.yml を見てください
 5. 朔をシステムにインストールした場合は設定ファイルを配置する
     * 設定ファイルの雛型は /usr/local/share/doc/saku/sample にインストールされています
     * saku.ini は /usr/local/etc/saku/saku.ini, /etc/saku/saku.ini, ~/.saku/saku.ini の順に読み込まれ、後のものが優先されます

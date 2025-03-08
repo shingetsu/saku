@@ -1,5 +1,5 @@
 // Localtime of User Agent.
-// Copyright (C) 2006 shinGETsu Project.
+// Copyright (c) 2006 shinGETsu Project.
 
 shingetsu.initialize(function () {
     function format(n) {

@@ -1,12 +1,16 @@
+# Sample tasks/main.yml for ansible-playbook
+# Copyright (c) 2025 shinGETsu Project.
+
 - name: install packages
   apt:
       pkg:
         - make
         - patch
-        - python3
         - python3-pil
-        - python3-jinja2
         - supervisor
+        # installed for ansible
+        #- python3
+        #- python3-jinja2
 
 - name: make /etc/saku directories
   file:
@@ -14,6 +18,8 @@
     state: directory
     recurse: true
 
+# put your config files to files/conf/
+# sample files are doc/sample/
 - name: put config files
   copy:
     src: '{{ item }}'
@@ -27,7 +33,7 @@
     name: shingetsu
     group: users
     shell: /bin/false
-    home: /srv/saku
+    home: /var/local/run/saku
 
 - name: make directories
   file:
@@ -37,28 +43,56 @@
     owner: shingetsu
     group: users
   with_items:
-    - /srv/saku/cache
+    - /var/lib/saku/cache
     - /var/local/log/saku
     - /var/local/run/saku
 
-- name: put /usr/local/sbin/saku-install
+- name: make source directory
+  file:
+    path: /usr/local/src/saku
+    state: directory
+    recurse: true
+
+- name: checkout saku
+  git:
+    repo: https://github.com/shingetsu/saku.git
+    dest: /usr/local/src/saku
+
+# put your supervisor.conf to files/
+# sample is doc/sample/supervisor.conf
+- name: put supervisor config
   copy:
-    dest: /usr/local/sbin/saku-install
-    src: saku-install
-    mode: 0755
-  register: saku_install
+    dest: /etc/supervisor/conf.d/saku.conf
+    src: supervisor.conf
 
-- name: run saku-install (1/2)
+- name: stop saku
   shell:
-    cmd: /usr/local/sbin/saku-install
-  when: saku_install.changed
+    cmd: supervisorctl stop saku
 
-- name: run saku-install (2/2)
+- name: remove installed saku
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: absent
+  with_items:
+    - /usr/local/bin/saku
+    - /usr/local/lib/saku
+    - /usr/local/share/saku
+    - /usr/local/share/doc/saku
+
+- name: install saku
   shell:
-    cmd: /usr/local/sbin/saku-install
-    creates: /usr/local/bin/saku
+    cmd: make && make install
+  args:
+    chdir: /usr/local/src/saku
+  when: not ansible_check_mode
+
+- name: start saku
+  shell:
+    cmd: supervisorctl start saku
 
 - name: put shingetsu cron
   copy:
     dest: /etc/cron.d/shingetsu
-    src: cron.shingetsu
+    content: |
+      # m  h dom mon dow user      command
+       38  *   *   *   * shingetsu /usr/local/lib/saku/mkrss

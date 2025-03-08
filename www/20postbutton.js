@@ -1,5 +1,5 @@
 // Post button controller.
-// Copyright (C) 2025 shinGETsu Project.
+// Copyright (c) 2025 shinGETsu Project.
 
 shingetsu.initialize(function() {
     $('#postarticle').submit(function () {
