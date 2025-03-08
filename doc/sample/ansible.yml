@@ -1,0 +1,64 @@
+- name: install packages
+  apt:
+      pkg:
+        - make
+        - patch
+        - python3
+        - python3-pil
+        - python3-jinja2
+        - supervisor
+
+- name: make /etc/saku directories
+  file:
+    path: /etc/saku
+    state: directory
+    recurse: true
+
+- name: put config files
+  copy:
+    src: '{{ item }}'
+    dest: /etc/saku/{{ item | replace(role_path + '/files/conf', '') }}
+  with_fileglob:
+    - 'conf/*'
+  notify: restart saku
+
+- name: create shingetsu user
+  user:
+    name: shingetsu
+    group: users
+    shell: /bin/false
+    home: /srv/saku
+
+- name: make directories
+  file:
+    path: '{{ item }}'
+    state: directory
+    recurse: true
+    owner: shingetsu
+    group: users
+  with_items:
+    - /srv/saku/cache
+    - /var/local/log/saku
+    - /var/local/run/saku
+
+- name: put /usr/local/sbin/saku-install
+  copy:
+    dest: /usr/local/sbin/saku-install
+    src: saku-install
+    mode: 0755
+  register: saku_install
+
+- name: run saku-install (1/2)
+  shell:
+    cmd: /usr/local/sbin/saku-install
+  when: saku_install.changed
+
+- name: run saku-install (2/2)
+  shell:
+    cmd: /usr/local/sbin/saku-install
+    creates: /usr/local/bin/saku
+
+- name: put shingetsu cron
+  copy:
+    dest: /etc/cron.d/shingetsu
+    src: cron.shingetsu
