@@ -40,6 +40,7 @@ filter<>フィルタ
 regexp<>正規表現
 tag<>タグ
 string<>文字列
+title_desc<>シンプルにしてください。/[]&lt;&gt;は使えません。
 tag_desc<>スペースで区切ってタグを入力してください。&lt;&gt;&amp;は使えません。
 show<>表示
 

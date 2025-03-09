@@ -40,6 +40,7 @@ filter<>Filter
 regexp<>RegExp
 tag<>Tag
 string<>String
+title_desc<>Keep the title simple. Do not use [, ], &lt;, and &gt;.
 tag_desc<>Input tags splitting by space. Do not use &lt;, &gt;, and &amp;.
 show<>show
 

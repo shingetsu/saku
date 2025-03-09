@@ -1,6 +1,6 @@
 {#
  # Saku Gateway New Element Form.
- # Copyright (c) 2005-2014 shinGETsu Project.
+ # Copyright (c) 2005 shinGETsu Project.
  #}
 <div class="row">
 <form method="post" action="{{cginame}}" class="well form-horizontal span6">
@@ -10,7 +10,10 @@
 
   <div class="form-group">
     <label class="control-label col-sm-2" for="link">{{message.title}}</label>
-    <div class="col-sm-10"><input name="link" maxlength="{{config.title_limit}}" value="" id="link" class="form-control" /></div>
+    <div class="col-sm-10">
+      <input name="link" maxlength="{{config.title_limit}}" value="" id="link" class="form-control" />
+      <div class="help-block">{{message.title_desc}}</div>
+    </div>
   </div>
 
   {% if isadmin %}
