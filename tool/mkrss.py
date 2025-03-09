@@ -86,10 +86,8 @@ def write_rss(rss, filename):
 
 def update_rss(command, filename, datefilename):
     date, rss = get_rss(command)
-    if not check_date(date, datefilename):
-        return False
     write_rss(rss, filename)
-    return True
+    return check_date(date, datefilename)
 
 def get_links():
     yield '%s://%s/' % (shingetsu.config.gateway_protocol, server)
