@@ -25,7 +25,12 @@
     dest: /etc/saku/{{ item | replace(role_path + '/files/conf', '') }}
   with_fileglob:
     - 'conf/*'
-  notify: restart saku
+  #notify: restart saku
+
+# sample handlers/main.yml
+#- name: restart saku
+#  shell:
+#    cmd: supervisorctl restart saku
 
 - name: create shingetsu user
   user:
@@ -45,12 +50,6 @@
     - /var/lib/saku/cache
     - /var/local/log/saku
     - /var/local/run/saku
-
-- name: make source directory
-  file:
-    path: /usr/local/src/saku
-    state: directory
-    recurse: true
 
 - name: checkout saku
   git:
