@@ -9,7 +9,7 @@ packdir = ..
 package = saku-$(shell python3 -c 'import shingetsu.config; \
     print(shingetsu.config.saku_version)')
 
-.PHONY: all install version check clean distclean package
+.PHONY: all install uninstall version check clean distclean package
 
 all: version
 
@@ -42,6 +42,12 @@ install:
 	rm -f $(PREFIX)/share/saku/www/__merged.js
 	cat www/*.css > $(PREFIX)/share/saku/www/__merged.css
 	cat www/*.js > $(PREFIX)/share/saku/www/__merged.js
+
+uninstall:
+	rm -Rf $(PREFIX)/bin/saku
+	rm -Rf $(PREFIX)/lib/saku
+	rm -Rf $(PREFIX)/share/saku
+	rm -Rf $(PREFIX)/share/doc/saku
 
 version:
 	python3 tool/git2ver.py

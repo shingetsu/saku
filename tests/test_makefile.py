@@ -65,6 +65,12 @@ class MakefileTest(unittest.TestCase):
         self.assertTrue(os.path.isfile(dest + '/share/saku/file/initnode.txt'))
         self.assertTrue(os.path.isfile(dest + '/share/saku/file/version.txt'))
 
+        subprocess.run(['make', 'uninstall', 'PREFIX='+dest], cwd=src,
+                       stdout=subprocess.PIPE)
+        for dirpath, _, filenames in os.walk(dest):
+            if filenames:
+                self.fail('directory is not empty: %s' % dirpath)
+
     def test_make_install_without_git_dir(self):
         src = self.get_tmp_dir() + '/src'
         dest = self.get_tmp_dir() + '/dest'
@@ -77,6 +83,12 @@ class MakefileTest(unittest.TestCase):
                        stdout=subprocess.PIPE)
         self.assertTrue(os.path.isfile(dest + '/share/saku/file/initnode.txt'))
         self.assertFalse(os.path.isfile(dest + '/share/saku/file/version.txt'))
+
+        subprocess.run(['make', 'uninstall', 'PREFIX='+dest], cwd=src,
+                       stdout=subprocess.PIPE)
+        for dirpath, _, filenames in os.walk(dest):
+            if filenames:
+                self.fail('directory is not empty: %s' % dirpath)
 
     def test_make_package(self):
         tmp = self.get_tmp_dir()

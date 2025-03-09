@@ -54,11 +54,13 @@ Sakuは Shingetsu Another Keen Utility の略です。
     * 例: /usr/local にインストールする場合
 
         make
+        sudo make uninstall
         sudo make install
 
     * 例: インストール先を指定する場合
 
         make
+        make uninstall PREFIX=/path/to/insall/dir
         make install PREFIX=/path/to/insall/dir
 
     * 例: ansible-playbook を利用する場合は doc/sample/ansible.yml を見てください

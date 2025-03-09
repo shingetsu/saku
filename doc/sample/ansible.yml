@@ -68,19 +68,9 @@
   shell:
     cmd: supervisorctl stop saku
 
-- name: remove installed saku
-  ansible.builtin.file:
-    path: '{{ item }}'
-    state: absent
-  with_items:
-    - /usr/local/bin/saku
-    - /usr/local/lib/saku
-    - /usr/local/share/saku
-    - /usr/local/share/doc/saku
-
 - name: install saku
   shell:
-    cmd: make && make install
+    cmd: make && make uninstall && make install
   args:
     chdir: /usr/local/src/saku
   when: not ansible_check_mode

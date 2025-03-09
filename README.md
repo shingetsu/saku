@@ -61,11 +61,13 @@ Usage Saku
     * When install to /usr/local
 
         make
+        sudo make uninstall
         sudo make install
 
     * When install to other place
 
         make
+        make uninstall PREFIX=/path/to/insall/dir
         make install PREFIX=/path/to/insall/dir
 
     * When use ansible-playbook, see doc/sample/ansible.yml
