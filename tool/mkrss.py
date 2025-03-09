@@ -5,7 +5,7 @@
 Set server_name, proxy_destination and apache_docroot in saku.ini.
 '''
 #
-# Copyright (c) 2006-2023 shinGETsu Project.
+# Copyright (c) 2006 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@ Set server_name, proxy_destination and apache_docroot in saku.ini.
 #
 
 import os
-import sys
 import socket
 import urllib.request
 
@@ -54,10 +53,8 @@ def urlopen(url, lang='en'):
     return urllib.request.urlopen(req)
 
 def get_rss(path):
-    rssfile = urlopen('%s%s%s%s' % (destination,
-                                     shingetsu.config.gateway,
-                                     sep,
-                                     path))
+    rssfile = urlopen('%s%s%s%s' %
+        (destination, shingetsu.config.gateway, sep, path))
     date = rssfile.info().get("last-modified", "")
     rss = rssfile.read()
     rssfile.close()
@@ -78,9 +75,9 @@ def check_date(date, filename):
     except IOError:
         olddate = ""
     if date and date == olddate:
-        sys.exit()
-    else:
-        opentext(rssdate, 'w').write(date)
+        return False
+    opentext(rssdate, 'w').write(date)
+    return True
 
 def write_rss(rss, filename):
     f = open(os.path.join(docroot, filename), 'wb')
@@ -89,8 +86,10 @@ def write_rss(rss, filename):
 
 def update_rss(command, filename, datefilename):
     date, rss = get_rss(command)
-    check_date(date, datefilename)
+    if not check_date(date, datefilename):
+        return False
     write_rss(rss, filename)
+    return True
 
 def get_links():
     yield '%s://%s/' % (shingetsu.config.gateway_protocol, server)
@@ -113,8 +112,10 @@ def write_sitemap():
 
 def main():
     os.chdir(shingetsu.config.docroot)
-    update_rss('recent_rss', 'recent_rss.rdf', 'recentrssdate')
-    update_rss('rss', 'rss.rdf', 'rssdate')
+    u1 = update_rss('recent_rss', 'recent_rss.rdf', 'recentrssdate')
+    u2 = update_rss('rss', 'rss.rdf', 'rssdate')
+    if not u1 and not u2:
+        return
     write_sitemap()
     get_html(destination, 'index.html')
     get_html(destination, 'index.en.html', 'en')
