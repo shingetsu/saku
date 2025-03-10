@@ -79,7 +79,7 @@ class RemoteAddress:
 
 def remote_addr(env):
     ra = env['REMOTE_ADDR']
-    if config.use_x_forwarded_for and 'HTTP_X_FORWARDED_FOR' in env:
+    if config.use_x_forwarded_for:
         ra = env['HTTP_X_FORWARDED_FOR'].split(',')[-1].strip()
     return RemoteAddress(ra)
 
