@@ -1,4 +1,4 @@
 #!/bin/bash
 set -eux
-
-pipenv run python ./saku.py -v
+chown saku:saku /saku-data
+su saku -c "/saku/.local/bin/pipenv run python ./saku.py -v"
