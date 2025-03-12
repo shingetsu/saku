@@ -4,11 +4,12 @@ RUN groupadd -g 1000 saku && \
     useradd -m -d /saku -s /bin/bash -u 1000 -g 1000 saku
 
 WORKDIR /saku
+ENV PATH=/saku/.local/bin:$PATH
+
 USER saku:saku
 COPY Pipfile .
-RUN python -m pip install --upgrade pip
-RUN python -m pip install pipenv
-RUN /saku/.local/bin/pipenv install
+RUN python -m pip install pipenv && \
+    pipenv install
 
 USER root:root
 COPY docker/entrypoint.sh /
