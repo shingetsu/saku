@@ -15,7 +15,11 @@ USER root:root
 COPY docker/entrypoint.sh /
 RUN chmod 755 /entrypoint.sh && \
   chown -R root:root /saku
-COPY . .
+COPY file file
+COPY shingetsu shingetsu
+COPY template template
+COPY www www
+COPY saku.py .
 COPY docker/saku.ini file
 
 EXPOSE 8000
