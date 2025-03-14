@@ -61,7 +61,7 @@ clean:
 	rm -Rf cache log run
 	rm -Rf data
 	find . -name "*.py[co]" \! -path ".git/*" -print0 | xargs -0 -r rm -f
-	-find . -type d -name "__pycache__" -print0 | xargs -0 -r rmdir
+	find . -type d -name "__pycache__" -print0 | xargs -0 -r rmdir
 
 distclean: clean
 	rm -f Pipfile.lock
