@@ -6,7 +6,7 @@
 PREFIX = /usr/local
 
 packdir = ..
-package = saku-$(shell python3 -c 'import shingetsu.config; \
+package = saku-$(shell python3 -B -c 'import shingetsu.config; \
     print(shingetsu.config.saku_version)')
 
 .PHONY: all install uninstall version check clean distclean package
@@ -50,7 +50,7 @@ uninstall:
 	rm -Rf $(PREFIX)/share/doc/saku
 
 version:
-	python3 tool/git2ver.py
+	python3 -B tool/git2ver.py
 	@test -f file/version.txt && cat file/version.txt || true
 
 check:
