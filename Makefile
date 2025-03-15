@@ -60,15 +60,13 @@ clean:
 	rm -f www/__merged.css www/__merged.js
 	rm -Rf cache log run
 	rm -Rf data
-	find . -name "*.py[co]" \! -path ".git/*" -print0 | xargs -0 -r rm -f
+	find . -name "*.py[cod]" \! -path ".git/*" -print0 | xargs -0 -r rm -f
 	find . -type d -name "__pycache__" -print0 | xargs -0 -r rmdir
 
 distclean: clean
 	rm -f Pipfile.lock
 	rm -f file/version.txt
-	find . \( -name "*~" -o -name "#*" -o -name ".#*" \) \! -path ".git/*" \
-	    -print0 | \
-	    xargs -0 -r rm -fv
+	find . -name ".*.swp" \! -path ".git/*" -print0 | xargs -0 -r rm -f
 
 package: distclean
 	rm -f $(packdir)/$(package).tar.gz
