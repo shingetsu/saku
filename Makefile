@@ -12,13 +12,10 @@ package = saku-$(shell python3 -B -c 'import shingetsu.config; \
 .PHONY: all install uninstall version check clean distclean package
 
 all: version
-	python3 -m compileall shingetsu
 
 install:
 	install -m 644 -D -t $(PREFIX)/lib/saku/shingetsu shingetsu/*.py
-	install -m 644 -D -t $(PREFIX)/lib/saku/shingetsu/__pycache__ shingetsu/__pycache__/*
 	install -m 644 -D -t $(PREFIX)/lib/saku/shingetsu/mch shingetsu/mch/*.py
-	install -m 644 -D -t $(PREFIX)/lib/saku/shingetsu/mch/__pycache__ shingetsu/mch/__pycache__/*
 	install -m 644 -D -t $(PREFIX)/share/saku/file file/*.txt
 	install -m 644 -D -t $(PREFIX)/share/saku/template template/*.txt
 	install -m 644 -D -t $(PREFIX)/share/saku/www www/*.css www/*.js
