@@ -9,7 +9,8 @@ ENV PATH=/saku/.local/bin:$PATH
 USER saku:saku
 COPY Pipfile* ./
 RUN python -m pip install pipenv && \
-    pipenv install
+    pipenv install && \
+    rm -Rf .cache
 
 USER root:root
 COPY docker/entrypoint.sh /
@@ -21,6 +22,7 @@ COPY template template
 COPY www www
 COPY saku.py .
 COPY docker/saku.ini file
+RUN python -m compileall shingetsu
 
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]

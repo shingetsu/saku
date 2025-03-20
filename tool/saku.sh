@@ -1,2 +1,2 @@
 #!/bin/sh
-exec python3 /usr/local/lib/saku/saku "$*"
+exec python3 "$(dirname "$0")"/../lib/saku/saku "$*"
