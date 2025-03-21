@@ -56,7 +56,7 @@ version:
 	@test -f file/version.txt && cat file/version.txt || true
 
 check:
-	python3 -B -m unittest -v tests/test_*.py
+	env PYTHONDEVMODE=1 python3 -B -m unittest -v tests/test_*.py
 
 clean:
 	rm -f www/__merged.css www/__merged.js
