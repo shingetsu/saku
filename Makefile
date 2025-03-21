@@ -43,6 +43,8 @@ install:
 	cat www/*.css > $(PREFIX)/share/saku/www/__merged.css
 	cat www/*.js > $(PREFIX)/share/saku/www/__merged.js
 
+	python3 -m compileall $(PREFIX)/lib/saku/shingetsu
+
 uninstall:
 	rm -Rf $(PREFIX)/bin/saku
 	rm -Rf $(PREFIX)/lib/saku
