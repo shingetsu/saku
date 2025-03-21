@@ -222,7 +222,7 @@ def copy_attach(cache):
             os.utime(dstfile, (stamp, stamp))
 
 def make_sitemap():
-    with opentext(os.path.join(archive_dir, 'sitemap.txt'), 'w') as f
+    with opentext(os.path.join(archive_dir, 'sitemap.txt'), 'w') as f:
         f.write('%s\n' % archive_uri)
         for d in os.listdir(archive_dir):
             if (len(d) != 32) or \
