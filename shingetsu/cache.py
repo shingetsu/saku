@@ -172,9 +172,8 @@ class Record(dict):
             if self.size() <= 0:
                 self.remove()
                 return False
-            f = opentext(filename)
-            parse_ok = self.parse(f.readline())
-            f.close()
+            with opentext(filename) as f:
+                parse_ok = self.parse(f.readline())
             return parse_ok
         except (IOError, OSError) as err:
             sys.stderr.write('IOError/OSError: %s\n' % err)
@@ -542,9 +541,8 @@ class Cache(dict):
     def _load_status(self, key):
         path = "%s/%s.stat" % (self.datpath, key)
         try:
-            f = opentext(path)
-            v = f.readline()
-            f.close()
+            with opentext(path) as f:
+                v = f.readline()
             return int(v.strip())
         except IOError:
             #sys.stderr.write(path + ": IOError\n")
@@ -560,9 +558,8 @@ class Cache(dict):
             if not fsdiff(path, buf):
                 try:
                     lock.acquire(True)
-                    f = opentext(path, 'w')
-                    f.write(buf)
-                    f.close()
+                    with opentext(path, 'w') as f:
+                        f.write(buf)
                 finally:
                     lock.release()
             return True
@@ -814,9 +811,8 @@ class CacheList(list):
                 continue
             try:
                 dat_stat_file = config.cache_dir + '/' + i + '/dat.stat'
-                f = opentext(dat_stat_file)
-                dat_stat = f.readlines()[0].strip()
-                f.close()
+                with opentext(dat_stat_file) as f:
+                    dat_stat = f.readlines()[0].strip()
                 c = Cache(dat_stat, sugtagtable, recentlist)
                 self.append(c)
             except IOError:
@@ -831,14 +827,12 @@ class CacheList(list):
             try:
                 dat_stat_file = os.path.join(config.cache_dir, i, 'dat.stat')
                 if os.path.isfile(dat_stat_file):
-                    f = opentext(dat_stat_file)
-                    dat_stat = f.readlines()[0].strip()
-                    f.close()
+                    with opentext(dat_stat_file) as f:
+                        dat_stat = f.readlines()[0].strip()
                 else:
                     dat_stat = i
-                    f = opentext(dat_stat_file, 'w')
-                    f.write(i + '\n')
-                    f.close()
+                    with opentext(dat_stat_file, 'w') as f:
+                        f.write(i + '\n')
                 hash = title.file_hash(dat_stat)
                 if i == hash:
                     continue

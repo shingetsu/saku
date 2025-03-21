@@ -36,7 +36,7 @@ import time
 
 from . import config
 
-__all__ = ['md5digest', 'fsdiff', 'opentext']
+__all__ = ['md5digest', 'fsdiff', 'opentext', 'readtext']
 
 
 def md5digest(s):
@@ -57,12 +57,12 @@ def fsdiff(f, s):
     try:
         if not os.path.isfile(f):
             return False
-        elif os.path.getsize(f) != len(s):
+        if os.path.getsize(f) != len(s):
             return False
-        elif open(f, 'rb').read() != s:
-            return False
-        else:
-            return True
+        with open(f, 'rb') as f:
+            if f.read() != s:
+                return False
+        return True
     except (IOError, OSError) as e:
         sys.stderr.write('%s: %s\n' % (f, e))
         return False
@@ -75,6 +75,11 @@ def opentext(path, mode='r'):
     return open(path, mode,
                 encoding='utf-8', errors='replace',
                 newline=newline)
+
+def readtext(path):
+    with open(path) as f:
+        for line in f:
+            yield line
 
 def rfc822_time(t):
     """Return date and time in RFC822 format.

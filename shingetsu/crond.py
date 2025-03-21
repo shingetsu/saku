@@ -124,10 +124,9 @@ class Status(dict):
     def sync(self):
         if self.use_client_log:
             try:
-                f = opentext(self.statusfile, 'w')
-                for k in ("ping", "init", "sync"):
-                    f.write(str(self[k]) + '\n')
-                f.close()
+                with opentext(self.statusfile, 'w') as f:
+                    for k in ("ping", "init", "sync"):
+                        f.write(str(self[k]) + '\n')
             except IOError:
                 sys.stderr.write(self.statusfile + ": IOError\n")
         else:

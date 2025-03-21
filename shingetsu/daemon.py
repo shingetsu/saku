@@ -104,16 +104,17 @@ def start_daemon():
     if hasattr(os, 'getpid'):
         try:
             pidfile = os.path.join(config.docroot, config.pid)
-            open(pidfile, 'w').write('%d' % os.getpid())
+            with open(pidfile, 'w') as f:
+                f.write('%d' % os.getpid())
         except (IOError, OSError) as err:
             sys.stderr.write('IOError/OSError: %s\n' % err)
 
     crondaemon = crond.Crond()
-    crondaemon.setDaemon(True)
+    crondaemon.daemon = True
     crondaemon.start()
 
     httpdaemon = httpd.Httpd()
-    httpdaemon.setDaemon(True)
+    httpdaemon.daemon = True
     httpdaemon.start()
 
     if config.enable2ch:

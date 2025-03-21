@@ -394,7 +394,8 @@ class CGI(gateway.CGI):
         self.stdout.headers.append(
             ('Content-Type', 'text/plain; charset=UTF-8'))
         try:
-            self.stdout.write(util.opentext(config.motd).read())
+            with util.opentext(config.motd) as f:
+                self.stdout.write(f.read())
         except IOError:
             self.stderr.write(config.motd + ": IOError\n")
 

@@ -1,7 +1,7 @@
 '''Tied List and Dictionaly.
 '''
 #
-# Copyright (c) 2005-2023 shinGETsu Project.
+# Copyright (c) 2005 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@ import sys
 import os.path
 from threading import RLock
 
-from .util import opentext
+from .util import opentext, readtext
 
 __all__ = ['tiedlist', 'tieddict']
 
@@ -68,7 +68,7 @@ class ListFile:
             self.caching = False
         try:
             if (self.path is not None) and os.path.isfile(self.path):
-                for line in opentext(self.path):
+                for line in readtext(self.path):
                     if self.elemclass is not None:
                         try:
                             obj = self.elemclass(line.strip())
@@ -115,12 +115,11 @@ class ListFile:
                 _cache[self.path] = self
             elif self.path in _cache:
                 del _cache[self.path]
-            f = opentext(self.path, 'w')
-            for elem in self.data:
-                if not isinstance(elem, str):
-                    elem = str(elem)
-                f.write(elem + '\n')
-            f.close()
+            with opentext(self.path, 'w') as f:
+                for elem in self.data:
+                    if not isinstance(elem, str):
+                        elem = str(elem)
+                    f.write(elem + '\n')
         finally:
             lock.release()
 
@@ -140,7 +139,7 @@ class DictFile:
         self.caching = caching
         try:
             if (self.path is not None) and os.path.isfile(self.path):
-                for line in opentext(self.path):
+                for line in readtext(self.path):
                     try:
                         key, str_values = line.strip().split('<>', 1)
                         if listclass is not None:
@@ -225,12 +224,11 @@ class DictFile:
                 _cache[self.path] = self
             elif self.path in _cache:
                 del _cache[self.path]
-            f = opentext(self.path, 'w')
-            for key in self.data:
-                line = ('%s<>%s\n' %
-                        (key, ' '.join([str(i) for i in self.data[key]])))
-                f.write(line)
-            f.close()
+            with opentext(self.path, 'w') as f:
+                for key in self.data:
+                    line = ('%s<>%s\n' %
+                            (key, ' '.join([str(i) for i in self.data[key]])))
+                    f.write(line)
         finally:
             lock.release()
 

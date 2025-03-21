@@ -1,12 +1,12 @@
-'''List Style Config.
+"""List Style Config.
 
 The object is tied a file.
 When the file is updated, the object is updated too.
 
 Encoding must be UTF-8.
-'''
+"""
 #
-# Copyright (c) 2006-2015 shinGETsu Project.
+# Copyright (c) 2006 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ import re
 import sys
 import os.path
 
-from .util import opentext
+from .util import readtext
 
 __all__ = ['ConfList', 'RegExpList']
 
@@ -58,8 +58,7 @@ class ConfList:
                 return
             self.mtime = mtime
             self.data = []
-            f = opentext(self.path)
-            for line in f:
+            for line in readtext(self.path):
                 line = line.strip()
                 if not line or line.startswith('#'):
                     continue
@@ -67,7 +66,6 @@ class ConfList:
                 if not pat:
                     continue
                 self.data.append(pat)
-            f.close()
         except (IOError, OSError) as err:
             sys.stderr.write('IOError/OSError: %s\n' % err)
 

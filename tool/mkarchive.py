@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 #
-'''Make archive, 1 HTML for 1 record
-'''
+"""Make archive, 1 HTML for 1 record
+"""
 #
-# Copyright (c) 2006-2023 shinGETsu Project.
+# Copyright (c) 2006 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -197,9 +197,8 @@ def make_html(cache):
         dstfile = '%s/%s/%s.html' % (archive_dir, title, sid)
         if not os.path.exists(dstfile):
             rec.load_body()
-            f = opentext(dstfile, 'w')
-            write_html(f, rec)
-            f.close()
+            with opentext(dstfile, 'w') as f:
+                write_html(f, rec)
             os.utime(dstfile, (rec.stamp, rec.stamp))
             rec.free()
             count += 1
@@ -223,16 +222,16 @@ def copy_attach(cache):
             os.utime(dstfile, (stamp, stamp))
 
 def make_sitemap():
-    f = opentext(os.path.join(archive_dir, 'sitemap.txt'), 'w')
-    f.write('%s\n' % archive_uri)
-    for d in os.listdir(archive_dir):
-        if (len(d) != 32) or \
-           (not os.path.isdir(os.path.join(archive_dir, d))):
-            continue
-        for html in os.listdir(os.path.join(archive_dir, d)):
-            if (len(html) != 8+5) or (not html.endswith('.html')):
+    with opentext(os.path.join(archive_dir, 'sitemap.txt'), 'w') as f
+        f.write('%s\n' % archive_uri)
+        for d in os.listdir(archive_dir):
+            if (len(d) != 32) or \
+               (not os.path.isdir(os.path.join(archive_dir, d))):
                 continue
-            f.write('%s%s/%s\n' % (archive_uri, d, html))
+            for html in os.listdir(os.path.join(archive_dir, d)):
+                if (len(html) != 8+5) or (not html.endswith('.html')):
+                    continue
+                f.write('%s%s/%s\n' % (archive_uri, d, html))
 
 def main():
     cachelist = CacheList()

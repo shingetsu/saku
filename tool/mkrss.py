@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 #
-'''Make Static Toppage, Sitemap and RSS.
+"""Make Static Toppage, Sitemap and RSS.
 
 Set server_name, proxy_destination and apache_docroot in saku.ini.
-'''
+"""
 #
 # Copyright (c) 2006 shinGETsu Project.
 # All rights reserved.
@@ -71,12 +71,14 @@ def get_html(src, dst, lang='en'):
 def check_date(date, filename):
     rssdate = os.path.join(docroot, filename)
     try:
-        olddate = opentext(rssdate).read().strip()
+        with opentext(rssdate) as f:
+            olddate = f.read().strip()
     except IOError:
         olddate = ""
     if date and date == olddate:
         return False
-    opentext(rssdate, 'w').write(date)
+    with opentext(rssdate, 'w') as f:
+        f.write(date)
     return True
 
 def write_rss(rss, filename):
@@ -103,10 +105,9 @@ def get_links():
             yield '%s/%s' % (link, record.id[:8])
 
 def write_sitemap():
-    f = opentext(os.path.join(docroot, 'sitemap.txt'), 'w')
-    for i in get_links():
-        f.write(i + "\n")
-    f.close()
+    with opentext(os.path.join(docroot, 'sitemap.txt'), 'w') as f:
+        for i in get_links():
+            f.write(i + "\n")
 
 def main():
     os.chdir(shingetsu.config.docroot)

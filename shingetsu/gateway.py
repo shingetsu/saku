@@ -46,7 +46,7 @@ from .title import *
 from .tag import *
 from .template import Template
 from .updatequeue import UpdateQueue
-from .util import opentext
+from .util import opentext, readtext
 
 
 dummyquery = str(int(time.time()));
@@ -59,10 +59,9 @@ class Message(dict):
     def __init__(self, file):
         dict.__init__(self)
         try:
-            f = opentext(file)
             del_eos = re.compile(r"[\r\n]*")
             iscomment = re.compile(r"^#$").search
-            for line in f:
+            for line in readtext(file):
                 line = del_eos.sub("", line)
                 if iscomment(line):
                     pass
@@ -71,7 +70,6 @@ class Message(dict):
                     if len(buf) == 2:
                         buf[1] = urllib.parse.unquote(buf[1])
                         self[buf[0]] = buf[1]
-            f.close()
         except IOError:
             sys.stderr.write(file + ": IOError\n")
 

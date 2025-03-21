@@ -1,7 +1,7 @@
-'''JavaScript Cache.
-'''
+"""JavaScript Cache.
+"""
 #
-# Copyright (c) 2014-2023 shinGETsu Project.
+# Copyright (c) 2014 shinGETsu Project.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,8 @@ class JsCache:
             scripts.sort()
             buf = []
             for i in scripts:
-                buf.append(opentext(i).read())
+                with opentext(i) as f:
+                    buf.append(f.read())
             self.script = '\n'.join(buf)
         except (IOError, OSError) as err:
             sys.stderr.write('IOError/OSError: %s\n' % err)

@@ -100,7 +100,8 @@ class CGI(basecgi.CGI):
     def do_motd(self):
         self.header()
         try:
-            return self.body(opentext(config.motd))
+            with opentext(config.motd) as f:
+                return self.body(f)
         except IOError:
             self.stderr.write(config.motd + ": IOError\n")
             return []
