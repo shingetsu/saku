@@ -50,7 +50,6 @@ name<>名前
 mail<>E-mail
 signature<>署名
 attach<>添付ファイル
-suffix<>拡張子
 error<>書き込み時刻に誤差
 comment<>コメント
 post<>投稿

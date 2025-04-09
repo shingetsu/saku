@@ -1,6 +1,6 @@
 {#
  # Saku Gateway Post Form.
- # Copyright (c) 2005-2018 shinGETsu Project.
+ # Copyright (c) 2005 shinGETsu Project.
  #}
 
 {% if isadmin %}
@@ -46,18 +46,6 @@
     <div class="col-sm-10">
       <input type="file" name="attach" size="19" value="" id="attach" class="input-file" />
       <div class="help-inline">{{message.limit}}: {{limit}}{{message.kb}}</div>
-    </div>
-  </div>
-
-  <div class="form-group post-advanced">
-    <label class="control-label col-sm-2" for="suffix">{{message.suffix}}</label>
-    <div class="col-sm-10">
-      <select name="suffix" size="1" id="suffix">
-        <option>AUTO</option>
-        {% for suffix in suffixes %}
-          <option>{{suffix}}</option>
-        {% endfor %}
-      </select>
     </div>
   </div>
 

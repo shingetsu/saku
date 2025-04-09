@@ -262,11 +262,8 @@ class CGI(gateway.CGI):
         self.stdout.write(self.template('record', var))
 
     def print_post_form(self, cache):
-        suffixes = list(mimetypes.types_map.keys())
-        suffixes.sort()
         var = {
             'cache': cache,
-            'suffixes': suffixes,
             'limit': config.record_limit * 3 // 4,
         }
         self.stdout.write(self.template('post_form', var))

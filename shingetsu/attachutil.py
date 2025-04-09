@@ -36,21 +36,14 @@ except ImportError:
 
 __all__ = ['is_valid_image', 'seem_html']
 
-def get_wellknown_suffix(suffix, filename=''):
-    if suffix.startswith('.'):
-        suffix = suffix[1:]
-    suffix = suffix.lower()
-    t, _ = mimetypes.guess_type('test.' + suffix)
-    if t:
-        return suffix
-
+def get_wellknown_suffix(filename):
+    suffix = ''
     m = re.search(r'\.([^.]+)$', filename)
     if m:
         suffix = m.group(1).lower()
     t, _ = mimetypes.guess_type('test.' + suffix)
     if t:
         return suffix
-
     return 'txt'
 
 def seem_html(suffix):

@@ -472,11 +472,9 @@ class CGI(basecgi.CGI):
             b64attach = base64.encodebytes(attach_value)
             str_attach = str(b64attach, 'utf-8', 'replace').replace("\n", "")
 
-        suffix = form.getfirst('suffix', '')
+        suffix = 'txt'
         if attach:
-            suffix = attachutil.get_wellknown_suffix(suffix, attach.filename)
-        else:
-            suffix = attachutil.get_wellknown_suffix(suffix)
+            suffix = attachutil.get_wellknown_suffix(attach.filename)
 
         if form.getfirst("error", "") != "":
             stamp = self.error_time()
@@ -490,7 +488,7 @@ class CGI(basecgi.CGI):
 
         if str_attach != "":
             body["attach"] = str_attach
-            body["suffix"] = re.sub(r"[\r\n]", "", suffix)
+            body["suffix"] = suffix
 
         if not body:
             self.header(self.message["null_article"], deny_robot=True)

@@ -50,7 +50,6 @@ name<>Name
 mail<>E-mail
 signature<>Signature
 attach<>Attach
-suffix<>Suffix
 error<>Error in timestamp
 comment<>Comment
 post<>POST
