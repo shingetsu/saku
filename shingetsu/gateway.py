@@ -35,6 +35,7 @@ import time
 from io import BytesIO
 
 from . import address
+from . import attachutil
 from . import basecgi
 from . import config
 from . import forminput
@@ -470,20 +471,12 @@ class CGI(basecgi.CGI):
                 attach_value = attach.value
             b64attach = base64.encodebytes(attach_value)
             str_attach = str(b64attach, 'utf-8', 'replace').replace("\n", "")
-        guess_suffix = "txt"
-        if (attach is not None) and attach.filename:
-            found = re.search(r"\.([^.]+)$", attach.filename)
-            if found:
-                guess_suffix = found.group(1).lower()
 
-        suffix = form.getfirst("suffix", "")
-        if (suffix == "") or (suffix == "AUTO"):
-            suffix = guess_suffix
-        elif suffix.startswith("."):
-            suffix = suffix[1:].lower()
+        suffix = form.getfirst('suffix', '')
+        if attach:
+            suffix = attachutil.get_wellknown_suffix(suffix, attach.filename)
         else:
-            suffix = suffix.lower()
-        suffix = re.sub(r"[^0-9A-Za-z]", "", suffix)
+            suffix = attachutil.get_wellknown_suffix(suffix)
 
         if form.getfirst("error", "") != "":
             stamp = self.error_time()

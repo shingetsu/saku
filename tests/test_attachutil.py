@@ -45,6 +45,20 @@ class AttachUtilTest(unittest.TestCase):
     def tearDown(self):
         attachutil.image_type = self.orig_image_type
 
+    def test_get_wellknown_suffix(self):
+        self.assertEqual(attachutil.get_wellknown_suffix(''), 'txt')
+        self.assertEqual(attachutil.get_wellknown_suffix('png'), 'png')
+        self.assertEqual(attachutil.get_wellknown_suffix('.png'), 'png')
+        self.assertEqual(attachutil.get_wellknown_suffix('php'), 'txt')
+        self.assertEqual(attachutil.get_wellknown_suffix('png', 'x.jpg'), 'png')
+        self.assertEqual(attachutil.get_wellknown_suffix('', 'x.jpg'), 'jpg')
+        self.assertEqual(attachutil.get_wellknown_suffix('', 'x.php'), 'txt')
+
+    def test_seem_html(self):
+        self.assertTrue(attachutil.seem_html('x.html'))
+        self.assertTrue(attachutil.seem_html('x.xhtml'))
+        self.assertFalse(attachutil.seem_html('x.txt'))
+
     def test_is_valid_image_true(self):
         attachutil.image_type = get_image_type("png")
         self.assertTrue(attachutil.is_valid_image("image/png", "foo"))

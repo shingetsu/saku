@@ -27,6 +27,7 @@
 #
 
 import mimetypes
+import re
 
 try:
     import PIL.Image
@@ -35,11 +36,27 @@ except ImportError:
 
 __all__ = ['is_valid_image', 'seem_html']
 
+def get_wellknown_suffix(suffix, filename=''):
+    if suffix.startswith('.'):
+        suffix = suffix[1:]
+    suffix = suffix.lower()
+    t, _ = mimetypes.guess_type('test.' + suffix)
+    if t:
+        return suffix
+
+    m = re.search(r'\.([^.]+)$', filename)
+    if m:
+        suffix = m.group(1).lower()
+    t, _ = mimetypes.guess_type('test.' + suffix)
+    if t:
+        return suffix
+
+    return 'txt'
 
 def seem_html(suffix):
     """Suffix seem to be html or not.
     """
-    (path_type, null) = mimetypes.guess_type('test.' + suffix)
+    path_type, _ = mimetypes.guess_type('test.' + suffix)
     return path_type in (
         'text/html',
         'application/xhtml+xml',
@@ -51,7 +68,7 @@ def is_valid_image(mimetype, path):
     path_suffix = image_type(path)
     if not path_suffix:
         return False
-    (path_type, null) = mimetypes.guess_type('test.' + path_suffix)
+    path_type, _ = mimetypes.guess_type('test.' + path_suffix)
     if mimetype == path_type:
         return True
     if (path_type == 'image/jpeg') and (mimetype == 'image/pjpeg'):
