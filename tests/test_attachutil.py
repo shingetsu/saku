@@ -47,10 +47,11 @@ class AttachUtilTest(unittest.TestCase):
 
     def test_get_wellknown_suffix(self):
         self.assertEqual(attachutil.get_wellknown_suffix(''), 'txt')
+        self.assertEqual(attachutil.get_wellknown_suffix('x'), 'txt')
         self.assertEqual(attachutil.get_wellknown_suffix('x.png'), 'png')
         self.assertEqual(attachutil.get_wellknown_suffix('x.y.png'), 'png')
-        self.assertEqual(attachutil.get_wellknown_suffix('php'), 'txt')
-        self.assertEqual(attachutil.get_wellknown_suffix('shingetsu'), 'txt')
+        self.assertEqual(attachutil.get_wellknown_suffix('x.php'), 'txt')
+        self.assertEqual(attachutil.get_wellknown_suffix('x.shingetsu'), 'txt')
 
     def test_seem_html(self):
         self.assertTrue(attachutil.seem_html('x.html'))
