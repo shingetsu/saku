@@ -301,7 +301,7 @@ class Record(dict):
         size = (int(size[0]), int(size[1]))
         try:
             im = PIL.Image.open(attach_path)
-            im.thumbnail(size, PIL.Image.ANTIALIAS)
+            im.thumbnail(size, PIL.Image.LANCZOS)
             im.save(thumbnail_path)
         except (IOError, KeyError, ValueError) as err:
             sys.stderr.write('PIL error: %s for %s\n' % (err, attach_path))
