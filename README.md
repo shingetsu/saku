@@ -33,7 +33,7 @@ Description
 
 Saku requires
 -------------
-* Python (ver.3.9 or later)
+* Python (ver.3.10 or later)
 * pipenv if you install packages with pipenv
 * Jinja2 (ver.3.1 or later)
 * PIL or Pillow (Python Imaging Libraty) if you need
@@ -41,7 +41,7 @@ Saku requires
 
 Usage Saku
 ----------
-1. Install Python3.9 or lator.
+1. Install Python3.10 or lator.
 2. Open port 8000/tcp.
     * IPv4 or IPv6 are needed to open.
     * Docker needs IPv4 or settings for IPv6.

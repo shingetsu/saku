@@ -41,6 +41,8 @@ def get_wellknown_suffix(filename):
     m = re.search(r'\.([^.]+)$', filename)
     if m:
         suffix = m.group(1).lower()
+    if suffix == 'cgi' or suffix.startswith('php'):
+        return 'txt'
     t, _ = mimetypes.guess_type('test.' + suffix)
     if t:
         return suffix

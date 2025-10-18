@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 RUN groupadd -g 1000 saku && \
     useradd -m -d /saku -s /bin/bash -u 1000 -g 1000 saku
@@ -15,7 +15,8 @@ RUN python -m pip install pipenv && \
 USER root:root
 COPY docker/entrypoint.sh /
 RUN chmod 755 /entrypoint.sh && \
-  chown -R root:root /saku
+  chown -R root:root /saku && \
+  chmod 755 /saku
 COPY file file
 COPY shingetsu shingetsu
 COPY template template

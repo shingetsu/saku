@@ -24,7 +24,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
 朔に必要なプログラム
 --------------------
-* Python (ver.3.9以降)
+* Python (ver.3.10以降)
 * pipenv パッケージをpipenvでインストールする場合
 * Jinja2 (ver.3 以降)
 * PIL または Pillow (Python Imaging Library) もし必要なら
@@ -32,7 +32,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
 朔の使い方
 ----------
-1. Python3.9以降をインストールする
+1. Python3.10以降をインストールする
 2. モデム、ルータまたはファイアウォールを設定して8000/tcpをポート開放する。
    * 環境次第なのでここでは説明しきれません
    * IPv6対応環境では最初からポート開放されている場合があるようです
