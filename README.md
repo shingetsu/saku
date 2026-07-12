@@ -90,7 +90,8 @@ Usage Saku
 
     * When use Docker
 
-        docker compose up --build
+        mkdir -p data
+        env UID=$(id -u) GID=$(id -g) docker compose up --build
 
     * When install to system and need to run it directly
 

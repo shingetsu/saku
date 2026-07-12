@@ -1,29 +1,30 @@
-FROM python:3.14.6-slim@sha256:b877e50bd90de10af8d82c57a022fc2e0dc731c5320d762a27986facfc3355c1
+FROM python:3.14.6-slim@sha256:b877e50bd90de10af8d82c57a022fc2e0dc731c5320d762a27986facfc3355c1 as builder
 
-RUN groupadd -g 1000 saku && \
-    useradd -m -d /saku -s /bin/bash -u 1000 -g 1000 saku
+ENV PATH=/saku/.local/bin:$PATH
+ENV PYTHONUSERBASE=/saku/.local
+ENV PIPENV_VENV_IN_PROJECT=1
 
 WORKDIR /saku
-ENV PATH=/saku/.local/bin:$PATH
-
-USER saku:saku
+RUN python -m pip install --user --no-cache-dir --root-user-action=ignore pipenv
 COPY Pipfile* ./
-RUN python -m pip install pipenv && \
-    pipenv install && \
-    rm -Rf .cache
+RUN pipenv install
 
-USER root:root
-COPY docker/entrypoint.sh /
-RUN chmod 755 /entrypoint.sh && \
-  chown -R root:root /saku && \
-  chmod 755 /saku
-COPY file file
 COPY shingetsu shingetsu
+RUN python -m compileall shingetsu
+
+
+FROM gcr.io/distroless/python3-debian13:nonrot@sha256:828da6b298ecebf90580c84476c29b847b6432b46dbfaa642726b87ac527ee22
+
+ENV PYTHONPATH="/saku/.venv/lib/python3.14/site-packages"
+
+WORKDIR /saku
+COPY --from=builder /saku/.venv .venv
+COPY --from=builder /saku/shingetsu shingetsu
+COPY file file
 COPY template template
 COPY www www
 COPY saku.py .
 COPY docker/saku.ini file
-RUN python -m compileall shingetsu
 
 EXPOSE 8000
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["python", "./saku.py", "-v"]
