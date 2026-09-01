@@ -1,4 +1,4 @@
-FROM python:3.14.6-slim@sha256:b877e50bd90de10af8d82c57a022fc2e0dc731c5320d762a27986facfc3355c1
+FROM python:3.14.7-slim@sha256:656d12e70054d5fda18a045e2494c96701e9792dd1445f95b3d038df954f57e9
 
 RUN groupadd -g 1000 saku && \
     useradd -m -d /saku -s /bin/bash -u 1000 -g 1000 saku
