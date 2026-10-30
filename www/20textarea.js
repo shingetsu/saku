@@ -23,7 +23,7 @@ shingetsu.initialize(function () {
     var buttonContainer = document.createElement('div');
     textArea.before(buttonContainer);
     buttonContainer.classList.add('post-advanced');
-        
+
     function TextAreaController(textArea, button) {
         this._textArea = textArea;
         this._button = button;
@@ -57,8 +57,8 @@ shingetsu.initialize(function () {
     sizeButton.classList.add('btn');
 
     var textAreaController = new TextAreaController(textArea, sizeButton);
-    sizeButton.addEventListener('click', function (e) { 
-        textAreaController.toggle(e); 
+    sizeButton.addEventListener('click', function (e) {
+        textAreaController.toggle(e);
     });
 
     function html_format(message) {
@@ -142,11 +142,11 @@ shingetsu.initialize(function () {
     previewArea.style.display = 'none';
     previewArea.id = 'preview';
     buttonContainer.after(previewArea);
-    
+
     var textAreaFriends = [document.querySelector('#resreferrer'), sizeButton];
 
     var previewController = new PreviewController(textArea, previewArea, previewButton, textAreaFriends);
-    previewButton.addEventListener('click', function (e) { 
-        previewController.toggle(e); 
+    previewButton.addEventListener('click', function (e) {
+        previewController.toggle(e);
     });
 });

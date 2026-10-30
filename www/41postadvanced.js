@@ -82,6 +82,7 @@ shingetsu.initialize(function () {
     }
 
     const button = document.createElement('button');
+    button.classList.add('btn');
     form.querySelector('#buttons').appendChild(button);
 
     const inputs = form.querySelectorAll('.post-advanced');

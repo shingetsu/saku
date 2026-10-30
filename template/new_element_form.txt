@@ -27,7 +27,7 @@
   {% endif %}
 
   <div>
-    <input type="submit" value="{{message.create}}" />
+    <input type="submit" value="{{message.create}}" class="btn btn-primary" />
   </div>
 </div>
 </form>

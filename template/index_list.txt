@@ -6,12 +6,12 @@
   <form method="get" action="{{gateway_cgi}}/{{target}}" id="filterform"><div>
     <label>{{message.filter}} ({{message.string}})
     <input name="filter" value="{{filter}}" size="40" /></label>
-    <button>{{message.show}}</button>
+    <button class="btn">{{message.show}}</button>
   </div></form>
   <form method="get" action="{{gateway_cgi}}/{{target}}" id="tagform"><div>
     <label>{{message.tag}} ({{message.string}})
     <input name="tag" value="{{tag}}" size="40" /></label>
-    <button>{{message.show}}</button>
+    <button class="btn">{{message.show}}</button>
   </div></form>
 {% endif %}
 
@@ -42,7 +42,7 @@
 {% endif %}
 
 {% if isadmin %}
-  <p><input type="submit" value="{{message.del_file}}" /></p>
+  <p><input type="submit" value="{{message.del_file}}" class="btn" /></p>
   </form>
 {% endif %}
 

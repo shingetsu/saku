@@ -4,7 +4,7 @@
 {% if isadmin %}
   <form method="post" action="{{admin_cgi}}">
   <p id="status">
-  <input type="submit" value="{{message.del_file}}" />
+  <input type="submit" value="{{message.del_file}}" class="btn" />
   <input type="hidden" name="cmd" value="fdel" />
   <input type="hidden" name="file" value="{{cache.datfile}}" />
 {% else %}

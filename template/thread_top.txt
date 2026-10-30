@@ -5,7 +5,7 @@
 {% if (isfriend or isadmin) and (not cache.__len__()) %}
   <form method="get" action="{{thread_cgi}}/{{str_path}}"><p>
     <input type="hidden" name="search_new_file" value="yes" />
-    <input type="submit" value="{{message.sync_from_network}}" />
+    <input type="submit" value="{{message.sync_from_network}}" class="btn" />
   </p></form>
 {% endif %}
 {% if isadmin %}

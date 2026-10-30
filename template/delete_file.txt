@@ -6,8 +6,8 @@
 <div class="form-group">
   <input type="hidden" name="cmd" value="xfdel" />
   <input type="hidden" name="sid" value="{{sid}}" />
-  <input type="submit" value="{{message.remove}}">
-  <button type="button" onclick="history.back()">{{message.cancel}}</button>
+  <input type="submit" value="{{message.remove}}" class="btn btn-danger" />
+  <button type="button" onclick="history.back()" class="btn">{{message.cancel}}</button>
 </div>
 
 {% for cache in files %}

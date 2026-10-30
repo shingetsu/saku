@@ -5,7 +5,7 @@
 
 {% if isadmin %}
   {% if cache %}
-    <p><input type="submit" value="{{message.del_record}}" /></p>
+    <p><input type="submit" value="{{message.del_record}}" class="btn" /></p>
   {% endif %}
   </form>
 {% endif %}
@@ -62,7 +62,7 @@
   <div style="display:none"><input name="homepage" value=""></div>
 
   <div id="buttons">
-    <button>
+    <button class="btn btn-primary">
       {{message.post}}
     </button>
   </div>

@@ -26,8 +26,8 @@
     </div>
   {% endif %}
   <div>
-    <input type="submit" value="{{message.remove}}" />
-    <button type="button" onclick="history.back()">{{message.cancel}}</button>
+    <input type="submit" value="{{message.remove}}" class="btn btn-danger" />
+    <button type="button" onclick="history.back()" class="btn">{{message.cancel}}</button>
   </div>
   </div>
 

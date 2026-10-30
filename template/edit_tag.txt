@@ -20,8 +20,8 @@
   {% endfor %}
   </p>
   <div>
-    <input type="submit" value="{{message.edit_tag}}" />
-    <button type="button" onclick="history.back()">{{message.cancel}}</button>
+    <input type="submit" value="{{message.edit_tag}}" class="btn btn-primary" />
+    <button type="button" onclick="history.back()" class="btn">{{message.cancel}}</button>
   </div>
 </div></form>
 
