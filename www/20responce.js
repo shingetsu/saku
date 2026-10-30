@@ -1,6 +1,6 @@
 /* -*- coding: utf-8 -*-
  * Response Post.
- * Copyright (C) 2006-2012 shinGETsu Project.
+ * Copyright (C) 2006 shinGETsu Project.
  */
 
 shingetsu.initialize(function () {
@@ -10,51 +10,78 @@ shingetsu.initialize(function () {
     }
 
     function res(id) {
-        var textArea = $('#body');
-        if (textArea.val()) {
-            textArea.val(textArea.val() + '\n>>' + id + '\n');
-        } else {
-            textArea.val('>>' + id + '\n');
-        }
+        const textArea = document.getElementById('body');
+        const appendText = '>>' + id + '\n';
 
-        var anchor = $('<a>').text('>>' + id);
-        if ($('#records').find('#r' + id).length) {
-            anchor.attr('href', '#r' + id)
-                  .addClass('innerlink');
+        if (textArea.value) {
+            textArea.value += appendText;
         } else {
-            if (location.href.search(/(.+\/thread\.cgi\/[^\/]*)/) == 0) {
-                anchor.attr('href', RegExp.$1 + '/' + id)
-                      .addClass('reclink');
+            textArea.value = appendText;
+        }       
+
+        const anchor = document.createElement('a');
+        anchor.textContent = '>>' + id;
+
+        const records = document.getElementById('records');
+        if (records && records.querySelector('#r' + id)) {
+            anchor.setAttribute('href', '#r' + id);
+            anchor.classList.add('innerlink');
+        } else {
+            const match = location.href.match(/(.+\/thread\.cgi\/[^\/]*)/);
+            if (match && match[1]) {
+                anchor.setAttribute('href', match[1] + '/' + id);
+                anchor.classList.add('reclink');
             }
         }
-        $('#resreferrer').append(anchor);
-        shingetsu.plugins.rootResAnchor.parseContent($('#resreferrer'));
+
+        const resreferrer = document.getElementById('resreferrer');
+        if (resreferrer) {
+            resreferrer.appendChild(anchor);
+            shingetsu.plugins.rootResAnchor.parseContent(resreferrer);
+        }
+
         textArea.focus();
     }
 
-    function addLink($container) {
-        $container.find('dt').each(function (i, dt) {
-            var $dt = $(dt);
-            if ($dt.attr('data-record-id')) {
-                $dt.find('a[data-responce-id]').remove();
-                var id = $dt.attr('data-record-id');
-                var $anchor = $('<a>');
-                $anchor.attr('href', 'javascript:;')
-                       .text(msg_res)
-                       .attr('data-responce-id', id);
+    function addLink(container) {
+        const elContainer = container instanceof HTMLElement ? container : container[0];
+        if (!elContainer) return;
+
+        const dts = elContainer.querySelectorAll('dt');
+        dts.forEach(function (dt) {
+            const recordId = dt.getAttribute('data-record-id');
+            if (recordId) {
+                const existingAnchor = dt.querySelector('a[data-responce-id]');
+                if (existingAnchor) {
+                    existingAnchor.remove();
+                }
+
+                const anchor = document.createElement('a');
+                anchor.setAttribute('href', 'javascript:;');
+                anchor.textContent = typeof msg_res !== 'undefined' ? msg_res : '';
+                anchor.setAttribute('data-responce-id', recordId);
+
+                dt.appendChild(anchor);
             }
-            $dt.append($anchor);
         });
     }
 
-    var ref = $('<div>');
-    ref.attr('id', 'resreferrer');
-    $('#body').before(ref);
+    const ref = document.createElement('div');
+    ref.id = 'resreferrer'; // または ref.setAttribute('id', 'resreferrer');
+
+    const bodyElem = document.getElementById('body');
+    if (bodyElem && bodyElem.parentNode) {
+        bodyElem.parentNode.insertBefore(ref, bodyElem);
+    }
 
     shingetsu.addRecordsModifiers(addLink);
 
-    $(document).on('click', 'a[data-responce-id]', function (e) {
-        res($(this).attr('data-responce-id'));
-        return false;
+    document.addEventListener('click', function (e) {
+        const anchor = e.target.closest('a[data-responce-id]');
+        if (anchor) {
+            e.preventDefault();
+            const responseId = anchor.getAttribute('data-responce-id');
+            res(responseId);
+        }
     });
 });

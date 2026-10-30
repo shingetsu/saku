@@ -1,14 +1,14 @@
 {#
  # Saku Gateway Delete File Form.
- # Copyright (c) 2005-2014 shinGETsu Project.
+ # Copyright (c) 2005 shinGETsu Project.
  #}
 <form method="post" action="{{admin_cgi}}">
-<div class="well form-horizontal"><div class="form-actions">
+<div class="form-group">
   <input type="hidden" name="cmd" value="xfdel" />
   <input type="hidden" name="sid" value="{{sid}}" />
-  <input type="submit" value="{{message.remove}}" class="btn btn-danger" />
-  <a href="javascript:history.back();" class="btn">{{message.cancel}}</a>
-</div></div>
+  <input type="submit" value="{{message.remove}}">
+  <button type="button" onclick="history.back()">{{message.cancel}}</button>
+</div>
 
 {% for cache in files %}
   {% if cache.exists() %}

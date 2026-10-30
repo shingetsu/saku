@@ -26,35 +26,37 @@ var shingetsu = (function () {
     };
 
     shingetsu.initialize = function (func) {
-        _initializer[_initializer.length] = func;
-    };
-    shingetsu.addInitializer = shingetsu.initialize;
+            _initializer[_initializer.length] = func;
+        };
+        shingetsu.addInitializer = shingetsu.initialize;
 
-    shingetsu.addRecordsModifiers = function (func) {
-        _recordsModifiers[_recordsModifiers.length] = func;
-    };
+        shingetsu.addRecordsModifiers = function (func) {
+            _recordsModifiers[_recordsModifiers.length] = func;
+        };
 
-    shingetsu.addScriptPath = function (path, onload) {
+        shingetsu.addScriptPath = function (path, onload) {
         if (typeof onload != 'function') {
             onload = function() {};
         }
         var sep = (path.indexOf('?') > 0) ? '&' : '?';
         var realPath = shingetsu.rootPath + path + sep + shingetsu.dummyQuery;
-        var script = $('<script>');
-        script.attr('type', 'text/javascript')
-              .attr('src', realPath)
-              .on('load', function() { onload(); });
-        document.getElementsByTagName('head')[0].appendChild(script[0]);
+
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = realPath;
+        script.addEventListener('load', function() {
+            onload();
+        });
     };
 
-    shingetsu.modifyRecords = function ($container) {
+    shingetsu.modifyRecords = function (container) {
         for (var i = 0; i < _recordsModifiers.length; i++) {
             if (shingetsu.debugMode) {
-               _recordsModifiers[i]($container);
+               _recordsModifiers[i](container);
                continue;
             }
             try {
-               _recordsModifiers[i]($container);
+               _recordsModifiers[i](container);
             } catch (e) {
                 shingetsu.log(e);
             }
@@ -73,10 +75,14 @@ var shingetsu = (function () {
                 shingetsu.log(e);
             }
         }
-        shingetsu.modifyRecords($(document));
+        shingetsu.modifyRecords(document);
     };
 
-    $(_initialize);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', _initialize);
+    } else {
+        _initialize();
+    }
 
     return shingetsu;
 })();

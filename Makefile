@@ -20,15 +20,8 @@ install:
 	install -m 644 -D -t $(PREFIX)/share/saku/template template/*.txt
 	install -m 644 -D -t $(PREFIX)/share/saku/www www/*.css www/*.js
 	install -m 644 -D -t $(PREFIX)/share/saku/www www/*.ico www/*.png www/*.xsl
-	install -m 644 -D -t $(PREFIX)/share/saku/www/bootstrap/css www/bootstrap/css/*
-	install -m 644 -D -t $(PREFIX)/share/saku/www/bootstrap/fonts www/bootstrap/fonts/*
-	install -m 644 -D -t $(PREFIX)/share/saku/www/bootstrap/js www/bootstrap/js/*
-	install -m 644 -D -t $(PREFIX)/share/saku/www/contrib www/contrib/*
-	install -m 644 -D -t $(PREFIX)/share/saku/www/jquery www/jquery/*.js
-	install -m 644 -D -t $(PREFIX)/share/saku/www/jquery/spoiler www/jquery/spoiler/*
 	install -m 644 -D -t $(PREFIX)/share/doc/saku README* LICENSE doc/AUTHORS*
 	install -m 644 -D -t $(PREFIX)/share/doc/saku doc/README* doc/changelog*
-	install -m 644 -D -t $(PREFIX)/share/doc/saku/contrib doc/contrib/*
 	install -m 644 -D -t $(PREFIX)/share/doc/saku/readme doc/readme/*
 	install -m 644 -D -t $(PREFIX)/share/doc/saku/sample doc/sample/*
 

@@ -4,8 +4,8 @@
  */
 
 shingetsu.initialize(function () {
-    var msg_show = 'Show detail';
-    var msg_hide = 'Hide detail';
+    let msg_show = 'Show detail';
+    let msg_hide = 'Hide detail';
     if (shingetsu.uiLang == 'ja') {
         msg_show = '詳細を表示';
         msg_hide = '詳細を隠す';
@@ -26,27 +26,70 @@ shingetsu.initialize(function () {
         }
     };
 
+    Controller.prototype._forEachInput = function(callback) {
+        if (!this._inputs) return;
+        if (window.NodeList && this._inputs instanceof NodeList || Array.isArray(this._inputs)) {
+            this._inputs.forEach(callback);
+        } else {
+            callback(this._inputs);
+        }
+    };
+
     Controller.prototype.hide = function (speed) {
-        this._inputs.hide(speed);
+        const duration = speed === 'fast' ? 200 : (speed === 'slow' ? 600 : 400);
+
+        this._forEachInput(el => {
+            if (el && el.nodeType === 1) {
+                const animation = el.animate([
+                    { opacity: 1 },
+                    { opacity: 0 }
+                ], { duration: duration, easing: 'ease' });
+
+                animation.onfinish = () => {
+                    el.style.display = 'none';
+                };
+            }
+        });
+
         this._isShowing = false;
-        this._button.text(msg_show);
+        if (this._button) {
+            this._button.textContent = msg_show;
+        }
     };
 
     Controller.prototype.show = function (speed) {
-        this._inputs.show(speed);
+        const duration = speed === 'fast' ? 200 : (speed === 'slow' ? 600 : 400);
+
+        this._forEachInput(el => {
+            if (el && el.nodeType === 1) {
+                el.style.display = '';
+                el.animate([
+                    { opacity: 0 },
+                    { opacity: 1 }
+                ], { duration: duration, easing: 'ease' });
+            }
+        });
+
         this._isShowing = true;
-        this._button.text(msg_hide);
+        if (this._button) {
+            this._button.textContent = msg_hide;
+        }
     };
 
-    var form = $('#postarticle');
+    const form = document.querySelector('#postarticle');
+    if (!form) {
+        return;
+    }
 
-    var button = $('<button>');
-    button.addClass('btn');
-    form.find('.form-actions').append(button);
+    const button = document.createElement('button');
+    form.querySelector('#buttons').appendChild(button);
 
-    var inputs = form.find('.post-advanced');
-    var controller = new Controller(inputs, button);
-    button.click(function (e) { controller.toggle(e) } );
+    const inputs = form.querySelectorAll('.post-advanced');
+    const controller = new Controller(inputs, button);
+
+    button.addEventListener('click', function (e) {
+        controller.toggle(e);
+    });
 
     controller.hide(0);
 });

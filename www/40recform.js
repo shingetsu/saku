@@ -10,25 +10,33 @@ shingetsu.initialize(function() {
     }
 
     function load(saved) {
-        $('#postarticle #dopost').prop('checked', saved.dopost);
-        $('#error').prop('checked', saved.error);
-        $('#name').val(saved.name);
-        $('#mail').val(saved.mail);
-        $('#passwd').val(saved.passwd);
+        const fields = {
+            '#postarticle #dopost': 'dopost',
+            '#error': 'error'
+        };
+        for (const [selector, key] of Object.entries(fields)) {
+            const el = document.querySelector(selector);
+            if (el) el.checked = !!saved[key];
+        }
 
-        $('#postarticle').find('.post-advanced').each(function (i, element) {
-            element = $(element);
-            if (saved.name && element.find('#name').length > 0) {
-                element.removeClass('post-advanced');
-            }
-            if (saved.mail && element.find('#mail').length > 0) {
-                element.removeClass('post-advanced');
-            }
-            if (saved.passwd && element.find('#passwd').length > 0) {
-                element.removeClass('post-advanced');
-            }
-            if (element.find(':checkbox:not(:checked)').length > 0) {
-                element.removeClass('post-advanced');
+        const inputs = {
+            '#name': 'name',
+            '#mail': 'mail',
+            '#passwd': 'passwd'
+        };
+        for (const [selector, key] of Object.entries(inputs)) {
+            const el = document.querySelector(selector);
+            if (el) el.value = saved[key] ?? '';
+        }
+
+        document.querySelectorAll('#postarticle .post-advanced').forEach(element => {
+            const hasName = saved.name && element.querySelector('#name');
+            const hasMail = saved.mail && element.querySelector('#mail');
+            const hasPasswd = saved.passwd && element.querySelector('#passwd');
+            const hasUnchecked = element.querySelector('input[type="checkbox"]:not(:checked)');
+
+            if (hasName || hasMail || hasPasswd || hasUnchecked) {
+                element.classList.remove('post-advanced');
             }
         });
     }
@@ -41,17 +49,22 @@ shingetsu.initialize(function() {
         }
     }
 
-    function save()
-    {
-        var item = {};
-        var form = $('#postarticle');
-        item.name = form.find('[name=name]').val();
-        item.mail = form.find('[name=mail]').val();
-        item.passwd = form.find('[name=passwd]').val();
-        item.dopost = form.find('[name=dopost]').prop('checked');
-        item.error = form.find('[name=error]').prop('checked');
+    function save() {
+        const item = {};
+        const form = document.querySelector('#postarticle');
+
+        if (!form) return;
+
+        item.name = form.querySelector('[name="name"]')?.value || '';
+        item.mail = form.querySelector('[name="mail"]')?.value || '';
+        item.passwd = form.querySelector('[name="passwd"]')?.value || '';
+        item.dopost = form.querySelector('[name="dopost"]')?.checked || false;
+        item.error = form.querySelector('[name="error"]')?.checked || false;
+
         localStorage.setItem('recform', JSON.stringify(item));
     }
 
-    $('#postarticle').submit(save);
+    const p = document.querySelector('#postarticle');
+    if (!p) return;
+    p.addEventListener('submit', save);
 });

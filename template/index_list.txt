@@ -1,17 +1,17 @@
 {#
  # Saku Gateway Index List.
- # Copyright (c) 2005-2014 shinGETsu Project.
+ # Copyright (c) 2005 shinGETsu Project.
  #}
 {% if target %}
-  <form method="get" action="{{gateway_cgi}}/{{target}}" id="filterform" class="form-horizontal"><div>
-    <label>{{message.filter}} ({{message.string}})<br />
-    <input name="filter" value="{{filter}}" class="form-control" size="40" /></label>
-    <button class="btn"><i class="glyphicon glyphicon-search"></i> {{message.show}}</button>
+  <form method="get" action="{{gateway_cgi}}/{{target}}" id="filterform"><div>
+    <label>{{message.filter}} ({{message.string}})
+    <input name="filter" value="{{filter}}" size="40" /></label>
+    <button>{{message.show}}</button>
   </div></form>
-  <form method="get" action="{{gateway_cgi}}/{{target}}" id="tagform" class="form-search"><div>
-    <label>{{message.tag}} ({{message.string}})<br />
-    <input name="tag" value="{{tag}}" class="form-control" size="40" /></label>
-    <button class="btn"><i class="glyphicon glyphicon-tag"></i> {{message.show}}</button>
+  <form method="get" action="{{gateway_cgi}}/{{target}}" id="tagform"><div>
+    <label>{{message.tag}} ({{message.string}})
+    <input name="tag" value="{{tag}}" size="40" /></label>
+    <button>{{message.show}}</button>
   </div></form>
 {% endif %}
 
@@ -42,14 +42,14 @@
 {% endif %}
 
 {% if isadmin %}
-  <p><input type="submit" value="{{message.del_file}}" class="btn" /></p>
+  <p><input type="submit" value="{{message.del_file}}" /></p>
   </form>
 {% endif %}
 
 {% if target %}
-  <p><a href="{{gateway_cgi}}/csv/{{target}}/file,stamp,date,path,uri,type,title,records,size,tag,sugtag" class="btn">CSV</a>
+  <p><a href="{{gateway_cgi}}/csv/{{target}}/file,stamp,date,path,uri,type,title,records,size,tag,sugtag">CSV</a>
   {% if target == 'recent' %}
-  <a href="{{gateway_cgi}}/recent_rss" class="btn">RSS</a>
+  <a href="{{gateway_cgi}}/recent_rss">RSS</a>
   {% endif %}
   </p>
 {% endif %}

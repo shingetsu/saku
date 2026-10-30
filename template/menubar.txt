@@ -1,12 +1,12 @@
 {# Saku Gateway Menubar.
- # Copyright (c) 2005-2015 shinGETsu Project.
+ # Copyright (c) 2005 shinGETsu Project.
  #}
 {% if id %}
-  <aside class="navbar-collapse" id="{{id}}">
+  <aside id="{{id}}">
 {% else %}
-  <aside class="navbar-collapse">
+  <aside>
 {% endif %}
-<ul class="nav nav-pills navbar-nav">
+<ul class="menubar">
   <li><a href="{{gateway_cgi}}">{{message.top}}</a></li>
   {% for i in ('changes', 'index') %}
     <li>{{gateway_link(gateway_cgi, i)}}</li>

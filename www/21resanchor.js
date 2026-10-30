@@ -1,12 +1,12 @@
 /* -*- coding: utf-8 -*-
  * Popup Res Anchor.
- * Copyright (C) 2005-2014 shinGETsu Project.
+ * Copyright (C) 2005 shinGETsu Project.
  */
 
 shingetsu.initialize(function () {
 
     function ResAnchor(opt_parameters) {
-        $.extend(this, {
+        Object.assign(this, {
             parentResAnchor: null,
             childResAnchors: [],
             container: null,
@@ -17,31 +17,32 @@ shingetsu.initialize(function () {
         }, opt_parameters);
 
         if (this.container) {
-            this.container
-                .on('mouseenter', $.proxy(function (event) {
-                    this.cancelDescentDestroyTimer();
-                    if (!this.furtherPopup) {
-                        this.popup(
-                            new shingetsu.plugins.Coordinate(event));
-                    }
-                }, this))
-                .on('mouseleave', $.proxy(function () {
-                    this.cancelDestroyTimer();
-                    this.destroyTimer = setTimeout($.proxy(function () {
-                        if (this.furtherPopup) {
-                            this.furtherPopup.destroy();
-                            this.furtherPopup = null;
-                        }
-                    }, this), shingetsu.plugins.Popup.hidingDuration);
+            this.container.addEventListener('mouseenter', (event) => {
+                this.cancelDescentDestroyTimer();
+                if (!this.furtherPopup) {
+                    this.popup(
+                        new shingetsu.plugins.Coordinate(event));
+                }
+            });
+
+            this.container.addEventListener('mouseleave', () => {
+                this.cancelDestroyTimer();
+                this.destroyTimer = setTimeout(() => {
                     if (this.furtherPopup) {
-                        this.furtherPopup.hide();
+                        this.furtherPopup.destroy();
+                        this.furtherPopup = null;
                     }
-                }, this));
+                }, shingetsu.plugins.Popup.hidingDuration);
+                
+                if (this.furtherPopup) {
+                    this.furtherPopup.hide();
+                }
+            });
         }
     }
+
     function popup(coordinate) {
-        var that = this;
-        var url = $(this.container).prop('href');
+        var url = this.container.href;
         var parentPopup;
         if (this.parentResAnchor) {
             parentPopup = this.parentResAnchor.furtherPopup;
@@ -50,20 +51,22 @@ shingetsu.initialize(function () {
             parentPopup: parentPopup,
             coordinate: coordinate
         });
-        furtherPopup.container
-            .on("mouseenter", function () {
-                that.cancelDescentDestroyTimer();
-            })
-            .on("mouseleave", $.proxy(function () {
-                that.cancelDestroyTimer();
-                that.destroyTimer
-                = setTimeout($.proxy(function () {
-                    this.destroy();
-                    that.furtherPopup = null;
-                }, this), shingetsu.plugins.Popup.hidingDuration);
-                that.furtherPopup.hide();
-                that.refireDescentMouseleave();
-            }, furtherPopup));
+
+        furtherPopup.container.addEventListener("mouseenter", () => {
+            this.cancelDescentDestroyTimer();
+        });
+
+        furtherPopup.container.addEventListener("mouseleave", () => {
+            this.cancelDestroyTimer();
+            this.destroyTimer = setTimeout(() => {
+                furtherPopup.destroy();
+                this.furtherPopup = null;
+            }, shingetsu.plugins.Popup.hidingDuration);
+            
+            this.furtherPopup.hide();
+            this.refireDescentMouseleave();
+        });
+
         if (parentPopup) {
             parentPopup.appendChild(furtherPopup);
         }
@@ -71,97 +74,122 @@ shingetsu.initialize(function () {
         furtherPopup.show(coordinate);
         this.loadContent();
     }
+
     function loadContent() {
         var html = this.cache[this.aid];
         if (!html) {
-            var dt = $('#r' + this.aid);
-            var dd = $('#b' + this.aid);
-            if (dt.length && dd.length) {
-                html = "<dl><dt>" + dt.html() + "</dt><dd>"
-                    + dd.html() + "</dd></dl>";
+            var dt = document.getElementById('r' + this.aid);
+            var dd = document.getElementById('b' + this.aid);
+            if (dt && dd) {
+                html = "<dl><dt>" + dt.innerHTML + "</dt><dd>"
+                    + dd.innerHTML + "</dd></dl>";
                 this.cache[this.aid] = html;
                 this.setHtml(html);
                 this.parseContent();
             } else {
                 this.furtherPopup.setContent('<div>'
                     + ResAnchor.message.loading + '</div>');
-                $.ajax({
-                    url: this.url + '?ajax=true',
-                    dataType: 'html',
-                    success: $.proxy(function (html) {
+                
+                fetch(this.url + '?ajax=true')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
                         this.cache[this.aid] = html;
                         this.setHtml(html);
                         this.parseContent();
-                    }, this)
-                });
+                    })
+                    .catch(error => {
+                        console.error('Failed to load content:', error);
+                    });
             }
         } else {
             this.setHtml(html);
             this.parseContent();
         }
     }
+
     function setHtml(html) {
         html = html.replace(new RegExp('</?(input)[^<>]*>', 'ig'), '')
-                       .replace(new RegExp('(<br[^<>]*>\\s*)*$', 'i'), '');
+                   .replace(new RegExp('(<br[^<>]*>\\s*)*$', 'i'), '');
         if (html.search(/<dt/) < 0) {
             html = '<div>' + ResAnchor.message.notFound + '</div>';
         }
-        this.furtherPopup.setContent(
-            $(html).addClass('panel panel-default'));
-    }
-    function parseContent($container) {
-        if (! $container) {
-            $container = $(this.furtherPopup.container);
+
+        var tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        
+        if (tempDiv.firstElementChild) {
+            tempDiv.firstElementChild.classList.add('panel', 'panel-default');
         }
-        shingetsu.modifyRecords($container);
-        var that = this;
+
+        this.furtherPopup.setContent(tempDiv.firstElementChild || tempDiv);
+    }
+
+    function parseContent(container) {
+        if (!container) {
+            container = this.furtherPopup.container;
+        }
+        shingetsu.modifyRecords(container);
+        
         this.childResAnchors = [];
-        $container.find('a').each(function () {
-            if (!$(this).hasClass("innerlink")
-                && !$(this).hasClass("reclink")) {
+        
+        container.querySelectorAll('a').forEach(anchor => {
+            if (!anchor.classList.contains("innerlink")
+                && !anchor.classList.contains("reclink")) {
                 return;
             }
-            if (this.href.search(/([0-9a-f]{8})/) <= 0) {
+            if (anchor.href.search(/([0-9a-f]{8})/) <= 0) {
                 return;
             }
             var aid = RegExp.$1;
             var resAnchor = new ResAnchor({
-                parentResAnchor: that,
-                container: $(this),
+                parentResAnchor: this,
+                container: anchor,
                 aid: aid,
-                url: $(this).prop("href")
+                url: anchor.href
             });
-            that.childResAnchors.push(resAnchor);
-
-            $(this).click(function (e) {
-                that.tryJump(e, aid);
+            this.childResAnchors.push(resAnchor);
+            
+            anchor.addEventListener('click', (e) => {
+                this.tryJump(e, aid);
             });
-        
         });
     }
+
     function cancelDestroyTimer() {
         clearTimeout(this.destroyTimer);
         if (this.furtherPopup) {
-            $(this.furtherPopup.container).stop(true, true).show();
+            var container = this.furtherPopup.container;
+            if (container) {
+                container.style.display = '';
+            }
         }
     }
+    
     function cancelDescentDestroyTimer() {
         this.cancelDestroyTimer();
         if (this.parentResAnchor) {
             this.parentResAnchor.cancelDescentDestroyTimer();
         }
     }
+    
     function refireMouseleave() {
         if (this.container) {
-            this.container.trigger('mouseleave');
+            this.container.dispatchEvent(new Event('mouseleave', { bubbles: true }));
         }
     }
+    
     function refireDescentMouseleave() {
         this.refireMouseleave();
         if (this.parentResAnchor) {
             this.parentResAnchor.refireMouseleave();
         }
     }
+
     function tryJump(event, id) {
         var root = shingetsu.plugins.rootResAnchor.furtherPopup;
         var i = root.childPopups.length;
@@ -169,14 +197,21 @@ shingetsu.initialize(function () {
             root.childPopups[i].destroy();
             root.childPopups.splice(i, 1);
         }
-        if (!document.getElementById('r' + id)) {
+        var targetElement = document.getElementById('r' + id);
+        if (!targetElement) {
             return;
         }
-        if (event.originalEvent.button === 1) {
+        if (event.button === 1) {
             return;
         }
         event.preventDefault();
-        $('body').animate({scrollTop: $('#r' + id).offset().top}, 'fast'); 
+        
+        var targetTop = targetElement.getBoundingClientRect().top + window.pageYOffset;
+        window.scrollTo({
+            top: targetTop,
+            behavior: 'smooth'
+        });
+        
         location.hash = '#r' + id;
     }
 
@@ -190,7 +225,7 @@ shingetsu.initialize(function () {
             notFound: 'エラーが発生したか、見つかりません'
         }
     };
-    $.extend(ResAnchor, {
+    Object.assign(ResAnchor, {
         message: message[shingetsu.uiLang] || message['en']
     });
     ResAnchor.prototype = {

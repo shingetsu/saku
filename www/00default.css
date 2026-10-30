@@ -1,5 +1,5 @@
 /* Saku Default CSS
- * Copyright (c) 2005-2015 shinGETsu Project.
+ * Copyright (c) 2005 shinGETsu Project.
  */
 body {
     background-color: #fff;
@@ -32,18 +32,6 @@ a:hover {
 .sign {
     color: red;
 }
-dd.markdown {
-    margin-top: 1ex;
-}
-dd.markdown th {
-    font-weight: bold;
-    text-align: center;
-    background-color: #eee;
-}
-dd.markdown td, dd.markdown th {
-    border: 1px solid #ccc;
-    padding: 5px 5px 5px 1em;
-}
 table.solid td {
     border: 1px solid #ccc; 
     padding: 5px 5px 5px 1em;
@@ -65,7 +53,7 @@ table.solid td {
     padding: 5px;
     margin: 5px;
 }
-ul.topmenu li { 
+ul.topmenu li, ul.menubar li { 
     display: inline;
     margin-left: 1ex;
 }
@@ -86,6 +74,10 @@ p.tags, p.sugtags {
     margin-bottom: 0;
     margin-top: 0;
 }
+.form-group {
+    background-color: #eee;
+    padding: 1em;
+}
 form#filterform {
     margin-bottom: 0;
     padding-bottom: 0;
@@ -93,6 +85,15 @@ form#filterform {
 form#tagform {
     margin-top: 0;
     padding-top: 0;
+}
+.help-block {
+    color: #333;
+    font-size: 90%;
+}
+.help-inline {
+    color: #333;
+    font-size: 90%;
+    display: inline;
 }
 dd {
     font-size: 16px;

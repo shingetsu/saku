@@ -1,6 +1,6 @@
 /* -*- coding: utf-8 -*-
  * Text Area Conttoller.
- * Copyright (C) 2006-2015 shinGETsu Project.
+ * Copyright (C) 2006 shinGETsu Project.
  */
 
 shingetsu.initialize(function () {
@@ -15,12 +15,15 @@ shingetsu.initialize(function () {
         msg_edit = '編集再開';
     }
 
-    var textArea = $('#body');
-    var textAreaContainer = textArea.parent();
-    var buttonContainer = $('<div>');
+    var textArea = document.querySelector('#body');
+    if (!textArea) {
+        return;
+    }
+    var textAreaContainer = textArea.parentElement;
+    var buttonContainer = document.createElement('div');
     textArea.before(buttonContainer);
-    buttonContainer.addClass('post-advanced');
-
+    buttonContainer.classList.add('post-advanced');
+        
     function TextAreaController(textArea, button) {
         this._textArea = textArea;
         this._button = button;
@@ -37,25 +40,26 @@ shingetsu.initialize(function () {
     };
 
     TextAreaController.prototype._spread = function () {
-        this._textArea.attr('rows', 30).css('width', '90%');
-        this._button.text(msg_reduce);
+        this._textArea.setAttribute('rows', '30');
+        this._button.textContent = msg_reduce;
         this._isBigSize = true;
     };
 
     TextAreaController.prototype._reduce = function () {
-        this._textArea.attr('rows', 7).css('width', '');
-        this._button.text(msg_spread);
+        this._textArea.setAttribute('rows', '7');
+        this._button.textContent = msg_spread;
         this._isBigSize = false;
     };
 
-    var sizeButton = $('<button>');
-    buttonContainer.append(sizeButton);
-    sizeButton.text(msg_spread).addClass('btn');
-    
+    var sizeButton = document.createElement('button');
+    buttonContainer.appendChild(sizeButton);
+    sizeButton.textContent = msg_spread;
+    sizeButton.classList.add('btn');
 
     var textAreaController = new TextAreaController(textArea, sizeButton);
-    sizeButton.click(function (e) { textAreaController.toggle(e) } );
-
+    sizeButton.addEventListener('click', function (e) { 
+        textAreaController.toggle(e); 
+    });
 
     function html_format(message) {
         var e = document.all? 'null': 'event';
@@ -109,40 +113,40 @@ shingetsu.initialize(function () {
     };
 
     PreviewController.prototype._show = function () {
-        $.each(this._textAreaFriends, function (i, v) { v.hide() });
-        this._textArea.hide();
-        var message = this._textArea.val();
-        if (typeof marked === 'function' && message.startsWith("@markdown")) {
-            message = marked(message.substring("@markdown".length));
-            this._previewArea.css('white-space', 'normal');
-        } else {
-            message = html_format(this._textArea.val());
-            this._previewArea.css('white-space', 'pre');
-        }
-        this._previewArea.html(message);
-        shingetsu.plugins.rootResAnchor.parseContent($(this._previewArea));
-        this._previewArea.show();
-        this._button.text(msg_edit);
+        this._textAreaFriends.forEach(function (v) { v.style.display = 'none'; });
+        this._textArea.style.display = 'none';
+        var message = this._textArea.value;
+        message = html_format(message);
+        this._previewArea.style.whiteSpace = 'pre';
+        this._previewArea.innerHTML = message;
+        shingetsu.plugins.rootResAnchor.parseContent(this._previewArea);
+        this._previewArea.style.display = '';
+        this._button.textContent = msg_edit;
         this._isPreview = true;
     };
 
     PreviewController.prototype._hide = function () {
-        $.each(this._textAreaFriends, function (i, v) { v.show() });
-        this._textArea.show();
-        this._previewArea.hide();
-        this._button.text(msg_preview);
+        this._textAreaFriends.forEach(function (v) { v.style.display = ''; });
+        this._textArea.style.display = '';
+        this._previewArea.style.display = 'none';
+        this._button.textContent = msg_preview;
         this._isPreview = false;
     };
 
-    var previewButton = $('<button>');
-    buttonContainer.append(previewButton);
-    previewButton.text(msg_preview).addClass('btn');
+    var previewButton = document.createElement('button');
+    buttonContainer.appendChild(previewButton);
+    previewButton.textContent = msg_preview;
+    previewButton.classList.add('btn');
 
-    var previewArea = $('<pre>').hide();
+    var previewArea = document.createElement('pre');
+    previewArea.style.display = 'none';
     previewArea.id = 'preview';
     buttonContainer.after(previewArea);
-    var textAreaFriends = [$('#resreferrer'), sizeButton];
+    
+    var textAreaFriends = [document.querySelector('#resreferrer'), sizeButton];
 
     var previewController = new PreviewController(textArea, previewArea, previewButton, textAreaFriends);
-    previewButton.click(function (e) { previewController.toggle(e) } );
+    previewButton.addEventListener('click', function (e) { 
+        previewController.toggle(e); 
+    });
 });

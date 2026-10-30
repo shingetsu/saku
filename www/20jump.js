@@ -31,51 +31,64 @@ shingetsu.initialize(function () {
     }
 
     function jumpto(id) {
-        var s = new String(window.location);
-        if (s.search("#") < 0) {
-            $("html,body").animate({
-                scrollTop: $("#r" + id).offset().top
-            }, {
-                duration: 200
-            });
+        if (!window.location.href.includes("#")) {
+            const target = document.getElementById("r" + id);
+            if (target) {
+                const targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
         }
     }
 
     function setNewPost(dt) {
         if (itemKey) {
-            $(dt).addClass("newpost");
+            const element = typeof dt === 'string' ? document.querySelector(dt) : dt;
+
+            if (element) {
+                element.classList.add("newpost");
+            }
         }
     }
 
     function newPosts(access) {
-        if (access) {
-            var read = access
-        } else {
-            var read = 0;
-        }
-        var newid = "";
-        var lastStamp = null;
-        $("dt span.stamp[data-stamp]").each(function () {
-            var stamp = $(this).data('stamp');
+        const read = access ? access : 0;
+        let newid = "";
+        let lastStamp = null;
+
+        const stamps = document.querySelectorAll("dt span.stamp[data-stamp]");
+        stamps.forEach(function (span) {
+            const stamp = Number(span.dataset.stamp);
+
             if (stamp > read) {
-                var dt = $(this).closest("dt").get(0);
-                if (!newid) {
-                    newid = dt.id.substring(1);
+                const dt = span.closest("dt");
+                if (dt) {
+                    if (!newid) {
+                        newid = dt.id.substring(1);
+                    }
+                    setNewPost(dt);
                 }
-                setNewPost(dt);
             }
-            lastStamp = this;
+            lastStamp = span;
         });
+
         if (lastStamp) {
-            setAccess($(lastStamp).data('stamp') + 1);
+            setAccess(Number(lastStamp.dataset.stamp) + 1);
         }
-        if (! access) {
+
+        if (!access) {
+            // nop
         } else if (newid) {
             jumpto(newid);
-        } else {
-            jumpto($(lastStamp).closest("dt").get(0).id.substring(1));
+        } else if (lastStamp) {
+            const lastDt = lastStamp.closest("dt");
+            if (lastDt && lastDt.id) {
+                jumpto(lastDt.id.substring(1));
+            }
         }
     }
-
+    
     newPosts(getAccess());
 });
