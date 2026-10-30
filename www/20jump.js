@@ -1,10 +1,10 @@
 /*
  * Jump New Posts.
- * Copyright (C) 2006-2019 shinGETsu Project.
+ * Copyright (C) 2006 shinGETsu Project.
  */
 
 shingetsu.initialize(function () {
-    var itemKey = null;
+    let itemKey = null;
     if (location.pathname.search(/^\/?thread.cgi\/([^\/]+)$/) === 0) {
         try {
             itemKey = 'access_' + decodeURI(RegExp.$1);
@@ -89,6 +89,6 @@ shingetsu.initialize(function () {
             }
         }
     }
-    
+
     newPosts(getAccess());
 });

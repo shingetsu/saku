@@ -76,18 +76,18 @@
     }
 
     function reposition(coordinate) {
-        var width = this.container.offsetWidth;
-        var height = this.container.offsetHeight;
-        
-        var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        var x = Math.max(scrollLeft, coordinate.x + 20);
-        var y = Math.max(scrollTop, coordinate.y - height);
-        
+        const width = this.container.offsetWidth;
+        const height = this.container.offsetHeight;
+
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        const x = Math.max(scrollLeft, coordinate.x + 20);
+        const y = Math.max(scrollTop, coordinate.y - height);
+
         this.container.style.left = x + 'px';
         this.container.style.top = y + 'px';
-        
+
         if (coordinate.z !== undefined) {
             this.container.style.zIndex = coordinate.z;
         }
@@ -118,13 +118,13 @@
 
     function destroy() {
         while (this.childPopups.length) {
-            var child = this.childPopups[this.childPopups.length - 1];
+            const child = this.childPopups[this.childPopups.length - 1];
             child.destroy();
             this.childPopups.splice(this.childPopups.length - 1, 1);
-        }   
+        }
         if (this.parentPopup) {
-            var siblingPopups = this.parentPopup.childPopups;
-            var i = siblingPopups.length;
+            const siblingPopups = this.parentPopup.childPopups;
+            let i = siblingPopups.length;
             while (i--) {
                 if (siblingPopups[i] == this) {
                     this.parentPopup.childPopups.splice(i, 1);
@@ -154,7 +154,7 @@
 })();
 
 (function () {
-    var exclusivePopup;
+    let exclusivePopup;
 
     function showPopup(coordinate, objects) {
         if (exclusivePopup) {
@@ -164,18 +164,18 @@
                 }.bind(exclusivePopup)
             });
         }
-        
-        var popup = new shingetsu.plugins.Popup({
+
+        const popup = new shingetsu.plugins.Popup({
             coordinate: coordinate,
             content: objects
         });
-        
+
         popup.container.id = 'popup';
-        
+
         exclusivePopup = popup;
         exclusivePopup.show(coordinate);
 
-        var selects = document.querySelectorAll('select');
+        const selects = document.querySelectorAll('select');
         selects.forEach(function (select) {
             select.style.display = 'none';
         });

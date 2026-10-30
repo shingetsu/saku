@@ -33,7 +33,7 @@ shingetsu.initialize(function () {
                         this.furtherPopup = null;
                     }
                 }, shingetsu.plugins.Popup.hidingDuration);
-                
+
                 if (this.furtherPopup) {
                     this.furtherPopup.hide();
                 }
@@ -42,12 +42,12 @@ shingetsu.initialize(function () {
     }
 
     function popup(coordinate) {
-        var url = this.container.href;
-        var parentPopup;
+        const url = this.container.href;
+        let parentPopup;
         if (this.parentResAnchor) {
             parentPopup = this.parentResAnchor.furtherPopup;
         }
-        var furtherPopup = new shingetsu.plugins.Popup({
+        const furtherPopup = new shingetsu.plugins.Popup({
             parentPopup: parentPopup,
             coordinate: coordinate
         });
@@ -62,7 +62,7 @@ shingetsu.initialize(function () {
                 furtherPopup.destroy();
                 this.furtherPopup = null;
             }, shingetsu.plugins.Popup.hidingDuration);
-            
+
             this.furtherPopup.hide();
             this.refireDescentMouseleave();
         });
@@ -76,10 +76,10 @@ shingetsu.initialize(function () {
     }
 
     function loadContent() {
-        var html = this.cache[this.aid];
+        let html = this.cache[this.aid];
         if (!html) {
-            var dt = document.getElementById('r' + this.aid);
-            var dd = document.getElementById('b' + this.aid);
+            const dt = document.getElementById('r' + this.aid);
+            const dd = document.getElementById('b' + this.aid);
             if (dt && dd) {
                 html = "<dl><dt>" + dt.innerHTML + "</dt><dd>"
                     + dd.innerHTML + "</dd></dl>";
@@ -89,7 +89,7 @@ shingetsu.initialize(function () {
             } else {
                 this.furtherPopup.setContent('<div>'
                     + ResAnchor.message.loading + '</div>');
-                
+
                 fetch(this.url + '?ajax=true')
                     .then(response => {
                         if (!response.ok) {
@@ -119,9 +119,9 @@ shingetsu.initialize(function () {
             html = '<div>' + ResAnchor.message.notFound + '</div>';
         }
 
-        var tempDiv = document.createElement('div');
+        const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
-        
+
         if (tempDiv.firstElementChild) {
             tempDiv.firstElementChild.classList.add('panel', 'panel-default');
         }
@@ -134,9 +134,9 @@ shingetsu.initialize(function () {
             container = this.furtherPopup.container;
         }
         shingetsu.modifyRecords(container);
-        
+
         this.childResAnchors = [];
-        
+
         container.querySelectorAll('a').forEach(anchor => {
             if (!anchor.classList.contains("innerlink")
                 && !anchor.classList.contains("reclink")) {
@@ -145,15 +145,15 @@ shingetsu.initialize(function () {
             if (anchor.href.search(/([0-9a-f]{8})/) <= 0) {
                 return;
             }
-            var aid = RegExp.$1;
-            var resAnchor = new ResAnchor({
+            const aid = RegExp.$1;
+            const resAnchor = new ResAnchor({
                 parentResAnchor: this,
                 container: anchor,
                 aid: aid,
                 url: anchor.href
             });
             this.childResAnchors.push(resAnchor);
-            
+
             anchor.addEventListener('click', (e) => {
                 this.tryJump(e, aid);
             });
@@ -163,26 +163,26 @@ shingetsu.initialize(function () {
     function cancelDestroyTimer() {
         clearTimeout(this.destroyTimer);
         if (this.furtherPopup) {
-            var container = this.furtherPopup.container;
+            const container = this.furtherPopup.container;
             if (container) {
                 container.style.display = '';
             }
         }
     }
-    
+
     function cancelDescentDestroyTimer() {
         this.cancelDestroyTimer();
         if (this.parentResAnchor) {
             this.parentResAnchor.cancelDescentDestroyTimer();
         }
     }
-    
+
     function refireMouseleave() {
         if (this.container) {
             this.container.dispatchEvent(new Event('mouseleave', { bubbles: true }));
         }
     }
-    
+
     function refireDescentMouseleave() {
         this.refireMouseleave();
         if (this.parentResAnchor) {
@@ -191,13 +191,13 @@ shingetsu.initialize(function () {
     }
 
     function tryJump(event, id) {
-        var root = shingetsu.plugins.rootResAnchor.furtherPopup;
-        var i = root.childPopups.length;
+        const root = shingetsu.plugins.rootResAnchor.furtherPopup;
+        let i = root.childPopups.length;
         while (i--) {
             root.childPopups[i].destroy();
             root.childPopups.splice(i, 1);
         }
-        var targetElement = document.getElementById('r' + id);
+        const targetElement = document.getElementById('r' + id);
         if (!targetElement) {
             return;
         }
@@ -205,17 +205,17 @@ shingetsu.initialize(function () {
             return;
         }
         event.preventDefault();
-        
-        var targetTop = targetElement.getBoundingClientRect().top + window.pageYOffset;
+
+        const targetTop = targetElement.getBoundingClientRect().top + window.pageYOffset;
         window.scrollTo({
             top: targetTop,
             behavior: 'smooth'
         });
-        
+
         location.hash = '#r' + id;
     }
 
-    var message = {
+    const message = {
         'en': {
             loading: 'Loading...',
             notFound: 'Error or Not Found'
@@ -242,7 +242,7 @@ shingetsu.initialize(function () {
         tryJump: tryJump
     };
 
-    var resAnchor = new ResAnchor();
+    const resAnchor = new ResAnchor();
     resAnchor.furtherPopup = new shingetsu.plugins.Popup({
         container: document.body
     });

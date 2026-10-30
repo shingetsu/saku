@@ -4,7 +4,7 @@
 // licenced by public domain.
 
 shingetsu.initialize(function() {
-    var saved = parse(localStorage.getItem('recform'));
+    const saved = parse(localStorage.getItem('recform'));
     if (saved) {
         load(saved);
     }

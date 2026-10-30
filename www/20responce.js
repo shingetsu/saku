@@ -4,7 +4,7 @@
  */
 
 shingetsu.initialize(function () {
-    var msg_res = '[Res.]';
+    let msg_res = '[Res.]';
     if (shingetsu.uiLang == 'ja') {
         msg_res = '[返信]';
     }
@@ -17,7 +17,7 @@ shingetsu.initialize(function () {
             textArea.value += appendText;
         } else {
             textArea.value = appendText;
-        }       
+        }
 
         const anchor = document.createElement('a');
         anchor.textContent = '>>' + id;

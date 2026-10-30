@@ -7,12 +7,12 @@ shingetsu.initialize(function () {
     }
 
     function myLocaltime(date) {
-        var year = date.getYear();
+        let year = date.getYear();
         if (year < 1900) year += 1900;
-        var month = format(date.getMonth()+1);
-        var day = format(date.getDate());
-        var hours = format(date.getHours());
-        var minutes = format(date.getMinutes());
+        const month = format(date.getMonth()+1);
+        const day = format(date.getDate());
+        const hours = format(date.getHours());
+        const minutes = format(date.getMinutes());
         return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
     }
 

@@ -4,10 +4,10 @@
  */
 
 shingetsu.initialize(function () {
-    var msg_spread = 'Spread';
-    var msg_reduce = 'Reduce';
-    var msg_preview = 'Preview';
-    var msg_edit = 'Edit';
+    let msg_spread = 'Spread';
+    let msg_reduce = 'Reduce';
+    let msg_preview = 'Preview';
+    let msg_edit = 'Edit';
     if (shingetsu.uiLang == 'ja') {
         msg_spread = '拡大';
         msg_reduce = '縮小';
@@ -15,12 +15,11 @@ shingetsu.initialize(function () {
         msg_edit = '編集再開';
     }
 
-    var textArea = document.querySelector('#body');
-    if (!textArea) {
-        return;
-    }
-    var textAreaContainer = textArea.parentElement;
-    var buttonContainer = document.createElement('div');
+    const textArea = document.querySelector('#body');
+    if (!textArea) return;
+
+    const textAreaContainer = textArea.parentElement;
+    const buttonContainer = document.createElement('div');
     textArea.before(buttonContainer);
     buttonContainer.classList.add('post-advanced');
 
@@ -51,22 +50,22 @@ shingetsu.initialize(function () {
         this._isBigSize = false;
     };
 
-    var sizeButton = document.createElement('button');
+    const sizeButton = document.createElement('button');
     buttonContainer.appendChild(sizeButton);
     sizeButton.textContent = msg_spread;
     sizeButton.classList.add('btn');
 
-    var textAreaController = new TextAreaController(textArea, sizeButton);
+    const textAreaController = new TextAreaController(textArea, sizeButton);
     sizeButton.addEventListener('click', function (e) {
         textAreaController.toggle(e);
     });
 
     function html_format(message) {
-        var e = document.all? 'null': 'event';
+        const e = document.all? 'null': 'event';
         if (document.location.href.search(/(.*?\/thread\.cgi\/[^\/]+)/) != 0) {
             return;
         }
-        var thread_uri = RegExp.$1;
+        let thread_uri = RegExp.$1;
         thread_uri = thread_uri.replace(/&/g, '&amp;');
         thread_uri = thread_uri.replace(/</g, '&lt;');
         thread_uri = thread_uri.replace(/>/g, '&gt;');
@@ -115,7 +114,7 @@ shingetsu.initialize(function () {
     PreviewController.prototype._show = function () {
         this._textAreaFriends.forEach(function (v) { v.style.display = 'none'; });
         this._textArea.style.display = 'none';
-        var message = this._textArea.value;
+        let message = this._textArea.value;
         message = html_format(message);
         this._previewArea.style.whiteSpace = 'pre';
         this._previewArea.innerHTML = message;
@@ -133,19 +132,19 @@ shingetsu.initialize(function () {
         this._isPreview = false;
     };
 
-    var previewButton = document.createElement('button');
+    const previewButton = document.createElement('button');
     buttonContainer.appendChild(previewButton);
     previewButton.textContent = msg_preview;
     previewButton.classList.add('btn');
 
-    var previewArea = document.createElement('pre');
+    const previewArea = document.createElement('pre');
     previewArea.style.display = 'none';
     previewArea.id = 'preview';
     buttonContainer.after(previewArea);
 
-    var textAreaFriends = [document.querySelector('#resreferrer'), sizeButton];
+    const textAreaFriends = [document.querySelector('#resreferrer'), sizeButton];
 
-    var previewController = new PreviewController(textArea, previewArea, previewButton, textAreaFriends);
+    const previewController = new PreviewController(textArea, previewArea, previewButton, textAreaFriends);
     previewButton.addEventListener('click', function (e) {
         previewController.toggle(e);
     });

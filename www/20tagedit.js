@@ -1,6 +1,5 @@
 /* Tag Edit Tool.
- * Copyright (C) 2007,2010 shinGETsu Project.
- * $Id$
+ * Copyright (C) 2007 shinGETsu Project.
  */
 
 shingetsu.initialize(function () {
@@ -8,10 +7,10 @@ shingetsu.initialize(function () {
         return;
     }
 
-    var checked = {};
+    const checked = {};
 
     function insertTag(tag) {
-        var form = document.getElementById('savetag');
+        const form = document.getElementById('savetag');
         if (form.tag.value != '') {
             form.tag.value += ' ' + tag;
         } else {
@@ -20,8 +19,8 @@ shingetsu.initialize(function () {
     }
 
     function removeTag(tag) {
-        var form = document.getElementById('savetag');
-        var tmp = ' ' + form.tag.value + ' ';
+        const form = document.getElementById('savetag');
+        let tmp = ' ' + form.tag.value + ' ';
         tmp = tmp.replace(' '+tag+' ', ' ');
         tmp = tmp.replace(/\s+/g, ' ');
         tmp = tmp.replace(/^\s+/g, '');
@@ -30,7 +29,7 @@ shingetsu.initialize(function () {
     }
 
     function toggleTag(tag) {
-        var strtag = tag.innerHTML;
+        const strtag = tag.innerHTML;
         if (checked[strtag]) {
             tag.style.backgroundColor = '#efefef';
         } else {
@@ -39,8 +38,8 @@ shingetsu.initialize(function () {
     }
 
     function toggleAllTags(strtag) {
-        var span = document.getElementsByTagName('span');
-        for (var i=0; i<span.length; i++) {
+        const span = document.getElementsByTagName('span');
+        for (let i=0; i<span.length; i++) {
             if ((span[i].className == 'tag') &&
                 (span[i].innerHTML == strtag)) {
                 toggleTag(span[i]);
@@ -50,7 +49,7 @@ shingetsu.initialize(function () {
     }
 
     function clickTag(tag) {
-        var strtag = tag.innerHTML;
+        const strtag = tag.innerHTML;
         if (! checked[strtag]) {
             insertTag(strtag);
         } else {
@@ -59,9 +58,9 @@ shingetsu.initialize(function () {
         toggleAllTags(strtag);
     }
 
-    var span = document.getElementsByTagName('span');
-    var strcheck = ' ' + document.getElementById('savetag').tag.value + ' ';
-    for (var i=0; i<span.length; i++) {
+    const span = document.getElementsByTagName('span');
+    const strcheck = ' ' + document.getElementById('savetag').tag.value + ' ';
+    for (let i=0; i<span.length; i++) {
         if (span[i].className == 'tag') {
             span[i].onclick =
                 (function (tag) {
@@ -69,7 +68,7 @@ shingetsu.initialize(function () {
                         clickTag(tag);
                     }})(span[i]);
             span[i].style.cursor = 'pointer';
-            var strtag = span[i].innerHTML;
+            const strtag = span[i].innerHTML;
             if ((strcheck.search(' ' + strtag +' ') >= 0) &&
                 (! checked[strtag])) {
                 toggleAllTags(strtag);

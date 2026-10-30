@@ -19,9 +19,9 @@
     <span class="tag">{{escape_simple(tag.__str__())}}</span>
   {% endfor %}
   </p>
-  <div>
+  <p>
     <input type="submit" value="{{message.edit_tag}}" class="btn btn-primary" />
     <button type="button" onclick="history.back()" class="btn">{{message.cancel}}</button>
-  </div>
+  </p>
 </div></form>
 

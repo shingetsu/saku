@@ -1,15 +1,15 @@
 /* Initializer.
- * Copyright (C) 2010-2014 shinGETsu Project.
+ * Copyright (C) 2010 shinGETsu Project.
  *
  * addScriptPath came from
  * http://temping-amagramer.blogspot.jp/2012/02/jqueryjavascriptscript.html
  */
 
-var shingetsu = (function () {
-    var _initializer = [];
-    var _recordsModifiers = [];
+const shingetsu = (function () {
+    const _initializer = [];
+    const _recordsModifiers = [];
 
-    var shingetsu = {
+    const shingetsu = {
         debugMode: false,
         plugins: {},
         rootPath: '/',
@@ -38,10 +38,10 @@ var shingetsu = (function () {
         if (typeof onload != 'function') {
             onload = function() {};
         }
-        var sep = (path.indexOf('?') > 0) ? '&' : '?';
-        var realPath = shingetsu.rootPath + path + sep + shingetsu.dummyQuery;
+        const sep = (path.indexOf('?') > 0) ? '&' : '?';
+        const realPath = shingetsu.rootPath + path + sep + shingetsu.dummyQuery;
 
-        var script = document.createElement('script');
+        const script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = realPath;
         script.addEventListener('load', function() {
@@ -50,7 +50,7 @@ var shingetsu = (function () {
     };
 
     shingetsu.modifyRecords = function (container) {
-        for (var i = 0; i < _recordsModifiers.length; i++) {
+        for (let i = 0; i < _recordsModifiers.length; i++) {
             if (shingetsu.debugMode) {
                _recordsModifiers[i](container);
                continue;
@@ -63,8 +63,8 @@ var shingetsu = (function () {
         }
     };
 
-    var _initialize = function () {
-        for (var i = 0; i < _initializer.length; i++) {
+    const _initialize = function () {
+        for (let i = 0; i < _initializer.length; i++) {
             if (shingetsu.debugMode) {
                _initializer[i]();
                continue;
