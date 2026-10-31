@@ -16,27 +16,29 @@
   <input type="hidden" name="cmd" value="post" />
   <input type="hidden" name="file" value="{{cache.datfile}}" />
 
-  <div class="post-advanced"> 
+  <div class="form-grid">
+  <div class="post-advanced grid-row"> 
     <label for="name">{{message.name}}</label>
     <input name="name" value="" id="name" />
   </div>
 
-  <div class="post-advanced">
+  <div class="post-advanced grid-row">
     <label for="mail">{{message.mail}}</label>
     <input name="mail" value="" id="mail" />
   </div>
 
   {% if isadmin %}
-    <div class="post-advanced">
+    <div class="post-advanced grid-row">
       <label for="passwd">{{message.signature}}</label>
       <input type="password" name="passwd" value="" id="passwd" />
     </div>
   {% endif %}
+  </div>
 
   <div>
     <label for="body">{{message.post_body}}</label>
     <div>
-      <textarea rows="5" name="body" id="body" style="width: 80%"></textarea>
+      <textarea rows="5" name="body" id="body" style="width: 100%"></textarea>
       <div class="help-block"><a href="{{gateway_cgi}}/motd" target="_blank">{{message.agreement}}</a></div>
     </div>
   </div>
@@ -48,15 +50,15 @@
   </div>
 
   <div class="post-advanced">
-    <label for="dopost">{{message.send}}</label>
     <input type="checkbox" id="dopost" name="dopost" value="dopost" checked="checked" />
-    <div class="help-inline">{{message.desc_send}}</div>
+    <label for="dopost">{{message.send}}</label>
+    <div class="help-block">{{message.desc_send}}</div>
   </div>
 
   <div class="post-advanced">
-    <label for="error">{{message.error}}</label>
     <input type="checkbox" id="error" name="error" value="error" checked="checked" />
-    <div class="help-inline">{{message.desc_error}}</div>
+    <label for="error">{{message.error}}</label>
+    <div class="help-block">{{message.desc_error}}</div>
   </div>
 
   <div style="display:none"><input name="homepage" value=""></div>

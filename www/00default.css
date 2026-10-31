@@ -21,6 +21,9 @@ div.address {
     text-align: center;
     font-style: italic;
 }
+div.inline {
+    display: inline;
+}
 a:hover {
     color: #000;
     background-color: #aaf;
@@ -127,4 +130,15 @@ dd {
 }
 .btn-danger:hover {
   background-color: #bb2d3b;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  row-gap: 10px;
+  column-gap: 10px;
+  align-items: center;
+}
+.form-grid .grid-row {
+  display: contents;
 }

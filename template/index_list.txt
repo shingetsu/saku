@@ -3,16 +3,22 @@
  # Copyright (c) 2005 shinGETsu Project.
  #}
 {% if target %}
-  <form method="get" action="{{gateway_cgi}}/{{target}}" id="filterform"><div>
-    <label>{{message.filter}} ({{message.string}})
-    <input name="filter" value="{{filter}}" size="40" /></label>
-    <button class="btn">{{message.show}}</button>
-  </div></form>
-  <form method="get" action="{{gateway_cgi}}/{{target}}" id="tagform"><div>
-    <label>{{message.tag}} ({{message.string}})
-    <input name="tag" value="{{tag}}" size="40" /></label>
-    <button class="btn">{{message.show}}</button>
-  </div></form>
+<div class="form-grid">
+  <form method="get" action="{{gateway_cgi}}/{{target}}" id="filterform" class="grid-row">
+    <label for="filter-input">{{message.filter}} ({{message.string}})</label>
+    <div class="inline">
+      <input id="filter-input" name="filter" value="{{filter}}" size="40" />
+      <button class="btn">{{message.show}}</button>
+    </div>
+  </form>
+  <form method="get" action="{{gateway_cgi}}/{{target}}" id="tagform" class="grid-row">
+    <label for="tag-input">{{message.tag}} ({{message.string}})</label>
+    <div class="inline">
+      <input id="tag-input" name="tag" value="{{tag}}" size="40" />
+      <button class="btn">{{message.show}}</button>
+    </div>
+  </form>
+</div>
 {% endif %}
 
 {% if isadmin %}
