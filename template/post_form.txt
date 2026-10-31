@@ -19,23 +19,23 @@
   <div class="form-grid">
   <div class="post-advanced grid-row"> 
     <label for="name">{{message.name}}</label>
-    <input name="name" value="" id="name" />
+    <div class="inline"><input name="name" value="" id="name" size="40" /></div>
   </div>
 
   <div class="post-advanced grid-row">
     <label for="mail">{{message.mail}}</label>
-    <input name="mail" value="" id="mail" />
+    <div class="inline"><input name="mail" value="" id="mail" size="40" /></div>
   </div>
 
   {% if isadmin %}
     <div class="post-advanced grid-row">
       <label for="passwd">{{message.signature}}</label>
-      <input type="password" name="passwd" value="" id="passwd" />
+      <div class="inline"><input type="password" name="passwd" value="" id="passwd" size="40" /></div>
     </div>
   {% endif %}
   </div>
 
-  <div>
+  <div class="grid-row">
     <label for="body">{{message.post_body}}</label>
     <div>
       <textarea rows="5" name="body" id="body" style="width: 100%"></textarea>
@@ -43,19 +43,19 @@
     </div>
   </div>
 
-  <div>
+  <div class="grid-row">
     <label for="attach">{{message.attach}}</label>
     <input type="file" name="attach" size="19" value="" id="attach" />
     <div class="help-inline">{{message.limit}}: {{limit}}{{message.kb}}</div>
   </div>
 
-  <div class="post-advanced">
+  <div class="post-advanced grid-row">
     <input type="checkbox" id="dopost" name="dopost" value="dopost" checked="checked" />
     <label for="dopost">{{message.send}}</label>
     <div class="help-block">{{message.desc_send}}</div>
   </div>
 
-  <div class="post-advanced">
+  <div class="post-advanced grid-row">
     <input type="checkbox" id="error" name="error" value="error" checked="checked" />
     <label for="error">{{message.error}}</label>
     <div class="help-block">{{message.desc_error}}</div>

@@ -4,7 +4,7 @@
  #}
 <form id="savetag" method="post" action="{{admin_cgi}}/savetag"><div>
   <input type="hidden" name="file" value="{{datfile}}" />
-  <div>
+  <div class="grid-row">
     <label for="tag">{{message.tag}}</label>
     <input name="tag" value="{{escape_simple(tags)}}" id="tag" />
     <div class="help-block">{{message.tag_desc}}</div>

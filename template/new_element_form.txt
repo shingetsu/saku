@@ -8,22 +8,27 @@
   <input type="hidden" name="file" value="{{datfile}}" />
   <input type="hidden" value="thread" name="type" />
 
-  <div>
-    <label for="link">{{message.title}}</label>
-    <input name="link" maxlength="{{config.title_limit}}" value="" id="link" />
-    <div class="help-block">{{message.title_desc}}</div>
+  <div class="form-grid form-grid-with-help">
+    <div class="grid-row">
+      <label for="link">{{message.title}}</label>
+      <div class="inline"><input name="link" maxlength="{{config.title_limit}}" value="" id="link" /></div>
+      <div class="help-block">{{message.title_desc}}</div>
+    </div>
+
+    {% if isadmin %}
+      <div class="grid-row">
+        <label for="tag">{{message.tag}}</label>
+        <div class="inline"><input name="tag" value="" id="tag" /></div>
+        <div class="help-block">{{message.tag_desc}}</div>
+      </div>
+    {% endif %}
   </div>
 
   {% if isadmin %}
-  <div>
-    <label for="tag">{{message.tag}}</label>
-    <input name="tag" value="" id="tag" />
-    <div class="help-block">{{message.tag_desc}}</div>
-  </div>
-  <div>
-    <label for="search">{{message.search_new_file}}</label>
-    <input type="checkbox" id="search" name="search_new_file" value="yes" checked="checked" />
-  </div>
+    <div>
+      <input type="checkbox" id="search" name="search_new_file" value="yes" checked="checked" />
+      <label for="search">{{message.search_new_file}}</label>
+    </div>
   {% endif %}
 
   <div>

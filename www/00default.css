@@ -139,6 +139,17 @@ dd {
   column-gap: 10px;
   align-items: center;
 }
+.grid-row {
+  margin-bottom: 10px;
+}
 .form-grid .grid-row {
   display: contents;
+}
+.form-grid-with-help .grid-row {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+}
+.form-grid-with-help .grid-row .help-block {
+  grid-column: 1 / -1;
 }
