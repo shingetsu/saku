@@ -101,7 +101,7 @@ class CGI(basecgi.CGI):
         self.header()
         try:
             with opentext(config.motd) as f:
-                return self.body(f)
+                return self.body(f.readlines())
         except IOError:
             self.stderr.write(config.motd + ": IOError\n")
             return []
