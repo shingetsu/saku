@@ -15,7 +15,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 * HTTPのGETメソッドのみを用いて記事を配信する
   peer to peer 電子掲示板システムです。
 * 朔は Python 上で動きます。
-  動作確認は主に GNU/Linux 上の CPython 3.11 で行っています。
+  動作確認は主に GNU/Linux 上の CPython 3.13 で行っています。
 * 次のような特徴を備えた掲示板が利用できます。
     * 2ちゃんねる型掲示板のインタフェース
     * Wikiを参考にしたハイパーリンク
@@ -24,7 +24,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
 朔に必要なプログラム
 --------------------
-* Python (ver.3.10以降)
+* Python (ver.3.11以降)
 * pipenv パッケージをpipenvでインストールする場合
 * Jinja2 (ver.3 以降)
 * PIL または Pillow (Python Imaging Library) もし必要なら
@@ -32,7 +32,7 @@ Sakuは Shingetsu Another Keen Utility の略です。
 
 朔の使い方
 ----------
-1. Python3.10以降をインストールする
+1. Python3.11以降をインストールする
 2. モデム、ルータまたはファイアウォールを設定して8000/tcpをポート開放する。
    * 環境次第なのでここでは説明しきれません
    * IPv6対応環境では最初からポート開放されている場合があるようです
