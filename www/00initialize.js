@@ -26,15 +26,15 @@ const shingetsu = (function () {
     };
 
     shingetsu.initialize = function (func) {
-            _initializer[_initializer.length] = func;
-        };
-        shingetsu.addInitializer = shingetsu.initialize;
+        _initializer[_initializer.length] = func;
+    };
+    shingetsu.addInitializer = shingetsu.initialize;
 
-        shingetsu.addRecordsModifiers = function (func) {
-            _recordsModifiers[_recordsModifiers.length] = func;
-        };
+    shingetsu.addRecordsModifiers = function (func) {
+        _recordsModifiers[_recordsModifiers.length] = func;
+    };
 
-        shingetsu.addScriptPath = function (path, onload) {
+    shingetsu.addScriptPath = function (path, onload) {
         if (typeof onload != 'function') {
             onload = function() {};
         }

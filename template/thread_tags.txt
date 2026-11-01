@@ -7,6 +7,8 @@
   <a href="{{gateway_cgi}}/{{target}}?tag={{str_encode(tag)}}" class="tag">{{tag}}</a>
 {% endfor %}
 {% if (classname == 'tags') and isadmin %}
-  <a href="{{admin_cgi}}/edittag?file={{cache.datfile}}">{{message.edit_tag}}</a>
+  <a href="{{admin_cgi}}/edittag?file={{cache.datfile}}">
+    <button class="btn">{{message.edit_tag}}</button>
+  </a>
 {% endif %}
 </p>
