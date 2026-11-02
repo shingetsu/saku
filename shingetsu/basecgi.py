@@ -91,7 +91,7 @@ class CGI:
             message = status_str
         self.start_response(status_str, [
             ('Content-Type', 'text/plain;charset=UTF-8')])
-        return self.bytes([message])
+        return [self.bytes(message)]
 
     def gzipped(self, content):
         if 'gzip' not in self.environ.get('HTTP_ACCEPT_ENCODING', ''):
