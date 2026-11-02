@@ -1,11 +1,15 @@
 Authors
 =======
-* (main) Satoshi Fukutomi <fuktommy@shingetsu.info>
+* ace
+* caramelopardalis
+* kkka
+* replaceable anonymous
+* Rinwasyu
+* Satoshi Fukutomi <fuktommy@shingetsu.info>
 * sbwhitecap
-* (apollo) replaceable anonymous.
-* (2ch interface) kkka
-* (thumbnail patch) A shinGETsu user.
-* (imghdr patch) A shinGETsu user.
-* (js extensions) shinGETsu users.
-* (markdown extension) WhiteCat6142
-* (Pipfile, Dockefile, GitHub Actions) takano32
+* shinGETsu users
+* shiroboushi
+* takano32
+* ultraist
+* WhiteCat6142
+* yuuki
