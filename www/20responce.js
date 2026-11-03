@@ -67,7 +67,7 @@ shingetsu.initialize(function () {
     }
 
     const ref = document.createElement('div');
-    ref.id = 'resreferrer'; // または ref.setAttribute('id', 'resreferrer');
+    ref.id = 'resreferrer';
 
     const bodyElem = document.getElementById('body');
     if (bodyElem && bodyElem.parentNode) {
