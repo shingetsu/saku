@@ -6,9 +6,9 @@ shingetsu.initialize(function () {
   const links = [
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: true },
-    { 
-      rel: 'stylesheet', 
-      href: 'https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=M+PLUS+2:wght@100..900&family=M+PLUS+Rounded+1c&display=swap' 
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=M+PLUS+2:wght@100..900&family=M+PLUS+Rounded+1c&display=swap'
     }
   ];
 

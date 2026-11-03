@@ -1,23 +1,24 @@
 ///admin.cgi/status node & search node replace link.
 //license: http://www.kmonos.net/nysl/ or public domain. (dual license).
 
-shingetsu.addInitializer(function () {
+shingetsu.addInitializer(() => {
     function nodelink() {
-        var ul = document.getElementsByTagName('ul');
-        for (var i=0; i<ul.length; i++) {
-            var li = ul[i].getElementsByTagName('li');
-            for (var j=0; j<li.length; j++) {
-                var a = document.createElement('a');
-                var node = li[j].innerHTML;
+        const uls = document.querySelectorAll('ul');
+        uls.forEach((ul) => {
+            const lis = ul.querySelectorAll('li');
+            lis.forEach((li) => {
+                const node = li.innerHTML;
+                const a = document.createElement('a');
                 a.href = 'http://' + node.replace('/server.cgi', '/');
                 a.innerHTML = node;
-                li[j].innerHTML = '';
-                li[j].appendChild(a);
-            }
-        }
+
+                li.innerHTML = '';
+                li.appendChild(a);
+            });
+        });
     }
 
-    if (location.pathname == '/admin.cgi/status') {
+    if (location.pathname === '/admin.cgi/status') {
         nodelink();
     }
 });

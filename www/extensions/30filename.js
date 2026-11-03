@@ -2,23 +2,29 @@
 //please click thread file size display. (ex, 0.0MB).
 //license: http://www.kmonos.net/nysl/ or public domain. (dual license).
 
-shingetsu.initialize(function () {
+shingetsu.initialize(() => {
     function add_filename() {
-        var filename = $('#postarticle input[name=file]').val();
-        if (! filename) {
+        const fileInput = document.querySelector('#postarticle input[name="file"]');
+        if (!fileInput || !fileInput.value) {
             return;
         }
 
-        var span = $('<span>');
-        span.text(' ' + filename);
-        span.hide();
+        const filename = fileInput.value;
+        const span = document.createElement('span');
+        span.textContent = ' ' + filename;
+        span.style.display = 'none';
 
-        var mb = $('#status');
-        mb.append(span);
-        mb.click(function () { span.toggle(); });
+        const mb = document.getElementById('status');
+        if (mb) {
+            mb.appendChild(span);
+            mb.addEventListener('click', () => {
+                // 表示状態をトグルする（none なら空文字＝表示、block等なら非表示）
+                span.style.display = span.style.display === 'none' ? 'inline' : 'none';
+            });
+        }
     }
 
-    if (location.pathname.match(/\/thread\.cgi\//)) {
+    if (/\/thread\.cgi\//.test(location.pathname)) {
         add_filename();
     }
 });

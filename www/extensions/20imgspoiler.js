@@ -3,14 +3,36 @@
  * licenced by public domain.
  */
 
-shingetsu.initialize(function () {
-    function onload() {
-        function spoilerImages($container) {
-            $container.find('img').spoilerAlert({max: 10, partial: 2});
-        }
-        shingetsu.addRecordsModifiers(spoilerImages);
-        spoilerImages($('#records'));
+shingetsu.initialize(() => {
+    function applySpoiler(img) {
+        if (img.dataset.spoilerApplied) return;
+        img.dataset.spoilerApplied = 'true';
+
+        const originalFilter = img.style.filter;
+        img.style.filter = 'blur(10px)';
+        img.style.cursor = 'pointer';
+        img.style.transition = 'filter 0.3s ease';
+
+        img.addEventListener('click', () => {
+            if (img.style.filter && img.style.filter !== 'none') {
+                img.style.filter = 'none';
+            } else {
+                img.style.filter = 'blur(10px)';
+            }
+        });
     }
 
-    shingetsu.addScriptPath('jquery/spoiler/spoiler.min.js', onload);
+    function spoilerImages(container) {
+        const images = container.querySelectorAll('img');
+        images.forEach((img) => {
+            applySpoiler(img);
+        });
+    }
+
+    shingetsu.addRecordsModifiers(spoilerImages);
+        
+    const recordsEl = document.getElementById('records');
+    if (recordsEl) {
+        spoilerImages(recordsEl);
+    }
 });

@@ -7,8 +7,7 @@ shingetsu.initialize(function () {
     }
 
     function myLocaltime(date) {
-        let year = date.getYear();
-        if (year < 1900) year += 1900;
+        const year = date.getFullYear();
         const month = format(date.getMonth()+1);
         const day = format(date.getDate());
         const hours = format(date.getHours());
