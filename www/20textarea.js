@@ -15,7 +15,7 @@ shingetsu.initialize(function () {
         msg_edit = '編集再開';
     }
 
-    const textArea = document.querySelector('#body');
+    const textArea = document.querySelector('textarea#body');
     if (!textArea) return;
 
     const textAreaContainer = textArea.parentElement;

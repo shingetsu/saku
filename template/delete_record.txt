@@ -8,16 +8,18 @@
   <input type="hidden" name="sid" value="{{sid}}" />
   {% if records.__len__() == 1 %}
     <div>
-      <label for="dopost">{{message.send}}</label>
       <input type="checkbox" name="dopost" value="dopost" id="dopost" />
+      <label for="dopost">{{message.send}}</label>
     </div>
-    <div>
-      <label for="name">{{message.name}}</label>
-      <input name="name" value="" id="name" />
-    </div>
-    <div>
-      <label for="passwd">{{message.signature}}</label>
-      <div><input type="password" name="passwd" value="" id="passwd" />
+    <div class="form-grid">
+      <div class="post-advanced grid-row">
+        <label for="name">{{message.name}}</label>
+        <div class="inline"><input name="name" value="" id="name" /></div>
+      </div>
+      <div class="post-advanced grid-row">
+        <label for="passwd">{{message.signature}}</label>
+        <div class="inline"><input type="password" name="passwd" value="" id="passwd" /></div>
+      </div>
     </div>
     <div>
       <label for="body">{{message.comment}}</label>
