@@ -35,6 +35,9 @@ a:hover {
 .sign {
     color: red;
 }
+table.solid {
+    border-collapse: collapse;
+}
 table.solid td {
     border: 1px solid #ccc; 
     padding: 5px 5px 5px 1em;

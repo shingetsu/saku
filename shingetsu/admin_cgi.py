@@ -280,6 +280,10 @@ class CGI(gateway.CGI):
             records += len(cache)
             size += cache.size
         myself4, myself6 = nodelist.myself(True)
+        if config.dnsname:
+            myself_dns, _ = nodelist.myself(False)
+        else:
+            myself_dns = ''
         status = (('linked_nodes', len(nodelist)),
                   ('known_nodes', len(searchlist)),
                   ('files', len(cachelist)),
@@ -288,7 +292,8 @@ class CGI(gateway.CGI):
                                              self.message['mb'])),
                   ('node_version', config.version),
                   ('self_node_ipv4', myself4),
-                  ('self_node_ipv6', myself6))
+                  ('self_node_ipv6', myself6),
+                  ('self_node_dns', myself_dns))
         node_status = (('linked_nodes', nodelist),
                        ('known_nodes', searchlist))
         var = {
