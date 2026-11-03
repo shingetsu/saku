@@ -1,0 +1,16 @@
+/*
+ * markdown extension
+ * https://github.com/WhiteCat6142/shingetsu-extensons
+ */
+dd.markdown {
+    margin-top: 1ex;
+}
+dd.markdown th {
+    font-weight: bold;
+    text-align: center;
+    background-color: #eee;
+}
+dd.markdown td, dd.markdown th {
+    border: 1px solid #ccc;
+    padding: 5px 5px 5px 1em;
+}
