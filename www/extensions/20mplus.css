@@ -1,0 +1,16 @@
+/*
+ * Inconsolata, M PLUS 2 and M PLUS Rounded 1c font patch.
+ * from a shinGETsu user.
+ */
+body {
+    font-family: "Inconsolata", "M PLUS 2", sans-serif;
+    font-weight: normal;
+    font-style: normal;
+}
+h1, h1 a {
+    font-family: "M PLUS Rounded 1c", sans-serif;
+}
+dd {
+    font-family: "MS PGothic", Mona, IPAMonaPGothic, sans-serif;
+    font-family: "Inconsolata", "M PLUS 2", sans-serif;
+}
