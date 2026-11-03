@@ -108,7 +108,6 @@ Acknowledge
 * The design is made referring to Vojta and Winny.
 * I learned how to handle file name from [YukiWiki](https://www.hyuki.com/yukiwiki/)
   written by Hiroshi Yuki.
-* Module apollo.py is was made referring to apollo.c
-  written by replaceable anonymous.
 * Popup JavaScript was made referring to [Kindan-no Tubo](http://tubo.80.kg/) by Zero corp.
 * XLST was made reffring to [Landscape](https://sonic64.com/2005-03-16.html).
+* Buttons are made referring to [Bootstrap](https://getbootstrap.com/).

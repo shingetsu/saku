@@ -110,6 +110,6 @@ Sakuは Shingetsu Another Keen Utility の略です。
 ----
 * 設計についてVojtaとWinnyを参考にしました。
 * ファイル名の扱いについてはHiroshi Yuki氏の[YukiWiki](https://www.hyuki.com/yukiwiki/)を参考にしました。
-* 署名モジュール apollo.py は replaceable anonymous 氏のC言語版Apolloを基にしました。
 * ポップアップのためのJavaScriptは  Zero corp. の[禁断の壷](http://tubo.80.kg/)を参考にしました。
 * XLSTは[Landscape](https://sonic64.com/2005-03-16.html)を参考にしました。
+* ボタン類は[Bootstrap](https://getbootstrap.com/)を参考にしました。
