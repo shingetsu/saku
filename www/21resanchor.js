@@ -128,7 +128,7 @@ shingetsu.initialize(() => {
 
         setHtml(html) {
             const sanitizedHtml = html
-                .replace(/<\/?[input][^<>]*>/ig, '')
+                .replace(/<\/?input[^<>]*>/ig, '')
                 .replace(/(<br[^<>]*>\s*)*$/, '');
 
             const finalHtml = sanitizedHtml.includes('<dt')
