@@ -1,78 +1,69 @@
-/* Tag Edit Tool.
+/**
+ * Tag Edit Tool.
  * Copyright (C) 2007 shinGETsu Project.
  */
 
-shingetsu.initialize(function () {
-    if (location.pathname.search('/admin.cgi/edittag') != 0) {
+shingetsu.initialize(() => {
+    if (!location.pathname.startsWith('/admin.cgi/edittag')) {
         return;
     }
 
     const checked = {};
+    const savetagForm = document.getElementById('savetag');
+    if (!savetagForm) return;
 
-    function insertTag(tag) {
-        const form = document.getElementById('savetag');
-        if (form.tag.value != '') {
-            form.tag.value += ' ' + tag;
+    const insertTag = (tag) => {
+        const tagInput = savetagForm.tag;
+        if (tagInput.value.trim() !== '') {
+            tagInput.value += ` ${tag}`;
         } else {
-            form.tag.value = tag;
+            tagInput.value = tag;
         }
-    }
+    };
 
-    function removeTag(tag) {
-        const form = document.getElementById('savetag');
-        let tmp = ' ' + form.tag.value + ' ';
-        tmp = tmp.replace(' '+tag+' ', ' ');
-        tmp = tmp.replace(/\s+/g, ' ');
-        tmp = tmp.replace(/^\s+/g, '');
-        tmp = tmp.replace(/\s+$/g, '');
-        form.tag.value = tmp;
-    }
+    const removeTag = (tag) => {
+        const tagInput = savetagForm.tag;
+        let tmp = ` ${tagInput.value} `;
+        tmp = tmp.replace(` ${tag} `, ' ');
+        tagInput.value = tmp.replace(/\s+/g, ' ').trim();
+    };
 
-    function toggleTag(tag) {
-        const strtag = tag.innerHTML;
-        if (checked[strtag]) {
-            tag.style.backgroundColor = '#efefef';
-        } else {
-            tag.style.backgroundColor = '#ccc';
-        }
-    }
+    const toggleTag = (tagElement, isChecked) => {
+        tagElement.style.backgroundColor = isChecked ? '#ccc' : '#efefef';
+    };
 
-    function toggleAllTags(strtag) {
-        const span = document.getElementsByTagName('span');
-        for (let i=0; i<span.length; i++) {
-            if ((span[i].className == 'tag') &&
-                (span[i].innerHTML == strtag)) {
-                toggleTag(span[i]);
+    const toggleAllTags = (strtag) => {
+        const spans = document.querySelectorAll('span.tag');
+        spans.forEach((span) => {
+            if (span.textContent === strtag) {
+                toggleTag(span, !checked[strtag]);
             }
-        }
-        checked[strtag] = ! checked[strtag];
-    }
+        });
+        checked[strtag] = !checked[strtag];
+    };
 
-    function clickTag(tag) {
-        const strtag = tag.innerHTML;
-        if (! checked[strtag]) {
+    const clickTag = (tagElement) => {
+        const strtag = tagElement.textContent;
+        if (!checked[strtag]) {
             insertTag(strtag);
         } else {
             removeTag(strtag);
         }
         toggleAllTags(strtag);
-    }
+    };
 
-    const span = document.getElementsByTagName('span');
-    const strcheck = ' ' + document.getElementById('savetag').tag.value + ' ';
-    for (let i=0; i<span.length; i++) {
-        if (span[i].className == 'tag') {
-            span[i].onclick =
-                (function (tag) {
-                    return function () {
-                        clickTag(tag);
-                    }})(span[i]);
-            span[i].style.cursor = 'pointer';
-            const strtag = span[i].innerHTML;
-            if ((strcheck.search(' ' + strtag +' ') >= 0) &&
-                (! checked[strtag])) {
-                toggleAllTags(strtag);
-            }
+    const spans = document.querySelectorAll('span.tag');
+    const tagInputValue = savetagForm.tag ? savetagForm.tag.value : '';
+    const strcheck = ` ${tagInputValue} `;
+
+    spans.forEach((span) => {
+        const strtag = span.textContent;
+
+        span.style.cursor = 'pointer';
+        span.addEventListener('click', () => clickTag(span));
+
+        if (strcheck.includes(` ${strtag} `) && !checked[strtag]) {
+            toggleAllTags(strtag);
         }
-    }
+    });
 });

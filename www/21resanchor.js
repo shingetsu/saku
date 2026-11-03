@@ -1,246 +1,216 @@
-/* -*- coding: utf-8 -*-
+/**
  * Popup Res Anchor.
  * Copyright (C) 2005 shinGETsu Project.
  */
 
-shingetsu.initialize(function () {
+shingetsu.initialize(() => {
+    class ResAnchor {
+        static messages = {
+            en: {
+                loading: 'Loading...',
+                notFound: 'Error or Not Found'
+            },
+            ja: {
+                loading: '読み込み中です・・・',
+                notFound: 'エラーが発生したか、見つかりません'
+            }
+        };
 
-    function ResAnchor(opt_parameters) {
-        Object.assign(this, {
-            parentResAnchor: null,
-            childResAnchors: [],
-            container: null,
-            aid: null,
-            url: null,
-            furtherPopup: null,
-            destroyTimer: null
-        }, opt_parameters);
+        static get message() {
+            return ResAnchor.messages[shingetsu.uiLang] || ResAnchor.messages.en;
+        }
 
-        if (this.container) {
-            this.container.addEventListener('mouseenter', (event) => {
-                this.cancelDescentDestroyTimer();
-                if (!this.furtherPopup) {
-                    this.popup(
-                        new shingetsu.plugins.Coordinate(event));
-                }
-            });
+        static cache = {};
 
-            this.container.addEventListener('mouseleave', () => {
-                this.cancelDestroyTimer();
-                this.destroyTimer = setTimeout(() => {
-                    if (this.furtherPopup) {
-                        this.furtherPopup.destroy();
-                        this.furtherPopup = null;
+        constructor(opt_parameters = {}) {
+            this.parentResAnchor = null;
+            this.childResAnchors = [];
+            this.container = null;
+            this.aid = null;
+            this.url = null;
+            this.furtherPopup = null;
+            this.destroyTimer = null;
+
+            Object.assign(this, opt_parameters);
+
+            if (this.container) {
+                this.container.addEventListener('mouseenter', (event) => {
+                    this.cancelDescentDestroyTimer();
+                    if (!this.furtherPopup) {
+                        this.popup(new shingetsu.plugins.Coordinate(event));
+                    } else if (this.furtherPopup.container) {
+                        this.furtherPopup.container.style.display = '';
+                        this.furtherPopup.container.style.opacity = '1';
                     }
-                }, shingetsu.plugins.Popup.hidingDuration);
+                });
 
-                if (this.furtherPopup) {
-                    this.furtherPopup.hide();
-                }
-            });
+                this.container.addEventListener('mouseleave', () => {
+                    this.scheduleDestroy();
+                });
+            }
         }
-    }
 
-    function popup(coordinate) {
-        const url = this.container.href;
-        let parentPopup;
-        if (this.parentResAnchor) {
-            parentPopup = this.parentResAnchor.furtherPopup;
-        }
-        const furtherPopup = new shingetsu.plugins.Popup({
-            parentPopup: parentPopup,
-            coordinate: coordinate
-        });
-
-        furtherPopup.container.addEventListener("mouseenter", () => {
-            this.cancelDescentDestroyTimer();
-        });
-
-        furtherPopup.container.addEventListener("mouseleave", () => {
+        scheduleDestroy() {
             this.cancelDestroyTimer();
             this.destroyTimer = setTimeout(() => {
-                furtherPopup.destroy();
-                this.furtherPopup = null;
+                if (this.furtherPopup) {
+                    this.furtherPopup.destroy();
+                    this.furtherPopup = null;
+                }
             }, shingetsu.plugins.Popup.hidingDuration);
-
-            this.furtherPopup.hide();
-            this.refireDescentMouseleave();
-        });
-
-        if (parentPopup) {
-            parentPopup.appendChild(furtherPopup);
         }
-        this.furtherPopup = furtherPopup;
-        furtherPopup.show(coordinate);
-        this.loadContent();
-    }
 
-    function loadContent() {
-        let html = this.cache[this.aid];
-        if (!html) {
-            const dt = document.getElementById('r' + this.aid);
-            const dd = document.getElementById('b' + this.aid);
-            if (dt && dd) {
-                html = "<dl><dt>" + dt.innerHTML + "</dt><dd>"
-                    + dd.innerHTML + "</dd></dl>";
-                this.cache[this.aid] = html;
+        popup(coordinate) {
+            let parentPopup = null;
+            if (this.parentResAnchor) {
+                parentPopup = this.parentResAnchor.furtherPopup;
+            }
+
+            const furtherPopup = new shingetsu.plugins.Popup({
+                parentPopup,
+                coordinate
+            });
+
+            furtherPopup.container.addEventListener('mouseenter', () => {
+                this.cancelDescentDestroyTimer();
+                if (furtherPopup.container) {
+                    furtherPopup.container.style.display = '';
+                    furtherPopup.container.style.opacity = '1';
+                }
+            });
+
+            furtherPopup.container.addEventListener('mouseleave', () => {
+                this.scheduleDestroy();
+            });
+
+            if (parentPopup) {
+                parentPopup.appendChild(furtherPopup);
+            }
+            this.furtherPopup = furtherPopup;
+            furtherPopup.show(coordinate);
+            this.loadContent();
+        }
+
+        loadContent() {
+            let html = ResAnchor.cache[this.aid];
+            if (!html) {
+                const dt = document.getElementById(`r${this.aid}`);
+                const dd = document.getElementById(`b${this.aid}`);
+                if (dt && dd) {
+                    html = `<dl><dt>${dt.innerHTML}</dt><dd>${dd.innerHTML}</dd></dl>`;
+                    ResAnchor.cache[this.aid] = html;
+                    this.setHtml(html);
+                    this.parseContent();
+                } else {
+                    this.furtherPopup.setContent(`<div>${ResAnchor.message.loading}</div>`);
+
+                    fetch(`${this.url}?ajax=true`)
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.text();
+                        })
+                        .then((textHtml) => {
+                            ResAnchor.cache[this.aid] = textHtml;
+                            this.setHtml(textHtml);
+                            this.parseContent();
+                        })
+                        .catch((error) => {
+                            console.error('Failed to load content:', error);
+                        });
+                }
+            } else {
                 this.setHtml(html);
                 this.parseContent();
-            } else {
-                this.furtherPopup.setContent('<div>'
-                    + ResAnchor.message.loading + '</div>');
-
-                fetch(this.url + '?ajax=true')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.text();
-                    })
-                    .then(html => {
-                        this.cache[this.aid] = html;
-                        this.setHtml(html);
-                        this.parseContent();
-                    })
-                    .catch(error => {
-                        console.error('Failed to load content:', error);
-                    });
             }
-        } else {
-            this.setHtml(html);
-            this.parseContent();
-        }
-    }
-
-    function setHtml(html) {
-        html = html.replace(new RegExp('</?(input)[^<>]*>', 'ig'), '')
-                   .replace(new RegExp('(<br[^<>]*>\\s*)*$', 'i'), '');
-        if (html.search(/<dt/) < 0) {
-            html = '<div>' + ResAnchor.message.notFound + '</div>';
         }
 
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = html;
+        setHtml(html) {
+            const sanitizedHtml = html
+                .replace(/<\/?[input][^<>]*>/ig, '')
+                .replace(/(<br[^<>]*>\s*)*$/, '');
 
-        if (tempDiv.firstElementChild) {
-            tempDiv.firstElementChild.classList.add('panel', 'panel-default');
+            const finalHtml = sanitizedHtml.includes('<dt')
+                ? sanitizedHtml
+                : `<div>${ResAnchor.message.notFound}</div>`;
+
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = finalHtml;
+
+            if (tempDiv.firstElementChild) {
+                tempDiv.firstElementChild.classList.add('panel', 'panel-default');
+            }
+
+            this.furtherPopup.setContent(tempDiv.firstElementChild || tempDiv);
         }
 
-        this.furtherPopup.setContent(tempDiv.firstElementChild || tempDiv);
-    }
+        parseContent(container = this.furtherPopup.container) {
+            shingetsu.modifyRecords(container);
+            this.childResAnchors = [];
 
-    function parseContent(container) {
-        if (!container) {
-            container = this.furtherPopup.container;
+            container.querySelectorAll('a').forEach((anchor) => {
+                if (!anchor.classList.contains('innerlink') && !anchor.classList.contains('reclink')) {
+                    return;
+                }
+                const match = anchor.href.match(/([0-9a-f]{8})/);
+                if (!match) {
+                    return;
+                }
+                const aid = match[1];
+                const resAnchor = new ResAnchor({
+                    parentResAnchor: this,
+                    container: anchor,
+                    aid,
+                    url: anchor.href
+                });
+                this.childResAnchors.push(resAnchor);
+
+                anchor.addEventListener('click', (e) => {
+                    this.tryJump(e, aid);
+                });
+            });
         }
-        shingetsu.modifyRecords(container);
 
-        this.childResAnchors = [];
+        cancelDestroyTimer() {
+            clearTimeout(this.destroyTimer);
+            this.destroyTimer = null;
+            if (this.furtherPopup?.container && this.furtherPopup.container !== document.body) {
+                this.furtherPopup.container.style.display = '';
+                this.furtherPopup.container.style.opacity = '1';
+            }
+        }
 
-        container.querySelectorAll('a').forEach(anchor => {
-            if (!anchor.classList.contains("innerlink")
-                && !anchor.classList.contains("reclink")) {
+        cancelDescentDestroyTimer() {
+            this.cancelDestroyTimer();
+            if (this.parentResAnchor) {
+                this.parentResAnchor.cancelDescentDestroyTimer();
+            }
+        }
+
+        tryJump(event, id) {
+            const root = shingetsu.plugins.rootResAnchor?.furtherPopup;
+            if (root?.childPopups) {
+                while (root.childPopups.length > 0) {
+                    const child = root.childPopups.pop();
+                    child.destroy();
+                }
+            }
+
+            const targetElement = document.getElementById(`r${id}`);
+            if (!targetElement || event.button === 1) {
                 return;
             }
-            if (anchor.href.search(/([0-9a-f]{8})/) <= 0) {
-                return;
-            }
-            const aid = RegExp.$1;
-            const resAnchor = new ResAnchor({
-                parentResAnchor: this,
-                container: anchor,
-                aid: aid,
-                url: anchor.href
+            event.preventDefault();
+
+            targetElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
             });
-            this.childResAnchors.push(resAnchor);
 
-            anchor.addEventListener('click', (e) => {
-                this.tryJump(e, aid);
-            });
-        });
-    }
-
-    function cancelDestroyTimer() {
-        clearTimeout(this.destroyTimer);
-        if (this.furtherPopup) {
-            const container = this.furtherPopup.container;
-            if (container) {
-                container.style.display = '';
-            }
+            location.hash = `#r${id}`;
         }
     }
-
-    function cancelDescentDestroyTimer() {
-        this.cancelDestroyTimer();
-        if (this.parentResAnchor) {
-            this.parentResAnchor.cancelDescentDestroyTimer();
-        }
-    }
-
-    function refireMouseleave() {
-        if (this.container) {
-            this.container.dispatchEvent(new Event('mouseleave', { bubbles: true }));
-        }
-    }
-
-    function refireDescentMouseleave() {
-        this.refireMouseleave();
-        if (this.parentResAnchor) {
-            this.parentResAnchor.refireMouseleave();
-        }
-    }
-
-    function tryJump(event, id) {
-        const root = shingetsu.plugins.rootResAnchor.furtherPopup;
-        let i = root.childPopups.length;
-        while (i--) {
-            root.childPopups[i].destroy();
-            root.childPopups.splice(i, 1);
-        }
-        const targetElement = document.getElementById('r' + id);
-        if (!targetElement) {
-            return;
-        }
-        if (event.button === 1) {
-            return;
-        }
-        event.preventDefault();
-
-        const targetTop = targetElement.getBoundingClientRect().top + window.pageYOffset;
-        window.scrollTo({
-            top: targetTop,
-            behavior: 'smooth'
-        });
-
-        location.hash = '#r' + id;
-    }
-
-    const message = {
-        'en': {
-            loading: 'Loading...',
-            notFound: 'Error or Not Found'
-        },
-        'ja': {
-            loading: '読み込み中です・・・',
-            notFound: 'エラーが発生したか、見つかりません'
-        }
-    };
-    Object.assign(ResAnchor, {
-        message: message[shingetsu.uiLang] || message['en']
-    });
-    ResAnchor.prototype = {
-        constructor: ResAnchor,
-        cache: {},
-        popup: popup,
-        loadContent: loadContent,
-        setHtml: setHtml,
-        parseContent: parseContent,
-        cancelDestroyTimer: cancelDestroyTimer,
-        cancelDescentDestroyTimer: cancelDescentDestroyTimer,
-        refireMouseleave: refireMouseleave,
-        refireDescentMouseleave: refireDescentMouseleave,
-        tryJump: tryJump
-    };
 
     const resAnchor = new ResAnchor();
     resAnchor.furtherPopup = new shingetsu.plugins.Popup({

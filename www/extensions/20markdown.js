@@ -1,4 +1,4 @@
-/* -*- coding: utf-8 -*-
+/**
  * markdown extension
  * https://github.com/WhiteCat6142/shingetsu-extensons
  */

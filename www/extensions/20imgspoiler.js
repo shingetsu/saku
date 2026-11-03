@@ -1,4 +1,4 @@
-/* -*- coding: utf-8 -*-
+/**
  * image spoiler-alert.
  * licenced by public domain.
  */
@@ -30,7 +30,7 @@ shingetsu.initialize(() => {
     }
 
     shingetsu.addRecordsModifiers(spoilerImages);
-        
+
     const recordsEl = document.getElementById('records');
     if (recordsEl) {
         spoilerImages(recordsEl);

@@ -1,71 +1,71 @@
-/*
+/**
  * Jump New Posts.
  * Copyright (C) 2006 shinGETsu Project.
  */
 
-shingetsu.initialize(function () {
+shingetsu.initialize(() => {
     let itemKey = null;
-    if (location.pathname.search(/^\/?thread.cgi\/([^\/]+)$/) === 0) {
+    const match = location.pathname.match(/^\/?thread.cgi\/([^\/]+)$/);
+    if (match) {
         try {
-            itemKey = 'access_' + decodeURI(RegExp.$1);
+            itemKey = `access_${decodeURIComponent(match[1])}`;
         } catch (e) {
+            // Decoding failed
         }
     }
 
-    function getAccess() {
-        if (! itemKey) {
+    const getAccess = () => {
+        if (!itemKey) return 0;
+        try {
+            const val = localStorage.getItem(itemKey);
+            return val !== null ? parseInt(val, 10) : 0;
+        } catch (e) {
             return 0;
         }
+    };
+
+    const setAccess = (access) => {
+        if (!itemKey) return;
         try {
-            return parseInt(localStorage.getItem(itemKey));
+            localStorage.setItem(itemKey, access);
         } catch (e) {
-            return 0;
+            // Storage might be full or restricted
         }
-    }
+    };
 
-    function setAccess(access) {
-        if (! itemKey) {
-            return;
-        }
-        localStorage.setItem(itemKey, access);
-    }
-
-    function jumpto(id) {
-        if (!window.location.href.includes("#")) {
-            const target = document.getElementById("r" + id);
+    const jumpto = (id) => {
+        if (!location.hash) {
+            const target = document.getElementById(`r${id}`);
             if (target) {
-                const targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
                 });
             }
         }
-    }
+    };
 
-    function setNewPost(dt) {
-        if (itemKey) {
-            const element = typeof dt === 'string' ? document.querySelector(dt) : dt;
-
-            if (element) {
-                element.classList.add("newpost");
-            }
+    const setNewPost = (dt) => {
+        if (!itemKey) return;
+        const element = typeof dt === 'string' ? document.querySelector(dt) : dt;
+        if (element) {
+            element.classList.add('newpost');
         }
-    }
+    };
 
-    function newPosts(access) {
-        const read = access ? access : 0;
-        let newid = "";
+    const newPosts = (access) => {
+        const read = access || 0;
+        let newid = '';
         let lastStamp = null;
 
-        const stamps = document.querySelectorAll("dt span.stamp[data-stamp]");
-        stamps.forEach(function (span) {
+        const stamps = document.querySelectorAll('dt span.stamp[data-stamp]');
+        stamps.forEach((span) => {
             const stamp = Number(span.dataset.stamp);
 
             if (stamp > read) {
-                const dt = span.closest("dt");
+                const dt = span.closest('dt');
                 if (dt) {
-                    if (!newid) {
+                    if (!newid && dt.id) {
                         newid = dt.id.substring(1);
                     }
                     setNewPost(dt);
@@ -78,17 +78,15 @@ shingetsu.initialize(function () {
             setAccess(Number(lastStamp.dataset.stamp) + 1);
         }
 
-        if (!access) {
-            // nop
-        } else if (newid) {
+        if (access && newid) {
             jumpto(newid);
-        } else if (lastStamp) {
-            const lastDt = lastStamp.closest("dt");
+        } else if (access && lastStamp) {
+            const lastDt = lastStamp.closest('dt');
             if (lastDt && lastDt.id) {
                 jumpto(lastDt.id.substring(1));
             }
         }
-    }
+    };
 
     newPosts(getAccess());
 });

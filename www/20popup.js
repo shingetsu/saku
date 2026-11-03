@@ -1,201 +1,199 @@
-/* Popup.
+/**
+ * Popup.
  * Copyright (C) 2005 shinGETsu Project.
  */
-(function () {
-    function Coordinate(e, opt_y, opt_z) {
-        Object.assign(this, {
-            x: e,
-            y: opt_y,
-            z: opt_z
-        });
+
+shingetsu.plugins.Coordinate = class {
+    constructor(e, opt_y, opt_z) {
+        this.x = e;
+        this.y = opt_y;
+        this.z = opt_z;
 
         if (this.y === undefined) {
-            if (e) {
+            if (e && typeof e.pageX === 'number') {
                 this.x = e.pageX;
                 this.y = e.pageY;
             } else {
-                this.x = window.event ? window.event.clientX : undefined;
-                this.y = window.event ? window.event.clientY : undefined;
+                // for old browsers
+                const evt = window.event;
+                this.x = evt ? evt.clientX : undefined;
+                this.y = evt ? evt.clientY : undefined;
             }
         }
     }
-    shingetsu.plugins.Coordinate = Coordinate;
-})();
+};
 
 
-(function () {
-    function Popup(opt_parameters) {
+shingetsu.plugins.Popup = class {
+    static hidingDuration = 200;
+
+    constructor(parameters = {}) {
         Object.assign(this, {
             parentPopup: null,
             childPopups: [],
             container: null,
             content: null,
             coordinate: null
-        }, opt_parameters);
+        }, parameters);
+
         if (!this.container) {
             this.container = this.createContainer(this.content);
-        } else if (typeof this.container === "string") {
+        } else if (typeof this.container === 'string') {
             this.container = document.querySelector(this.container);
         }
-        if (this.container && !document.body.contains(this.container)) {
-            this.container.style.display = "none";
+
+        if (this.container && this.container !== document.body && !document.body.contains(this.container)) {
+            this.container.style.display = 'none';
             document.body.appendChild(this.container);
         }
     }
 
-    function createContainer(content) {
+    createContainer(content) {
         const div = document.createElement('div');
         div.classList.add('popup');
         div.style.position = 'absolute';
-        if (content) {
-            if (content instanceof Node) {
-                div.appendChild(content);
-            } else if (typeof content === 'string') {
-                div.innerHTML = content;
-            }
-        }
+        this._renderContent(div, content);
         return div;
     }
 
-    function setContent(content) {
-        this.content = content;
-        while (this.container.firstChild) {
-            this.container.removeChild(this.container.firstChild);
-        }
+    _renderContent(container, content) {
+        container.replaceChildren();
         if (content) {
             if (content instanceof Node) {
-                this.container.appendChild(content);
+                container.appendChild(content);
             } else if (typeof content === 'string') {
-                this.container.innerHTML = content;
+                container.innerHTML = content;
             }
         }
     }
 
-    function appendChild(childPopup) {
+    setContent(content) {
+        this.content = content;
+        if (this.container && this.container !== document.body) {
+            this._renderContent(this.container, content);
+        }
+    }
+
+    appendChild(childPopup) {
         this.childPopups.push(childPopup);
     }
 
-    function reposition(coordinate) {
-        const width = this.container.offsetWidth;
-        const height = this.container.offsetHeight;
+    reposition(coordinate) {
+        if (!this.container || this.container === document.body || !coordinate) return;
 
-        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const height = this.container.offsetHeight;
 
         const x = Math.max(scrollLeft, coordinate.x + 20);
         const y = Math.max(scrollTop, coordinate.y - height);
 
-        this.container.style.left = x + 'px';
-        this.container.style.top = y + 'px';
+        this.container.style.left = `${x}px`;
+        this.container.style.top = `${y}px`;
 
         if (coordinate.z !== undefined) {
             this.container.style.zIndex = coordinate.z;
         }
     }
 
-    function show(coordinate) {
+    show(coordinate) {
         this.reposition(coordinate);
         const el = this.container;
-        el.style.display = '';
-        el.style.opacity = '1';
+        if (el && el !== document.body) {
+            el.style.display = '';
+            el.style.opacity = '1';
+        }
     }
 
-    function hide(options) {
-        options = Object.assign({
-            duration: Popup.hidingDuration || 400
-        }, options);
+    hide(options = {}) {
+        const config = {
+            duration: this.constructor.hidingDuration,
+            ...options
+        };
 
         const el = this.container;
-        const duration = options.duration;
+        if (!el || el === document.body) return;
 
+        const duration = config.duration;
         el.style.transition = `opacity ${duration}ms ease`;
         el.style.opacity = '0';
 
-        setTimeout(function() {
-            el.style.display = 'none';
+        setTimeout(() => {
+            if (el && el !== document.body) {
+                el.style.display = 'none';
+            }
+            if (typeof config.complete === 'function') {
+                config.complete.call(this);
+            }
         }, duration);
     }
 
-    function destroy() {
-        while (this.childPopups.length) {
-            const child = this.childPopups[this.childPopups.length - 1];
+    destroy() {
+        while (this.childPopups.length > 0) {
+            const child = this.childPopups.pop();
             child.destroy();
-            this.childPopups.splice(this.childPopups.length - 1, 1);
         }
+
         if (this.parentPopup) {
-            const siblingPopups = this.parentPopup.childPopups;
-            let i = siblingPopups.length;
-            while (i--) {
-                if (siblingPopups[i] == this) {
-                    this.parentPopup.childPopups.splice(i, 1);
-                    break;
-                }
+            const index = this.parentPopup.childPopups.indexOf(this);
+            if (index !== -1) {
+                this.parentPopup.childPopups.splice(index, 1);
             }
             this.parentPopup = null;
         }
-        if (this.container && this.container.remove) {
+
+        if (this.container && this.container !== document.body) {
             this.container.remove();
+            this.container = null;
         }
-        this.container = null;
     }
+};
 
-    Popup.hidingDuration = 200;
-    Popup.prototype = {
-        constructor: Popup,
-        createContainer: createContainer,
-        setContent: setContent,
-        appendChild: appendChild,
-        reposition: reposition,
-        show: show,
-        hide: hide,
-        destroy: destroy
-    };
-    shingetsu.plugins.Popup = Popup;
-})();
 
-(function () {
-    let exclusivePopup;
+(() => {
+    let exclusivePopup = null;
 
-    function showPopup(coordinate, objects) {
+    const showPopup = (coordinate, objects) => {
         if (exclusivePopup) {
             exclusivePopup.hide({
                 complete: function () {
                     this.destroy();
-                }.bind(exclusivePopup)
+                }
             });
         }
 
         const popup = new shingetsu.plugins.Popup({
-            coordinate: coordinate,
+            coordinate,
             content: objects
         });
 
-        popup.container.id = 'popup';
+        if (popup.container && popup.container !== document.body) {
+            popup.container.id = 'popup';
+        }
 
         exclusivePopup = popup;
         exclusivePopup.show(coordinate);
 
-        const selects = document.querySelectorAll('select');
-        selects.forEach(function (select) {
+        document.querySelectorAll('select').forEach((select) => {
             select.style.display = 'none';
         });
 
         return exclusivePopup;
-    }
+    };
 
-    function hidePopup() {
+    const hidePopup = () => {
         if (exclusivePopup) {
             exclusivePopup.hide({
                 complete: function () {
                     this.destroy();
-                }.bind(exclusivePopup)
+                }
             });
             exclusivePopup = null;
         }
-        document.querySelectorAll('select').forEach(function(el) {
+        document.querySelectorAll('select').forEach((el) => {
             el.style.display = '';
         });
-    }
+    };
 
     shingetsu.plugins.showPopup = showPopup;
     shingetsu.plugins.hidePopup = hidePopup;

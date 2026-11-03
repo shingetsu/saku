@@ -1,16 +1,17 @@
-// Post button controller.
-// Copyright (c) 2025 shinGETsu Project.
+/**
+ * Post button controller.
+ * Copyright (c) 2025 shinGETsu Project.
+ */
 
-shingetsu.initialize(function() {
+shingetsu.initialize(() => {
     const form = document.querySelector('#postarticle');
-    if (!form) {
-        return;
-    }
-    form.addEventListener('submit', function () {
+    if (!form) return;
+
+    form.addEventListener('submit', () => {
         const button = form.querySelector('button');
         if (button) {
             button.disabled = true;
-            setTimeout(function () {
+            setTimeout(() => {
                 button.disabled = false;
             }, 1000);
         }

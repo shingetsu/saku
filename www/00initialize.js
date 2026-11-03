@@ -1,15 +1,16 @@
-/* Initializer.
+/**
+ * Initializer.
  * Copyright (C) 2010 shinGETsu Project.
  *
  * addScriptPath came from
  * http://temping-amagramer.blogspot.jp/2012/02/jqueryjavascriptscript.html
  */
 
-const shingetsu = (function () {
-    const _initializer = [];
-    const _recordsModifiers = [];
+const shingetsu = (() => {
+    const initializers = [];
+    const recordsModifiers = [];
 
-    const shingetsu = {
+    const instance = {
         debugMode: false,
         plugins: {},
         rootPath: '/',
@@ -17,72 +18,71 @@ const shingetsu = (function () {
         uiLang: 'en'
     };
 
-    shingetsu.log = function (arg) {
-        if (typeof console == 'object') {
+    instance.log = (arg) => {
+        if (typeof console === 'object' && typeof console.log === 'function') {
             console.log(arg);
-        } else if (shingetsu.debugMode) {
+        } else if (instance.debugMode) {
             alert(arg);
         }
     };
 
-    shingetsu.initialize = function (func) {
-        _initializer[_initializer.length] = func;
-    };
-    shingetsu.addInitializer = shingetsu.initialize;
-
-    shingetsu.addRecordsModifiers = function (func) {
-        _recordsModifiers[_recordsModifiers.length] = func;
-    };
-
-    shingetsu.addScriptPath = function (path, onload) {
-        if (typeof onload != 'function') {
-            onload = function() {};
+    instance.initialize = (func) => {
+        if (typeof func === 'function') {
+            initializers.push(func);
         }
-        const sep = (path.indexOf('?') > 0) ? '&' : '?';
-        const realPath = shingetsu.rootPath + path + sep + shingetsu.dummyQuery;
+    };
+    instance.addInitializer = instance.initialize;
+
+    instance.addRecordsModifiers = (func) => {
+        if (typeof func === 'function') {
+            recordsModifiers.push(func);
+        }
+    };
+
+    instance.addScriptPath = (path, onload = () => {}) => {
+        const sep = path.includes('?') ? '&' : '?';
+        const realPath = instance.rootPath + path + sep + instance.dummyQuery;
 
         const script = document.createElement('script');
-        script.type = 'text/javascript';
         script.src = realPath;
-        script.addEventListener('load', function() {
-            onload();
-        });
+        script.onload = onload;
+        document.head.appendChild(script);
     };
 
-    shingetsu.modifyRecords = function (container) {
-        for (let i = 0; i < _recordsModifiers.length; i++) {
-            if (shingetsu.debugMode) {
-               _recordsModifiers[i](container);
-               continue;
+    instance.modifyRecords = (container = document) => {
+        for (const modifier of recordsModifiers) {
+            if (instance.debugMode) {
+                modifier(container);
+                continue;
             }
             try {
-               _recordsModifiers[i](container);
+                modifier(container);
             } catch (e) {
-                shingetsu.log(e);
+                instance.log(e);
             }
         }
     };
 
-    const _initialize = function () {
-        for (let i = 0; i < _initializer.length; i++) {
-            if (shingetsu.debugMode) {
-               _initializer[i]();
-               continue;
+    const runInitializers = () => {
+        for (const init of initializers) {
+            if (instance.debugMode) {
+                init();
+                continue;
             }
             try {
-               _initializer[i]();
+                init();
             } catch (e) {
-                shingetsu.log(e);
+                instance.log(e);
             }
         }
-        shingetsu.modifyRecords(document);
+        instance.modifyRecords(document);
     };
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', _initialize);
+        document.addEventListener('DOMContentLoaded', runInitializers, { once: true });
     } else {
-        _initialize();
+        runInitializers();
     }
 
-    return shingetsu;
+    return instance;
 })();
